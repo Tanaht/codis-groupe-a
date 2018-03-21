@@ -24,7 +24,7 @@ public class RabbitConfiguration {
 
     /* Very temporary */
     @Value("${rabbitmq.password}")
-    private String rabbitmqPsw = "admin";
+    private String rabbitmqPassword = "admin";
 
     /**
      * Create a new connection factory.
@@ -35,7 +35,7 @@ public class RabbitConfiguration {
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory cf = new CachingConnectionFactory(rabbitmqHostName, rabbitmqPort);
         cf.setUsername(rabbitmqUser);
-        cf.setPassword(rabbitmqPsw);
+        cf.setPassword(rabbitmqPassword);
 
         return cf;
     }
