@@ -20,11 +20,11 @@ public class RabbitConfiguration {
     @Value("${rabbitmq.port}")
     private int rabbitmqPort;
     @Value("${rabbitmq.user}")
-    private String rabbitmqUser = "admin";
+    private String rabbitmqUser;
 
     /* Very temporary */
     @Value("${rabbitmq.password}")
-    private String rabbitmqPassword = "admin";
+    private String rabbitmqPassword;
 
     /**
      * Create a new connection factory.
