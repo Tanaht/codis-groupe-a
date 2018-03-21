@@ -1,0 +1,15 @@
+<kml xmlns="http://www.opengis.net/kml/2.2"
+         xmlns:gx="http://www.google.com/kml/ext/2.2">
+           <Document>
+             <name>Test camera KML</name>
+             <open>1</open>
+             <Camera>
+               <longitude>-1.6390441</longitude>
+               <latitude>48.1159536</latitude>
+               <altitude>70.1</altitude>
+               <heading>0</heading>
+               <tilt>0</tilt>
+               <altitudeMode>absolute</altitudeMode>
+             </Camera>
+           </Document>
+         </kml>
