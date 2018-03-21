@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,12 +14,17 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RabbitConfiguration {
-    private static final String SERVER_HOSTNAME = "lapommevolante.istic.univ-rennes1.fr";
-    private static final int SERVER_RABBITMQ_PORT = 8081;
-    private static final String SERVER_RABBITMQ_USER = "admin";
+
+    @Value("${rabbitmq.hostname}")
+    private String rabbitmqHostName;
+    @Value("${rabbitmq.port}")
+    private int rabbitmqPort;
+    @Value("${rabbitmq.user}")
+    private String rabbitmqUser = "admin";
 
     /* Very temporary */
-    private static final String SERVER_RABBITMQ_PSSWD = "admin";
+    @Value("${rabbitmq.password}")
+    private String rabbitmqPsw = "admin";
 
     /**
      * Create a new connection factory.
@@ -27,9 +33,9 @@ public class RabbitConfiguration {
      */
     @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory cf = new CachingConnectionFactory(SERVER_HOSTNAME, SERVER_RABBITMQ_PORT);
-        cf.setUsername(SERVER_RABBITMQ_USER);
-        cf.setPassword(SERVER_RABBITMQ_PSSWD);
+        CachingConnectionFactory cf = new CachingConnectionFactory(rabbitmqHostName, rabbitmqPort);
+        cf.setUsername(rabbitmqUser);
+        cf.setPassword(rabbitmqPsw);
 
         return cf;
     }
