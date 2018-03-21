@@ -1,17 +1,17 @@
-package ila.fr.codisintervention;
+package ila.fr.codisintervention.Activities;
 
-import android.content.SyncStatusObserver;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.Toast;
 
-import com.rabbitmq.client.ConnectionFactory;
-import com.rabbitmq.client.Connection;
+
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
+
+import ila.fr.codisintervention.R;
 
 public class MainActivity extends AppCompatActivity {
 
