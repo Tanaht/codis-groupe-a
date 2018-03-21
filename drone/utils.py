@@ -1,6 +1,11 @@
 from dronekit import LocationGlobal
 import math
 
+class Patrol:
+    PATROL_GO_AND_BACK = 0
+    PATROL_CIRCLE = 1
+    PATROL_ZONE = 2
+
 def get_location_metres(original_location, dNorth, dEast):
     """
     Returns a LocationGlobal object containing the latitude/longitude `dNorth` and `dEast` metres from the
@@ -23,7 +28,6 @@ def get_location_metres(original_location, dNorth, dEast):
     newlon = original_location.lon + (dLon * 180 / math.pi)
     return LocationGlobal(newlat, newlon, original_location.alt)
 
-
 def get_distance_metres(aLocation1, aLocation2):
     """
     Returns the ground distance in metres between two LocationGlobal objects.
@@ -35,5 +39,3 @@ def get_distance_metres(aLocation1, aLocation2):
     dlat = aLocation2.lat - aLocation1.lat
     dlong = aLocation2.lon - aLocation1.lon
     return math.sqrt((dlat * dlat) + (dlong * dlong)) * 1.113195e5
-
-

@@ -25,14 +25,36 @@ while True:
         if mission == "mission_order":
             # decode des points
             liste = []
-            elt = trame['data']['trajectory'];
-            for point in elt:
+            patrol_liste = []
+
+            elt1 = trame['data']['trajectory'];
+            for point in elt1:
                 liste.append(LocationGlobal(point['lat'], point['lon'], point['alt']))
 
+            elt2 = trame['data']['patrol_trajectory'];
+            for point in elt2:
+                patrol_liste.append(LocationGlobal(point['lat'], point['lon'], point['alt']))
+
+            patrol = trame['data']['patrol']
+
             codisDrone = droneIstic.NotreDrone("udpin:{}:{}" .format(config.drone_host, config.drone_port), False, 30)
-            codisDrone.changeMission(liste)
+
+            # codisDrone.change_patrol_mission(patrol_liste, patrol)
+            codisDrone.change_mission(liste)
+
+            # arm and take off the drone
             codisDrone.start()
 
+            # the drone goes to the patrol zone via specifics points
+            codisDrone.goto_patrol_zone()
+
+            # the drone starts the patrol sequence
+            # codisDrone.start_patrol()
+
+            # the drone goes back to the launch position and take on
+            codisDrone.stop()
+
+            # we send END MISSION to socket server
             json_data = json.dumps({
                 'type': 'mission_finished',
                 'data': {'mission': 10, 'status': True, 'error': ""}
