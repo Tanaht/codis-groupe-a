@@ -13,12 +13,12 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class RabbitConfiguration {
-    private static String SERVER_HOSTNAME = "lapommevolante.istic.univ-rennes1.fr";
-    private static int SERVER_RABBITMQ_PORT = 8081;
-    private static String SERVER_RABBITMQ_USER = "admin";
+    private static final String SERVER_HOSTNAME = "lapommevolante.istic.univ-rennes1.fr";
+    private static final int SERVER_RABBITMQ_PORT = 8081;
+    private static final String SERVER_RABBITMQ_USER = "admin";
 
     /* Very temporary */
-    private static String SERVER_RABBITMQ_PSSWD = "admin";
+    private static final String SERVER_RABBITMQ_PSSWD = "admin";
 
     /**
      * Create a new connection factory.
