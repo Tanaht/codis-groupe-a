@@ -6,13 +6,20 @@
     android:layout_height="match_parent"
     tools:context="ila.fr.codisintervention.Activities.MainActivity">
 
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lbl_login"
+        tools:layout_editor_absoluteX="123dp"
+        tools:layout_editor_absoluteY="59dp" />
+
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/editText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name"
-        tools:layout_editor_absoluteX="67dp"
-        tools:layout_editor_absoluteY="102dp" />
+        android:inputType="text|textPersonName"
+        tools:layout_editor_absoluteX="62dp"
+        tools:layout_editor_absoluteY="106dp" />
 </android.support.constraint.ConstraintLayout>

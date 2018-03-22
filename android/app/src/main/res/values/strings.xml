@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">CodisIntervention</string>
-    <string name="login">Login</string>
+    <string name="lbl_login">Login</string>
 </resources>
