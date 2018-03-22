@@ -11,8 +11,6 @@ public class User {
     private Long id;
     private String username;
     private String password;
-
-    @OneToMany
     private List<Role> roles;
 
     /**
@@ -76,6 +74,7 @@ public class User {
      *
      * @return the roles
      */
+    @OneToMany
     public List<Role> getRoles() {
         return roles;
     }
