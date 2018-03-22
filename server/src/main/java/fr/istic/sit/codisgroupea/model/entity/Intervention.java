@@ -1,8 +1,6 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -60,6 +58,7 @@ public class Intervention {
      * @return the position
      */
     @NotNull
+    @OneToOne
     public Position getPosition() {
         return position;
     }
@@ -98,6 +97,7 @@ public class Intervention {
      * @return the sinister code
      */
     @NotNull
+    @ManyToOne
     public SinisterCode getSinisterCode() {
         return sinisterCode;
     }

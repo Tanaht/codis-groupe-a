@@ -1,10 +1,12 @@
 package fr.istic.sit.codisgroupea.model.repository;
 
 import fr.istic.sit.codisgroupea.model.entity.Intervention;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * SpringData repository for intervention entity.
  */
-public interface InterventionRepository extends CrudRepository<Intervention, Long> {
+@Repository
+public interface InterventionRepository extends JpaRepository<Intervention, Long> {
 }
