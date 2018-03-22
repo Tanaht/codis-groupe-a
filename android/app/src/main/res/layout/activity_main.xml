@@ -7,24 +7,53 @@
     tools:context="ila.fr.codisintervention.Activities.MainActivity">
 
     <TextView
+        android:id="@+id/Color"
+        android:layout_width="450dp"
+        android:layout_height="550dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@android:color/holo_red_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/textView_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/lbl_login"
+        android:textColor="@android:color/background_light"
+        android:textSize="25dp"
+        android:shadowColor="@android:color/black"
+        android:shadowDx="2"
+        android:shadowDy="2"
         app:layout_constraintBottom_toTopOf="@+id/editText_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:textColor="@android:color/black"
+        android:textSize="25dp"
+        android:background="@android:color/white"
         android:id="@+id/editText_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
+        android:shadowColor="@android:color/black"
+        android:shadowDx="2"
+        android:shadowDy="2"
         android:inputType="text|textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/textView_mdp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,13 +62,19 @@
         app:layout_constraintTop_toBottomOf="@+id/textView_login" />
 
     <TextView
+        android:textColor="@android:color/background_light"
+        android:textSize="25dp"
         android:id="@+id/textView_mdp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/lbl_mdp"
+        android:shadowColor="@android:color/black"
+        android:shadowDx="2"
+        android:shadowDy="2"
         app:layout_constraintBottom_toTopOf="@+id/editText_mdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -47,13 +82,21 @@
         app:layout_constraintTop_toBottomOf="@+id/editText_login" />
 
     <EditText
+        android:textColor="@android:color/black"
+        android:textSize="25dp"
+        android:background="@android:color/white"
         android:id="@+id/editText_mdp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:shadowColor="@android:color/black"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/button_valider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -61,16 +104,22 @@
         app:layout_constraintTop_toBottomOf="@+id/textView_mdp" />
 
     <Button
+        android:textSize="25dp"
+        android:textColor="@android:color/background_light"
+        android:background="@android:color/black"
         android:id="@+id/button_valider"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/btn_valider"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editText_mdp" />
+
 
 </android.support.constraint.ConstraintLayout>
