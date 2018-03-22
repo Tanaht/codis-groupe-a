@@ -5,6 +5,8 @@ from utils import Patrol, get_distance_metres
 
 
 class NotreDrone:
+
+    # Construtor with specific IP, targeted altitude
     def __init__(self, sIP, simulation, altitude):
         # START du drone
         self.connection_string = sIP
@@ -21,8 +23,8 @@ class NotreDrone:
         self.vehicle = connect(self.connection_string, wait_ready=True)
         self.patrol = 0
 
+    # Arms vehicle and fly to aTargetAltitude.
     def arm_and_takeoff(self, aTargetAltitude):
-        # Arms vehicle and fly to aTargetAltitude.
 
         print("Basic pre-arm checks")
         # Don't let the user try to arm until autopilot is ready
@@ -42,27 +44,32 @@ class NotreDrone:
         print("Taking off!")
         self.vehicle.simple_takeoff(aTargetAltitude)  # Take off to target altitude
 
+    # Wait until the vehicle reaches a safe height before processing the goto (otherwise the command
+    #  after Vehicle.simple_takeoff will execute immediately).
     def isTakeoff(self, aTargetAltitude):
-        # Wait until the vehicle reaches a safe height before processing the goto (otherwise the command
-        #  after Vehicle.simple_takeoff will execute immediately).
         return self.vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95  # Trigger just below target alt.
 
+    # Put mission's point for a mission
     def change_mission(self, maListe):
         # Put mission's point to reach to the dronekit vehicle for automatic mode
+        self.mission_location = maListe
 
-        print(" Clear any existing commands")
+    # Update the drone with all new positions to follow
+    def charge_commands(self,liste):
+
+        # Clear Vehicle.commands and flush.
         self.vehicle.commands.clear()
+        self.vehicle.flush()
+
+        # Reset the Vehicle.commands from the vehicle.
+        self.vehicle.commands.download()
+        self.vehicle.commands.wait_ready()
+        print(" APRES CLEAR et DOWNLOAD : nb commandes ", self.vehicle.commands.count)
 
         print(" Define/add new commands.")
         # Add new commands. The meaning/order of the parameters is documented in the Command class.
-
-        # Add MAV_CMD_NAV_TAKEOFF command. This is ignored if the vehicle is already in the air.
-        self.vehicle.commands.add(
-           Command(0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, mavutil.mavlink.MAV_CMD_NAV_TAKEOFF, 0, 0,
-                   0, 0,
-                   0, 0, 0, 0, 30))
-
-        for point in maListe:
+        for point in liste:
+            print(" Point :{}:{}:{}" .format(point.lat, point.lon, point.alt))
             self.vehicle.commands.add(
                 Command(0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
                         mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0,
@@ -73,12 +80,14 @@ class NotreDrone:
                 Command(0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
                     mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0,
                     0, 0, 0, point.lat, point.lon, point.alt))
+
         print(" Upload new mission to vehicle")
         self.vehicle.commands.upload()
+        self.vehicle.commands.wait_ready()
+        # self.vehicle.flush()
 
+    # Put mission's point for a patrol mission
     def change_patrol_mission(self, maListe, patrol):
-        # Put mission's point to reach to the dronekit vehicle for automatic mode
-
         # We need to change the mission
         self.new_patrol_mission = True
         # list of the patrol mission
@@ -86,6 +95,7 @@ class NotreDrone:
         # Type of patrol we must execute
         self.patrol = patrol
 
+    # Create a file for a live view in Google Earth
     def updateKmlFile(self):
         #   Create KML file in order to update the google earth view
 
@@ -118,6 +128,7 @@ class NotreDrone:
         with open("camera_tmp.kml", "w") as kml_file:
             kml_file.write(kml_template.format(**coord))
 
+    # Arm the drone and take-off
     def start(self):
         # This method take-off the drone, reach each point of the mission, Return To Launch and take-On
 
@@ -129,6 +140,7 @@ class NotreDrone:
             time.sleep(1)
             self.updateKmlFile()
 
+    # the drone will reach the launch position and land
     def stop(self):
         print('Return to launch')
         self.vehicle.mode = VehicleMode("RTL")
@@ -146,49 +158,67 @@ class NotreDrone:
         if self.sitl is not None:
             self.sitl.stop()
 
+    # The drone will start the patrol according the patrol_mission_location and patrol type
+    # normal patrol, reach point 1,2,3,1,2,3,1....
+    # go and back patrol : 1,2,3,2,1,2,3,...
     def start_patrol(self):
-        # normal patrol, reach point 1,2,3,1,2,3,1....
 
-        # Copter should arm in GUIDED mode
-        self.vehicle.mode = VehicleMode("GUIDED")
-
+        print(" *** PATROL MODE *** ")
         liste = self.patrol_mission_location
+        liste_back = []
 
-        while True:# self.vehicle.battery.level > 20:
-            for point in liste:
-                self.simple_goto(point)
+        while self.vehicle.battery.level > 40:
+            self.execute(liste)
 
             if self.patrol == Patrol.PATROL_GO_AND_BACK:
-                nb = len(liste)
-                i = nb - 1
-                while ( i >= 0):
-                    self.simple_goto(liste[i])
-                    i = i-1
+                if len(liste_back) == 0:
+                    nb = len(liste)
+                    i = nb - 2
+                    while (i >= 0):
+                        liste_back.append(liste[i])
+                        i = i - 1
+                self.execute(liste_back)
 
     def is_position_Reached(self,targetLocation):
-        remainingDistance=get_distance_metres(self.vehicle.location.global_frame, targetLocation)
+        remainingDistance=get_distance_metres(self.vehicle.location.global_relative_frame, targetLocation)
         print "Distance to target: ", remainingDistance
-        return (remainingDistance < 1) #Just below target, in case of undershoot.
+        return (remainingDistance <= 5) #Just below target, in case of undershoot.
 
     def simple_goto(self,targetLocation):
         self.vehicle.simple_goto(targetLocation)
         while not self.is_position_Reached(targetLocation):
-            time.sleep(1)
+            time.sleep(0.5)
 
+    def auto_goto(self,targetLocation):
+        self.vehicle.commands.clear()
+        self.vehicle.commands.add(Command(0, 0, 0, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT,
+                        mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, 0, 0,
+                        0, 0, 0, targetLocation.lat, targetLocation.lon, targetLocation.alt))
+        while not self.is_position_Reached(targetLocation):
+            time.sleep(0.5)
+
+    # The drone will follow some positions in order to reach the patrol first position
     def goto_patrol_zone(self):
         # Arms vehicle and fly to aTargetAltitude.
+
+        print(" *** GO TO PATROL ZONE *** ")
+        liste = self.mission_location
+        self.execute(liste)
+
+    # Normal cycle for a drone to reach different points
+    def execute(self, liste):
+
+        self.charge_commands(liste)
 
         # Set mode to AUTO to start mission
         self.vehicle.mode = VehicleMode("AUTO")
 
-        print("Go to patrol zone")
         # Reset mission set to first (0) waypoint
         self.vehicle.commands.next = 0
 
-
-        while True:#self.vehicle.battery.level > 20:
+        while self.vehicle.battery.level > 40:
             nextwaypoint = self.vehicle.commands.next
-            self.updateKmlFile()
+            # self.updateKmlFile()
 
             if nextwaypoint == self.vehicle.commands.count:
                 print("Final point reached : ", self.vehicle.commands.count)
