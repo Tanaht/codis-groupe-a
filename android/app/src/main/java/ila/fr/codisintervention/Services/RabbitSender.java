@@ -5,52 +5,39 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
-/**
- * Created by christophe on 22/03/18.
- */
+import ila.fr.codisintervention.RabbitMQConstante;
 
 public class RabbitSender {
 
-    private String host;
-    private int port;
-    private String userName;
-    private String password;
-    ConnectionFactory factory;
-    private String queue;
+    private Connection connRabbitMQ;
 
-    public RabbitSender(String host, int port, String queue, String userName, String password){
-        this.host = host;
-        this.port = port;
-        this.userName = userName;
-        this.password = password;
-        this.queue = queue;
-        this.factory = new ConnectionFactory();
+    public RabbitSender(){
+        Connection rabbitMQConnection = null;
+        try {
+            rabbitMQConnection = RabbitMQConstante.getConnectionRabbitMQ();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
 
-        factory.setHost(host);
-        factory.setPort(port);
-        factory.setUsername(userName);
-        factory.setPassword(password);
+
+        this.connRabbitMQ = rabbitMQConnection;
     }
 
-    public void sendMessage(String message){
-        Connection connection = null;
+    public void sendMessage(String nameQueue, String message){
         try {
-            connection = factory.newConnection();
-            Channel channel = connection.createChannel();
-
-            channel.queueDeclare(queue, false, false, false, null);
-            channel.basicPublish("", queue, null, message.getBytes("UTF-8"));
+            Channel channel = connRabbitMQ.createChannel();
+            channel.queueDeclare(nameQueue, false, false, false, null);
+            channel.basicPublish("", nameQueue, null, message.getBytes("UTF-8"));
             System.out.println("message envoyé !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             channel.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                connection.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (TimeoutException e) {
+            e.printStackTrace();
         }
     }
 
