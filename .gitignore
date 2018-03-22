@@ -1,3 +1,11 @@
 
 android/\.idea/
 node_modules/
+
+\.idea/
+
+drone/config/
+
+drone/droneIstic\.pyc
+
+drone/utils\.pyc
