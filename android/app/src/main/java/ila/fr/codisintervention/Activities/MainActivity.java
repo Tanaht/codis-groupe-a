@@ -12,6 +12,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.RabbitMQConstante;
 import ila.fr.codisintervention.Services.RabbitSender;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
         StrictMode.setThreadPolicy(policy);
 
-        RabbitSender sender = new RabbitSender("lapommevolante.istic.univ-rennes1.fr", 8081,
-                "fanout.test","admin", "admin");
+        RabbitSender sender = new RabbitSender(RabbitMQConstante.HOST_RABBITMQ, RabbitMQConstante.PORT_RABBITMQ,
+                RabbitMQConstante.NAME_QUEUE_TEST, RabbitMQConstante.USER_NAME, RabbitMQConstante.PASSWORD);
         sender.sendMessage("pouet");
 
         setContentView(R.layout.activity_main);
