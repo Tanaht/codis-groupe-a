@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
+import json
+
 import pika
 
 # Etablir une connexion avec le serveur RabbitMQ :
@@ -14,6 +16,14 @@ parameters = pika.ConnectionParameters('lapommevolante.istic.univ-rennes1.fr',
 connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
 
+data = {
+        "id": 1,
+        "name": "Json Name",
+        "description": "Test envoi JSON message"
+    }
+message = json.dumps(data)
+
+
 # Creons une queue "hello" à laquelle le message sera livré:
 channel.queue_declare(queue='hello')
 
@@ -21,8 +31,8 @@ channel.queue_declare(queue='hello')
 # Specifier le nom de la queue de destination dans "exchange" dans le parametre "routing_key"
 channel.basic_publish(exchange='',
                       routing_key='hello',
-                      body='Hello World!')
-print(" [x] Sent 'Hello World!'")
+                      body=message)
+print(" [x] Sent data to RabbitMQ")
 
 # Message envoye et connexion fermee
 connection.close()
