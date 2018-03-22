@@ -45,8 +45,7 @@ public class RabbitSender {
             channel.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 connection.close();
             } catch (IOException e) {
