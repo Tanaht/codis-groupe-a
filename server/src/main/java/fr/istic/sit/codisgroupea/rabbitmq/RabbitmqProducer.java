@@ -15,10 +15,10 @@ public class RabbitmqProducer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+/*
         for (int i = 0; i <100 ; i++) {
             rabbitTemplate.convertAndSend(RabbitmqConstante.topicExchangeName,RabbitmqConstante.queueTestFanout, "msg test");
             Thread.sleep(3000);
-        }
+        }*/
     }
 }

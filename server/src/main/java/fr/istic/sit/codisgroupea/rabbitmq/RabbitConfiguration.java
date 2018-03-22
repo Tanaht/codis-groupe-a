@@ -43,9 +43,6 @@ public class RabbitConfiguration {
         return cf;
     }
 
-
-
-
     @Bean
     public List<Declarable> fanoutBindings() {
         Queue fanoutQueue1 = new Queue(RabbitmqConstante.queueTestFanout, false);
