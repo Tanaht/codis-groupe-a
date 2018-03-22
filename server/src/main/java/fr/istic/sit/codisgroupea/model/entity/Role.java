@@ -4,28 +4,52 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
+/**
+ * The type Role.
+ */
 @Entity
 public class Role {
+    private Long id;
+    private String label;
+
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String role;
-
     public Long getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    /**
+     * Gets label.
+     *
+     * @return the label
+     */
+    @NotNull
+    public String getLabel() {
+        return label;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    /**
+     * Sets label.
+     *
+     * @param label the label
+     */
+    public void setLabel(String label) {
+        this.label = label;
     }
 }
