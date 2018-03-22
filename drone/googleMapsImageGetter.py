@@ -5,6 +5,28 @@ import os
 
 class googleMapsImageGetter:
 
+    # Exemple of use :
+    #
+    # =================================================
+    #
+    # import googleMapsImageGetter
+    #
+    ## Here : altitude = 48.1148383, longitude = -1.6388297, altitude = 20
+    # gmd = googleMapsImageGetter.googleMapsImageGetter('imageName', 48.1148383, -1.6388297, 20)
+    #
+    # try:
+    #     # Generate the image
+    #     img = gmd.generateImage()
+    # except IOError:
+    #     print("Error when generating image")
+    # else:
+    #     # Save the image
+    #     img.save('imageName.png')
+    #     print('imageName.png generated')
+    #
+    # ==================================================
+    #
+
     def __init__(self, name, lat, lon, alt):
         self.name = name
         self.lat = lat
@@ -12,16 +34,6 @@ class googleMapsImageGetter:
         self.alt = alt
         self.mapType = 's'
         self.size = 256*5
-
-    def getImage(self):
-        try:
-            # Get the high resolution image
-            img = self.generateImage()
-        except IOError:
-            print("Error when generating image")
-        else:
-            # Save the image to disk
-            img.save(self.name+'.png')
 
     def getXY(self):
         # Generates an X,Y tile coordinate based on the latitude, longitude and altitude
