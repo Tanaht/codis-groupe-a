@@ -12,10 +12,9 @@ import com.rabbitmq.client.ConnectionFactory;
 import java.io.IOException;
 
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.Services.RabbitSender;
 
 public class MainActivity extends AppCompatActivity {
-
-    private final static String QUEUE_NAME = "hello";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,35 +24,11 @@ public class MainActivity extends AppCompatActivity {
 
         StrictMode.setThreadPolicy(policy);
 
-        ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("lapommevolante.istic.univ-rennes1.fr");
-        factory.setPort(8081);
-        factory.setUsername("admin");
-        factory.setPassword("admin");
-        Connection connection = null;
-        try {
-
-            connection = factory.newConnection();
-            Channel channel = connection.createChannel();
-
-            channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            String message = "Hello World!";
-            channel.basicPublish("", QUEUE_NAME, null, message.getBytes("UTF-8"));
-            System.out.println("azerty");
-            channel.close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                    connection.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        RabbitSender sender = new RabbitSender("lapommevolante.istic.univ-rennes1.fr", 8081,
+                "fanout.test","admin", "admin");
+        sender.sendMessage("pouet");
 
         setContentView(R.layout.activity_main);
     }
+
 }
