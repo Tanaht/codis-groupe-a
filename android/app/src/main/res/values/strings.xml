@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">CodisIntervention</string>
-    <string name="NewInterventionPageTitle">Add new intervention</string>
-    <string name="InterventionTitleLabel">Nom de l\'intervention :</string>
+    <string name="Validate">Valider</string>
+    <string name="InterventionTitleLabel">Nouvelle intervention</string>
+    <string name="NewInterventionPageTitle">Ajouter une nouvelle intervention</string>
     <string name="InterventionAddressLabel">Adresse de l\'intervention :</string>
+    <string name="InterventionAddressNumero">Numero de la voie :</string>
+    <string name="InterventionAddressCP">Code postale :</string>
+    <string name="InterventionAddressCity">Ville :</string>
     <string name="InterventionCodeLabel">Code sinistre :</string>
     <string-array name="InterventionCodes">
         <item>Secours à personne (SAP)</item>
