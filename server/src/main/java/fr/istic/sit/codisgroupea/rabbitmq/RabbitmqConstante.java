@@ -1,6 +1,14 @@
 package fr.istic.sit.codisgroupea.rabbitmq;
 
 public class RabbitmqConstante {
-    public static final String queueTestFanout = "fanout.test";
+
+    /**
+     * topic name for fanout exchange
+     */
     public static final String topicExchangeName = "fanout.exchange";
+    /**
+     * test name queue
+     */
+    public static final String queueTestFanout = "fanout.test";
+
 }

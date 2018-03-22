@@ -43,6 +43,10 @@ public class RabbitConfiguration {
         return cf;
     }
 
+    /**
+     * Creation of fanout channel
+     * @return
+     */
     @Bean
     public List<Declarable> fanoutBindings() {
         Queue fanoutQueue1 = new Queue(RabbitmqConstante.queueTestFanout, false);
