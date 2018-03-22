@@ -25,12 +25,12 @@ message = json.dumps(data)
 
 
 # Creons une queue "hello" à laquelle le message sera livré:
-channel.queue_declare(queue='hello')
+channel.queue_declare(queue='fanout.test')
 
 # Dans RabbitMQ, un message ne peut jamais être envoyé directement à la queue, il doit toujours passer par "exchange"
 # Specifier le nom de la queue de destination dans "exchange" dans le parametre "routing_key"
 channel.basic_publish(exchange='',
-                      routing_key='hello',
+                      routing_key='fanout.test',
                       body=message)
 print(" [x] Sent data to RabbitMQ")
 
