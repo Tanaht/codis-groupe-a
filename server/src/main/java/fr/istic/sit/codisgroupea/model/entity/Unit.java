@@ -75,6 +75,7 @@ public class Unit {
      * @return the intervention
      */
     @ManyToOne
+    @NotNull
     public Intervention getIntervention() {
         return intervention;
     }
@@ -94,6 +95,7 @@ public class Unit {
      * @return the vehicle
      */
     @OneToOne
+    @NotNull
     public Vehicle getVehicle() {
         return vehicle;
     }

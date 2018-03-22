@@ -98,6 +98,7 @@ public class Path {
      * @return the type
      */
     @Enumerated
+    @NotNull
     public PathType getType() {
         return type;
     }

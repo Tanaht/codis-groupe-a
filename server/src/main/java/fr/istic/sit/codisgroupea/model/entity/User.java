@@ -1,6 +1,7 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -38,6 +39,7 @@ public class User {
      *
      * @return the username
      */
+    @NotNull
     public String getUsername() {
         return username;
     }
@@ -56,6 +58,7 @@ public class User {
      *
      * @return the password
      */
+    @NotNull
     public String getPassword() {
         return password;
     }
