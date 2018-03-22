@@ -13,25 +13,11 @@ public class Position {
     private int id;
     private double latitude;
     private double longitude;
-    private double altitude;
 
     /**
      * Default constructor.
      */
     public Position() {
-        this.altitude = 30.0;
-    }
-
-    /**
-     * Constructor omitting altitude (defaults it to 30m).
-     *
-     * @param latitude the latitude
-     * @param longitude the longitude
-     */
-    public Position(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.altitude = 30.0;
     }
 
     /**
@@ -39,12 +25,10 @@ public class Position {
      *
      * @param latitude the latitude
      * @param longitude the longitude
-     * @param altitude the altitude
      */
-    public Position(double latitude, double longitude, double altitude) {
+    public Position(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.altitude = altitude;
     }
 
     /**
@@ -103,24 +87,5 @@ public class Position {
      */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
-    }
-
-    /**
-     * Getter of the altitude.
-     *
-     * @return the altitude
-     */
-    @NotNull
-    public double getAltitude() {
-        return altitude;
-    }
-
-    /**
-     * Setter of the altitude.
-     *
-     * @param altitude the altitude
-     */
-    public void setAltitude(double altitude) {
-        this.altitude = altitude;
     }
 }
