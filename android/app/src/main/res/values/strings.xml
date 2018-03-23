@@ -19,4 +19,10 @@
         <item>VLCG</item>
     </string-array>
 
+    <string name="lbl_login">Identifiant</string>
+    <string name="lbl_mdp">Mot de Passe</string>
+    <string name="btn_valider">Se connecter</string>
+    <string name="lbl_liste_des_interventions">Liste des interventions</string>
+    <string name="lbl_liste_des_moyen">Liste des moyens demandés</string>
+    <string name="lbl_creer_intervention">Créer intervention</string>
 </resources>

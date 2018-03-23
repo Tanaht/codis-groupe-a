@@ -1,0 +1,8 @@
+<root>
+    <item
+        name='com.rabbitmq.client.ConnectionFactory com.rabbitmq.client.Connection newConnection()'>
+        <annotation name='org.jetbrains.annotations.Contract'>
+            <val name="pure" val="true" />
+        </annotation>
+    </item>
+</root>
