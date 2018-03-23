@@ -23,5 +23,9 @@ public enum Shape {
     /**
      * Star shape.
      */
-    STAR
+    STAR,
+    /**
+     * Action-zone shape.
+     */
+    ACTIONZONE
 }
