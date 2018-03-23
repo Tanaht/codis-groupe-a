@@ -6,34 +6,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import ila.fr.codisintervention.Entities.Country;
+import ila.fr.codisintervention.Entities.Moyen;
 import ila.fr.codisintervention.R;
 
 /**
  * Created by aminesoumiaa on 22/03/18.
  */
 
-public class MoyenListAdapter extends ArrayAdapter<Country> {
+public class MoyenListAdapter extends ArrayAdapter<Moyen> {
     private final Context context;
-    private ArrayList<Country> countryList;
+    private ArrayList<Moyen> moyenList;
 
     public MoyenListAdapter(Context context, int textViewResourceId,
-                           ArrayList<Country> countryList) {
-        super(context, textViewResourceId, countryList);
+                           ArrayList<Moyen> moyenList) {
+        super(context, textViewResourceId, moyenList);
         this.context = context;
-        this.countryList = new ArrayList<Country>();
-        this.countryList.addAll(countryList);
+        this.moyenList = new ArrayList<Moyen>();
+        this.moyenList.addAll(moyenList);
     }
 
-    public ArrayList<Country> getCountryList() {
-        return countryList;
+    public ArrayList<Moyen> getMoyenList() {
+        return moyenList;
     }
 
     private class ViewHolder {
@@ -60,12 +59,12 @@ public class MoyenListAdapter extends ArrayAdapter<Country> {
             holder.name.setOnClickListener( new View.OnClickListener() {
                 public void onClick(View v) {
                     CheckBox cb = (CheckBox) v ;
-                    Country country = (Country) cb.getTag();
+                    Moyen moyen = (Moyen) cb.getTag();
                     Toast.makeText(context.getApplicationContext(),
                             "Clicked on Checkbox: " + cb.getText() +
                                     " is " + cb.isChecked(),
                             Toast.LENGTH_LONG).show();
-                    country.setSelected(cb.isChecked());
+                    moyen.setSelected(cb.isChecked());
                 }
             });
         }
@@ -73,11 +72,11 @@ public class MoyenListAdapter extends ArrayAdapter<Country> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Country country = countryList.get(position);
-        holder.code.setText(" (" +  country.getCode() + ")");
-        holder.name.setText(country.getName());
-        holder.name.setChecked(country.isSelected());
-        holder.name.setTag(country);
+        Moyen moyen = moyenList.get(position);
+        holder.code.setText(" (" +  moyen.getCode() + ")");
+        holder.name.setText(moyen.getName());
+        holder.name.setChecked(moyen.isSelected());
+        holder.name.setTag(moyen);
 
         return convertView;
     }

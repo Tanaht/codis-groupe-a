@@ -4,12 +4,12 @@ package ila.fr.codisintervention.Entities;
  * Created by aminesoumiaa on 22/03/18.
  */
 
-public class Country {
+public class Moyen {
     String code = null;
     String name = null;
     boolean selected = false;
 
-    public Country(String code, String name, boolean selected) {
+    public Moyen(String code, String name, boolean selected) {
         super();
         this.code = code;
         this.name = name;
