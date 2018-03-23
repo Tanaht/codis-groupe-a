@@ -1,17 +1,14 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
-import fr.istic.sit.codisgroupea.sig.SigEntry;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
- * Graphical symbol on the SITAC.
+ * Graphical symbol regardless of its position.
  */
 @Entity
-public class Symbol implements SigEntry {
+public class Symbol {
     private int id;
-    private Position location;
     private Color color;
     private Shape shape;
     private String payload;
@@ -25,13 +22,11 @@ public class Symbol implements SigEntry {
     /**
      * Instantiates a new Symbol.
      *
-     * @param location the location
      * @param color    the color
      * @param shape    the shape
      * @param payload  the payload
      */
-    public Symbol(Position location, Color color, Shape shape, String payload) {
-        this.location = location;
+    public Symbol(Color color, Shape shape, String payload) {
         this.color = color;
         this.shape = shape;
         this.payload = payload;
@@ -55,26 +50,6 @@ public class Symbol implements SigEntry {
      */
     public void setId(int id) {
         this.id = id;
-    }
-
-    /**
-     * Gets location.
-     *
-     * @return the location
-     */
-    @OneToOne
-    @NotNull
-    public Position getLocation() {
-        return location;
-    }
-
-    /**
-     * Sets location.
-     *
-     * @param location the location
-     */
-    public void setLocation(Position location) {
-        this.location = location;
     }
 
     /**
