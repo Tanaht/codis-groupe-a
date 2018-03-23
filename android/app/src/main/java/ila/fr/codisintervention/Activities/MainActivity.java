@@ -109,12 +109,30 @@ public class MainActivity extends AppCompatActivity {
      */
     private void connexion() {
 
+//        List<StompHeader> stompHeader = Arrays.asList(
+//                new StompHeader("userlogin","codis_user"),
+//                new StompHeader("userpassword","codis_user"));
+//        client.connect(stompHeader);
+//
+////        client.topic("/users/codis_user").subscribe(message -> {
+////            Log.i(TAG, "Received message: " + message.getPayload());
+////        });
+////        client.topic("/interventions/retrieve").subscribe(message -> {
+////            Log.i(TAG, "Received message: " + message.getPayload());
+////        });
+//
+//        client.send("/broadcastTest", "pouet").subscribe(
+//                () -> Log.d(TAG, "Sent data!"),
+//                error -> Log.e(TAG, "Encountered error while sending data!", error)
+//        );
+
+
         if (login.equals("codis")){
             Intent intent = new Intent( MainActivity.this, MainMenuCodis.class);
             startActivity(intent);
         }
         else if (login.equals("pompier")){
-            Intent intent = new Intent( MainActivity.this, MainMenuIntervenant.class);
+            Intent intent = new Intent( MainActivity.this, TestFragmentActivity.class);
             startActivity(intent);
         }
         else {
