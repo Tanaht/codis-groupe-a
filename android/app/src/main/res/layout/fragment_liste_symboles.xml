@@ -1,0 +1,73 @@
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:rowCount="8"
+    android:columnCount="2"
+    tools:context="ila.fr.codisintervention.Fragments.ListeSymbolesFragment">
+
+    <ImageView
+        android:id="@+id/danger_bleu_bas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="0"
+        android:src="@drawable/dangerBleuBas" />
+
+    <ImageView
+        android:id="@+id/danger_orange_bas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_row="0"
+        android:src="@drawable/dangerOrangeBas" />
+
+    <ImageView
+        android:id="@+id/danger_rouge_bas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="1"
+        android:src="@drawable/dangerRougeBas" />
+
+    <ImageView
+        android:id="@+id/danger_vert_bas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_row="1"
+        android:src="@drawable/dangerVertBas" />
+
+    <ImageView
+        android:id="@+id/danger_bleu_haut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="2"
+        android:src="@drawable/dangerBleuHaut" />
+
+    <ImageView
+        android:id="@+id/danger_orange_haut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_row="2"
+        android:src="@drawable/dangerOrangeHaut" />
+
+    <ImageView
+        android:id="@+id/danger_rouge_haut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="1"
+        android:src="@drawable/dangerRougeHaut" />
+
+    <ImageView
+        android:id="@+id/danger_vert_haut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_column="1"
+        android:layout_row="1"
+        android:src="@drawable/dangerVertHaut" />
+
+</GridLayout>

@@ -25,4 +25,7 @@
     <string name="lbl_liste_des_interventions">Liste des interventions</string>
     <string name="lbl_liste_des_moyen">Liste des moyens demandés</string>
     <string name="lbl_creer_intervention">Créer intervention</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
