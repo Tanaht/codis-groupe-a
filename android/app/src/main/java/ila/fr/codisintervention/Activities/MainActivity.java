@@ -121,12 +121,12 @@ public class MainActivity extends AppCompatActivity {
     private void connexion() {
 
         if (login.equals("codis")){
-            Intent intent = new Intent( MainActivity.this, NewMissionActivity.class);
+            Intent intent = new Intent( MainActivity.this, MainMenuCodis.class);
             startActivity(intent);
         }
         else if (login.equals("pompier")){
-            Intent intent = new Intent( MainActivity.this, NewMissionActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent( MainActivity.this, NewMissionActivity.class);
+//            startActivity(intent);
         }
         else {
             Toast.makeText(this, "Pas de Connexion", Toast.LENGTH_SHORT).show();
