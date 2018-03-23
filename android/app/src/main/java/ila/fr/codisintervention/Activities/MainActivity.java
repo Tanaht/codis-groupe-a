@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (login.equals("pompier")){
-//            Intent intent = new Intent( MainActivity.this, NewMissionActivity.class);
-//            startActivity(intent);
+            Intent intent = new Intent( MainActivity.this, MainMenuIntervenant.class);
+            startActivity(intent);
         }
         else {
             Toast.makeText(this, "Pas de Connexion", Toast.LENGTH_SHORT).show();
