@@ -1,7 +1,7 @@
 package fr.istic.sit.codisgroupea.sig;
 
 import fr.istic.sit.codisgroupea.model.entity.Position;
-import fr.istic.sit.codisgroupea.model.entity.Symbol;
+import fr.istic.sit.codisgroupea.model.entity.SymbolSitac;
 
 import java.util.List;
 
@@ -9,14 +9,14 @@ import java.util.List;
  * Interface for SIG repositories.
  * This interface enables us to manipulate the SIG without assumption about its structure.
  */
-public interface SigRepository {
+public interface SigRepository<T extends SigEntry> {
     /**
      * Create symbol from sig entry symbol.
      *
      * @param entry the entry
      * @return the symbol
      */
-    Symbol createSymbolFromSigEntry(SigEntry entry);
+    SymbolSitac createSymbolFromSigEntry(T entry);
 
     /**
      * Gets entries within rect.
@@ -25,5 +25,5 @@ public interface SigRepository {
      * @param lowerRight the lower right corner of the rect
      * @return the entries within rect
      */
-    List<SigEntry> getEntriesWithinRect(Position upperLeft, Position lowerRight);
+    List<T> getEntriesWithinRect(Position upperLeft, Position lowerRight);
 }
