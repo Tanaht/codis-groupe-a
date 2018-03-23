@@ -1,7 +1,10 @@
 package fr.istic.sit.codisgroupea.controller;
 
+import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.model.entity.User;
 import fr.istic.sit.codisgroupea.service.AuthenticationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -14,6 +17,8 @@ import java.util.Optional;
 
 @Controller
 public class AuthenticationController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     private AuthenticationService authenticationService;
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -33,13 +38,16 @@ public class AuthenticationController {
     @MessageMapping("/users/{username}/subscribed")
     public void getInfoUser(@DestinationVariable("username") final String username, String dataSendByClient) {
         System.out.println("msg receive from : "+username+", msg : " + dataSendByClient);
-
         Optional<User> user = authenticationService.getUser(username);
 
-        System.out.println("send to /interventions/retrieve");
+        if (!user.isPresent()){
+            logger.error(username + " doesn't exist in the bdd");
+        }
+
+
         simpMessagingTemplate.convertAndSend("/topic/interventions/retrieve","retrieve");
-        System.out.println("send to /users/"+username+"");
-        simpMessagingTemplate.convertAndSend("/topic/users/"+username+"","msg");
+        Gson gson = new Gson();
+        simpMessagingTemplate.convertAndSend("/topic/users/"+username+"",gson.toJson(user.get(),User.class));
 
     }
 }
