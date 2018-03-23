@@ -12,7 +12,7 @@ public class User {
     private Long id;
     private String username;
     private String password;
-    private List<Role> roles;
+    private Role role;
 
     /**
      * Gets id.
@@ -77,17 +77,17 @@ public class User {
      *
      * @return the roles
      */
-    @OneToMany
-    public List<Role> getRoles() {
-        return roles;
+    @OneToOne
+    public Role getRoles() {
+        return role;
     }
 
     /**
      * Sets roles.
      *
-     * @param roles the roles
+     * @param role the role
      */
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRoles(Role role) {
+        this.role = role;
     }
 }
