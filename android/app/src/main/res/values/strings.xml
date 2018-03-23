@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">CodisIntervention</string>
+    <string name="Validate">Valider</string>
+    <string name="InterventionTitleLabel">Nouvelle intervention</string>
+    <string name="NewInterventionPageTitle">Ajouter une nouvelle intervention</string>
+    <string name="InterventionAddressLabel">Adresse de l\'intervention :</string>
+    <string name="InterventionAddressNumero">Numero de la voie :</string>
+    <string name="InterventionAddressCP">Code postale :</string>
+    <string name="InterventionAddressCity">Ville :</string>
+    <string name="InterventionCodeLabel">Code sinistre :</string>
+    <string-array name="InterventionCodes">
+        <item>Secours à personne (SAP)</item>
+        <item>Incendie (INC)</item>
+    </string-array>
+    <string name="InterventionMoyensLabel">Liste des moyens :</string>
+    <string-array name="InterventionMoyens">
+        <item>VSAV</item>
+        <item>FPT</item>
+        <item>VLCG</item>
+    </string-array>
+
 </resources>

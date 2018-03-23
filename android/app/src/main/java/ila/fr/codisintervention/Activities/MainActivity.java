@@ -1,7 +1,9 @@
-package ila.fr.codisintervention;
+package ila.fr.codisintervention.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import ila.fr.codisintervention.R;
 
 public class MainActivity extends AppCompatActivity {
 
