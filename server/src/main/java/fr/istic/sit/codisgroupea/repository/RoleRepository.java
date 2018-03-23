@@ -1,4 +1,4 @@
-package fr.istic.sit.codisgroupea.model.repository;
+package fr.istic.sit.codisgroupea.repository;
 
 import fr.istic.sit.codisgroupea.model.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
