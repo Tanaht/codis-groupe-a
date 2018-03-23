@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ila.fr.codisintervention.Activities.NewInterventionActivity">
+
+    <fragment
+        android:id="@+id/fragment_place"
+        android:name="ila.fr.codisintervention.Fragments.FragmentInterventionForm"
+        android:layout_width="match_parent"
+        android:layout_height="393dp" />
+
+    <TextView
+        android:id="@+id/moyenLabel"
+        android:text="@string/InterventionMoyensLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:textSize="24sp" />
+
+    <ListView
+        android:id="@+id/listView1"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_height="152dp"
+        android:layout_width="wrap_content"
+        android:divider="#FFCC00"
+        android:dividerHeight="2dp"/>
+
+    <Button
+        android:id="@+id/SendIntervention"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="@string/Validate"
+        android:textAlignment="center" />
+
+</LinearLayout>
