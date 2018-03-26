@@ -44,10 +44,7 @@ public class AuthenticationController {
             logger.error(username + " doesn't exist in the bdd");
         }
 
-
-        simpMessagingTemplate.convertAndSend("/topic/interventions/retrieve","retrieve");
         Gson gson = new Gson();
-        simpMessagingTemplate.convertAndSend("/topic/users/"+username+"",gson.toJson(user.get(),User.class));
-
+        simpMessagingTemplate.convertAndSend("/topic/users/"+username+"/initialize-application",gson.toJson(user.get(),User.class));
     }
 }
