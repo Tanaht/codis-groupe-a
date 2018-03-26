@@ -17,11 +17,24 @@ public class InitializeApplicationMessage {
     private List<VehicleColorMapping> vehicle_color_mapping;
 
 
-    public InitializeApplicationMessage(User usr){
+    public InitializeApplicationMessage(User usr, List<VehicleTypeMessage> typesList,
+                                        List<SinisterCodeMessage> codesList,
+                                        List<VehicleMessage> vehicleList,
+                                        List<DemmandeMessage> demandeList,
+                                        List<VehicleColorMapping> vehicle_color_mappingList){
         user = new UserMessage(usr);
+        types = typesList;
+        codes = codesList;
+        vehicles = vehicleList;
+        demandes = demandeList;
+        vehicle_color_mapping = vehicle_color_mappingList;
+
     }
 
 
+    /**
+     *
+     */
     public static class VehicleColorMapping{
         private String code;
         private String type;
@@ -34,25 +47,6 @@ public class InitializeApplicationMessage {
         }
 
     }
-
-
-    /**
-     * Represent a vehicule type simplify to send to client
-     */
-    public static class VehicleTypeMessage {
-
-        private String label;
-
-        /**
-         *
-         * @param vehicleType VehicleType to get his name and put in label
-         */
-        public VehicleTypeMessage(VehicleType vehicleType){
-            label = vehicleType.getName();
-        }
-
-    }
-
 
     /**
      * represent a vehicule send to the client
@@ -72,6 +66,26 @@ public class InitializeApplicationMessage {
             status = vehicle.getStatus();
         }
     }
+
+    /**
+     * Represent a vehicule type simplify to send to client
+     */
+    public static class VehicleTypeMessage {
+
+        private String label;
+
+        /**
+         *
+         * @param vehicleType VehicleType to get his name and put in label
+         */
+        public VehicleTypeMessage(VehicleType vehicleType){
+            label = vehicleType.getName();
+        }
+
+    }
+
+
+
 
     /**
      * Tuple username, rolename.
