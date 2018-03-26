@@ -2,7 +2,7 @@ package fr.istic.sit.codisgroupea.controller;
 
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
-import fr.istic.sit.codisgroupea.model.entity.User;
+import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.InitializeApplicationMessage;
 import fr.istic.sit.codisgroupea.repository.SinisterCodeRepository;
 import fr.istic.sit.codisgroupea.repository.UnitRepository;
@@ -46,10 +46,10 @@ public class AuthenticationController {
 
 
     /**
-     *
-     * @param principal
-     * @param username
-     * @param dataSendByClient
+     * Requested by android client when he connected to the application.
+     * @param principal Injected param who contain the user login who send the request
+     * @param username Username in the url. Useless
+     * @param dataSendByClient data send by the client. don't need to contain something
      */
     @MessageMapping(RoutesConfig.SUBSCRIBED)
     public void getInfoUser(Principal principal, @DestinationVariable("username") final String username, String dataSendByClient) {
@@ -62,9 +62,22 @@ public class AuthenticationController {
         }
 
         List<InitializeApplicationMessage.VehicleTypeMessage> types = new ArrayList<>();
+        for (VehicleType vehicleType : vehicleTypeRepository.findAll()){
+            types.add(new InitializeApplicationMessage.VehicleTypeMessage(vehicleType));
+        }
         List<InitializeApplicationMessage.SinisterCodeMessage> codes = new ArrayList<>();
+        for (SinisterCode sinisterCode : sinisterCodeRepository.findAll()){
+            codes.add(new InitializeApplicationMessage.SinisterCodeMessage(sinisterCode));
+        }
         List<InitializeApplicationMessage.VehicleMessage> vehicles = new ArrayList<>();
-        List<InitializeApplicationMessage.DemmandeMessage> demandes = new ArrayList<>();
+        for (Vehicle vehicle : vehicleRepository.findAll()){
+            vehicles.add(new InitializeApplicationMessage.VehicleMessage(vehicle));
+        }
+        List<InitializeApplicationMessage.DemandMessage> demandes = new ArrayList<>();
+        for (Unit unit : unitRepository.getAllReqestedVehicle()){
+            demandes.add(new InitializeApplicationMessage.DemandMessage(unit));
+        }
+
         List<InitializeApplicationMessage.VehicleColorMapping> vehicleColorMapping = new ArrayList<>();
 
 
