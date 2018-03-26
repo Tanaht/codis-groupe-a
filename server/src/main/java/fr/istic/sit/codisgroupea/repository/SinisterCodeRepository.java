@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface SinisterCodeRepository extends JpaRepository<SinisterCode, Long> {
+    SinisterCode findByCode(String code);
 }
