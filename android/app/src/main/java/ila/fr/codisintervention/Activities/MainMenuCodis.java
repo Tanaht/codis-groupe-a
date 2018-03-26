@@ -14,11 +14,20 @@ public class MainMenuCodis extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu_codis);
+        setTitle(R.string.MenuIntervenantPageTitle);
 
-        Button boutonValider = ((Button) this.findViewById(R.id.textView_CreerIntervention));
-        boutonValider.setOnClickListener(new View.OnClickListener() {
+        Button buttonNewInterv = ((Button) this.findViewById(R.id.textView_CreerIntervention));
+        buttonNewInterv.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent( MainMenuCodis.this, NewInterventionActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button buttonIntervList = ((Button) this.findViewById(R.id.textView_ListeIntervention));
+        buttonIntervList.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent( MainMenuCodis.this, InterventionsListActivity.class);
                 startActivity(intent);
             }
         });

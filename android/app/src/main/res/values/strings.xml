@@ -2,6 +2,9 @@
     <string name="app_name">CodisIntervention</string>
     <string name="Validate">Valider</string>
     <string name="InterventionTitleLabel">Nouvelle intervention</string>
+    <string name="IntervenantListPageTitle">Liste des interventions en cours</string>
+    <string name="MenuIntervenantPageTitle">Menu Intervenant</string>
+    <string name="MenuCodisPageTitle">Menu Codis</string>
     <string name="NewInterventionPageTitle">Ajouter une nouvelle intervention</string>
     <string name="InterventionAddressLabel">Adresse de l\'intervention :</string>
     <string name="InterventionAddressNumero">Numero de la voie :</string>
