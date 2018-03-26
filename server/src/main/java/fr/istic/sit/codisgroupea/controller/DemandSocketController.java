@@ -9,11 +9,11 @@ import org.springframework.stereotype.Controller;
 import java.security.Principal;
 
 @Controller
-public class UserSocketController {
+public class DemandSocketController {
 
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    public UserSocketController (SimpMessagingTemplate simpMessagingTemplate) {
+    public DemandSocketController(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
