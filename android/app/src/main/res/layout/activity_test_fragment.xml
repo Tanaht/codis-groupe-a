@@ -6,12 +6,18 @@
     android:layout_height="match_parent"
     tools:context="ila.fr.codisintervention.Activities.TestFragmentActivity">
 
-    <fragment
+ <!--   <fragment
         android:id="@+id/symboles"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:name="ila.fr.codisintervention.Fragments.ListeSymbolesFragment"
         android:orientation="horizontal" >
     </fragment>
+-->
+    <ImageView
+        android:id="@+id/sinistre"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/sinistre" />
 
 </android.support.constraint.ConstraintLayout>
