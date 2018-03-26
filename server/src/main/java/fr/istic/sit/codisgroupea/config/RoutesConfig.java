@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class RoutesConfig {
 
+    //AuthenticationController
+    public final static String SUBSCRIBED = "/users/{username}/subscribed";
+
     //InterventionSocketController
     public final static String CHOOSE_INTERVENTION_CLIENT = "/app/interventions/{id}/choose";
     public final static String CHOOSE_INTERVENTION_SERVER = "/topic/users/{username}/intervention-chosen";
