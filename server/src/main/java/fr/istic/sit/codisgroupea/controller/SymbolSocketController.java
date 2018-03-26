@@ -9,8 +9,7 @@ import org.springframework.stereotype.Controller;
 import java.security.Principal;
 
 /**
- * Controller for symbol routes
- * interventions/{id}/symbols/...
+ * Controller for symbol routes.
  */
 @Controller
 public class SymbolSocketController {
@@ -22,7 +21,7 @@ public class SymbolSocketController {
     }
 
     /**
-     *
+     * Method to create new symbol when the client ask to.
      */
     @MessageMapping("/app/interventions/{id}/symbols/create")
     @SendTo({"/topic/interventions/{id}/symbols/event"})
@@ -31,7 +30,7 @@ public class SymbolSocketController {
     }
 
     /**
-     *
+     * Method to delete symbol when the client ask to.
      */
     @MessageMapping("/app/interventions/{id}/symbols/delete")
     @SendTo({"/topic/interventions/{id}/symbols/event"})
@@ -40,7 +39,7 @@ public class SymbolSocketController {
     }
 
     /**
-     *
+     * Method to update symbol when the client ask to.
      */
     @MessageMapping("/app/interventions/{id}/symbols/update")
     @SendTo({"/topic/interventions/{id}/symbols/event"})
