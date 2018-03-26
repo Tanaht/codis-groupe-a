@@ -2,6 +2,9 @@ import base64
 
 class imageToolBox:
 
+    def __init__(self):
+        self.sendPhotoType = "SEND_PHOTO"
+
     #
     # Usage :
     # (with a file called "file.png")
@@ -19,14 +22,29 @@ class imageToolBox:
             str = base64.b64encode(imageFile.read())
             return str
 
+    # Drone -> Serveur
+    ## Envoi d'une photo
+    # json
+    # {
+    #     type: "SEND_PHOTO",
+    #     datas: {
+    #        photo: String, / * Photo encodée en Base64 * /
+    #        date: long, / * Timestamp * /
+    #        location: {lat: float, lng: float}
+    #     }
+    # }
+
     def getJsonFromPng(self, date, position, imagePath):
         imageBase64 = self.convertPngToBase64(imagePath)
         json_data = {
-            'date': date,
-            'coordonees': {
-                'lat': position.getLatitude(),
-                'lng': position.getLongitude()
-            },
-            'photo': imageBase64
+            'type': self.sendPhotoType,
+            'datas': {
+                'photo': imageBase64,
+                'date': date,
+                'location': {
+                    'lat': position.getLatitude(),
+                    'lng': position.getLongitude()
+                }
+            }
         }
         return json_data
