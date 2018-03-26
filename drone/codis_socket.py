@@ -20,22 +20,17 @@ while True:
     if response != "":
         trame = json.loads(response.decode())
         mission = trame['type']
-        title = trame['data']['title']
+        title = trame['datas']['type']
+        # altitude fixs a 30 metres
+        alt = trame['datas']['altitude']
 
-        if mission == "mission_order":
+        if mission == "ASSIGN_TRAJECT":
             # decode des points
             liste = []
-            patrol_liste = []
 
-            elt1 = trame['data']['trajectory'];
+            elt1 = trame['datas']['locations'];
             for point in elt1:
-                liste.append(LocationGlobal(point['lat'], point['lon'], point['alt']))
-
-            elt2 = trame['data']['patrol_trajectory'];
-            for point in elt2:
-                patrol_liste.append(LocationGlobal(point['lat'], point['lon'], point['alt']))
-
-            patrol = trame['data']['patrol']
+                liste.append(LocationGlobal(point['lat'], point['lon'], alt))
 
             codisDrone = droneIstic.NotreDrone("udpin:{}:{}" .format(config.drone_host, config.drone_port), False, 30)
 
