@@ -36,7 +36,9 @@ public class AuthenticationController {
      * @return
      */
     @MessageMapping("/users/{username}/subscribed")
-    public void getInfoUser(@DestinationVariable("username") final String username, String dataSendByClient) {
+    public void getInfoUser(Principal principal, @DestinationVariable("username") final String username, String dataSendByClient) {
+
+
         System.out.println("msg receive from : "+username+", msg : " + dataSendByClient);
         Optional<User> user = authenticationService.getUser(username);
 
