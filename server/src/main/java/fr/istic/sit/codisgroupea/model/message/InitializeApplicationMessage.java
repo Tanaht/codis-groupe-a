@@ -21,13 +21,13 @@ public class InitializeApplicationMessage {
                                         List<SinisterCodeMessage> codesList,
                                         List<VehicleMessage> vehicleList,
                                         List<DemmandeMessage> demandeList,
-                                        List<VehicleColorMapping> vehicle_color_mappingList){
+                                        List<VehicleColorMapping> vehicleColorMapping){
         user = new UserMessage(usr);
         types = typesList;
         codes = codesList;
         vehicles = vehicleList;
         demandes = demandeList;
-        vehicle_color_mapping = vehicle_color_mappingList;
+        vehicle_color_mapping = vehicleColorMapping;
 
     }
 
@@ -38,9 +38,9 @@ public class InitializeApplicationMessage {
     public static class VehicleColorMapping{
         private String code;
         private String type;
-        private String color;
+        private Color color;
 
-        public VehicleColorMapping(String code, String type, String color){
+        public VehicleColorMapping(String code, String type, Color color){
             this.code = code;
             this.type = type;
             this.color = color;
