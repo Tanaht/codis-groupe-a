@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Intervention {
     private int id;
+    private long date;
     private Position position;
     private String address;
     private SinisterCode sinisterCode;
@@ -22,11 +23,13 @@ public class Intervention {
     /**
      * Constructor by value.
      *
+     * @param date the date of the intervention
      * @param position the location of the intervention
      * @param address the address of the intervention
      * @param sinisterCode the sinister code
      */
-    public Intervention(Position position, String address, SinisterCode sinisterCode) {
+    public Intervention(long date, Position position, String address, SinisterCode sinisterCode) {
+        this.date = date;
         this.position = position;
         this.address = address;
         this.sinisterCode = sinisterCode;
@@ -50,6 +53,25 @@ public class Intervention {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * Getter of the date.
+     *
+     * @return the date
+     */
+    @NotNull
+    public long getDate() {
+        return date;
+    }
+
+    /**
+     * Setter of the date.
+     *
+     * @param date the date
+     */
+    public void setDate(long date) {
+        this.date = date;
     }
 
     /**
