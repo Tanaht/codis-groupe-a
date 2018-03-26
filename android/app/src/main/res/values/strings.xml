@@ -25,4 +25,5 @@
     <string name="lbl_liste_des_interventions">Liste des interventions</string>
     <string name="lbl_liste_des_moyen">Liste des moyens demandés</string>
     <string name="lbl_creer_intervention">Créer intervention</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
