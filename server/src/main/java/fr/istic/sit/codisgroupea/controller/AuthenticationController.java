@@ -37,16 +37,15 @@ public class AuthenticationController {
      */
     @MessageMapping("/users/{username}/subscribed")
     public void getInfoUser(Principal principal, @DestinationVariable("username") final String username, String dataSendByClient) {
+        logger.info("msg receive from : "+principal.getName()+", msg : " + dataSendByClient);
 
-
-        System.out.println("msg receive from : "+username+", msg : " + dataSendByClient);
-        Optional<User> user = authenticationService.getUser(username);
+        Optional<User> user = authenticationService.getUser(principal.getName());
 
         if (!user.isPresent()){
-            logger.error(username + " doesn't exist in the bdd");
+            logger.error(principal.getName() + " doesn't exist in the bdd");
         }
 
         Gson gson = new Gson();
-        simpMessagingTemplate.convertAndSend("/topic/users/"+username+"/initialize-application",gson.toJson(user.get(),User.class));
+        simpMessagingTemplate.convertAndSend("/topic/users/"+principal.getName()+"/initialize-application",gson.toJson(user.get(),User.class));
     }
 }
