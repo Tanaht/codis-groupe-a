@@ -1,5 +1,6 @@
 package fr.istic.sit.codisgroupea.controller;
 
+import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -14,60 +15,82 @@ import java.security.Principal;
 @Controller
 public class DemandSocketController {
 
+    /** Template of the web socket */
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    /**
+     * Constructor of the class {@link DemandSocketController}
+     * @param simpMessagingTemplate Template of the web socket
+     */
     public DemandSocketController(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     /**
      * Method to create a unit demand.
+     *
+     * @param id               the id
+     * @param principal        the principal
+     * @param dataSendByClient the data sent by client
      */
-    @MessageMapping("/app/interventions/{id}/units/create")
+    @MessageMapping(RoutesConfig.CREATE_UNIT_CLIENT)
     public void createUnit(@DestinationVariable("id") final String id, Principal principal, String dataSendByClient) {
         String userLogin = principal.getName();
 
         //Message for the codis
-        simpMessagingTemplate.convertAndSendToUser(userLogin,"/topic/demandes/created","msgToSend");
+        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.CREATE_UNIT_SERVER_CODIS,"msgToSend");
 
         //Message for the client
-        simpMessagingTemplate.convertAndSendToUser(userLogin,"/topic/interventions/{id}/units/event","msgToSend");
+        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.CREATE_UNIT_SERVER_CLIENT,"msgToSend");
     }
 
     /**
      * Method to update a unit.
+     *
+     * @param id               the id
+     * @param principal        the principal
+     * @param dataSendByClient the data sent by client
+     * @return the string
      */
-    @MessageMapping("/app/interventions/{id}/units/update")
-    @SendTo({"/topic/interventions/{id}/units/event"})
+    @MessageMapping(RoutesConfig.UPDATE_UNIT_CLIENT)
+    @SendTo({RoutesConfig.UPDATE_UNIT_SERVER})
     public String updateUnit(@DestinationVariable("id") final String id, Principal principal, String dataSendByClient) {
         return "";
     }
 
     /**
      * Method to validate a client demand.
+     *
+     * @param idUnit               the id
+     * @param principal        the principal
+     * @param dataSendByClient the data sent by client
      */
-    @MessageMapping("/app/demandes/{idUnit}/accept")
+    @MessageMapping(RoutesConfig.CONFIRM_DEMAND_CLIENT)
     public void confirmDemand(@DestinationVariable("idUnit") final String idUnit, Principal principal, String dataSendByClient) {
         String userLogin = principal.getName();
 
         //Message for the codis
-        simpMessagingTemplate.convertAndSendToUser(userLogin,"/topic/demandes/{id}/accepted","msgToSend");
+        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.CONFIRM_DEMAND_SERVER_CODIS,"msgToSend");
 
         //Message for the client
-        simpMessagingTemplate.convertAndSendToUser(userLogin,"/topic/interventions/{id}/units/{id}/accepted","msgToSend");
+        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.CONFIRM_DEMAND_SERVER_CLIENT,"msgToSend");
     }
 
     /**
      * Method to deny a client demand.
+     *
+     * @param idUnit               the id
+     * @param principal        the principal
+     * @param dataSendByClient the data sent by client
      */
-    @MessageMapping("/app/demandes/{idUnit}/deny")
+    @MessageMapping(RoutesConfig.DENY_DEMAND_CLIENT)
     public void denyDemand(@DestinationVariable("idUnit") final String idUnit, Principal principal, String dataSendByClient) {
         String userLogin = principal.getName();
 
         //Message for the codis
-        simpMessagingTemplate.convertAndSendToUser(userLogin,"/topic/demandes/{id}/denied","msgToSend");
+        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.DENY_DEMAND_SERVER_CODIS,"msgToSend");
 
         //Message for the client
-        simpMessagingTemplate.convertAndSendToUser(userLogin,"/topic/interventions/{id}/units/{id}/denied","msgToSend");
+        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.DENY_DEMAND_SERVER_CLIENT,"msgToSend");
     }
 }
