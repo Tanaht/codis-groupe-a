@@ -1,5 +1,6 @@
 package fr.istic.sit.codisgroupea.controller;
 
+import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -15,6 +16,7 @@ import java.security.Principal;
 @Controller
 public class InterventionSocketController {
 
+    /** Template of the web socket */
     private SimpMessagingTemplate simpMessagingTemplate;
 
     /**
@@ -34,8 +36,8 @@ public class InterventionSocketController {
      * @param dataSentByClient the data sent by client
      * @return the string
      */
-    @MessageMapping("/app/interventions/{id}/choose")
-    @SendTo({"/topic/users/{username}/intervention-chosen"})
+    @MessageMapping(RoutesConfig.CHOOSE_INTERVENTION_CLIENT)
+    @SendTo({RoutesConfig.CHOOSE_INTERVENTION_SERVER})
     public String chooseIntervention(@DestinationVariable("id") final String id,
                                      Principal principal,
                                      String dataSentByClient) {
@@ -49,8 +51,8 @@ public class InterventionSocketController {
      * @param dataSentByClient the data sent by client
      * @return the string
      */
-    @MessageMapping("/app/interventions/create")
-    @SendTo({"/topic/interventions/created"})
+    @MessageMapping(RoutesConfig.CREATE_INTERVENTION_CLIENT)
+    @SendTo({RoutesConfig.CREATE_INTERVENTION_SERVER})
     public String createIntervention(Principal principal, String dataSentByClient) {
         return "";
     }
@@ -63,8 +65,8 @@ public class InterventionSocketController {
      * @param dataSentByClient the data sent by client
      * @return the string
      */
-    @MessageMapping("/app/interventions/{id}/close")
-    @SendTo({"/topic/interventions/closed"})
+    @MessageMapping(RoutesConfig.CLOSE_INTERVENTION_CLIENT)
+    @SendTo({RoutesConfig.CLOSE_INTERVENTION_SERVER})
     public String closeIntervention(@DestinationVariable("id") final String id,
                                     Principal principal,
                                     String dataSentByClient) {
