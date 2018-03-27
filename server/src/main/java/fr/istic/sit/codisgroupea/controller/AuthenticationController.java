@@ -5,10 +5,7 @@ import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.Send.InitializeApplicationMessage;
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
-import fr.istic.sit.codisgroupea.repository.SinisterCodeRepository;
-import fr.istic.sit.codisgroupea.repository.UnitRepository;
-import fr.istic.sit.codisgroupea.repository.VehicleRepository;
-import fr.istic.sit.codisgroupea.repository.VehicleTypeRepository;
+import fr.istic.sit.codisgroupea.repository.*;
 import fr.istic.sit.codisgroupea.service.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,15 +27,17 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    private InterventionRepository interventionRepository;
     private VehicleTypeRepository vehicleTypeRepository;
     private SinisterCodeRepository sinisterCodeRepository;
     private VehicleRepository vehicleRepository;
     private UnitRepository unitRepository;
 
 
-    public AuthenticationController(AuthenticationService authenticationService, SimpMessagingTemplate simpMessagingTemplate, VehicleTypeRepository vehicleTypeRepository, SinisterCodeRepository sinisterCodeRepository, VehicleRepository vehicleRepository, UnitRepository unitRepository) {
+    public AuthenticationController(AuthenticationService authenticationService, SimpMessagingTemplate simpMessagingTemplate, InterventionRepository interventionRepository, VehicleTypeRepository vehicleTypeRepository, SinisterCodeRepository sinisterCodeRepository, VehicleRepository vehicleRepository, UnitRepository unitRepository) {
         this.authenticationService = authenticationService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.interventionRepository = interventionRepository;
         this.vehicleTypeRepository = vehicleTypeRepository;
         this.sinisterCodeRepository = sinisterCodeRepository;
         this.vehicleRepository = vehicleRepository;
@@ -81,8 +80,14 @@ public class AuthenticationController {
             demandes.add(new InitializeApplicationMessage.DemandMessage(unit));
         }
 
+        List<InitializeApplicationMessage.InterventionMessage> interventionsAvailable = new ArrayList<>();
+        for (Intervention intervention : interventionRepository.findAllByOpened(true)){
+            interventionsAvailable.add(new InitializeApplicationMessage.InterventionMessage(intervention));
+        }
+
+
         InitializeApplicationMessage iniAppli = new InitializeApplicationMessage(user.get(),
-                types,codes,vehicles,demandes);
+                types,codes,vehicles,demandes, interventionsAvailable);
 
         Gson gson = new Gson();
         simpMessagingTemplate.convertAndSend("/topic/users/"+principal.getName()+"/initialize-application",
