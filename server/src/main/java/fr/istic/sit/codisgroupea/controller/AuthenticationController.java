@@ -22,19 +22,49 @@ import java.util.Optional;
 @Controller
 public class AuthenticationController {
 
+    /** The logger */
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
+    /** The Authentication Service instance */
     private AuthenticationService authenticationService;
+
+    /** Template of the web socket  */
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    /** The intervention Repository instance */
     private InterventionRepository interventionRepository;
+
+    /** The Vehicle Type Repository instance */
     private VehicleTypeRepository vehicleTypeRepository;
+
+    /** The Sinister Code Repository instance */
     private SinisterCodeRepository sinisterCodeRepository;
+
+    /** The Vehicle Repository instance */
     private VehicleRepository vehicleRepository;
+
+    /** The Unit Repository instance */
     private UnitRepository unitRepository;
 
 
-    public AuthenticationController(AuthenticationService authenticationService, SimpMessagingTemplate simpMessagingTemplate, InterventionRepository interventionRepository, VehicleTypeRepository vehicleTypeRepository, SinisterCodeRepository sinisterCodeRepository, VehicleRepository vehicleRepository, UnitRepository unitRepository) {
+    /**
+     * Constructor of the class {@link AuthenticationController}
+     *
+     * @param authenticationService The Authentication Service instance
+     * @param simpMessagingTemplate Template of the web socket
+     * @param interventionRepository The intervention Repository instance
+     * @param vehicleTypeRepository The Vehicle Type Repository instance
+     * @param sinisterCodeRepository The Sinister Code Repository instance
+     * @param vehicleRepository The Vehicle Repository instance
+     * @param unitRepository The Unit Repository instance
+     */
+    public AuthenticationController(AuthenticationService authenticationService,
+                                    SimpMessagingTemplate simpMessagingTemplate,
+                                    InterventionRepository interventionRepository,
+                                    VehicleTypeRepository vehicleTypeRepository,
+                                    SinisterCodeRepository sinisterCodeRepository,
+                                    VehicleRepository vehicleRepository,
+                                    UnitRepository unitRepository) {
         this.authenticationService = authenticationService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.interventionRepository = interventionRepository;
