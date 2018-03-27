@@ -100,7 +100,6 @@ public class Unit {
      * @return the vehicle
      */
     @OneToOne
-    @NotNull
     public Vehicle getVehicle() {
         return vehicle;
     }
