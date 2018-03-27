@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
+        android:onClick="clicRouge"
         android:background="@color/rouge" />
 
     <RadioButton
@@ -23,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
+        android:onClick="clicVert"
         android:background="@color/vert" />
 
     <RadioButton
@@ -30,6 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
+        android:onClick="clicBleu"
         android:background="@color/bleu" />
 
     <RadioButton
@@ -37,7 +40,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
+        android:onClick="clicOrange"
         android:background="@color/orange" />
+
+        <RadioButton
+            android:id="@+id/radioButtonviolet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:onClick="clicViolet"
+            android:background="@color/violet" />
 
     </RadioGroup>
 

@@ -1,19 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent"
+    android:orientation="horizontal" >
+
+    <fragment android:name="ila.fr.codisintervention.Fragments.ListeSymbolesFragment"
+        android:id="@+id/list"
+        android:layout_weight="0"
+        android:layout_width="55dp"
+        android:layout_height="match_parent" />
+
+    <fragment android:name="ila.fr.codisintervention.Fragments.DessinFragment"
+        android:id="@+id/viewer"
+        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
+
+
+<!--
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:foreground="@color/orange"
     tools:context="ila.fr.codisintervention.Activities.TestFragmentActivity">
 
- <!--   <fragment
+   <fragment
         android:id="@+id/symboles"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:name="ila.fr.codisintervention.Fragments.ListeSymbolesFragment"
         android:orientation="horizontal" >
     </fragment>
--->
+
     <ImageView
         android:id="@+id/sinistre"
         android:layout_width="150dp"
@@ -21,3 +42,4 @@
         android:src="@drawable/sinistre" />
 
 </android.support.constraint.ConstraintLayout>
+-->
