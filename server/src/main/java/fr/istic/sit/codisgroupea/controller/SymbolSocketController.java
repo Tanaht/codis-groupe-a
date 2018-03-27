@@ -148,11 +148,52 @@ public class SymbolSocketController {
      * @param id               the id
      * @param principal        the principal
      * @param dataSendByClient the data sent by client
-     * @return the string
+     * @return the message
      */
     @MessageMapping(RoutesConfig.UPDATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.UPDATE_SYMBOL_SERVER})
-    public String updateSymbols(@DestinationVariable("id") final String id, Principal principal, String dataSendByClient) {
-        return "";
+    public SymbolsMessage updateSymbols(@DestinationVariable("id") final Long id, Principal principal, List<SymbolMessage> dataSendByClient) {
+
+        List<SymbolMessage> listMessage = new ArrayList<SymbolMessage>();
+
+        for (SymbolMessage data : dataSendByClient) {
+            //Get the optional intervention & symbol
+            Optional<Symbol> optSymbol = symbolRepository.findSymbolByColorAndShape(data.getColor(), data.getShape());
+            Optional<Intervention> optionalIntervention = interventionRepository.findById(id);
+
+            //Verify if the two optional are present
+            if(!optSymbol.isPresent()) {
+                logger.error("Le symbol n'existe pas.");
+            }
+
+            if(!optionalIntervention.isPresent()){
+                logger.error("Le symbol n'existe pas.");
+            }
+
+            //Create a nex SymbolSitac
+            Long idSitac = new Long(data.getId());
+            Optional <SymbolSitac> optSitac = symbolSitacRepository.findById(idSitac);
+
+            if(!optSitac.isPresent()){
+                logger.error("Le symbolSitac n'existe pas.");
+            }
+
+            SymbolSitac symbolSitac = optSitac.get();
+
+            symbolSitac.setId(data.getId());
+            symbolSitac.setSymbol(optSymbol.get());
+            symbolSitac.setLocation(new Position(data.getLocation().getLat(), data.getLocation().getLng()));
+            symbolSitac.setPayload(new Payload(data.getPayload().getIdentifier(), data.getPayload().getDetails()));
+
+            SymbolSitac newSymbolSitac = symbolSitacRepository.save(symbolSitac);
+
+            //Create the return message
+            SymbolMessage symbolMessage = createSymbolMessage(newSymbolSitac);
+
+            listMessage.add(symbolMessage);
+        }
+
+
+        return new SymbolsMessage(SymbolsMessage.Type.UPDATE, listMessage);
     }
 }
