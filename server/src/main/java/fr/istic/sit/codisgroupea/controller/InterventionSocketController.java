@@ -158,7 +158,8 @@ public class InterventionSocketController {
                 new Date().getTime(),
                 dataSentByClient.location.toPositionEntity(),
                 dataSentByClient.address,
-                sinisterCode
+                sinisterCode,
+                true
         );
 
         Intervention persisted = interventionRepository.save(intervention);
@@ -186,6 +187,8 @@ public class InterventionSocketController {
     public IdMessage closeIntervention(@DestinationVariable("id") final int id,
                                        Principal principal,
                                        String dataSentByClient) {
+        Intervention intervention = interventionRepository.getOne((long) id);
+        intervention.setOpened(false);
         return new IdMessage(id);
     }
 }
