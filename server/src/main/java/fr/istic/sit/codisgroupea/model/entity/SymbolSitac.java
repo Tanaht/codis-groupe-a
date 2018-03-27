@@ -13,6 +13,7 @@ public class SymbolSitac implements SigEntry {
     private int id;
     private Symbol symbol;
     private Position location;
+    private Payload payload;
 
     /**
      * Instantiates a new Symbol sitac.
@@ -89,5 +90,25 @@ public class SymbolSitac implements SigEntry {
      */
     public void setLocation(Position location) {
         this.location = location;
+    }
+
+    /**
+     * Gets payload.
+     *
+     * @return the payload
+     */
+    @OneToOne
+    @NotNull
+    public Payload getPayload() {
+        return payload;
+    }
+
+    /**
+     * Sets payload.
+     *
+     * @param payload the payload
+     */
+    public void setPayload(Payload payload) {
+        this.payload = payload;
     }
 }
