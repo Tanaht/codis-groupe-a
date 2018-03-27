@@ -38,17 +38,20 @@ public class Unit {
      * @param moving       is the unit on the way to its target
      * @param requestDate  the request date
      * @param acceptDate   the acceptation date
+     * @param symbolSitac  the symbol
      */
     public Unit(Intervention intervention,
                 Vehicle vehicle,
                 boolean moving,
                 Timestamp requestDate,
-                Timestamp acceptDate) {
+                Timestamp acceptDate,
+                SymbolSitac symbolSitac) {
         this.intervention = intervention;
         this.vehicle = vehicle;
         this.moving = moving;
         this.requestDate = requestDate;
         this.acceptDate = acceptDate;
+        this.symbolSitac = symbolSitac;
     }
 
     /**
