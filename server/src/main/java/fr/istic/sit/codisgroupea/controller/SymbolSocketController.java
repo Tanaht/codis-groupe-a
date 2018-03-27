@@ -135,6 +135,8 @@ public class SymbolSocketController {
             SymbolMessage message = createSymbolMessage(optSitac.get());
 
             listMessage.add(message);
+
+            symbolSitacRepository.delete(optSitac.get());
         }
 
         return new SymbolsMessage(SymbolsMessage.Type.DELETE, listMessage);
