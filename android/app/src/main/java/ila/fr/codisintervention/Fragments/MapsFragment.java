@@ -64,7 +64,7 @@
         public void addMarker_Zoom (LatLng Coord) {
 
             // For dropping a marker Coord at a point on the MapActivity
-            googleMap.addMarker(new MarkerOptions().position(Coord).title("Marker Title").snippet("Marker Description"));
+            googleMap.addMarker(new MarkerOptions().position(Coord).draggable(true).title("Marker Title").snippet("Marker Description"));
 
             // For zooming automatically to the location of the marker
             CameraPosition cameraPosition = new CameraPosition.Builder().target(Coord).zoom(15).build();
