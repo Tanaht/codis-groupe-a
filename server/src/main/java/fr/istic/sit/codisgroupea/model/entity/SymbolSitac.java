@@ -28,11 +28,13 @@ public class SymbolSitac implements SigEntry {
      * @param intervention the intervention
      * @param symbol       the symbol
      * @param location     the location
+     * @param payload  the payload
      */
-    public SymbolSitac(Intervention intervention, Symbol symbol, Position location) {
+    public SymbolSitac(Intervention intervention, Symbol symbol, Position location, Payload payload) {
         this.intervention = intervention;
         this.symbol = symbol;
         this.location = location;
+        this.payload = payload;
     }
 
     /**
