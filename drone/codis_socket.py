@@ -4,6 +4,9 @@ import droneIstic
 import socket
 import json
 from config.Config import Config
+from position import position
+
+from imageToolBox import imageToolBox
 from dronekit import LocationGlobal
 
 
@@ -13,8 +16,20 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print('Connexion à %s: %s' % (config.socket_host, config.socket_port))
 client.connect((config.socket_host, config.socket_port))
 
-# MESSAGE = "Mission reçue!"
-# client.send(MESSAGE)
+
+
+# exemple d'envoi d'une photo :
+# (with a file called "Small-mario.png")
+# utilser imageToolBox.getJsonFromPng (date , objet position , photo.png )
+
+pos = position(12, 10, 15)
+imgtb = imageToolBox()
+toto = imgtb.getJsonFromPng('12/03/2017', pos, 'Small-mario.png')
+
+client.sendall((json.dumps(toto)).encode())
+
+# fin de l'exemple
+
 
 while True:
 
