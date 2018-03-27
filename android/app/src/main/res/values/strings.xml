@@ -8,7 +8,7 @@
     <string name="lbl_creer_intervention">Créer intervention</string>
 
     <!-- Message must be prefixed by msg-->
-    <string name="msg_success_credentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>
+    <string name="msg_success_credentials">Connexions effectué avec succès !</string>
 
     <!-- Error Message must be prefixed by error-->
     <string name="error_invalid_credentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>

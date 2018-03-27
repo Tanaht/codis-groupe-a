@@ -34,29 +34,17 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     private IBinder binder;
 
     public WebsocketService() {
-        Log.d(TAG, "Instantiating WebSocket Service");
-        this.client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "http://{host}:{port}/{uri}"
+
+        String url = "http://{host}:{port}/{uri}"
                 .replace("{host}", Config.get().getHost())
                 .replace("{port}",Integer.toString(Config.get().getPort()))
-                .replace("{uri}",Config.get().getUri()));
+                .replace("{uri}",Config.get().getUri());
 
-        this.client.lifecycle().subscribe(lifecycleEvent -> {
-            switch (lifecycleEvent.getType()) {
 
-                case OPENED:
-                    Log.d(TAG, "Stomp connection opened");
-                    break;
+        Log.d(TAG, "Instantiating WebSocket Service and connect to remote at " + url);
 
-                case ERROR:
-                    Log.d(TAG, "Thread Name: " + Thread.currentThread().getName());
-                    Log.e(TAG, "Error", lifecycleEvent.getException());
-                    break;
 
-                case CLOSED:
-                    Log.d(TAG, "Stomp connection closed");
-                    break;
-            }
-        });
+        this.client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
     }
 
     @Override
@@ -69,30 +57,49 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
     @Override
     public boolean connect(String username, String password) {
-        Log.d(TAG, "Connect to Server with follwing credentials: " + username + ", " + password);
+        Log.d(TAG, "Connect to Server with following credentials: " + username + ", " + password);
 
         List<StompHeader> stompHeader = Arrays.asList(
                 new StompHeader(USERNAME_HEADER_KEY, username),
                 new StompHeader(PASSWORD_HEADER_KEY, password));
 
+
+        this.client.lifecycle().subscribe(lifecycleEvent -> {
+            switch (lifecycleEvent.getType()) {
+
+                case OPENED:
+                    Log.d(TAG, "Stomp connection opened");
+
+
+                    client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
+                        Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
+
+                        // The string "my-integer" will be used to filer the intent
+                        Intent intent = new Intent("initialize-application");
+                        // Adding some data
+                        intent.putExtra("message", message.getPayload());
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                    });
+
+                    client.send("/users/" + username + "/subscribed", "PING").subscribe(
+                            () -> Log.d(TAG, "[/subscribed] Sent data!"),
+                            error -> Log.e(TAG, "[/subscribed] Error Encountered", error)
+                    );
+                    break;
+
+                case ERROR:
+                    Log.d(TAG, "Thread Name: " + Thread.currentThread().getName());
+                    Log.e(TAG, "Error", lifecycleEvent.getException());
+                    break;
+
+                case CLOSED:
+                    Log.d(TAG, "Stomp connection closed");
+                    break;
+            }
+        });
+
         try {
             client.connect(stompHeader);
-
-
-            client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
-                Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
-
-                // The string "my-integer" will be used to filer the intent
-                Intent intent = new Intent("initialize-application");
-                // Adding some data
-                intent.putExtra("message", message.getPayload());
-                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-            });
-
-            client.send("/users/" + username + "/subscribed", "").subscribe(
-                    () -> Log.d(TAG, "[/subscribed] Sent data!"),
-                    error -> Log.e(TAG, "[/subscribed] Error Encountered", error)
-            );
             return true;
         } catch(Exception e) {
             Log.e(TAG, e.getMessage(), e);

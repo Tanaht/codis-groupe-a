@@ -17,9 +17,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.JsonReader;
+
+import java.io.StringReader;
+
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
 import ila.fr.codisintervention.handlers.WebsocketServiceHandler;
+import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ua.naiksoftware.stomp.client.StompClient;
 
@@ -55,6 +64,53 @@ public class MainActivity extends AppCompatActivity {
 
 
         handler = new WebsocketServiceHandler();
+
+//        Gson gson = new GsonBuilder().create();
+//        String json = "{\n" +
+//                "\tuser: {\n" +
+//                "\t\tusername: \"Gerard\",\n" +
+//                "\t\trole: \"OPERATOR\"\n" +
+//                "\t},\n" +
+//                "\ttypes: [\n" +
+//                "\t\t{\n" +
+//                "\t\t\tlabel: \"FPT\"\n" +
+//                "\t\t},\n" +
+//                "\t\t{ label: \"VSAV\" }\n" +
+//                "\t],\n" +
+//                "\tcodes: [\n" +
+//                "\t\t{\n" +
+//                "\t\t\tlabel: \"INC\",\n" +
+//                "\t\t\tdescription: \"Incendie\"\n" +
+//                "\t\t}\n" +
+//                "\t],\n" +
+//                "\tvehicles: [\n" +
+//                "\t\t{\n" +
+//                "\t\t\tlabel: \"RENN-0801\",\n" +
+//                "\t\t\ttype: \"INC\",\n" +
+//                "\t\t\tstatus: \"DISPONIBLE\"\n" +
+//                "\t\t}\n" +
+//                "\t],\n" +
+//                "\tdemandes: [\n" +
+//                "\t\t{\n" +
+//                "\t\t\tid: 1,\n" +
+//                "\t\t\tvehicle: {\n" +
+//                "\t\t\t\ttype: \"FPT\",\n" +
+//                "\t\t\t\tstatus: \"DEMANDE\"\n" +
+//                "\t\t\t},\n" +
+//                "\t\t}\n" +
+//                "\t]\n" +
+//                "}";
+//
+//        try {
+//
+//
+//            InitializeApplication initializeApplication = gson.fromJson(json, InitializeApplication.class);
+//            Log.d(TAG, initializeApplication.toString());
+//        } catch (JsonSyntaxException e) {
+//            Log.e(TAG, "JsonSyntaxException received", e);
+//        }
+
+
 
 //        bindService(websocketServiceIntent, new ServiceConnection() {
 //            @Override
@@ -199,7 +255,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Extract data included in the Intent
-            int yourInteger = intent.getIntExtra("message",-1/*default value*/);
+            String json = intent.getStringExtra("message");
+
+            if("initialize-application".equals(intent.getAction())) {
+
+                Gson gson = new GsonBuilder().create();
+                //TODO: Here we receive the object pushed from server
+                InitializeApplication initializeApplication = gson.fromJson(intent.getStringExtra("message"), InitializeApplication.class);
+            }
         }
     };
 
