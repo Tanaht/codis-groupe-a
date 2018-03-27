@@ -13,6 +13,7 @@ public class Intervention {
     private Position position;
     private String address;
     private SinisterCode sinisterCode;
+    private boolean opened;
 
     /**
      * Default constructor.
@@ -23,12 +24,13 @@ public class Intervention {
     /**
      * Constructor by value.
      *
-     * @param date the date of the intervention
-     * @param position the location of the intervention
-     * @param address the address of the intervention
+     * @param date         the date of the intervention
+     * @param position     the location of the intervention
+     * @param address      the address of the intervention
      * @param sinisterCode the sinister code
+     * @param opened       is the intervention opened
      */
-    public Intervention(long date, Position position, String address, SinisterCode sinisterCode) {
+    public Intervention(long date, Position position, String address, SinisterCode sinisterCode, boolean opened) {
         this.date = date;
         this.position = position;
         this.address = address;
@@ -131,5 +133,23 @@ public class Intervention {
      */
     public void setSinisterCode(SinisterCode sinisterCode) {
         this.sinisterCode = sinisterCode;
+    }
+
+    /**
+     * Is the intervention opened.
+     *
+     * @return the boolean
+     */
+    public boolean isOpened() {
+        return opened;
+    }
+
+    /**
+     * Sets opened.
+     *
+     * @param opened the opened
+     */
+    public void setOpened(boolean opened) {
+        this.opened = opened;
     }
 }
