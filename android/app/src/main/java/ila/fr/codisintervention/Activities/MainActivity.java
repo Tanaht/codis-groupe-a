@@ -65,97 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         handler = new WebsocketServiceHandler();
 
-//        Gson gson = new GsonBuilder().create();
-//        String json = "{\n" +
-//                "\tuser: {\n" +
-//                "\t\tusername: \"Gerard\",\n" +
-//                "\t\trole: \"OPERATOR\"\n" +
-//                "\t},\n" +
-//                "\ttypes: [\n" +
-//                "\t\t{\n" +
-//                "\t\t\tlabel: \"FPT\"\n" +
-//                "\t\t},\n" +
-//                "\t\t{ label: \"VSAV\" }\n" +
-//                "\t],\n" +
-//                "\tcodes: [\n" +
-//                "\t\t{\n" +
-//                "\t\t\tlabel: \"INC\",\n" +
-//                "\t\t\tdescription: \"Incendie\"\n" +
-//                "\t\t}\n" +
-//                "\t],\n" +
-//                "\tvehicles: [\n" +
-//                "\t\t{\n" +
-//                "\t\t\tlabel: \"RENN-0801\",\n" +
-//                "\t\t\ttype: \"INC\",\n" +
-//                "\t\t\tstatus: \"DISPONIBLE\"\n" +
-//                "\t\t}\n" +
-//                "\t],\n" +
-//                "\tdemandes: [\n" +
-//                "\t\t{\n" +
-//                "\t\t\tid: 1,\n" +
-//                "\t\t\tvehicle: {\n" +
-//                "\t\t\t\ttype: \"FPT\",\n" +
-//                "\t\t\t\tstatus: \"DEMANDE\"\n" +
-//                "\t\t\t},\n" +
-//                "\t\t}\n" +
-//                "\t]\n" +
-//                "}";
-//
-//        try {
-//
-//
-//            InitializeApplication initializeApplication = gson.fromJson(json, InitializeApplication.class);
-//            Log.d(TAG, initializeApplication.toString());
-//        } catch (JsonSyntaxException e) {
-//            Log.e(TAG, "JsonSyntaxException received", e);
-//        }
-
-
-
-//        bindService(websocketServiceIntent, new ServiceConnection() {
-//            @Override
-//            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-//                Log.d(TAG, "Service Connected");
-//                iBinder.
-//            }
-//
-//            @Override
-//            public void onServiceDisconnected(ComponentName componentName) {
-//                Log.d(TAG, "Service Disconnected");
-//            }
-//        })
-
-/*
-
-
-        client.topic("/topic/broadcastTest").subscribe(message -> {
-            Log.i(TAG, "Received message: " + message.getPayload());
-        });
-
-
-
-        client.send("/broadcastTest", "hello").subscribe(
-                () -> Log.d(TAG, "Sent data!"),
-                error -> Log.e(TAG, "Encountered error while sending data!", error)
-        );
-
-
-
-        client.lifecycle().subscribe(lifecycleEvent -> {
-            switch (lifecycleEvent.getType()) {
-                case OPENED:
-                    Log.d(TAG, "Stomp connection opened");
-                    break;
-                case CLOSED:
-                    Log.d(TAG, "Stomp connection closed");
-                    break;
-                case ERROR:
-                    Log.e(TAG, "Stomp connection error", lifecycleEvent.getException());
-                    break;
-            }
-        });
-*/
-
         setContentView(R.layout.activity_main);
         editText_login = (EditText) this.findViewById(R.id.editText_login);
         editText_mdp = (EditText) this.findViewById(R.id.editText_mdp);
@@ -258,10 +167,19 @@ public class MainActivity extends AppCompatActivity {
             String json = intent.getStringExtra("message");
 
             if("initialize-application".equals(intent.getAction())) {
-
+                Log.i(TAG, "MainActivity receive intent action: initialize-application");
                 Gson gson = new GsonBuilder().create();
                 //TODO: Here we receive the object pushed from server
                 InitializeApplication initializeApplication = gson.fromJson(intent.getStringExtra("message"), InitializeApplication.class);
+
+
+//                TODO: Initialize application for both types of user
+
+                if(initializeApplication.getUser().isCodisUser()) {
+//                        TODO: Initialize application for codis user.
+                } else {
+
+                }
             }
         }
     };

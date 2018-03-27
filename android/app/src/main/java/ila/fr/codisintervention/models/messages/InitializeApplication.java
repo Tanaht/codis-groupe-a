@@ -14,4 +14,23 @@ public class InitializeApplication {
     private List<Vehicle> vehicles;
     private List<Demande> demandes;
 
+    public User getUser() {
+        return user;
+    }
+
+    public List<Code> getCodes() {
+        return codes;
+    }
+
+    public List<Type> getTypes() {
+        return types;
+    }
+
+    public List<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public List<Demande> getDemandes() {
+        return demandes;
+    }
 }
