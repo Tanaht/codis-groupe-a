@@ -8,6 +8,7 @@
     import android.os.Bundle;
     import android.app.Fragment;
     import android.support.v4.app.ActivityCompat;
+    import android.util.Log;
     import android.view.LayoutInflater;
     import android.view.View;
     import android.view.ViewGroup;
@@ -61,6 +62,7 @@
             return rootView;
         }
 
+        /*Method used to add à marker and zoom on it */
         public void addMarker_Zoom (LatLng Coord) {
 
             // For dropping a marker Coord at a point on the MapActivity
@@ -70,6 +72,15 @@
             CameraPosition cameraPosition = new CameraPosition.Builder().target(Coord).zoom(15).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
+
+        /*
+        //other way to move the camera
+        public void moveCamera(LatLng latlng, float zoom, String title)
+        {
+        Log.d(TAG,"moveCamera: moving the camera to: " +latlng.latitude + ", lng: " + latlng.longitude);
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, zoom));
+        }
+        */
 
         @Override
         public void onResume() {
