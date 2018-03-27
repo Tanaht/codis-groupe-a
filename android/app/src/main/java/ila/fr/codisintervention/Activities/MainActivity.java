@@ -1,16 +1,27 @@
 package ila.fr.codisintervention.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ua.naiksoftware.stomp.Stomp;
+import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
+
+import static ua.naiksoftware.stomp.LifecycleEvent.Type.CLOSED;
+import static ua.naiksoftware.stomp.LifecycleEvent.Type.OPENED;
+import static ua.naiksoftware.stomp.LifecycleEvent.Type.ERROR;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,19 +39,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-
-        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "http://192.168.43.226:8080/stomp");
+        Log.d(TAG, "Send Intent to WebsocketService");
+        Intent websocketServiceIntent = new Intent(this, WebsocketService.class);
+        startService(websocketServiceIntent);
 
 /*
-        StompClient client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "http://192.168.43.226:8080/stomp");
-
-
-        List<StompHeader> stompHeader = Arrays.asList(
-                new StompHeader("userlogin","user"),
-                new StompHeader("userpassword","pass"));
-
-        client.connect(stompHeader);
 
 
         client.topic("/topic/broadcastTest").subscribe(message -> {

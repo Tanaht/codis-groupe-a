@@ -1,6 +1,7 @@
 package ila.fr.codisintervention.utils;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 /**
  * Class used to store and retrieve shared preferences
@@ -24,7 +25,9 @@ public class Config {
     private Config() {
         host = "";
         port = 8080;
-        uri = "/stomp";
+        uri = "stomp";
+
+        Log.d("CONFIG", "Application configuration: Host: " + host + ", Port: " + port + ", Uri: " + uri + "");
     }
 
     public String getHost() {
@@ -33,5 +36,9 @@ public class Config {
 
     public int getPort() {
         return port;
+    }
+
+    public String getUri() {
+        return uri;
     }
 }
