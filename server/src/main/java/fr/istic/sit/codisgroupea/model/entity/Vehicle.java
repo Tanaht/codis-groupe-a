@@ -94,6 +94,7 @@ public class Vehicle {
      * @return the vehicle status
      */
     @Enumerated
+    @NotNull
     public VehicleStatus getStatus() {
         return status;
     }
