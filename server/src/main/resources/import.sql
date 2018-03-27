@@ -7,3 +7,7 @@ REPLACE INTO role values(3,'ROLE_DRONE_USER');
 REPLACE INTO user values(1,'codis_user','codis_user',1);
 REPLACE INTO user values(2,'simple_user','simple_user',2);
 REPLACE INTO user values(3,'drone_user','drone_user',3);
+
+-- Insert Sinister code
+INSERT INTO sinister_code (code) VALUES ('INC');
+INSERT INTO sinister_code (code) VALUES ('SAP');
