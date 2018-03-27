@@ -11,7 +11,7 @@ import java.util.List;
  * SpringData repository for unit entity.
  */
 @Repository
-public interface UnitRepository extends JpaRepository<Unit, Long> {
+public interface UnitRepository extends JpaRepository<Unit, Integer> {
 
     @Query("select u from Unit u where u.vehicle.status = REQUESTED")
     List<Unit> getAllReqestedVehicle();

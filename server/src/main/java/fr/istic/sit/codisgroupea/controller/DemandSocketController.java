@@ -1,11 +1,10 @@
 package fr.istic.sit.codisgroupea.controller;
 
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
-import fr.istic.sit.codisgroupea.model.entity.Intervention;
-import fr.istic.sit.codisgroupea.model.entity.Symbol;
-import fr.istic.sit.codisgroupea.model.entity.Unit;
-import fr.istic.sit.codisgroupea.model.entity.Vehicle;
+import fr.istic.sit.codisgroupea.model.entity.*;
+import fr.istic.sit.codisgroupea.model.message.ListUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
+import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 import fr.istic.sit.codisgroupea.repository.InterventionRepository;
 import fr.istic.sit.codisgroupea.repository.SymbolRepository;
 import fr.istic.sit.codisgroupea.repository.UnitRepository;
@@ -18,6 +17,9 @@ import org.springframework.stereotype.Controller;
 
 import javax.swing.text.html.Option;
 import java.security.Principal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -78,14 +80,39 @@ public class DemandSocketController {
      */
     @MessageMapping(RoutesConfig.UPDATE_UNIT_CLIENT)
     @SendTo({RoutesConfig.UPDATE_UNIT_SERVER})
-    public String updateUnit(@DestinationVariable("id") final long idInterventions, Principal principal, UnitMessage dataSendByClient) {
+    public ListUnitMessage updateUnit(@DestinationVariable("id") final long idInterventions, Principal principal, List<UnitMessage> dataSendByClient) {
         Optional<Intervention> intervention = interventionRepository.findById(idInterventions);
-        Optional<Unit> unitInBdd = unitRepository.findById(dataSendByClient.getId());
-        Optional<Vehicle> vehicle = vehicleRepository.findVehicleByLabel(dataSendByClient.getVehicule().getLabel());
+
+        List<UnitMessage> listUnitUpdated = new ArrayList<>();
+
+        for (UnitMessage unitMessageFromCLient : dataSendByClient){
+            Optional<Unit> unitInBdd = unitRepository.findById(unitMessageFromCLient.getId());
+            Optional<Vehicle> vehicle = vehicleRepository.findVehicleByLabel(unitMessageFromCLient.getVehicule().getLabel());
+            Optional<Symbol> symb = symbolRepository
+                    .findSymbolByColorAndShape(unitMessageFromCLient.getSymbolUnitMessage().getColor(),
+                            unitMessageFromCLient.getSymbolUnitMessage().getShape());
 
 
+            unitInBdd.get().getSymbolSitac().setSymbol(symb.get());
+            unitInBdd.get().getSymbolSitac().setLocation(unitMessageFromCLient
+                    .getSymbolUnitMessage().getLocation().toPositionEntity());
 
-        return "";
+            vehicle.get().setStatus(unitMessageFromCLient.getVehicule().getStatus());
+
+            unitInBdd.get().setVehicle(vehicle.get());
+            unitInBdd.get().setMoving(unitMessageFromCLient.isMoving());
+
+            unitInBdd.get().setAcceptDate(new Timestamp(unitMessageFromCLient.getDate_accepted()));
+            unitInBdd.get().setRequestDate(new Timestamp(unitMessageFromCLient.getDate_granted()));
+
+            unitRepository.save(unitInBdd.get());
+            UnitMessage unitUpdated = new UnitMessage(unitInBdd.get());
+
+            listUnitUpdated.add(unitUpdated);
+        }
+
+
+        return new ListUnitMessage("UPDATE", listUnitUpdated);
     }
 
     /**
