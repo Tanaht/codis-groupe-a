@@ -5,6 +5,7 @@ import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.ListUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.Receive.ConfirmDemandVehicleMessage;
+import fr.istic.sit.codisgroupea.model.message.Send.DemandesCreatedMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
@@ -101,7 +102,9 @@ public class DemandSocketController {
         );
 
         //Message for the client
-        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.CREATE_UNIT_SERVER_CLIENT,"msgToSend");
+        simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CLIENT,unitCreated);
+
+        simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CODIS,new DemandesCreatedMessage(unit));
     }
 
     /**
