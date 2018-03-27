@@ -29,11 +29,11 @@ public class RoutesConfig {
 
     public final static String CONFIRM_DEMAND_CLIENT = "/app/demandes/{idUnit}/accept";
     public final static String CONFIRM_DEMAND_SERVER_CODIS = "/topic/demandes/{id}/accepted";
-    public final static String CONFIRM_DEMAND_SERVER_CLIENT = "/topic/interventions/{id}/units/{id}/accepted";
+    //public final static String CONFIRM_DEMAND_SERVER_CLIENT = "/topic/interventions/{id}/units/{idUnit}/accepted";
 
     public final static String DENY_DEMAND_CLIENT = "/app/demandes/{idUnit}/deny";
     public final static String DENY_DEMAND_SERVER_CODIS = "/topic/demandes/{id}/denied";
-    public final static String DENY_DEMAND_SERVER_CLIENT = "/topic/interventions/{id}/units/{id}/denied";
+    //public final static String DENY_DEMAND_SERVER_CLIENT = "/topic/interventions/{id}/units/{idUnit}/denied";
 
     //SymbolSocketController
     public final static String CREATE_SYMBOL_CLIENT = "/app/interventions/{id}/symbols/create";

@@ -1,8 +1,10 @@
 package fr.istic.sit.codisgroupea.controller;
 
+import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.ListUnitMessage;
+import fr.istic.sit.codisgroupea.model.message.Receive.ConfirmDemandVehicleMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
@@ -173,14 +175,24 @@ public class DemandSocketController {
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.CONFIRM_DEMAND_CLIENT)
-    public void confirmDemand(@DestinationVariable("idUnit") final String idUnit, Principal principal, String dataSendByClient) {
+    public void confirmDemand(@DestinationVariable("idUnit") final int idUnit, Principal principal, ConfirmDemandVehicleMessage dataSendByClient) {
         String userLogin = principal.getName();
 
+        Optional<Unit> unit = unitRepository.findById(idUnit);
+        if (!unit.isPresent()){
+            logger.error("Unit with id "+idUnit+" doesn't exist in bdd");
+        }
+
+
+        UnitMessage unitToSend = new UnitMessage(unit.get());
         //Message for the codis
-        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.CONFIRM_DEMAND_SERVER_CODIS,"msgToSend");
+        simpMessagingTemplate.convertAndSend(RoutesConfig.CONFIRM_DEMAND_SERVER_CODIS,"ping");
+
+        Gson gson = new Gson();
 
         //Message for the client
-        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.CONFIRM_DEMAND_SERVER_CLIENT,"msgToSend");
+        simpMessagingTemplate.convertAndSend("/topic/interventions/" +unit.get().getIntervention().getId()+
+                "/units/"+idUnit+"/accepted",gson.toJson(unitToSend,UnitMessage.class));
     }
 
     /**
@@ -191,13 +203,20 @@ public class DemandSocketController {
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.DENY_DEMAND_CLIENT)
-    public void denyDemand(@DestinationVariable("idUnit") final String idUnit, Principal principal, String dataSendByClient) {
+    public void denyDemand(@DestinationVariable("idUnit") final int idUnit, Principal principal, String dataSendByClient) {
         String userLogin = principal.getName();
+        Optional<Unit> unit = unitRepository.findById(idUnit);
+
+        if (!unit.isPresent()){
+            logger.error("Unit with id "+idUnit+" doesn't exist in bdd");
+        }
+
 
         //Message for the codis
-        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.DENY_DEMAND_SERVER_CODIS,"msgToSend");
+        simpMessagingTemplate.convertAndSend(RoutesConfig.DENY_DEMAND_SERVER_CODIS,"denied");
 
         //Message for the client
-        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.DENY_DEMAND_SERVER_CLIENT,"msgToSend");
+        simpMessagingTemplate.convertAndSend("/topic/interventions/"+
+                unit.get().getIntervention().getId()+"/units/"+idUnit+"/denied","denied");
     }
 }
