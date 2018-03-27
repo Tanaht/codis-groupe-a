@@ -30,10 +30,8 @@ public class InitializeApplicationMessage {
      * Demand list
      */
     private List<DemandMessage> demandes;
-    /**
-     * ???
-     */
-    private List<VehicleColorMapping> vehicle_color_mapping;
+
+    //private List<InterventionMessage> interventions;
 
 
     /**
@@ -43,19 +41,16 @@ public class InitializeApplicationMessage {
      * @param codesList Codes sinister list
      * @param vehicleList vehicle list
      * @param demandList Demand list
-     * @param vehicleColorMapping ???
      */
     public InitializeApplicationMessage(User usr, List<VehicleTypeMessage> typesList,
                                         List<SinisterCodeMessage> codesList,
                                         List<VehicleMessage> vehicleList,
-                                        List<DemandMessage> demandList,
-                                        List<VehicleColorMapping> vehicleColorMapping){
+                                        List<DemandMessage> demandList){
         user = new UserMessage(usr);
         types = typesList;
         codes = codesList;
         vehicles = vehicleList;
         demandes = demandList;
-        vehicle_color_mapping = vehicleColorMapping;
 
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface UnitRepository extends JpaRepository<Unit, Integer> {
 
-    @Query("select u from Unit u where u.vehicle.status = VehicleStatus.REQUESTED")
+    @Query("select u from Unit u where u.vehicle.status = fr.istic.sit.codisgroupea.model.entity.VehicleStatus.REQUESTED")
     List<Unit> getAllRequestedVehicles();
 
     Iterable<? extends Unit> findAllByIntervention(Intervention intervention);

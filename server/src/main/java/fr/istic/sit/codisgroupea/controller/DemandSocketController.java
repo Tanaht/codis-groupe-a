@@ -9,6 +9,8 @@ import fr.istic.sit.codisgroupea.repository.InterventionRepository;
 import fr.istic.sit.codisgroupea.repository.SymbolRepository;
 import fr.istic.sit.codisgroupea.repository.UnitRepository;
 import fr.istic.sit.codisgroupea.repository.VehicleRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -27,6 +29,8 @@ import java.util.Optional;
  */
 @Controller
 public class DemandSocketController {
+
+    private static final Logger logger = LoggerFactory.getLogger(DemandSocketController.class);
 
     /** Template of the web socket */
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -83,6 +87,10 @@ public class DemandSocketController {
     public ListUnitMessage updateUnit(@DestinationVariable("id") final long idInterventions, Principal principal, List<UnitMessage> dataSendByClient) {
         Optional<Intervention> intervention = interventionRepository.findById(idInterventions);
 
+        if (!intervention.isPresent()){
+            logger.error("Intervention with id "+ idInterventions+" doesn't exist");
+        }
+
         List<UnitMessage> listUnitUpdated = new ArrayList<>();
 
         for (UnitMessage unitMessageFromCLient : dataSendByClient){
@@ -91,6 +99,20 @@ public class DemandSocketController {
             Optional<Symbol> symb = symbolRepository
                     .findSymbolByColorAndShape(unitMessageFromCLient.getSymbolUnitMessage().getColor(),
                             unitMessageFromCLient.getSymbolUnitMessage().getShape());
+
+            if(!unitInBdd.isPresent()){
+                logger.error("Unit with id "+unitMessageFromCLient.getId()+" doesn't exist in bdd");
+            }
+
+            if(!vehicle.isPresent()){
+                logger.error("Vehicle with label " + unitMessageFromCLient.getVehicule().getLabel() +
+                        " doesn't exist in bdd");
+            }
+
+            if(!symb.isPresent()){
+                logger.error("sym with color " + unitMessageFromCLient.getSymbolUnitMessage().getColor() +
+                        " and shape " + unitMessageFromCLient.getSymbolUnitMessage().getShape() + "doesn't exist");
+            }
 
 
             unitInBdd.get().getSymbolSitac().setSymbol(symb.get());

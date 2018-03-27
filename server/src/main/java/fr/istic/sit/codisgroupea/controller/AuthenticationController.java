@@ -50,11 +50,10 @@ public class AuthenticationController {
      * Requested by android client when he connected to the application.
      * @param principal Injected param who contain the user login who send the request
      * @param username Username in the url. Useless
-     * @param dataSendByClient data send by the client. don't need to contain something
      */
     @MessageMapping(RoutesConfig.SUBSCRIBED)
-    public void getInfoUser(Principal principal, @DestinationVariable("username") final String username, String dataSendByClient) {
-        logger.info("msg receive from : "+principal.getName()+", msg : " + dataSendByClient);
+    public void getInfoUser(Principal principal, @DestinationVariable("username") final String username) {
+        logger.info("msg receive from : "+principal.getName());
 
         Optional<User> user = authenticationService.getUser(principal.getName());
 
@@ -66,26 +65,24 @@ public class AuthenticationController {
         for (VehicleType vehicleType : vehicleTypeRepository.findAll()){
             types.add(new InitializeApplicationMessage.VehicleTypeMessage(vehicleType));
         }
+
         List<InitializeApplicationMessage.SinisterCodeMessage> codes = new ArrayList<>();
         for (SinisterCode sinisterCode : sinisterCodeRepository.findAll()){
             codes.add(new InitializeApplicationMessage.SinisterCodeMessage(sinisterCode));
         }
+
         List<VehicleMessage> vehicles = new ArrayList<>();
         for (Vehicle vehicle : vehicleRepository.findAll()){
             vehicles.add(new VehicleMessage(vehicle));
         }
+
         List<InitializeApplicationMessage.DemandMessage> demandes = new ArrayList<>();
         for (Unit unit : unitRepository.getAllRequestedVehicles()){
             demandes.add(new InitializeApplicationMessage.DemandMessage(unit));
         }
 
-        List<InitializeApplicationMessage.VehicleColorMapping> vehicleColorMapping = new ArrayList<>();
-
-
-
-
         InitializeApplicationMessage iniAppli = new InitializeApplicationMessage(user.get(),
-                types,codes,vehicles,demandes,vehicleColorMapping);
+                types,codes,vehicles,demandes);
 
         Gson gson = new Gson();
         simpMessagingTemplate.convertAndSend("/topic/users/"+principal.getName()+"/initialize-application",
