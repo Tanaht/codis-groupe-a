@@ -189,6 +189,7 @@ public class InterventionSocketController {
                                        String dataSentByClient) {
         Intervention intervention = interventionRepository.getOne((long) id);
         intervention.setOpened(false);
+        interventionRepository.save(intervention);
         return new IdMessage(id);
     }
 }

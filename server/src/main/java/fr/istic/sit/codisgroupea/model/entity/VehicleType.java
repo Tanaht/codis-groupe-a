@@ -11,7 +11,6 @@ import java.util.List;
 public class VehicleType {
     private int id;
     private String name;
-    private List<Vehicle> vehicles;
 
     /**
      * Default constructor.
@@ -23,11 +22,9 @@ public class VehicleType {
      * Constructor by value.
      *
      * @param name the vehicle-type label
-     * @param vehicles the list of vehicle of said type
      */
-    public VehicleType(String name, List<Vehicle> vehicles) {
+    public VehicleType(String name) {
         this.name = name;
-        this.vehicles = vehicles;
     }
 
     /**
@@ -69,22 +66,4 @@ public class VehicleType {
         this.name = name;
     }
 
-    /**
-     * Getter of the vehicle list.
-     *
-     * @return the vehicle list
-     */
-    @OneToMany
-    public List<Vehicle> getVehicles() {
-        return vehicles;
-    }
-
-    /**
-     * Setter of the vehicle list.
-     *
-     * @param vehicles the vehicle list
-     */
-    public void setVehicles(List<Vehicle> vehicles) {
-        this.vehicles = vehicles;
-    }
 }
