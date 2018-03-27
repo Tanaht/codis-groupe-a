@@ -136,6 +136,8 @@ public class SymbolSocketController {
 
             listMessage.add(message);
 
+            positionRepository.delete(optSitac.get().getLocation());
+            payloadRepository.delete(optSitac.get().getPayload());
             symbolSitacRepository.delete(optSitac.get());
         }
 
@@ -182,8 +184,10 @@ public class SymbolSocketController {
 
             symbolSitac.setId(data.getId());
             symbolSitac.setSymbol(optSymbol.get());
-            symbolSitac.setLocation(new Position(data.getLocation().getLat(), data.getLocation().getLng()));
-            symbolSitac.setPayload(new Payload(data.getPayload().getIdentifier(), data.getPayload().getDetails()));
+            symbolSitac.getLocation().setLatitude(data.getLocation().getLat());
+            symbolSitac.getLocation().setLongitude(data.getLocation().getLng());
+            symbolSitac.getPayload().setIdentifier(data.getPayload().getIdentifier());
+            symbolSitac.getPayload().setDetails(data.getPayload().getDetails());
 
             SymbolSitac newSymbolSitac = symbolSitacRepository.save(symbolSitac);
 
