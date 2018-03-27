@@ -8,8 +8,14 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class Symbol {
+
+    /** The id of the symbol */
     private int id;
+
+    /** Instance of {@link Color} for the color of the symbol */
     private Color color;
+
+    /** Instance of {@link Shape} for the shape of the symbol */
     private Shape shape;
 
     /**

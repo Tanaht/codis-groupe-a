@@ -9,7 +9,11 @@ import java.util.List;
  */
 @Entity
 public class VehicleType {
+
+    /** The id of the vehicle type */
     private int id;
+
+    /** The name of the vehicle type */
     private String name;
 
     /**

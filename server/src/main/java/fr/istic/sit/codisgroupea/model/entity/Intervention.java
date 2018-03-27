@@ -8,11 +8,23 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class Intervention {
+
+    /** The id of the intervention */
     private int id;
+
+    /** The date of the intervention */
     private long date;
+
+    /** Instance of {@link Position} objet for the intervention */
     private Position position;
+
+    /** Address of the intervention */
     private String address;
+
+    /** Instance of {@link SinisterCode} for the intervention */
     private SinisterCode sinisterCode;
+
+    /** Boolean which indicate if the intervention is open or not */
     private boolean opened;
 
     /**

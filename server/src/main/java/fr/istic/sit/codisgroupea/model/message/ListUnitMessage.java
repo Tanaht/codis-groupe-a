@@ -6,7 +6,11 @@ import java.util.List;
  * The type List unit message.
  */
 public class ListUnitMessage {
+
+    /** The type of the list */
     private String type;
+
+    /** The list of Units */
     private List<UnitMessage> units;
 
     /**

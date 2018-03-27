@@ -10,7 +10,11 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class Role implements GrantedAuthority {
+
+    /** The id of the role */
     private Long id;
+
+    /** The label of the role */
     private String label;
 
     /**

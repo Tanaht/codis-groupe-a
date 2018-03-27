@@ -38,19 +38,28 @@ public class DemandSocketController {
     /** Template of the web socket */
     private SimpMessagingTemplate simpMessagingTemplate;
 
+    /** {@link UnitRepository} instance */
     private UnitRepository unitRepository;
+
+    /** {@link InterventionRepository} instance */
     private InterventionRepository interventionRepository;
+
+    /** {@link VehicleRepository} instance */
     private VehicleRepository vehicleRepository;
+
+    /** {@link SymbolRepository} instance */
     private SymbolRepository symbolRepository;
+
+    /** {@link DefaultVehicleSymbolRepository} instance */
     private DefaultVehicleSymbolRepository defaultVehicleSymbolRepository;
 
     /**
      * Constructor of the class {@link DemandSocketController}
      * @param simpMessagingTemplate Template of the web socket
-     * @param unitRepository
-     * @param interventionRepository
-     * @param vehicleRepository
-     * @param symbolRepository
+     * @param unitRepository {@link UnitRepository} instance
+     * @param interventionRepository {@link InterventionRepository} instance
+     * @param vehicleRepository {@link VehicleRepository} instance
+     * @param symbolRepository {@link SymbolRepository} instance
      */
     public DemandSocketController(SimpMessagingTemplate simpMessagingTemplate, UnitRepository unitRepository, InterventionRepository interventionRepository, VehicleRepository vehicleRepository, SymbolRepository symbolRepository) {
         this.simpMessagingTemplate = simpMessagingTemplate;

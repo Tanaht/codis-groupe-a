@@ -21,29 +21,29 @@ import java.util.List;
 @Controller
 public class InterventionSocketController {
 
-    /** The Intervention Repository instance */
+    /** {@link InterventionRepository} instance */
     private InterventionRepository interventionRepository;
 
-    /** The Sinister Code Repository instance */
+    /** {@link SinisterCodeRepository} instance */
     private SinisterCodeRepository sinisterCodeRepository;
 
-    /** The Symbol Sitac Repository instance */
+    /** {@link SymbolSitacRepository} instance */
     private SymbolSitacRepository symbolSitacRepository;
 
-    /** The Unit Repository instance */
+    /** {@link UnitRepository} instance */
     private UnitRepository unitRepository;
 
-    /** The Photo Repository instance */
+    /** {@link PhotoRepository} instance */
     private PhotoRepository photoRepository;
 
     /**
      * Constructor of the class {@link InterventionSocketController}.
      *
-     * @param interventionRepository The Intervention Repository instance
-     * @param sinisterCodeRepository The Sinister Code Repository instance
-     * @param symbolSitacRepository The Symbol Sitac Repository instance
-     * @param unitRepository The Unit Repository instance
-     * @param photoRepository The Photo Repository instance
+     * @param interventionRepository {@link InterventionRepository} instance
+     * @param sinisterCodeRepository {@link SinisterCodeRepository} instance
+     * @param symbolSitacRepository {@link SymbolSitacRepository} instance
+     * @param unitRepository {@link UnitRepository} instance
+     * @param photoRepository {@link PhotoRepository} instance
      */
     public InterventionSocketController (InterventionRepository interventionRepository,
                                          SinisterCodeRepository sinisterCodeRepository,

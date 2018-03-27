@@ -27,30 +27,30 @@ public class SymbolSocketController {
     /** The logger */
     private static final Logger logger = LoggerFactory.getLogger(SymbolSocketController.class);
 
-    /** The Intervention Repository instance */
+    /** {@link InterventionRepository} instance */
     private InterventionRepository interventionRepository;
 
-    /** The Symbol Repository instance */
+    /** {@link SymbolRepository} instance */
     private SymbolRepository symbolRepository;
 
-    /** The Symbol Sitac Repository instance */
+    /** {@link SymbolSitacRepository} instance */
     private SymbolSitacRepository symbolSitacRepository;
 
-    /** The Position Repository instance */
+    /** {@link PositionRepository} instance */
     private PositionRepository positionRepository;
 
-    /** The Payload Repository instance */
+    /** {@link PayloadRepository} instance */
     private PayloadRepository payloadRepository;
 
 
     /**
      * Constructor of the class {@link SymbolSocketController}
      *
-     * @param interventionRepository The Intervention Repository instance
-     * @param symbolRepository The Symbol Repository instance
-     * @param symbolSitacRepository The Symbol Sitac Repository instance
-     * @param positionRepository The Position Repository instance
-     * @param payloadRepository The Payload Repository instance
+     * @param interventionRepository {@link InterventionRepository}
+     * @param symbolRepository {@link SymbolRepository} instance
+     * @param symbolSitacRepository {@link SymbolSitacRepository} instance
+     * @param positionRepository {@link PositionRepository} instance
+     * @param payloadRepository {@link PayloadRepository} instance
      */
     public SymbolSocketController (InterventionRepository interventionRepository,
                                    SymbolRepository symbolRepository,

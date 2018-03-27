@@ -9,8 +9,14 @@ import javax.persistence.Id;
  */
 @Entity
 public class Payload {
+
+    /** The id of the payload */
     private int id;
+
+    /** The identifier of the payload */
     private String identifier;
+
+    /** The details of the payload */
     private String details;
 
     /**

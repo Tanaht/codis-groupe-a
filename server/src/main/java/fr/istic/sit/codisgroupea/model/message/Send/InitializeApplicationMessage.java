@@ -32,6 +32,7 @@ public class InitializeApplicationMessage {
      */
     private List<DemandMessage> demandes;
 
+    /** Intervention list */
     private List<InterventionMessage> interventions;
 
 
@@ -43,7 +44,7 @@ public class InitializeApplicationMessage {
      * @param codesList Codes sinister list
      * @param vehicleList vehicle list
      * @param demandList Demand list
-     * @param interventions
+     * @param interventions Intervention list
      */
     public InitializeApplicationMessage(User usr, List<VehicleTypeMessage> typesList,
                                         List<SinisterCodeMessage> codesList,
@@ -57,13 +58,30 @@ public class InitializeApplicationMessage {
         this.interventions = interventions;
     }
     public static class InterventionMessage{
+
+        /** The id */
         private int id;
+
+        /** The date */
         private long date;
+
+        /** The code */
         private String code;
+
+        /** The address */
         private String adresse;
+
+        /** Boolean which tells if the drone is available or not */
         private boolean drone_available;
+
+        /** Instance of {@link fr.istic.sit.codisgroupea.model.entity.Position} for the position */
         private Position location;
 
+        /**
+         * Constructor of the class {@link InterventionMessage}
+         *
+         * @param intervention The intervention concerned
+         */
         public InterventionMessage(Intervention intervention){
             id = intervention.getId();
             date = intervention.getDate();

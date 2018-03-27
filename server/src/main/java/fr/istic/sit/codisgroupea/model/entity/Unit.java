@@ -12,15 +12,26 @@ import java.sql.Timestamp;
  */
 @Entity
 public class Unit {
+
+    /** The id of the unit */
     private int id;
+
+    /** Instance of {@link Intervention} for the intervention of the unit */
     private Intervention intervention;
+
+    /** Instance of {@link Vehicle} for the vehicle of the unit */
     private Vehicle vehicle;
+
+    /** Boolean which tells if the unit is moving or not */
     private boolean moving;
+
     /** request date of the vehicle for the intervention */
     private Timestamp requestDate;
+
     /** Date of the CODIS acceptation of the vehicle for the intervention */
     private Timestamp acceptDate;
 
+    /** Instance of {@link SymbolSitac} for the symbol sitac of the unit */
     private SymbolSitac symbolSitac;
 
     /**
