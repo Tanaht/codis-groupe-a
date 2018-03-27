@@ -1,21 +1,17 @@
 package fr.istic.sit.codisgroupea.model.message;
 
-import fr.istic.sit.codisgroupea.model.entity.Color;
-import fr.istic.sit.codisgroupea.model.entity.Intervention;
-import fr.istic.sit.codisgroupea.model.entity.Shape;
-import fr.istic.sit.codisgroupea.model.entity.Unit;
-import fr.istic.sit.codisgroupea.model.message.Receive.SymbolMessage;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.Position;
-import sun.security.provider.SHA;
 
 /**
  * The type Unit message.
  */
 public class UnitMessage {
 
-    private Long id;
+    private Integer id;
 
-    private boolean moving;
+    private Boolean moving;
 
     private Long date_granted;
 
@@ -23,7 +19,36 @@ public class UnitMessage {
 
     private VehicleMessage vehicule;
 
-    private SymbolUnitMessage symbolUnitMessage;
+    private SymbolUnitUpdateMessage symbolUnitMessage;
+
+
+    public UnitMessage(Unit unit){
+        id = unit.getId();
+        moving = unit.isMoving();
+        date_granted = unit.getRequestDate().getTime();
+        date_accepted = unit.getAcceptDate().getTime();
+
+        vehicule = new VehicleMessage(unit.getVehicle());
+        symbolUnitMessage = new SymbolUnitUpdateMessage(unit.getSymbolSitac());
+
+    }
+
+    public SymbolUnitUpdateMessage getSymbolUnitMessage() {
+        return symbolUnitMessage;
+    }
+
+    public void setSymbolUnitMessage(SymbolUnitUpdateMessage symbolUnitMessage) {
+        this.symbolUnitMessage = symbolUnitMessage;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
 
     /**
      * The type Symbol unit update message.
@@ -33,6 +58,35 @@ public class UnitMessage {
         private Color color;
         private Position location;
 
+        public SymbolUnitUpdateMessage(SymbolSitac symbolSitac){
+            shape = symbolSitac.getSymbol().getShape();
+            color = symbolSitac.getSymbol().getColor();
+            location = new Position(symbolSitac.getLocation());
+        }
+
+        public Shape getShape() {
+            return shape;
+        }
+
+        public void setShape(Shape shape) {
+            this.shape = shape;
+        }
+
+        public Color getColor() {
+            return color;
+        }
+
+        public void setColor(Color color) {
+            this.color = color;
+        }
+
+        public Position getLocation() {
+            return location;
+        }
+
+        public void setLocation(Position location) {
+            this.location = location;
+        }
     }
 
     public static class SymbolUnitMessage {
@@ -41,30 +95,14 @@ public class UnitMessage {
         private Position localisation;
     }
 
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public Long getId() {
-        return id;
-    }
 
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     /**
      * Is moving boolean.
      *
      * @return the boolean
      */
-    public boolean isMoving() {
+    public Boolean isMoving() {
         return moving;
     }
 
@@ -73,7 +111,7 @@ public class UnitMessage {
      *
      * @param moving the moving
      */
-    public void setMoving(boolean moving) {
+    public void setMoving(Boolean moving) {
         this.moving = moving;
     }
 
