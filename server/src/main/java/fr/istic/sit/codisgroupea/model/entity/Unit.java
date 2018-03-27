@@ -21,6 +21,8 @@ public class Unit {
     /** Date of the CODIS acceptation of the vehicle for the intervention */
     private Timestamp acceptDate;
 
+    private SymbolSitac symbolSitac;
+
     /**
      * Default constructor.
      */
@@ -164,5 +166,16 @@ public class Unit {
      */
     public void setAcceptDate(Timestamp acceptDate) {
         this.acceptDate = acceptDate;
+    }
+
+
+    @OneToOne
+    @NotNull
+    public SymbolSitac getSymbolSitac() {
+        return symbolSitac;
+    }
+
+    public void setSymbolSitac(SymbolSitac symbolSitac) {
+        this.symbolSitac = symbolSitac;
     }
 }

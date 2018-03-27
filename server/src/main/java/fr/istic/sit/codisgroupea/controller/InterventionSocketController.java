@@ -58,6 +58,8 @@ public class InterventionSocketController {
     public String chooseIntervention(@DestinationVariable("id") final String id,
                                      Principal principal,
                                      String dataSentByClient) {
+
+
         return "";
     }
 
