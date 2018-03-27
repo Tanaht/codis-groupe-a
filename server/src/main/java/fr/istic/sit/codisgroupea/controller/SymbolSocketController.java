@@ -12,10 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,26 +24,52 @@ import java.util.Optional;
 @Controller
 public class SymbolSocketController {
 
-    /** Template of the web socket */
-    private SimpMessagingTemplate simpMessagingTemplate;
-
+    /** The logger */
     private static final Logger logger = LoggerFactory.getLogger(SymbolSocketController.class);
 
+    /** The Intervention Repository instance */
     private InterventionRepository interventionRepository;
+
+    /** The Symbol Repository instance */
     private SymbolRepository symbolRepository;
+
+    /** The Symbol Sitac Repository instance */
     private SymbolSitacRepository symbolSitacRepository;
+
+    /** The Position Repository instance */
     private PositionRepository positionRepository;
+
+    /** The Payload Repository instance */
     private PayloadRepository payloadRepository;
 
 
     /**
      * Constructor of the class {@link SymbolSocketController}
-     * @param simpMessagingTemplate Template of the web socket
+     *
+     * @param interventionRepository The Intervention Repository instance
+     * @param symbolRepository The Symbol Repository instance
+     * @param symbolSitacRepository The Symbol Sitac Repository instance
+     * @param positionRepository The Position Repository instance
+     * @param payloadRepository The Payload Repository instance
      */
-    public SymbolSocketController (SimpMessagingTemplate simpMessagingTemplate) {
-        this.simpMessagingTemplate = simpMessagingTemplate;
+    public SymbolSocketController (InterventionRepository interventionRepository,
+                                   SymbolRepository symbolRepository,
+                                   SymbolSitacRepository symbolSitacRepository,
+                                   PositionRepository positionRepository,
+                                   PayloadRepository payloadRepository) {
+        this.interventionRepository = interventionRepository;
+        this.symbolRepository = symbolRepository;
+        this.symbolSitacRepository = symbolSitacRepository;
+        this.positionRepository = positionRepository;
+        this.payloadRepository = payloadRepository;
     }
 
+    /**
+     * Method to generate a new {@link SymbolMessage}.
+     *
+     * @param sitac the symbol sitac with the information
+     * @return the {@link SymbolMessage}
+     */
     private SymbolMessage createSymbolMessage (SymbolSitac sitac) {
         //Get the value of the SymbolSitac object
         Symbol symbol = sitac.getSymbol();
@@ -63,18 +87,17 @@ public class SymbolSocketController {
     }
 
     /**
-     * Method to create new symbol when the client ask to.
+     * Method to create new symbol when the client ask to
      *
      * @param id               the id
-     * @param principal        the principal
      * @param dataSendByClient the data sent by client
      * @return the message
      */
     @MessageMapping(RoutesConfig.CREATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.CREATE_SYMBOL_SERVER})
-    public SymbolsMessage createSymbols(@DestinationVariable("id") final Long id, Principal principal, List<SymbolCreateMessage> dataSendByClient) {
+    public SymbolsMessage createSymbols(@DestinationVariable("id") final Long id, List<SymbolCreateMessage> dataSendByClient) {
 
-        List<SymbolMessage> listMessage = new ArrayList<SymbolMessage>();
+        List<SymbolMessage> listMessage = new ArrayList<>();
 
         for (SymbolCreateMessage data : dataSendByClient) {
             //Get the optional intervention & symbol
@@ -87,7 +110,7 @@ public class SymbolSocketController {
             }
 
             if(!optionalIntervention.isPresent()){
-                logger.error("Le symbol n'existe pas.");
+                logger.error("L'intervention n'existe pas.");
             }
 
             //Create a nex SymbolSitac
@@ -111,25 +134,27 @@ public class SymbolSocketController {
     }
 
     /**
-     * Method to delete symbol when the client ask to.
+     * Method to delete symbol when the client ask to
      *
      * @param id               the id
-     * @param principal        the principal
      * @param dataSendByClient the data sent by client
      * @return the message
      */
     @MessageMapping(RoutesConfig.DELETE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.DELETE_SYMBOL_SERVER})
-    public SymbolsMessage deleteSymbols(@DestinationVariable("id") final String id, Principal principal, List<IdMessage> dataSendByClient) {
+    public SymbolsMessage deleteSymbols(@DestinationVariable("id") final Long id, List<IdMessage> dataSendByClient) {
 
-        List<SymbolMessage> listMessage = new ArrayList<SymbolMessage>();
+        List<SymbolMessage> listMessage = new ArrayList<>();
+
+        if (!interventionRepository.findById(id).isPresent()) {
+            logger.error("L'intervention n'existe pas.");
+        }
 
         for (IdMessage idMessage : dataSendByClient) {
-            Long idSymbole = new Long(idMessage.id);
-            Optional<SymbolSitac> optSitac = symbolSitacRepository.findById(idSymbole);
+            Optional<SymbolSitac> optSitac = symbolSitacRepository.findById((long) idMessage.id);
 
             if (!optSitac.isPresent()) {
-                logger.error("Le symbolSitac n'existe pas.");
+                logger.error("Le symbol Sitac n'existe pas.");
             }
 
             SymbolMessage message = createSymbolMessage(optSitac.get());
@@ -145,18 +170,17 @@ public class SymbolSocketController {
     }
 
     /**
-     * Method to update symbol when the client ask to.
+     * Method to update symbol when the client ask to
      *
      * @param id               the id
-     * @param principal        the principal
      * @param dataSendByClient the data sent by client
      * @return the message
      */
     @MessageMapping(RoutesConfig.UPDATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.UPDATE_SYMBOL_SERVER})
-    public SymbolsMessage updateSymbols(@DestinationVariable("id") final Long id, Principal principal, List<SymbolMessage> dataSendByClient) {
+    public SymbolsMessage updateSymbols(@DestinationVariable("id") final Long id, List<SymbolMessage> dataSendByClient) {
 
-        List<SymbolMessage> listMessage = new ArrayList<SymbolMessage>();
+        List<SymbolMessage> listMessage = new ArrayList<>();
 
         for (SymbolMessage data : dataSendByClient) {
             //Get the optional intervention & symbol
@@ -169,15 +193,14 @@ public class SymbolSocketController {
             }
 
             if(!optionalIntervention.isPresent()){
-                logger.error("Le symbol n'existe pas.");
+                logger.error("L'intervention n'existe pas.");
             }
 
             //Create a nex SymbolSitac
-            Long idSitac = new Long(data.getId());
-            Optional <SymbolSitac> optSitac = symbolSitacRepository.findById(idSitac);
+            Optional <SymbolSitac> optSitac = symbolSitacRepository.findById((long) data.getId());
 
             if(!optSitac.isPresent()){
-                logger.error("Le symbolSitac n'existe pas.");
+                logger.error("Le symbol Sitac n'existe pas.");
             }
 
             SymbolSitac symbolSitac = optSitac.get();

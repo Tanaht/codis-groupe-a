@@ -8,7 +8,6 @@ import fr.istic.sit.codisgroupea.repository.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
@@ -18,32 +17,39 @@ import java.util.List;
 
 /**
  * Controller for intervention basic routes
- * /app/interventions/...
  */
 @Controller
 public class InterventionSocketController {
 
-    /** Template of the web socket */
-    private SimpMessagingTemplate simpMessagingTemplate;
-
+    /** The Intervention Repository instance */
     private InterventionRepository interventionRepository;
+
+    /** The Sinister Code Repository instance */
     private SinisterCodeRepository sinisterCodeRepository;
+
+    /** The Symbol Sitac Repository instance */
     private SymbolSitacRepository symbolSitacRepository;
+
+    /** The Unit Repository instance */
     private UnitRepository unitRepository;
+
+    /** The Photo Repository instance */
     private PhotoRepository photoRepository;
 
     /**
      * Constructor of the class {@link InterventionSocketController}.
      *
-     * @param simpMessagingTemplate Template of the web socket
+     * @param interventionRepository The Intervention Repository instance
+     * @param sinisterCodeRepository The Sinister Code Repository instance
+     * @param symbolSitacRepository The Symbol Sitac Repository instance
+     * @param unitRepository The Unit Repository instance
+     * @param photoRepository The Photo Repository instance
      */
-    public InterventionSocketController (SimpMessagingTemplate simpMessagingTemplate,
-                                         InterventionRepository interventionRepository,
+    public InterventionSocketController (InterventionRepository interventionRepository,
                                          SinisterCodeRepository sinisterCodeRepository,
                                          SymbolSitacRepository symbolSitacRepository,
                                          UnitRepository unitRepository,
                                          PhotoRepository photoRepository) {
-        this.simpMessagingTemplate = simpMessagingTemplate;
         this.interventionRepository = interventionRepository;
         this.sinisterCodeRepository = sinisterCodeRepository;
         this.symbolSitacRepository = symbolSitacRepository;
@@ -51,6 +57,12 @@ public class InterventionSocketController {
         this.photoRepository = photoRepository;
     }
 
+    /**
+     * Method which populate a list of symbol
+     *
+     * @param intervention the intervention
+     * @return a list of symbol
+     */
     private List<InterventionChosenMessage.Symbol> populateSymbolList(Intervention intervention) {
         List<InterventionChosenMessage.Symbol> symbols = new ArrayList<>();
 
@@ -72,6 +84,12 @@ public class InterventionSocketController {
         return symbols;
     }
 
+    /**
+     * Method which populate a list of unit
+     *
+     * @param intervention the intervention
+     * @return a list of unit
+     */
     private List<InterventionChosenMessage.Unit> populateUnitList(Intervention intervention) {
         List<InterventionChosenMessage.Unit> units = new ArrayList<>();
 
@@ -102,6 +120,12 @@ public class InterventionSocketController {
         return units;
     }
 
+    /**
+     * Method which populate a list of photo
+     *
+     * @param intervention the intervention
+     * @return a list of photo
+     */
     private List<InterventionChosenMessage.Photo> populatePhotoList(Intervention intervention) {
         List<InterventionChosenMessage.Photo> photos = new ArrayList<>();
 
