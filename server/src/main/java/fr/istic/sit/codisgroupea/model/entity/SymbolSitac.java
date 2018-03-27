@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class SymbolSitac implements SigEntry {
     private int id;
+    private Intervention intervention;
     private Symbol symbol;
     private Position location;
     private Payload payload;
@@ -24,10 +25,12 @@ public class SymbolSitac implements SigEntry {
     /**
      * Instantiates a new Symbol sitac.
      *
-     * @param symbol   the symbol
-     * @param location the location
+     * @param intervention the intervention
+     * @param symbol       the symbol
+     * @param location     the location
      */
-    public SymbolSitac(Symbol symbol, Position location) {
+    public SymbolSitac(Intervention intervention, Symbol symbol, Position location) {
+        this.intervention = intervention;
         this.symbol = symbol;
         this.location = location;
     }
@@ -50,6 +53,25 @@ public class SymbolSitac implements SigEntry {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * Gets intervention.
+     *
+     * @return the intervention
+     */
+    @ManyToOne
+    public Intervention getIntervention() {
+        return intervention;
+    }
+
+    /**
+     * Sets intervention.
+     *
+     * @param intervention the intervention
+     */
+    public void setIntervention(Intervention intervention) {
+        this.intervention = intervention;
     }
 
     /**
