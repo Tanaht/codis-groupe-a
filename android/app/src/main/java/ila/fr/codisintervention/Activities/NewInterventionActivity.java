@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import ila.fr.codisintervention.Entities.Moyen;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.MoyensService;
+import ila.fr.codisintervention.Utils.GooglePlacesAutocompleteAdapter;
 import ila.fr.codisintervention.Utils.MoyenListAdapter;
 
 public class NewInterventionActivity extends AppCompatActivity {
@@ -27,7 +29,16 @@ public class NewInterventionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_intervention);
         setTitle(R.string.NewInterventionPageTitle);
 
-        // Spinner (Liste déroulante)
+        // AutoComplete Address
+        AutoCompleteTextView autoCompView = findViewById(R.id.autoCompleteTextView);
+        autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_item));
+
+        autoCompView.setOnItemClickListener((parent, view, position, id) -> {
+            String str = (String) parent.getItemAtPosition(position);
+            Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+        });
+
+        // Code Sinistre List (Liste déroulante)
         displaySpinner();
 
         // Moyen List
@@ -35,6 +46,8 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         // Send intervention
         checkButtonClick();
+
+
     }
 
     private void displaySpinner(){

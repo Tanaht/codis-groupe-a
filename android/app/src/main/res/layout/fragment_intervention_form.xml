@@ -24,14 +24,26 @@
         android:text="@string/InterventionAddressLabel"
         android:textSize="16sp" />
 
-    <EditText
+    <!--EditText
         android:id="@+id/interventionAddress"
         android:layout_width="match_parent"
         android:layout_height="34dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="40dp"
         android:textSize="12sp"
-        tools:text="ggggfffF" />
+        tools:text="ggggfffF" /-->
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="40dp"
+        android:ems="10"
+        android:hint="@string/InterventionAddressHint" >
+
+        <requestFocus />
+    </AutoCompleteTextView>
+
 
     <TextView
         android:id="@+id/AddressNumeroLabel"
