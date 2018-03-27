@@ -29,7 +29,7 @@ while True:
 
         if mission == "ASSIGN_MISSION":
 
-            MESSAGE = "Mission reçue!"
+            MESSAGE = "Mission reçue! \n"
             client.send(MESSAGE)
 
             # decode des points
