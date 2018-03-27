@@ -3,19 +3,13 @@ package ila.fr.codisintervention.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import ila.fr.codisintervention.R;
 import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
 
         client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "http://192.168.43.226:8080/stomp");
 
