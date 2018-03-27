@@ -1,12 +1,15 @@
 package ila.fr.codisintervention.Activities;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -178,6 +181,34 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.error_invalid_credentials), Toast.LENGTH_LONG).show();
         }
 
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // This registers mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mMessageReceiver,
+                        new IntentFilter("initialize-application"));
+    }
+
+
+    // Handling the received Intents for the "my-integer" event
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Extract data included in the Intent
+            int yourInteger = intent.getIntExtra("message",-1/*default value*/);
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(mMessageReceiver);
+        super.onPause();
     }
 
 }

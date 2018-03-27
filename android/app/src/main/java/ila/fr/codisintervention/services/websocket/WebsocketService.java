@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.util.Arrays;
@@ -76,6 +77,22 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
         try {
             client.connect(stompHeader);
+
+
+            client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
+                Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
+
+                // The string "my-integer" will be used to filer the intent
+                Intent intent = new Intent("initialize-application");
+                // Adding some data
+                intent.putExtra("message", message.getPayload());
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+            });
+
+            client.send("/users/" + username + "/subscribed", "").subscribe(
+                    () -> Log.d(TAG, "[/subscribed] Sent data!"),
+                    error -> Log.e(TAG, "[/subscribed] Error Encountered", error)
+            );
             return true;
         } catch(Exception e) {
             Log.e(TAG, e.getMessage(), e);
