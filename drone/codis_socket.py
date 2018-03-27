@@ -13,24 +13,31 @@ client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print('Connexion à %s: %s' % (config.socket_host, config.socket_port))
 client.connect((config.socket_host, config.socket_port))
 
+# MESSAGE = "Mission reçue!"
+# client.send(MESSAGE)
+
 while True:
 
     response = client.recv(4096)
-
+    print(response)
     if response != "":
         trame = json.loads(response.decode())
         mission = trame['type']
-        title = trame['datas']['type']
-        # altitude fixs a 30 metres
+        typetrajet = trame['datas']['type']
+        # altitude fixed  to  30 m
         alt = trame['datas']['altitude']
 
-        if mission == "ASSIGN_TRAJECT":
+        if mission == "ASSIGN_MISSION":
+
+            MESSAGE = "Mission reçue!"
+            client.send(MESSAGE)
+
             # decode des points
             liste = []
 
-            elt1 = trame['datas']['locations'];
+            elt1 = trame['datas']['locations']
             for point in elt1:
-                liste.append(LocationGlobal(point['lat'], point['lon'], alt))
+                liste.append(LocationGlobal(point['lat'], point['lng'], alt))
 
             codisDrone = droneIstic.NotreDrone("udpin:{}:{}" .format(config.drone_host, config.drone_port), False, 30)
 

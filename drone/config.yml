@@ -1,10 +1,7 @@
 config:
     connection:
           socket:
-#              host: 192.168.137.45
-#              host: 127.0.0.1
-#              port: 5000
-              host: lapommevolante.istic.univ-rennes1.fr
+              host: 148.60.13.10
               port: 8081
           drone:
               host: 0.0.0.0
