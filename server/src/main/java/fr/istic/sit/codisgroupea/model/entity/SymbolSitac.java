@@ -102,7 +102,6 @@ public class SymbolSitac implements SigEntry {
      * @return the location
      */
     @OneToOne
-    @NotNull
     public Position getLocation() {
         return location;
     }

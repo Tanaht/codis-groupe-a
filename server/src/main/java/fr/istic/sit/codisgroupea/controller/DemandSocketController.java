@@ -5,10 +5,9 @@ import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.ListUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
-import fr.istic.sit.codisgroupea.repository.InterventionRepository;
-import fr.istic.sit.codisgroupea.repository.SymbolRepository;
-import fr.istic.sit.codisgroupea.repository.UnitRepository;
-import fr.istic.sit.codisgroupea.repository.VehicleRepository;
+import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
+import fr.istic.sit.codisgroupea.model.message.demand.UnitCreatedMessage;
+import fr.istic.sit.codisgroupea.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -21,6 +20,7 @@ import javax.swing.text.html.Option;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +39,7 @@ public class DemandSocketController {
     private InterventionRepository interventionRepository;
     private VehicleRepository vehicleRepository;
     private SymbolRepository symbolRepository;
+    private DefaultVehicleSymbolRepository defaultVehicleSymbolRepository;
 
     /**
      * Constructor of the class {@link DemandSocketController}
@@ -64,11 +65,38 @@ public class DemandSocketController {
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.CREATE_UNIT_CLIENT)
-    public void createUnit(@DestinationVariable("id") final String id, Principal principal, String dataSendByClient) {
+    public void createUnit(@DestinationVariable("id") final String id, Principal principal, CreateUnitMessage dataSendByClient) {
+        Intervention intervention = interventionRepository.getOne(Long.valueOf(id));
         String userLogin = principal.getName();
+        Timestamp now = new Timestamp(new Date().getTime());
+
+        Symbol symbol = defaultVehicleSymbolRepository
+                .findByType(new VehicleType(dataSendByClient.vehicle.type))
+                .getSymbol();
+
+        SymbolSitac symbolSitac = new SymbolSitac(
+                intervention,
+                symbol,
+                null,
+                new Payload(null, null)
+        );
 
         //Message for the codis
-        simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.CREATE_UNIT_SERVER_CODIS,"msgToSend");
+        Unit unit = new Unit(
+                intervention,
+                null,
+                true,
+                now,
+                new Timestamp(0),
+                symbolSitac
+        );
+
+        unit = unitRepository.save(unit);
+
+        UnitCreatedMessage unitCreated = new UnitCreatedMessage(
+                unit.getId(),
+                new UnitCreatedMessage.Vehicle(dataSendByClient.vehicle.type)
+        );
 
         //Message for the client
         simpMessagingTemplate.convertAndSendToUser(userLogin, RoutesConfig.CREATE_UNIT_SERVER_CLIENT,"msgToSend");
