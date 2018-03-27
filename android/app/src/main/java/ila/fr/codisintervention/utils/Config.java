@@ -27,7 +27,7 @@ public class Config {
         port = 8080;
         uri = "stomp";
 
-        Log.d("CONFIG", "Application configuration: Host: " + host + ", Port: " + port + ", Uri: " + uri + "");
+        Log.d("CONFIG", "Application configuration: Host: " + host + ", Port: " + port + ", Uri: " + uri);
     }
 
     public String getHost() {

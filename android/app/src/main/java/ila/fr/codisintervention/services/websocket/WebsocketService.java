@@ -2,16 +2,14 @@ package ila.fr.codisintervention.services.websocket;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.HandlerThread;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
+import ila.fr.codisintervention.binders.WebsocketServiceBinder;
 import ila.fr.codisintervention.utils.Config;
 import rx.Subscriber;
 import ua.naiksoftware.stomp.LifecycleEvent;
@@ -24,7 +22,7 @@ import ua.naiksoftware.stomp.client.StompClient;
  * Created by tanaky on 26/03/18.
  */
 
-public class WebsocketService extends Service {
+public class WebsocketService extends Service implements WebsocketServiceBinder.IMyServiceMethod {
     private static final String TAG = "WebSocketService";
 
     private static final String USERNAME_HEADER_KEY = "userlogin";
@@ -32,36 +30,73 @@ public class WebsocketService extends Service {
 
     private StompClient client;
 
+    private IBinder binder;
+
     public WebsocketService() {
         Log.d(TAG, "Instantiating WebSocket Service");
-
-
         this.client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "http://{host}:{port}/{uri}"
                 .replace("{host}", Config.get().getHost())
                 .replace("{port}",Integer.toString(Config.get().getPort()))
                 .replace("{uri}",Config.get().getUri()));
+
+        this.client.lifecycle().subscribe(lifecycleEvent -> {
+            switch (lifecycleEvent.getType()) {
+
+                case OPENED:
+                    Log.d(TAG, "Stomp connection opened");
+                    break;
+
+                case ERROR:
+                    Log.d(TAG, "Thread Name: " + Thread.currentThread().getName());
+                    Log.e(TAG, "Error", lifecycleEvent.getException());
+                    break;
+
+                case CLOSED:
+                    Log.d(TAG, "Stomp connection closed");
+                    break;
+            }
+        });
     }
 
-    /**
-     * Connect to websocket using credentials in parameters
-     * @param username
-     * @param password
-     * @param subscriber Subscriber to get notified when the websocket is closed or in error
-     */
-    public void connect(String username, String password, Subscriber<LifecycleEvent> subscriber) {
-        this.client.lifecycle().subscribe(subscriber);
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "OnCreate WebSocket Service");
+        binder = new WebsocketServiceBinder(this);
+    }
+
+
+    @Override
+    public boolean connect(String username, String password) {
+        Log.d(TAG, "Connect to Server with follwing credentials: " + username + ", " + password);
 
         List<StompHeader> stompHeader = Arrays.asList(
                 new StompHeader(USERNAME_HEADER_KEY, username),
                 new StompHeader(PASSWORD_HEADER_KEY, password));
 
-        client.connect(stompHeader);
+        try {
+            client.connect(stompHeader);
+            return true;
+        } catch(Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+            return false;
+        }
     }
 
+    @Override
+    public boolean connect(String username, String password, Subscriber<LifecycleEvent> subscriber) {
+        Log.d(TAG, "Connect to Server");
+        this.client.lifecycle().subscribe(subscriber);
+
+        return connect(username, password);
+    }
+
+    @Override
     public boolean isConnected() {
         return this.client.isConnected();
     }
 
+    @Override
     public void disconnect() {
         this.client.disconnect();
     }
@@ -69,7 +104,6 @@ public class WebsocketService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return binder;
     }
-
 }

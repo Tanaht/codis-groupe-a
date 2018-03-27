@@ -1,8 +1,12 @@
 package ila.fr.codisintervention.Activities;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -10,13 +14,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Arrays;
-import java.util.List;
-
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.handlers.WebsocketServiceHandler;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
-import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
 
 import static ua.naiksoftware.stomp.LifecycleEvent.Type.CLOSED;
@@ -35,13 +36,35 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText_mdp;
     private Button boutonValider;
 
+    //code de l'élevenement indiquant que l'activité est bindé avec le service
+    private static final int ON_BIND = 1;
+
+
+    // ServiceConnection permet de gérer l'état du lien entre l'activité et le service.
+    private ServiceConnection serviceConnection;
+    private WebsocketServiceBinder.IMyServiceMethod service;
+    private static Handler handler;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d(TAG, "Send Intent to WebsocketService");
-        Intent websocketServiceIntent = new Intent(this, WebsocketService.class);
-        startService(websocketServiceIntent);
+
+        handler = new WebsocketServiceHandler();
+
+//        bindService(websocketServiceIntent, new ServiceConnection() {
+//            @Override
+//            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+//                Log.d(TAG, "Service Connected");
+//                iBinder.
+//            }
+//
+//            @Override
+//            public void onServiceDisconnected(ComponentName componentName) {
+//                Log.d(TAG, "Service Disconnected");
+//            }
+//        })
 
 /*
 
@@ -88,11 +111,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
+        bindToService();
     }
 
+    private void bindToService() {
+        serviceConnection = new ServiceConnection() {
+            public void onServiceDisconnected(ComponentName name) {}
+            public void onServiceConnected(ComponentName arg0, IBinder binder) {
+
+                //on récupère l'instance du service dans l'activité
+                service = ((WebsocketServiceBinder)binder).getService();
+
+                //on genère l'évènement indiquant qu'on est "bindé"
+                handler.sendEmptyMessage(ON_BIND);
+            }
+        };
+
+
+        //démarre le service si il n'est pas démarré
+        //Le binding du service est configuré avec "BIND_AUTO_CREATE" ce qui normalement
+        //démarre le service si il n'est pas démarrer, la différence ici est que le fait de
+        //démarrer le service par "startService" fait que si l'activité est détruite, le service
+        //reste en vie (obligatoire pour l'application AlarmIngressStyle)
+        startService(new Intent(this, WebsocketService.class));
+        Intent intent = new Intent(this, WebsocketService.class);
+        //lance le binding du service
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //on supprimer le binding entre l'activité et le service.
+        if(serviceConnection != null)
+            unbindService(serviceConnection);
+    }
 
     /**
      * Méthode qui vérifie que l'utilisateur a saisi un login et un mot de passe
@@ -119,16 +172,10 @@ public class MainActivity extends AppCompatActivity {
      */
     private void connexion() {
 
-        if (login.equals("codis")){
-            Intent intent = new Intent( MainActivity.this, MainMenuCodis.class);
-            startActivity(intent);
-        }
-        else if (login.equals("pompier")){
-            Intent intent = new Intent( MainActivity.this, MainMenuIntervenant.class);
-            startActivity(intent);
-        }
-        else {
-            Toast.makeText(this, "Pas de Connexion", Toast.LENGTH_SHORT).show();
+        if(service.connect(login, motDePasse)) {
+            Toast.makeText(this, getString(R.string.msg_success_credentials), Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, getString(R.string.error_invalid_credentials), Toast.LENGTH_LONG).show();
         }
 
     }
