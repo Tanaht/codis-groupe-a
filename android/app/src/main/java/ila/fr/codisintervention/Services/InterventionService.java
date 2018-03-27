@@ -19,5 +19,6 @@ public class InterventionService {
         interventionList.add(new Intervention("Incendie (INC)","11h30 12/04/2018","12 rue du chêne germain cesson-sévigné"));
         interventionList.add(new Intervention("Secours à personne (SAP)","11h30 12/04/2018","143 Avenue charles tillon Rennes"));
         return interventionList;
+        // if empty return new  ArrayList<Intervention>();
     }
 }
