@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface SymbolSitacRepository extends JpaRepository<SymbolSitac, Long> {
-    List<SymbolSitac> findAllByIntervention(Intervention intervention);
+    Iterable<? extends SymbolSitac> findAllByIntervention(Intervention intervention);
 }

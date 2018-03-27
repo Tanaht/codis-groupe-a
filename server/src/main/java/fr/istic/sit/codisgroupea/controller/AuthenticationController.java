@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.Send.InitializeApplicationMessage;
+import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 import fr.istic.sit.codisgroupea.repository.SinisterCodeRepository;
 import fr.istic.sit.codisgroupea.repository.UnitRepository;
 import fr.istic.sit.codisgroupea.repository.VehicleRepository;
@@ -69,12 +70,12 @@ public class AuthenticationController {
         for (SinisterCode sinisterCode : sinisterCodeRepository.findAll()){
             codes.add(new InitializeApplicationMessage.SinisterCodeMessage(sinisterCode));
         }
-        List<InitializeApplicationMessage.VehicleMessage> vehicles = new ArrayList<>();
+        List<VehicleMessage> vehicles = new ArrayList<>();
         for (Vehicle vehicle : vehicleRepository.findAll()){
-            vehicles.add(new InitializeApplicationMessage.VehicleMessage(vehicle));
+            vehicles.add(new VehicleMessage(vehicle));
         }
         List<InitializeApplicationMessage.DemandMessage> demandes = new ArrayList<>();
-        for (Unit unit : unitRepository.getAllReqestedVehicle()){
+        for (Unit unit : unitRepository.getAllRequestedVehicles()){
             demandes.add(new InitializeApplicationMessage.DemandMessage(unit));
         }
 
