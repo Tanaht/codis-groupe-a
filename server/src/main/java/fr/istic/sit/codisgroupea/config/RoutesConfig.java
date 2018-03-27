@@ -1,6 +1,5 @@
 package fr.istic.sit.codisgroupea.config;
 
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  *

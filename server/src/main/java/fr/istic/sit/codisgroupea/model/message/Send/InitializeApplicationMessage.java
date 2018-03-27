@@ -1,6 +1,7 @@
-package fr.istic.sit.codisgroupea.model.message;
+package fr.istic.sit.codisgroupea.model.message.Send;
 
 import fr.istic.sit.codisgroupea.model.entity.*;
+import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 
 import java.util.List;
 
@@ -75,33 +76,7 @@ public class InitializeApplicationMessage {
 
     }
 
-    /**
-     * Represent a vehicule send to the client
-     */
-    public static class VehicleMessage {
-        /**
-         * vehicle label
-         */
-        private String label;
-        /**
-         * Type vehicle
-         */
-        private String type;
-        /**
-         * status vehicle from the class {@link VehicleStatus}
-         */
-        private VehicleStatus status;
 
-        /**
-         *
-         * @param vehicle Vehicule to send in a message
-         */
-        public VehicleMessage(Vehicle vehicle){
-            label = vehicle.getLabel();
-            type = vehicle.getType().getName();
-            status = vehicle.getStatus();
-        }
-    }
 
     /**
      * Represent a vehicule type simplify to send to the client

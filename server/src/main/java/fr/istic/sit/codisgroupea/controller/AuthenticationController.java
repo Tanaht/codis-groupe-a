@@ -3,7 +3,7 @@ package fr.istic.sit.codisgroupea.controller;
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
-import fr.istic.sit.codisgroupea.model.message.InitializeApplicationMessage;
+import fr.istic.sit.codisgroupea.model.message.Send.InitializeApplicationMessage;
 import fr.istic.sit.codisgroupea.repository.SinisterCodeRepository;
 import fr.istic.sit.codisgroupea.repository.UnitRepository;
 import fr.istic.sit.codisgroupea.repository.VehicleRepository;
