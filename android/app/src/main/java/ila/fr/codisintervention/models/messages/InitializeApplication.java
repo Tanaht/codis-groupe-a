@@ -13,6 +13,7 @@ public class InitializeApplication {
     private List<Type> types;
     private List<Vehicle> vehicles;
     private List<Demande> demandes;
+    private List<Intervention> interventions;
 
     public User getUser() {
         return user;
@@ -32,5 +33,9 @@ public class InitializeApplication {
 
     public List<Demande> getDemandes() {
         return demandes;
+    }
+
+    public List<Intervention> getInterventions() {
+        return interventions;
     }
 }
