@@ -25,4 +25,12 @@
     <string name="lbl_liste_des_interventions">Liste des interventions</string>
     <string name="lbl_liste_des_moyen">Liste des moyens demandés</string>
     <string name="lbl_creer_intervention">Créer intervention</string>
+    <string name="title_activity_map">Map</string>
+
+    <string name="action_tableau_moyen">Tableau Moyen</string>
+    <string name="action_drone">Envoyer Drone</string>
+    <string name="action_demande_moyen">Demande Moyen</string>
+    <string name="action_deconnexion">Deconnexion</string>
+
+
 </resources>

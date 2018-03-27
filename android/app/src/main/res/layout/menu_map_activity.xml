@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="ila.fr.codisintervention.Activities.MapActivity"
+
+        android:layout_height="0dp"
+        android:layout_width="0dp">
+        <item
+            android:id="@+id/action_drone"
+            android:orderInCategory="100"
+            android:title="@string/action_drone"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_demande_moyen"
+            android:orderInCategory="100"
+            android:title="@string/action_demande_moyen"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_tableau_moyen"
+            android:orderInCategory="100"
+            android:title="@string/action_tableau_moyen"
+            app:showAsAction="never" />
+
+    <item
+            android:id="@+id/action_deconnexion"
+            android:orderInCategory="100"
+            android:title="@string/action_deconnexion"
+            app:showAsAction="never" />
+    </menu>
+
