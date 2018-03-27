@@ -26,10 +26,12 @@ public class SymbolSitac implements SigEntry {
      *
      * @param symbol   the symbol
      * @param location the location
+     * @param payload  the payload
      */
-    public SymbolSitac(Symbol symbol, Position location) {
+    public SymbolSitac(Symbol symbol, Position location, Payload payload) {
         this.symbol = symbol;
         this.location = location;
+        this.payload = payload;
     }
 
     /**
