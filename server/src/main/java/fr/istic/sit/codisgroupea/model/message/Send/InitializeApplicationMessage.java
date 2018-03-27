@@ -2,6 +2,7 @@ package fr.istic.sit.codisgroupea.model.message.Send;
 
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
+import fr.istic.sit.codisgroupea.model.message.intervention.Position;
 
 import java.util.List;
 
@@ -31,46 +32,49 @@ public class InitializeApplicationMessage {
      */
     private List<DemandMessage> demandes;
 
-    //private List<InterventionMessage> interventions;
+    private List<InterventionMessage> interventions;
+
+
 
 
     /**
-     *
-     * @param usr User who ask data
+     *  @param usr User who ask data
      * @param typesList Type vehicle list
      * @param codesList Codes sinister list
      * @param vehicleList vehicle list
      * @param demandList Demand list
+     * @param interventions
      */
     public InitializeApplicationMessage(User usr, List<VehicleTypeMessage> typesList,
                                         List<SinisterCodeMessage> codesList,
                                         List<VehicleMessage> vehicleList,
-                                        List<DemandMessage> demandList){
+                                        List<DemandMessage> demandList, List<InterventionMessage> interventions){
         user = new UserMessage(usr);
         types = typesList;
         codes = codesList;
         vehicles = vehicleList;
         demandes = demandList;
-
+        this.interventions = interventions;
     }
-
-
-    /**
-     * utilité ?
-     */
-    public static class VehicleColorMapping{
+    public static class InterventionMessage{
+        private int id;
+        private long date;
         private String code;
-        private String type;
-        private Color color;
+        private String adresse;
+        private boolean drone_available;
+        private Position location;
 
-        public VehicleColorMapping(String code, String type, Color color){
-            this.code = code;
-            this.type = type;
-            this.color = color;
+        public InterventionMessage(Intervention intervention){
+            id = intervention.getId();
+            date = intervention.getDate();
+            code = intervention.getSinisterCode().getCode();
+            adresse = intervention.getAddress();
+            //TODO drone available à changer
+            drone_available = true;
+            location = new Position(intervention.getPosition());
+
         }
-
     }
-
 
 
     /**
