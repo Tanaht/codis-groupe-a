@@ -21,6 +21,26 @@ public class SymbolMessage {
     /** The instance of the object {@link Payload} for the symbol. */
     private Payload payload;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public Shape getShape() {
+        return shape;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public Payload getPayload() {
+        return payload;
+    }
+
     /**
      * Constructor of the class {@link SymbolMessage}.
      * @param id the id of the symbol.
