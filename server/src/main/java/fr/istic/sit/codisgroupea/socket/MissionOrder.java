@@ -11,10 +11,7 @@ public class MissionOrder {
 	
 	public MissionOrder() {
 		this.type = DroneServerConstants.MESSAGE_TYPES.ASSIGN_MISSION.getName();
-		this.missionType = DroneServerConstants.MISSION_TYPES.MISSION_CYCLE.getName();
 		this.mission = new ArrayList<>();
-		this.mission.add(new Location(48.1148383, -1.6388297));
-		this.mission.add(new Location(48.1153379, -1.6391757));
 	}
 
 	public String getType() {
@@ -39,5 +36,9 @@ public class MissionOrder {
 
 	public void setMission(List<Location> mission) {
 		this.mission = mission;
+	}
+	
+	public void addLocation(Location location) {
+		this.mission.add(location);
 	}
 }

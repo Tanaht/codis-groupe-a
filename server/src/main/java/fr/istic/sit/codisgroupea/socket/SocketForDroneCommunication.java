@@ -33,25 +33,62 @@ public class SocketForDroneCommunication {
 		
 		this.start(context);
 		
+		//Read message from drone
+		this.receiveMessage();
+		
+		//Exemple of mission order sending
+		MissionOrder mission = new MissionOrder();
+		mission.setMissionType(DroneServerConstants.MISSION_TYPES.MISSION_CYCLE.getName());
+		mission.addLocation(new Location(48.1148383, -1.6388297));
+		mission.addLocation(new Location(48.1153379, -1.6391757));
+		this.sendMessage(mission);
+	}
+	
+	/**
+	 * Start socekt with drone
+	 * @param context
+	 * @throws IOException
+	 */
+	public void start(ConfigurableApplicationContext context) throws IOException {
+		serverSocket = new ServerSocket(DroneServerConstants.SOCKET_PORT);
+		socket = serverSocket.accept();
+	}
+	
+	/**
+	 * Stop socket with drone
+	 * @throws IOException
+	 */
+	public void stop() throws IOException {
+        serverSocket.close();
+        socket.close();
+	}
+	
+	/**
+	 * Receive messages sent by the drone
+	 */
+	public void receiveMessage() {
 		Runnable receiverTask = new Runnable() {
-			
 			@Override
 			public void run() {
 				String receivedMessage = "";
-				System.out.println("receiveThread running");
 				BufferedReader br;
 				try {
 					br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					while(true) {
+						//No receive during sending
 						if(!sending) {
+							//Get new message (terminated by '\n')
 							receivedMessage = br.readLine();
 							if(receivedMessage != null) {
-								System.out.println("Received message : " + receivedMessage);
+								//Get message type
 								String messageType = JsonForDroneCommunicationToolBox.getMessageType(receivedMessage);
-								System.out.println("Test : "  + messageType + " - " + DroneServerConstants.MESSAGE_TYPES.SEND_PHOTO.getName() + " : " + (messageType.equals(DroneServerConstants.MESSAGE_TYPES.SEND_PHOTO.getName())));
+								//Get photo
 								if(messageType.equals(DroneServerConstants.MESSAGE_TYPES.SEND_PHOTO.getName())) {
-									System.out.println("Get photo");
 									JsonForDroneCommunicationToolBox.getPhotoFromMessage(receivedMessage);
+								}
+								//Get current location
+								else if(messageType.equals(DroneServerConstants.MESSAGE_TYPES.SEND_SITUATION.getName())) {
+									Location loc = JsonForDroneCommunicationToolBox.getLocationFromMessage(receivedMessage);
 								}
 							}
 						}
@@ -61,44 +98,38 @@ public class SocketForDroneCommunication {
 				}
 			}
 		};
-		
-
+		//Start thread
+		Thread receiverThread = new Thread(receiverTask);
+		receiverThread.start();
+	}
+	
+	/**
+	 * Send mission to the drone 
+	 * @param mission A MissionOrder containing mission informations
+	 */
+	public void sendMessage(MissionOrder mission) {
 		Runnable sendTask = new Runnable() {
 			@Override
 			public void run() {
+				//Lock reception
 				sending = true;
-				MissionOrder mission = new MissionOrder();
-				sendMessage(JsonForDroneCommunicationToolBox.getJsonFromMissionOrder(mission));
-		        System.out.println("Message send");
+				//Convert mission to json
+				String message = JsonForDroneCommunicationToolBox.getJsonFromMissionOrder(mission);
+				try {
+					//Send message
+					OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
+				    BufferedWriter writer = new BufferedWriter(out);
+				    writer.write(message);
+				    writer.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				//Release lock
 		        sending = false;
 			}
 		};
-		
+		//Start thread
 		Thread sendThread = new Thread(sendTask);
 		sendThread.start();
-		Thread receiverThread = new Thread(receiverTask);
-		receiverThread.start();
-		
-	}
-	
-	public void start(ConfigurableApplicationContext context) throws IOException {
-		serverSocket = new ServerSocket(8081);
-		socket = serverSocket.accept();
-	}
-	
-	public void stop() throws IOException {
-        serverSocket.close();
-        socket.close();
-	}
-	
-	public void sendMessage(String message) {
-		try {
-			OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
-		    BufferedWriter writer = new BufferedWriter(out);
-		    writer.write(message);
-		    writer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }
