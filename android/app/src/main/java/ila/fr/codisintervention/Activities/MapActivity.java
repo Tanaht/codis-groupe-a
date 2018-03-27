@@ -1,0 +1,55 @@
+package ila.fr.codisintervention.Activities;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+
+import ila.fr.codisintervention.R;
+
+public class MapActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_map);
+    }
+
+    @SuppressLint("ResourceType")
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.layout.menu_map_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_drone) {
+            return true;
+        }
+        if (id == R.id.action_demande_moyen) {
+            return true;
+        }
+        if (id == R.id.action_tableau_moyen) {
+            return true;
+        }
+        if (id == R.id.action_deconnexion) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+}

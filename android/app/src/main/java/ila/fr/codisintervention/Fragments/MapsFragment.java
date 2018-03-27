@@ -51,10 +51,10 @@
                 public void onMapReady(GoogleMap mMap) {
                     googleMap = mMap;
 
-                    googleMap.setMyLocationEnabled(true);
+                    //googleMap.setMyLocationEnabled(true);
 
-                    LatLng sydney = new LatLng(-20, 48);
-                    addMarker_Zoom(sydney);
+                    LatLng surprise = new LatLng(48.873756, 2.294946);
+                    addMarker_Zoom(surprise);
                 }
             });
 
@@ -63,7 +63,7 @@
 
         public void addMarker_Zoom (LatLng Coord) {
 
-            // For dropping a marker Coord at a point on the Map
+            // For dropping a marker Coord at a point on the MapActivity
             googleMap.addMarker(new MarkerOptions().position(Coord).title("Marker Title").snippet("Marker Description"));
 
             // For zooming automatically to the location of the marker

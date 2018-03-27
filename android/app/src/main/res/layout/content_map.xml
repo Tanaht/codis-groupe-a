@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ila.fr.codisintervention.Activities.GeneralMapActivity">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="ila.fr.codisintervention.Activities.MapActivity"
+    tools:showIn="@layout/activity_map">
 
     <fragment
-        android:id="@+id/fragment2"
+        android:id="@+id/fragment"
         android:name="ila.fr.codisintervention.Fragments.MapsFragment"
-        android:layout_width="1025dp"
-        android:layout_height="736dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="1062dp"
+        android:layout_height="671dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.957"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.506" />
+        tools:layout_marginLeft="55dp" />
 </android.support.constraint.ConstraintLayout>
