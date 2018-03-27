@@ -30,13 +30,14 @@ public class ListSigRepository implements SigRepository<SymbolSitac> {
      * @param payload the payload
      * @param location the location
      */
-    private void addToSig(Color color, Shape shape, String payload, Position location) {
-        Symbol sym = new Symbol(color, shape, payload);
-        symbols.add(new SymbolSitac(sym, location));
+    private void addToSig(Color color, Shape shape, Payload payload, Position location) {
+        Symbol sym = new Symbol(color, shape);
+        symbols.add(new SymbolSitac(null, sym, location, payload));
     }
 
     @Override
-    public SymbolSitac createSymbolFromSigEntry(SymbolSitac entry) {
+    public SymbolSitac createSymbolFromSigEntry(Intervention intervention, SymbolSitac entry) {
+        entry.setIntervention(intervention);
         return entry;
     }
 

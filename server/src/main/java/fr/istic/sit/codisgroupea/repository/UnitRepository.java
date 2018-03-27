@@ -1,6 +1,8 @@
 package fr.istic.sit.codisgroupea.repository;
 
+import fr.istic.sit.codisgroupea.model.entity.Intervention;
 import fr.istic.sit.codisgroupea.model.entity.Unit;
+import fr.istic.sit.codisgroupea.model.entity.VehicleStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,6 +15,8 @@ import java.util.List;
 @Repository
 public interface UnitRepository extends JpaRepository<Unit, Integer> {
 
-    @Query("select u from Unit u where u.vehicle.status = REQUESTED")
-    List<Unit> getAllReqestedVehicle();
+    @Query("select u from Unit u where u.vehicle.status = VehicleStatus.REQUESTED")
+    List<Unit> getAllRequestedVehicles();
+
+    Iterable<? extends Unit> findAllByIntervention(Intervention intervention);
 }
