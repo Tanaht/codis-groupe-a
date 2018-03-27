@@ -26,3 +26,12 @@ INSERT INTO vehicle VALUES (4, 'vehicule 4', 2, 2);
 
 INSERT INTO vehicle VALUES (5, 'vehicule 5', 2, 3);
 INSERT INTO vehicle VALUES (6, 'vehicule 6', 2, 3);
+
+-- Insert Position
+INSERT INTO position VALUES (1, 48.116487, -1.647416);
+INSERT INTO position VALUES (2, 48.105727, -1.674720 );
+
+-- Insert Intervention
+INSERT INTO intervention VALUES (1, '11 Rue du Bois Perrin', 1522159274, 1, 1, 1);
+INSERT INTO intervention VALUES (1, 'Cours des Alliés, 35024 Rennes', 1522159274, 1, 2, 2);
+
