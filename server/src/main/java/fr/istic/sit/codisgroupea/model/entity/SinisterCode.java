@@ -10,7 +10,11 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class SinisterCode {
+
+    /** The id of the sinister code */
     private int id;
+
+    /** The code of the sinister code */
     private String code;
 
     /**

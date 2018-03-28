@@ -10,9 +10,17 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class Vehicle {
+
+    /** The id of the vehicle */
     private int id;
+
+    /** The label of the vehicle */
     private String label;
+
+    /** Instance of the {@link VehicleType} for the type of the vehicle */
     private VehicleType type;
+
+    /** Instance of {@link VehicleStatus} for the status of the vehicle */
     private VehicleStatus status;
 
     /**

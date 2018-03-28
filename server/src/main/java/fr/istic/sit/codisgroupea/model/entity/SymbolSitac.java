@@ -10,10 +10,21 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class SymbolSitac implements SigEntry {
+
+    /** The id of the symbol sitac */
     private int id;
+
+    /** Instance of {@link Intervention} for the intervention of the symbol sitac */
     private Intervention intervention;
+
+    /** Instance of {@link Symbol} for the symbol of the symbol sitac */
     private Symbol symbol;
+
+    /** Instance of {@link Position} for the location of the symbol sitac */
     private Position location;
+    private Payload payload;
+
+    /** Instance of {@link Payload} for the payload of the symbol sitac */
     private Payload payload;
 
     /**
@@ -28,8 +39,9 @@ public class SymbolSitac implements SigEntry {
      * @param intervention the intervention
      * @param symbol       the symbol
      * @param location     the location
+     * @param payload  the payload
      */
-    public SymbolSitac(Intervention intervention, Symbol symbol, Position location) {
+    public SymbolSitac(Intervention intervention, Symbol symbol, Position location, Payload payload) {
         this.intervention = intervention;
         this.symbol = symbol;
         this.location = location;

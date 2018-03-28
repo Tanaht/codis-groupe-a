@@ -25,38 +25,38 @@ public class AuthenticationController {
     /** The logger */
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
-    /** The Authentication Service instance */
+    /** {@link AuthenticationService} instance */
     private AuthenticationService authenticationService;
 
     /** Template of the web socket  */
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    /** The intervention Repository instance */
+    /** {@link InterventionRepository} instance */
     private InterventionRepository interventionRepository;
 
-    /** The Vehicle Type Repository instance */
+    /** {@link VehicleTypeRepository} instance */
     private VehicleTypeRepository vehicleTypeRepository;
 
-    /** The Sinister Code Repository instance */
+    /** {@link SinisterCodeRepository} instance */
     private SinisterCodeRepository sinisterCodeRepository;
 
-    /** The Vehicle Repository instance */
+    /** {@link VehicleRepository} instance */
     private VehicleRepository vehicleRepository;
 
-    /** The Unit Repository instance */
+    /** {@link UnitRepository} instance */
     private UnitRepository unitRepository;
 
 
     /**
      * Constructor of the class {@link AuthenticationController}
      *
-     * @param authenticationService The Authentication Service instance
+     * @param authenticationService {@link AuthenticationService} instance
      * @param simpMessagingTemplate Template of the web socket
-     * @param interventionRepository The intervention Repository instance
-     * @param vehicleTypeRepository The Vehicle Type Repository instance
-     * @param sinisterCodeRepository The Sinister Code Repository instance
-     * @param vehicleRepository The Vehicle Repository instance
-     * @param unitRepository The Unit Repository instance
+     * @param interventionRepository {@link InterventionRepository} instance
+     * @param vehicleTypeRepository {@link VehicleTypeRepository} instance
+     * @param sinisterCodeRepository {@link SinisterCodeRepository} instance
+     * @param vehicleRepository {@link VehicleRepository} instance
+     * @param unitRepository {@link UnitRepository} instance
      */
     public AuthenticationController(AuthenticationService authenticationService,
                                     SimpMessagingTemplate simpMessagingTemplate,

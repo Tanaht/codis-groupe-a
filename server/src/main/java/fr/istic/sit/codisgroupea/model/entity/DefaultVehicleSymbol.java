@@ -11,8 +11,13 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class DefaultVehicleSymbol {
+    /** The id of the vehicle symbol*/
     private int id;
+
+    /** Instance of {@link VehicleType} for the type of the vehicle */
     private VehicleType type;
+
+    /** Instance of {@link Symbol} for the symbol of the vehicle */
     private Symbol symbol;
 
     /**

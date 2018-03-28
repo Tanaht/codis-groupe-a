@@ -10,8 +10,14 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class Position {
+
+    /** The id of the position */
     private int id;
+
+    /** The latitude of the position */
     private double latitude;
+
+    /** The longitude of the position */
     private double longitude;
 
     /**

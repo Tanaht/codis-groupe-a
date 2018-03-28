@@ -9,10 +9,17 @@ import java.util.List;
  */
 @Entity
 public class User {
+
+    /** The id of the user */
     private Long id;
+
+    /** The username of the user */
     private String username;
 
+    /** The password of the user */
     private transient String password;
+
+    /** Instance of {@link Role} for the role of the user */
     private Role role;
 
     /**

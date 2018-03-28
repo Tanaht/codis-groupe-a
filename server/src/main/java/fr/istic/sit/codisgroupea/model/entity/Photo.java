@@ -9,10 +9,20 @@ import java.sql.Timestamp;
  */
 @Entity
 public class Photo {
+
+    /** The id of the photo */
     private int id;
+
+    /** The url of the photo */
     private String uri;
+
+    /** Instance of {@link Position} for the location of the photo */
     private Position coordinates;
+
+    /** Instance of {@link Timestamp} for the date of the photo */
     private Timestamp date;
+
+    /** Instance of {@link Intervention} for the intervention of the photo */
     private Intervention intervention;
 
     /**
