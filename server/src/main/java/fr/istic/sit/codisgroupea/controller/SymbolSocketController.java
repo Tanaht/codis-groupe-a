@@ -1,5 +1,6 @@
 package fr.istic.sit.codisgroupea.controller;
 
+import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.Receive.SymbolCreateMessage;
@@ -96,6 +97,9 @@ public class SymbolSocketController {
     @MessageMapping(RoutesConfig.CREATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.CREATE_SYMBOL_SERVER})
     public SymbolsMessage createSymbols(@DestinationVariable("id") final int id, List<SymbolCreateMessage> dataSendByClient) {
+        Gson jason = new Gson();
+
+        logger.trace(RoutesConfig.CREATE_SYMBOL_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
 
         List<SymbolMessage> listMessage = new ArrayList<>();
 
@@ -129,8 +133,10 @@ public class SymbolSocketController {
             listMessage.add(symbolMessage);
         }
 
+        SymbolsMessage toSend = new SymbolsMessage(SymbolsMessage.Type.CREATE, listMessage);
 
-        return new SymbolsMessage(SymbolsMessage.Type.CREATE, listMessage);
+        logger.trace(RoutesConfig.CREATE_SYMBOL_SERVER +" --> data send "+jason.toJson(toSend));
+        return toSend;
     }
 
     /**
@@ -143,6 +149,10 @@ public class SymbolSocketController {
     @MessageMapping(RoutesConfig.DELETE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.DELETE_SYMBOL_SERVER})
     public SymbolsMessage deleteSymbols(@DestinationVariable("id") final int id, List<IdMessage> dataSendByClient) {
+
+        Gson jason = new Gson();
+
+        logger.trace(RoutesConfig.DELETE_SYMBOL_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
 
         List<SymbolMessage> listMessage = new ArrayList<>();
 
@@ -166,7 +176,10 @@ public class SymbolSocketController {
             symbolSitacRepository.delete(optSitac.get());
         }
 
-        return new SymbolsMessage(SymbolsMessage.Type.DELETE, listMessage);
+        SymbolsMessage toSend = new SymbolsMessage(SymbolsMessage.Type.DELETE, listMessage);
+        logger.trace(RoutesConfig.DELETE_SYMBOL_SERVER +" --> data send "+jason.toJson(toSend));
+
+        return toSend;
     }
 
     /**
@@ -179,6 +192,8 @@ public class SymbolSocketController {
     @MessageMapping(RoutesConfig.UPDATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.UPDATE_SYMBOL_SERVER})
     public SymbolsMessage updateSymbols(@DestinationVariable("id") final int id, List<SymbolMessage> dataSendByClient) {
+        Gson jason = new Gson();
+        logger.trace(RoutesConfig.UPDATE_SYMBOL_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
 
         List<SymbolMessage> listMessage = new ArrayList<>();
 
@@ -220,7 +235,8 @@ public class SymbolSocketController {
             listMessage.add(symbolMessage);
         }
 
-
-        return new SymbolsMessage(SymbolsMessage.Type.UPDATE, listMessage);
+        SymbolsMessage toSend = new SymbolsMessage(SymbolsMessage.Type.UPDATE, listMessage);
+        logger.trace(RoutesConfig.UPDATE_SYMBOL_SERVER +" --> data send "+jason.toJson(toSend));
+        return toSend;
     }
 }
