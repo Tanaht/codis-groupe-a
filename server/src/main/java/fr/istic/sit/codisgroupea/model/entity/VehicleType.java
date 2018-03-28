@@ -11,7 +11,7 @@ import java.util.List;
 public class VehicleType {
 
     /** The id of the vehicle type */
-    private int id;
+    private Integer id;
 
     /** The name of the vehicle type */
     private String name;
@@ -37,8 +37,8 @@ public class VehicleType {
      * @return the ID
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -47,7 +47,7 @@ public class VehicleType {
      *
      * @param id the ID
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

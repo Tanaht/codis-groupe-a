@@ -1,5 +1,6 @@
 package fr.istic.sit.codisgroupea.controller;
 
+import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.*;
@@ -8,6 +9,7 @@ import fr.istic.sit.codisgroupea.repository.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
@@ -20,6 +22,8 @@ import java.util.List;
  */
 @Controller
 public class InterventionSocketController {
+
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     /** {@link InterventionRepository} instance */
     private InterventionRepository interventionRepository;
@@ -36,25 +40,31 @@ public class InterventionSocketController {
     /** {@link PhotoRepository} instance */
     private PhotoRepository photoRepository;
 
+    /** {@link PositionRepository} instance */
+    private PositionRepository positionRepository;
+
     /**
      * Constructor of the class {@link InterventionSocketController}.
-     *
+     *  @param simpMessagingTemplate
      * @param interventionRepository {@link InterventionRepository} instance
      * @param sinisterCodeRepository {@link SinisterCodeRepository} instance
      * @param symbolSitacRepository {@link SymbolSitacRepository} instance
      * @param unitRepository {@link UnitRepository} instance
      * @param photoRepository {@link PhotoRepository} instance
+     * @param positionRepository
      */
-    public InterventionSocketController (InterventionRepository interventionRepository,
-                                         SinisterCodeRepository sinisterCodeRepository,
-                                         SymbolSitacRepository symbolSitacRepository,
-                                         UnitRepository unitRepository,
-                                         PhotoRepository photoRepository) {
+    public InterventionSocketController(SimpMessagingTemplate simpMessagingTemplate, InterventionRepository interventionRepository,
+                                        SinisterCodeRepository sinisterCodeRepository,
+                                        SymbolSitacRepository symbolSitacRepository,
+                                        UnitRepository unitRepository,
+                                        PhotoRepository photoRepository, PositionRepository positionRepository) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
         this.interventionRepository = interventionRepository;
         this.sinisterCodeRepository = sinisterCodeRepository;
         this.symbolSitacRepository = symbolSitacRepository;
         this.unitRepository = unitRepository;
         this.photoRepository = photoRepository;
+        this.positionRepository = positionRepository;
     }
 
     /**
@@ -151,17 +161,21 @@ public class InterventionSocketController {
      * @return the string
      */
     @MessageMapping(RoutesConfig.CHOOSE_INTERVENTION_CLIENT)
-    @SendTo({RoutesConfig.CHOOSE_INTERVENTION_SERVER})
-    public InterventionChosenMessage chooseIntervention(@DestinationVariable("id") final int id,
+    public void chooseIntervention(@DestinationVariable("id") final int id,
                                                         Principal principal,
                                                         String dataSentByClient) {
+        String username = principal.getName();
         Intervention intervention = interventionRepository.getOne(id);
 
-        return new InterventionChosenMessage(
-                id,
-                populateSymbolList(intervention),
-                populateUnitList(intervention),
-                populatePhotoList(intervention)
+
+        Gson gson = new Gson();
+        simpMessagingTemplate.convertAndSend("/topic/users/"+username+"/intervention-chosen",
+            gson.toJson(new InterventionChosenMessage(
+                    id,
+                    populateSymbolList(intervention),
+                    populateUnitList(intervention),
+                    populatePhotoList(intervention)
+            ))
         );
     }
 
@@ -180,13 +194,16 @@ public class InterventionSocketController {
 
         SinisterCode sinisterCode = sinisterCodeRepository.findByCode(dataSentByClient.code);
 
-        Intervention intervention = new Intervention(
-                new Date().getTime(),
-                dataSentByClient.location.toPositionEntity(),
-                dataSentByClient.address,
-                sinisterCode,
-                true
-        );
+        fr.istic.sit.codisgroupea.model.entity.Position pos = dataSentByClient.location.toPositionEntity();
+
+        fr.istic.sit.codisgroupea.model.entity.Position posPersisted = positionRepository.save(pos);
+
+        Intervention intervention = new Intervention();
+        intervention.setDate(new Date().getTime());
+        intervention.setPosition(posPersisted);
+        intervention.setAddress(dataSentByClient.address);
+        intervention.setSinisterCode(sinisterCode);
+        intervention.setOpened(true);
 
         Intervention persisted = interventionRepository.save(intervention);
 

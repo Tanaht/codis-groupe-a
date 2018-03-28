@@ -7,6 +7,7 @@ INSERT INTO role values(3,'ROLE_DRONE_USER');
 INSERT INTO user values(1,'codis_user','codis_user',1);
 INSERT INTO user values(2,'simple_user','simple_user',2);
 INSERT INTO user values(3,'drone_user','drone_user',3);
+INSERT INTO user values(4,'user','user',1);
 
 -- Insert Sinister code
 INSERT INTO sinister_code VALUES (1,'INC');
@@ -29,7 +30,7 @@ INSERT INTO vehicle VALUES (6, 'vehicule 6', 2, 3);
 
 -- Insert Position
 INSERT INTO position VALUES (1, 48.116487, -1.647416);
-INSERT INTO position VALUES (2, 48.105727, -1.674720 );
+INSERT INTO position VALUES (2, 48.105727, -1.674720);
 
 -- Insert Intervention
 INSERT INTO intervention VALUES (1, '11 Rue du Bois Perrin', 1522159274, 1, 1, 1);

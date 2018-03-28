@@ -11,7 +11,7 @@ import java.util.List;
 public class Path {
 
     /** The id of the path */
-    private int id;
+    private Integer id;
 
     /** The altitude of the path */
     private double altitude;
@@ -48,8 +48,8 @@ public class Path {
      * @return the id
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -58,7 +58,7 @@ public class Path {
      *
      * @param id the id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

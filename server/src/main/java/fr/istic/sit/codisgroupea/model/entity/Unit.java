@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 public class Unit {
 
     /** The id of the unit */
-    private int id;
+    private Integer id;
 
     /** Instance of {@link Intervention} for the intervention of the unit */
     private Intervention intervention;
@@ -71,8 +71,8 @@ public class Unit {
      * @return the ID
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -81,7 +81,7 @@ public class Unit {
      *
      * @param id the id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

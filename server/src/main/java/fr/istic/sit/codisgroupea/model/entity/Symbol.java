@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 public class Symbol {
 
     /** The id of the symbol */
-    private int id;
+    private Integer id;
 
     /** Instance of {@link Color} for the color of the symbol */
     private Color color;
@@ -41,8 +41,8 @@ public class Symbol {
      * @return the id
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -51,7 +51,7 @@ public class Symbol {
      *
      * @param id the id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

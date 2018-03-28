@@ -1,9 +1,6 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -12,7 +9,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class DefaultVehicleSymbol {
     /** The id of the vehicle symbol*/
-    private int id;
+    private Integer id;
 
     /** Instance of {@link VehicleType} for the type of the vehicle */
     private VehicleType type;
@@ -43,8 +40,8 @@ public class DefaultVehicleSymbol {
      * @return the id
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -53,7 +50,7 @@ public class DefaultVehicleSymbol {
      *
      * @param id the id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -64,7 +61,7 @@ public class DefaultVehicleSymbol {
      */
     @NotNull
 
-    @OneToOne
+    @OneToOne(cascade= CascadeType.ALL)
     public VehicleType getType() {
         return type;
     }

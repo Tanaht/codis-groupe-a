@@ -2,6 +2,7 @@ package fr.istic.sit.codisgroupea.model.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
@@ -11,7 +12,7 @@ import javax.persistence.Id;
 public class Payload {
 
     /** The id of the payload */
-    private int id;
+    private Integer id;
 
     /** The identifier of the payload */
     private String identifier;
@@ -42,8 +43,8 @@ public class Payload {
      * @return the id
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -52,7 +53,7 @@ public class Payload {
      *
      * @param id the id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
