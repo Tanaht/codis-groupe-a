@@ -7,6 +7,7 @@
     <string name="MenuCodisPageTitle">Menu Codis</string>
     <string name="NewInterventionPageTitle">Ajouter une nouvelle intervention</string>
     <string name="InterventionAddressLabel">Adresse de l\'intervention :</string>
+    <string name="InterventionAddressHint">Veuillez entrer l\'adresse de l\'intervention</string>
     <string name="InterventionAddressNumero">Numero de la voie :</string>
     <string name="InterventionAddressCP">Code postale :</string>
     <string name="InterventionAddressCity">Ville :</string>
