@@ -29,6 +29,12 @@
     <string name="lbl_liste_des_interventions">Liste des interventions</string>
     <string name="lbl_liste_des_moyen">Liste des moyens demandés</string>
     <string name="lbl_creer_intervention">Créer intervention</string>
+
+    <!-- Message must be prefixed by msg-->
+    <string name="msg_success_credentials">Connexions effectué avec succès !</string>
+
+    <!-- Error Message must be prefixed by error-->
+    <string name="error_invalid_credentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>
     <string name="title_activity_map">Map</string>
 
     <string name="action_tableau_moyen">Tableau Moyen</string>
