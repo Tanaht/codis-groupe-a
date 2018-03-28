@@ -43,6 +43,10 @@ public class UnitMessage {
 
     }
 
+    public UnitMessage(){
+
+    }
+
     public SymbolUnitUpdateMessage getSymbolUnitMessage() {
         return symbolUnitMessage;
     }
@@ -67,6 +71,10 @@ public class UnitMessage {
      * The type Symbol unit update message.
      */
     public static class SymbolUnitUpdateMessage {
+
+        public SymbolUnitUpdateMessage(){
+
+        }
 
         /** Instance of {@link Shape} */
         private Shape shape;
@@ -124,6 +132,10 @@ public class UnitMessage {
 
         /** Instance of {@link fr.istic.sit.codisgroupea.model.entity.Position} */
         private Position localisation;
+
+        public SymbolUnitMessage(){
+
+        }
     }
 
 

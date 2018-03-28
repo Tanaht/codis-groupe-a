@@ -30,6 +30,14 @@ public class CreateInterventionMessage {
         this.location = location;
     }
 
+
+    /**
+     * Instantiates a new Create intervention message.
+     */
+    public CreateInterventionMessage(){
+
+    }
+
     public String getCode() {
         return code;
     }

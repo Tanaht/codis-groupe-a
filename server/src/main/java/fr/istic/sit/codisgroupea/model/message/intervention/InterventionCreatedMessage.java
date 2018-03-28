@@ -53,6 +53,10 @@ public class InterventionCreatedMessage {
         this.location = location;
     }
 
+    public InterventionCreatedMessage(){
+
+    }
+
     public int getId() {
         return id;
     }

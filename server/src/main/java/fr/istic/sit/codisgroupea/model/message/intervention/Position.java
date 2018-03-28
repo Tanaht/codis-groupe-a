@@ -23,6 +23,9 @@ public class Position {
         this.lat = lat;
         this.lng = lng;
     }
+    public Position(){
+
+    }
 
     /**
      * Instantiates a new Position.

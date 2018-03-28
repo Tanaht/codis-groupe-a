@@ -4,6 +4,14 @@ package fr.istic.sit.codisgroupea.model.message.demand;
  * The unit-created message.
  */
 public class UnitCreatedMessage {
+
+    /**
+     * Instantiates a new Unit created message.
+     */
+    public UnitCreatedMessage(){
+
+    }
+
     /**
      * The type Vehicle.
      */
@@ -20,6 +28,13 @@ public class UnitCreatedMessage {
          */
         public Vehicle(String type) {
             this.type = type;
+        }
+
+        /**
+         * Instantiates a new Vehicle.
+         */
+        public Vehicle(){
+
         }
     }
 
@@ -43,18 +58,38 @@ public class UnitCreatedMessage {
         this.vehicle = vehicle;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Gets vehicle.
+     *
+     * @return the vehicle
+     */
     public Vehicle getVehicle() {
         return vehicle;
     }
 
+    /**
+     * Sets vehicle.
+     *
+     * @param vehicle the vehicle
+     */
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
     }

@@ -38,10 +38,19 @@ public class InterventionChosenMessage {
         this.photos = photos;
     }
 
+    public InterventionChosenMessage(){
+
+    }
+
     /**
      * The type Symbol.
      */
     public static class Symbol {
+
+        public Symbol(){
+
+        }
+
         /**
          * The type Payload.
          */
@@ -64,6 +73,10 @@ public class InterventionChosenMessage {
             public Payload(String identifier, String details) {
                 this.identifier = identifier;
                 this.details = details;
+            }
+
+            public Payload(){
+
             }
 
             public String getIdentifier() {
@@ -120,16 +133,26 @@ public class InterventionChosenMessage {
             this.location = location;
             this.payload = payload;
         }
+
     }
 
     /**
      * The type Unit.
      */
     public static class Unit {
+
+        public Unit(){
+
+        }
+
         /**
          * The type Vehicle.
          */
         public static class Vehicle {
+            public Vehicle(){
+
+            }
+
             /**
              * The Label.
              */
@@ -185,6 +208,10 @@ public class InterventionChosenMessage {
          * The type Symbol.
          */
         public static class Symbol {
+            public Symbol(){
+
+            }
+
             /**
              * The Shape.
              */
@@ -280,6 +307,8 @@ public class InterventionChosenMessage {
             this.symbol = symbol;
         }
 
+
+
         public int getId() {
             return id;
         }
@@ -333,6 +362,10 @@ public class InterventionChosenMessage {
      * The type Photo.
      */
     public static class Photo {
+        public Photo(){
+
+        }
+
         /**
          * The Url.
          */
@@ -415,5 +448,6 @@ public class InterventionChosenMessage {
         this.units = units;
         this.photos = photos;
     }
+
 
 }
