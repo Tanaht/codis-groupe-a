@@ -21,6 +21,11 @@ public class SymbolsMessage {
     private List<SymbolMessage> symbols;
 
     /**
+     * Empty Constructor
+     */
+    public SymbolsMessage () {}
+
+    /**
      * Constructor of the class {@link SymbolsMessage}.
      * @param type the type of the symbol message.
      * @param symbols the list of symbol contained by the symbol message.

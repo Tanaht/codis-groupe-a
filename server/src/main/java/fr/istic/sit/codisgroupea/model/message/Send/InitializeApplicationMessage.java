@@ -84,6 +84,11 @@ public class InitializeApplicationMessage {
     }
 
     /**
+     * Empty Constructor
+     */
+    public InitializeApplicationMessage () {}
+
+    /**
      *  @param usr User who ask data
      * @param typesList Type vehicle list
      * @param codesList Codes sinister list
@@ -121,6 +126,11 @@ public class InitializeApplicationMessage {
 
         /** Instance of {@link fr.istic.sit.codisgroupea.model.entity.Position} for the position */
         private Position location;
+
+        /**
+         * Empty Constructor
+         */
+        public InterventionMessage () {}
 
         /**
          * Constructor of the class {@link InterventionMessage}
@@ -197,6 +207,11 @@ public class InitializeApplicationMessage {
         private String label;
 
         /**
+         * Empty Constructor
+         */
+        public VehicleTypeMessage () {}
+
+        /**
          *
          * @param vehicleType VehicleType to get his name and put in label
          */
@@ -230,6 +245,11 @@ public class InitializeApplicationMessage {
          * Role of the user
          */
         private String role;
+
+        /**
+         * Empty Constructor
+         */
+        public UserMessage () {}
 
         /**
          *
@@ -271,6 +291,11 @@ public class InitializeApplicationMessage {
         private String description;
 
         /**
+         * Empty Constructor
+         */
+        public SinisterCodeMessage () {}
+
+        /**
          *
          * @param sinisterCode SinisterCode to be send to the client
          */
@@ -309,6 +334,11 @@ public class InitializeApplicationMessage {
          * Vehicle designed by the demand
          */
         private VehicleMessage vehicle;
+
+        /**
+         * Empty Constructor
+         */
+        public DemandMessage () {}
 
         /**
          *

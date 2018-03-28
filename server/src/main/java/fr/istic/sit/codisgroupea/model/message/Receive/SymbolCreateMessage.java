@@ -50,6 +50,11 @@ public class SymbolCreateMessage {
     }
 
     /**
+     * Empty Constructor
+     */
+    public SymbolCreateMessage () {}
+
+    /**
      * Constructor of the class {@link SymbolCreateMessage}.
      * @param shape the shape of the symbol.
      * @param color the color of the symbol.
@@ -80,6 +85,11 @@ public class SymbolCreateMessage {
         public double getLng() {
             return lng;
         }
+
+        /**
+         * Empty Constructor
+         */
+        public Location () {}
 
         /**
          * Constructor of the class {@link SymbolCreateMessage.Location}.
@@ -116,6 +126,11 @@ public class SymbolCreateMessage {
         public String getDetails() {
             return details;
         }
+
+        /**
+         * Empty Constructor
+         */
+        public Payload () {}
 
         /**
          * Constructor of the class {@link SymbolCreateMessage.Payload}.

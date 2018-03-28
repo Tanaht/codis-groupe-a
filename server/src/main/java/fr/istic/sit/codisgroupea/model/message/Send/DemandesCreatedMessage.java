@@ -12,6 +12,11 @@ public class DemandesCreatedMessage {
     private VehicleDemandesCreatedMessage vehicle;
 
     /**
+     * Empty Constructor
+     */
+    public DemandesCreatedMessage () {}
+
+    /**
      * Constructor of the class {@link DemandesCreatedMessage}
      *
      * @param unit The unit
@@ -44,6 +49,11 @@ public class DemandesCreatedMessage {
 
         /** The status of the vehicle */
         private String status;
+
+        /**
+         * Empty Constructor
+         */
+        public VehicleDemandesCreatedMessage () {}
 
         /**
          * Constructor of the class {@link VehicleDemandesCreatedMessage}

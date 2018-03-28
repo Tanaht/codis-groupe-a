@@ -42,6 +42,11 @@ public class SymbolMessage {
     }
 
     /**
+     * Empty Constructor
+     */
+    public SymbolMessage () {}
+
+    /**
      * Constructor of the class {@link SymbolMessage}.
      * @param id the id of the symbol.
      * @param shape the shape of the symbol.
@@ -74,6 +79,11 @@ public class SymbolMessage {
         public double getLng() {
             return lng;
         }
+
+        /**
+         * Empty Constructor
+         */
+        public Location () {}
 
         /**
          * Constructor of the class {@link Location}.
@@ -110,6 +120,11 @@ public class SymbolMessage {
         public String getDetails() {
             return details;
         }
+
+        /**
+         * Empty Constructor
+         */
+        public Payload () {}
 
         /**
          * Constructor of the class {@link Payload}.
