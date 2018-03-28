@@ -23,6 +23,10 @@ public class Position {
         this.lat = lat;
         this.lng = lng;
     }
+
+    /**
+     * Instantiates a new Position.
+     */
     public Position(){
 
     }
@@ -46,18 +50,38 @@ public class Position {
         return new fr.istic.sit.codisgroupea.model.entity.Position(lat, lng);
     }
 
+    /**
+     * Gets lat.
+     *
+     * @return the lat
+     */
     public float getLat() {
         return lat;
     }
 
+    /**
+     * Sets lat.
+     *
+     * @param lat the lat
+     */
     public void setLat(float lat) {
         this.lat = lat;
     }
 
+    /**
+     * Gets lng.
+     *
+     * @return the lng
+     */
     public float getLng() {
         return lng;
     }
 
+    /**
+     * Sets lng.
+     *
+     * @param lng the lng
+     */
     public void setLng(float lng) {
         this.lng = lng;
     }
