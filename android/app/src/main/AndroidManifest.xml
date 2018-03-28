@@ -20,8 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MainMenuCodis"></activity>
-        <activity android:name=".Activities.MainMenuIntervenant"></activity>
+        <activity android:name=".Activities.MainMenuCodis" />
+        <activity android:name=".Activities.MainMenuIntervenant" />
+        <activity android:name=".Activities.NewInterventionActivity" />
+        <activity android:name=".Activities.InterventionsListActivity"></activity>
     </application>
 
 </manifest>

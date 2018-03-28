@@ -1,5 +1,6 @@
 
 android/\.idea/
+node_modules/
 
 \.idea/sonarlint/issuestore/1/3/13f012f60e18f38225ce59137db2e07d5d70b29c
 
@@ -12,3 +13,11 @@ android/\.idea/
 \.idea/sonarlint/issuestore/index\.pb
 
 \.idea/workspace\.xml
+
+\.idea/
+
+drone/config/
+
+drone/droneIstic\.pyc
+
+drone/utils\.pyc
