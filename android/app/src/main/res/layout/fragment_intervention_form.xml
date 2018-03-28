@@ -44,58 +44,6 @@
         <requestFocus />
     </AutoCompleteTextView>
 
-
-    <TextView
-        android:id="@+id/AddressNumeroLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/InterventionAddressNumero"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/interventionAddressNumero"
-        android:layout_width="196dp"
-        android:layout_height="34dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="40dp"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/InterventionAddressCP"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/interventionAddressCP"
-        android:layout_width="196dp"
-        android:layout_height="34dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="40dp"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/InterventionAddressCity"
-        android:textSize="16sp" />
-
-    <EditText
-        android:id="@+id/interventionAddressCity"
-        android:layout_width="326dp"
-        android:layout_height="34dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="40dp"
-        android:textSize="12sp" />
-
     <TextView
         android:id="@+id/codeLabel"
         android:layout_width="wrap_content"
