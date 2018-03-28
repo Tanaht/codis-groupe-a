@@ -1,24 +1,16 @@
 package ila.fr.codisintervention.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.RadioButton;
 
 import java.util.List;
-
-import ila.fr.codisintervention.Activities.MainActivity;
-import ila.fr.codisintervention.Activities.MainMenuCodis;
-import ila.fr.codisintervention.Activities.TestFragmentActivity;
 import ila.fr.codisintervention.Entities.SymboleDispo;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.SymboleDispoService;
@@ -34,15 +26,11 @@ import ila.fr.codisintervention.Services.SymboleDispoService;
 public class ListeSymbolesFragment extends Fragment{
 
     private static List<SymboleDispo> liste = SymboleDispoService.getListeSymbolesDispo();
+    private String couleur;
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private ListeSymbolesFragment.OnFragmentInteractionListener mListener;
 
@@ -58,7 +46,6 @@ public class ListeSymbolesFragment extends Fragment{
      * @param param2 Parameter 2.
      * @return A new instance of fragment BlankFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ListeSymbolesFragment newInstance(String param1, String param2) {
         ListeSymbolesFragment fragment = new ListeSymbolesFragment();
         Bundle args = new Bundle();
@@ -71,10 +58,6 @@ public class ListeSymbolesFragment extends Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -83,7 +66,8 @@ public class ListeSymbolesFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_liste_symboles, container, false);
 
         ajouterImageView(liste, view);
-        ajouterImageViewListeners(liste, view);
+        ajouterImageViewListeners(liste);
+        ajouterRadioButtonListeners(view);
 
         return view;
     }
@@ -94,7 +78,7 @@ public class ListeSymbolesFragment extends Fragment{
         }
     }
 
-    public void ajouterImageViewListeners(List<SymboleDispo> liste, View view){
+    public void ajouterImageViewListeners(List<SymboleDispo> liste){
         for (SymboleDispo symbole: liste){
             symbole.getImageView().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,7 +94,54 @@ public class ListeSymbolesFragment extends Fragment{
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+    public String getCouleur() {
+        return couleur;
+    }
+
+    public void setCouleur(String couleur) {
+        this.couleur = couleur;
+    }
+
+    public void ajouterRadioButtonListeners(View view){
+
+        RadioButton rbRouge = (RadioButton) view.findViewById(R.id.radioButtonrouge);
+        rbRouge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCouleur("rouge");
+            }
+        });
+        RadioButton rbVert = (RadioButton) view.findViewById(R.id.radioButtonvert);
+        rbVert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCouleur("vert");
+            }
+        });
+        RadioButton rbBleu = (RadioButton) view.findViewById(R.id.radioButtonbleu);
+        rbBleu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCouleur("bleu");
+            }
+        });
+        RadioButton rbOrange = (RadioButton) view.findViewById(R.id.radioButtonorange);
+        rbOrange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCouleur("orange");
+            }
+        });
+        RadioButton rbViolet = (RadioButton) view.findViewById(R.id.radioButtonviolet);
+        rbViolet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCouleur("violet");
+            }
+        });
+
+    }
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -147,7 +178,6 @@ public class ListeSymbolesFragment extends Fragment{
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 

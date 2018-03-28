@@ -16,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:onClick="clicRouge"
         android:background="@color/rouge" />
 
     <RadioButton
@@ -24,7 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:onClick="clicVert"
         android:background="@color/vert" />
 
     <RadioButton
@@ -32,7 +30,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:onClick="clicBleu"
         android:background="@color/bleu" />
 
     <RadioButton
@@ -40,7 +37,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:onClick="clicOrange"
         android:background="@color/orange" />
 
         <RadioButton
@@ -48,7 +44,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:onClick="clicViolet"
             android:background="@color/violet" />
 
     </RadioGroup>
@@ -109,6 +104,10 @@
         android:layout_height="50dp"
         android:src="@drawable/zone" />
 
-
+    <ImageView
+        android:id="@+id/drone"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/drone" />
 
 </LinearLayout>

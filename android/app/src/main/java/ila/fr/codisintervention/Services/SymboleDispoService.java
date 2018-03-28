@@ -11,6 +11,10 @@ import ila.fr.codisintervention.Entities.SymboleDispo;
 
 public class SymboleDispoService {
 
+    private SymboleDispoService() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static List<SymboleDispo> getListeSymbolesDispo (){
         List<SymboleDispo> liste = new ArrayList<>();
         liste.add(new SymboleDispo("ressource_eau", "ressource_eau_glow", "ressource_eau", false));
@@ -22,6 +26,7 @@ public class SymboleDispoService {
         liste.add(new SymboleDispo("vehicule_pompier","vehicule_pompier_glow", "vehicule_pompier", false));
         liste.add(new SymboleDispo("vehicule_pompier_non_valide","vehicule_pompier_non_valide_glow", "vehicule_pompier_non_valide", false));
         liste.add(new SymboleDispo("zone","zone_glow", "zone", false));
+        liste.add(new SymboleDispo("drone","drone_glow", "drone", false));
         return liste;
     }
 
