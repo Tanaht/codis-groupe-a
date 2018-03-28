@@ -28,12 +28,22 @@ public class CreateUnitMessage {
      */
     public Vehicle vehicle;
 
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
     /**
      * Instantiates a new create-unit message.
      *
      * @param vehicle the vehicle
+
      */
     public CreateUnitMessage(Vehicle vehicle) {
         this.vehicle = vehicle;
     }
+
 }

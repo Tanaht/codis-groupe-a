@@ -25,8 +25,6 @@ public class Intervention {
     private SinisterCode sinisterCode;
     private boolean opened;
 
-    /** Boolean which indicate if the intervention is open or not */
-    private boolean opened;
 
     /**
      * Default constructor.

@@ -22,7 +22,6 @@ public class SymbolSitac implements SigEntry {
 
     /** Instance of {@link Position} for the location of the symbol sitac */
     private Position location;
-    private Payload payload;
 
     /** Instance of {@link Payload} for the payload of the symbol sitac */
     private Payload payload;

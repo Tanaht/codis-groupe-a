@@ -59,6 +59,9 @@ public class UnitMessage {
         this.id = id;
     }
 
+    public Boolean getMoving() {
+        return moving;
+    }
 
     /**
      * The type Symbol unit update message.
@@ -108,6 +111,7 @@ public class UnitMessage {
         public void setLocation(Position location) {
             this.location = location;
         }
+
     }
 
     public static class SymbolUnitMessage {
