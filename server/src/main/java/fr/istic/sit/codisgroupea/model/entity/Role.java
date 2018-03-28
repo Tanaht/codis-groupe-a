@@ -23,7 +23,7 @@ public class Role implements GrantedAuthority {
      * @return the id
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }

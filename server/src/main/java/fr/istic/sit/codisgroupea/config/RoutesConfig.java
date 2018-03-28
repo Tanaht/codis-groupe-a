@@ -11,7 +11,7 @@ public class RoutesConfig {
 
     //InterventionSocketController
     public final static String CHOOSE_INTERVENTION_CLIENT = "/app/interventions/{id}/choose";
-    public final static String CHOOSE_INTERVENTION_SERVER = "/topic/users/{username}/intervention-chosen";
+    //public final static String CHOOSE_INTERVENTION_SERVER = "/topic/users/{username}/intervention-chosen";
 
     public final static String CREATE_INTERVENTION_CLIENT = "/app/interventions/create";
     public final static String CREATE_INTERVENTION_SERVER = "/topic/interventions/created";

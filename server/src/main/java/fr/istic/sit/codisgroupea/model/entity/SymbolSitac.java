@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class SymbolSitac implements SigEntry {
 
     /** The id of the symbol sitac */
-    private int id;
+    private Integer id;
 
     /** Instance of {@link Intervention} for the intervention of the symbol sitac */
     private Intervention intervention;
@@ -53,8 +53,8 @@ public class SymbolSitac implements SigEntry {
      * @return the id
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -63,7 +63,7 @@ public class SymbolSitac implements SigEntry {
      *
      * @param id the id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

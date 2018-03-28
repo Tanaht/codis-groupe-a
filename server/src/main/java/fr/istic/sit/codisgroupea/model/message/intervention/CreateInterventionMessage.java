@@ -1,5 +1,7 @@
 package fr.istic.sit.codisgroupea.model.message.intervention;
 
+
+//{"address":"ISTIC, Bat 12 D, Allée Henri Poincaré, Rennes","code":"INC","location":{"lat":48.1156746,"lng":-1.640608}}
 /**
  * The create-intervention message.
  */

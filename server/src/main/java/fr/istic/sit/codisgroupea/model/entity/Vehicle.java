@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 public class Vehicle {
 
     /** The id of the vehicle */
-    private int id;
+    private Integer id;
 
     /** The label of the vehicle */
     private String label;
@@ -48,8 +48,8 @@ public class Vehicle {
      * @return the ID
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -58,7 +58,7 @@ public class Vehicle {
      *
      * @param id the ID
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

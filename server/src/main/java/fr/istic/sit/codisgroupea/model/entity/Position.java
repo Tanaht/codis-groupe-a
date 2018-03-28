@@ -2,6 +2,7 @@ package fr.istic.sit.codisgroupea.model.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotNull;
 public class Position {
 
     /** The id of the position */
-    private int id;
+    private Integer id;
 
     /** The latitude of the position */
     private double latitude;
@@ -43,8 +44,8 @@ public class Position {
      * @return the ID
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -53,7 +54,7 @@ public class Position {
      *
      * @param id the ID
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

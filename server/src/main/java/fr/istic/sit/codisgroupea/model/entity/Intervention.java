@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 public class Intervention {
 
     /** The id of the intervention */
-    private int id;
+    private Integer id;
 
     /** The date of the intervention */
     private long date;
@@ -54,8 +54,8 @@ public class Intervention {
      * @return the ID
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -64,7 +64,7 @@ public class Intervention {
      *
      * @param id the ID
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 public class Photo {
 
     /** The id of the photo */
-    private int id;
+    private Integer id;
 
     /** The url of the photo */
     private String uri;
@@ -53,8 +53,8 @@ public class Photo {
      * @return the id
      */
     @Id
-    @GeneratedValue
-    public int getId() {
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    public Integer getId() {
         return id;
     }
 
@@ -63,7 +63,7 @@ public class Photo {
      *
      * @param id the id
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
