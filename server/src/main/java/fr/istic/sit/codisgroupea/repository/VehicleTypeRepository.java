@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * SpringData repository for vehicle-type entity.
  */
 @Repository
-public interface VehicleTypeRepository extends JpaRepository<VehicleType, Long> {
+public interface VehicleTypeRepository extends JpaRepository<VehicleType, Integer> {
 }

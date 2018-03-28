@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * SpringData repository for position entity.
  */
 @Repository
-public interface PositionRepository extends JpaRepository<Position, Long> {
+public interface PositionRepository extends JpaRepository<Position, Integer> {
 }

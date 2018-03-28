@@ -12,7 +12,7 @@ import java.util.Optional;
  * SpringData repository for sinister-code entity.
  */
 @Repository
-public interface SymbolRepository extends JpaRepository<Symbol, Long> {
+public interface SymbolRepository extends JpaRepository<Symbol, Integer> {
 
     /**
      * Method to get a symbol by it's color and shape.

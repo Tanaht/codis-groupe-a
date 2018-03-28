@@ -10,7 +10,7 @@ import java.util.Optional;
  * SpringData repository for vehicle entity.
  */
 @Repository
-public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
+public interface VehicleRepository extends JpaRepository<Vehicle, Integer> {
 
     Optional<Vehicle> findVehicleByLabel(String label);
 }

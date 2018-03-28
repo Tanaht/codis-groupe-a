@@ -10,7 +10,7 @@ import java.util.List;
  * SpringData repository for intervention entity.
  */
 @Repository
-public interface InterventionRepository extends JpaRepository<Intervention, Long> {
+public interface InterventionRepository extends JpaRepository<Intervention, Integer> {
 
     List<Intervention> findAllByOpened(boolean open);
 }
