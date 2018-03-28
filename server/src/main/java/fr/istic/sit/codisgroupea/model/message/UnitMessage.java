@@ -43,26 +43,54 @@ public class UnitMessage {
 
     }
 
+    /**
+     * Instantiates a new Unit message.
+     */
     public UnitMessage(){
 
     }
 
+    /**
+     * Gets symbol unit message.
+     *
+     * @return the symbol unit message
+     */
     public SymbolUnitUpdateMessage getSymbolUnitMessage() {
         return symbolUnitMessage;
     }
 
+    /**
+     * Sets symbol unit message.
+     *
+     * @param symbolUnitMessage the symbol unit message
+     */
     public void setSymbolUnitMessage(SymbolUnitUpdateMessage symbolUnitMessage) {
         this.symbolUnitMessage = symbolUnitMessage;
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public Integer getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(Integer id) {
         this.id = id;
     }
 
+    /**
+     * Gets moving.
+     *
+     * @return the moving
+     */
     public Boolean getMoving() {
         return moving;
     }
@@ -72,6 +100,9 @@ public class UnitMessage {
      */
     public static class SymbolUnitUpdateMessage {
 
+        /**
+         * Instantiates a new Symbol unit update message.
+         */
         public SymbolUnitUpdateMessage(){
 
         }
@@ -96,32 +127,65 @@ public class UnitMessage {
             location = new Position(symbolSitac.getLocation());
         }
 
+        /**
+         * Gets shape.
+         *
+         * @return the shape
+         */
         public Shape getShape() {
             return shape;
         }
 
+        /**
+         * Sets shape.
+         *
+         * @param shape the shape
+         */
         public void setShape(Shape shape) {
             this.shape = shape;
         }
 
+        /**
+         * Gets color.
+         *
+         * @return the color
+         */
         public Color getColor() {
             return color;
         }
 
+        /**
+         * Sets color.
+         *
+         * @param color the color
+         */
         public void setColor(Color color) {
             this.color = color;
         }
 
+        /**
+         * Gets location.
+         *
+         * @return the location
+         */
         public Position getLocation() {
             return location;
         }
 
+        /**
+         * Sets location.
+         *
+         * @param location the location
+         */
         public void setLocation(Position location) {
             this.location = location;
         }
 
     }
 
+    /**
+     * The type Symbol unit message.
+     */
     public static class SymbolUnitMessage {
 
         /** Instance of {@link Shape} */
@@ -133,11 +197,13 @@ public class UnitMessage {
         /** Instance of {@link fr.istic.sit.codisgroupea.model.entity.Position} */
         private Position localisation;
 
+        /**
+         * Instantiates a new Symbol unit message.
+         */
         public SymbolUnitMessage(){
 
         }
     }
-
 
 
     /**
