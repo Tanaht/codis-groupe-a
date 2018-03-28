@@ -1,65 +1,42 @@
 # coding=utf-8
 from __future__ import print_function
 import droneIstic
-import socket
-import json
+from utils.SocketIstic import SocketIstic
 from config.Config import Config
-from dronekit import LocationGlobal
-
+import os
 
 config = Config()
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-print('Connexion à %s: %s' % (config.socket_host, config.socket_port))
-client.connect((config.socket_host, config.socket_port))
+client = SocketIstic.get_socket()
 
 while True:
 
-    response = client.recv(4096)
+    # Start Google Earth Application
+    # os.startfile("")
 
-    if response != "":
-        trame = json.loads(response.decode())
-        mission = trame['type']
-        title = trame['data']['title']
+    # wait something from the server socket
+    ma_mission = client.wait_a_mission()
 
-        if mission == "mission_order":
-            # decode des points
-            liste = []
-            patrol_liste = []
+    codisDrone = droneIstic.NotreDrone("udpin:{}:{}" .format(config.drone_host, config.drone_port), False, ma_mission.altitude)
 
-            elt1 = trame['data']['trajectory'];
-            for point in elt1:
-                liste.append(LocationGlobal(point['lat'], point['lon'], point['alt']))
+    codisDrone.change_patrol_mission(ma_mission.patrol_liste, ma_mission.patrol)
+    codisDrone.change_mission(ma_mission.liste)
 
-            elt2 = trame['data']['patrol_trajectory'];
-            for point in elt2:
-                patrol_liste.append(LocationGlobal(point['lat'], point['lon'], point['alt']))
+    # arm and take off the drone
+    codisDrone.start()
 
-            patrol = trame['data']['patrol']
+    # the drone goes to the patrol zone via specifics points
+    # if maMission.liste.count > 0:
+    #     codisDrone.goto_patrol_zone()
 
-            codisDrone = droneIstic.NotreDrone("udpin:{}:{}" .format(config.drone_host, config.drone_port), False, 30)
+    # the drone starts the patrol sequence
+    codisDrone.start_patrol()
 
-            # codisDrone.change_patrol_mission(patrol_liste, patrol)
-            codisDrone.change_mission(liste)
+    # the drone goes back to the launch position and take on
+    codisDrone.stop()
 
-            # arm and take off the drone
-            codisDrone.start()
-
-            # the drone goes to the patrol zone via specifics points
-            codisDrone.goto_patrol_zone()
-
-            # the drone starts the patrol sequence
-            # codisDrone.start_patrol()
-
-            # the drone goes back to the launch position and take on
-            codisDrone.stop()
-
-            # we send END MISSION to socket server
-            json_data = json.dumps({
-                'type': 'mission_finished',
-                'data': {'mission': 10, 'status': True, 'error': ""}
-            })
-            client.send(json_data.encode())
-            break
+    # we send END MISSION to socket server
+    client.send_end_mission()
 
 client.close()
+
+
