@@ -40,4 +40,28 @@ public class Intervention {
     public Location getLocation() {
         return location;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setDrone_available(boolean drone_available) {
+        this.drone_available = drone_available;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

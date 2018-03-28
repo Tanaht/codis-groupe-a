@@ -7,10 +7,17 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.utils.Config;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
@@ -77,6 +84,9 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                 case OPENED:
                     Log.d(TAG, "STOMP CONNECTION OPENED");
 
+
+
+
                     client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
                         Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
 
@@ -128,5 +138,105 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
+    }
+
+    /**
+     * Send Creation intervention notification to server
+     * {
+         code: String,
+         address: String,
+         location: {
+             lat: float,
+             lng: float
+         }
+       }
+     */
+    @Override
+    public void createIntervention(Intervention intervention) {
+        Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+//                Log.d(TAG, "Name: '" + f.getName() + "' DeclaredClass: '" + f.getDeclaredClass() + "' DeclaringClass: '" + f.getDeclaringClass() + "'");
+                if(f.getDeclaringClass().equals(Intervention.class)) {
+                    switch (f.getName()) {
+                        case "drone_available":
+                            return true;
+                        case "id":
+                            return true;
+                        case "date":
+                            return true;
+                        default:
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        }).create();
+
+
+        Log.i(TAG, "[/app/interventions/create] with message " + gson.toJson(intervention));
+        this.client.send("/app/interventions/create", gson.toJson(intervention)).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/create] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/chosen] Error Encountered", error)
+        );
+    }
+
+    /**
+    * Subscribe to this and send notification to server
+    * /topic/interventions/{id}/symbols/event`
+    * `/topic/interventions/{id}/units/event`
+    * `/topic/interventions/{id}/units/{idUnit}/denied`
+    * `/topic/interventions/{id}/units/{idUnit}/accepted`
+    * */
+    @Override
+    public void chooseIntervention(int id){
+        this.client.topic("/topic/interventions/" + id + "/symbols/event").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
+        });
+
+
+        this.client.topic("/topic/interventions/" + id + "/units/event").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
+        });
+
+        this.client.send("/app/interventions/" + id + "/chosen", "PING").subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + id + "/chosen] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + id + "/chosen] Error Encountered", error)
+        );
+//        this.client.topic("/topic/interventions/" + id + "/units/event");
+//        this.client.topic("/topic/interventions/" + id + "/units/event");
+
+
+
+
+    }
+
+    public void performInitializationSubscription(User user) {
+        this.client.topic("/topic/interventions/created").subscribe(message -> {
+            Log.i(TAG, "[/interventions/created] Received message: " + message.getPayload());
+        });
+
+
+        this.client.topic("/topic/interventions/closed").subscribe(message -> {
+            Log.i(TAG, "[/interventions/closed] Received message: " + message.getPayload());
+        });
+
+
+        this.client.topic("/topic/users/" + user.getUsername() + "/intervention-chosen").subscribe(message -> {
+            Log.i(TAG, "[/users/" + user.getUsername() + "/intervention-chosen] Received message: " + message.getPayload());
+        });
+
+
+        if(user.isSimpleUser()) {
+
+        } else if(user.isCodisUser()) {
+            this.client.topic("/topic/demandes/created").subscribe(message -> {
+                Log.i(TAG, "[/demandes/created] Received message: " + message.getPayload());
+            });
+        }
     }
 }

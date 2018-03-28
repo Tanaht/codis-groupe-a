@@ -5,14 +5,27 @@ package ila.fr.codisintervention.models;
  */
 
 public class Location {
-    private float lat;
-    private  float lng;
+    private double lat;
+    private double lng;
 
-    public float getLat() {
+    public Location(double lat, double lng) {
+        this.lat = lat;
+        this.lng = lng;
+    }
+
+    public double getLat() {
         return lat;
     }
 
-    public float getLng() {
+    public double getLng() {
         return lng;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
     }
 }
