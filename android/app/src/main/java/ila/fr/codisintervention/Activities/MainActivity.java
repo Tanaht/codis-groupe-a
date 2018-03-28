@@ -136,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         // This registers mMessageReceiver to receive messages.
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION));
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_ERROR));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.CONNECT_TO_APPLICATION));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_ERROR));
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_SUCCESS));
 
 
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Intent Received: " + intent.getAction());
             // Extract data included in the Intent
 
-            if(WebsocketService.ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION.equals(intent.getAction())) {
+            if(WebsocketService.CONNECT_TO_APPLICATION.equals(intent.getAction())) {
                 Toast.makeText(MainActivity.this, getString(R.string.msg_success_credentials), Toast.LENGTH_LONG).show();
 
                 //TODO: Here we receive the object pushed from server
@@ -180,9 +180,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            if(WebsocketService.ACTION_AUTHENTICATION_ERROR.equals(intent.getAction())) {
-                Toast.makeText(MainActivity.this, getString(R.string.error_invalid_credentials), Toast.LENGTH_LONG).show();
-            }
+//            if(WebsocketService.ACTION_AUTHENTICATION_ERROR.equals(intent.getAction())) {
+//                Toast.makeText(MainActivity.this, getString(R.string.error_invalid_credentials), Toast.LENGTH_LONG).show();
+//            }
         }
     };
 

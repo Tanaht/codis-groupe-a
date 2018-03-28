@@ -16,8 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.models.ModelService;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.Photo;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.utils.Config;
 import ua.naiksoftware.stomp.Stomp;
@@ -30,30 +32,28 @@ import ua.naiksoftware.stomp.client.StompClient;
  */
 
 public class WebsocketService extends Service implements WebsocketServiceBinder.IMyServiceMethod {
-    public static enum IntentAction {
-        CONNECT_TO_APPLICATION,//initialize-application
-        DISCONNECT_TO_APPLICATION,
-        INTERVENTION_CREATED,
-        INTERVENTION_CLOSED,
-        INTERVENTION_SYMBOL_CREATED,
-        INTERVENTION_SYMBOL_UPDATED,
-        INTERVENTION_SYMBOL_DELETED,
-        INTERVENTION_UNIT_CREATED,
-        INTERVENTION_UNIT_UPDATED,
-        INTERVENTION_SYMBOL_ACCEPTED,
-        INTERVENTION_SYMBOL_DENIED,
-        DEMANDE_ACCEPTED,
-        DEMANDE_DENIED,
-        DEMANDE_CREATED
-
-
-    }
-
-
-    public static final String ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION = "initialize-application";
-    public static final String ACTION_AUTHENTICATION_ERROR = "authentication-error";
-
     private static final String TAG = "WebSocketService";
+
+    //For Modèle
+    public static final String CONNECT_TO_APPLICATION = "CONNECT_TO_APPLICATION";//initialize-application
+    public static final String DISCONNECT_TO_APPLICATION = "DISCONNECT_TO_APPLICATION";
+    public static final String INTERVENTION_CREATED = "INTERVENTION_CREATED";
+    public static final String INTERVENTION_CLOSED = "INTERVENTION_CLOSED";
+    public static final String INTERVENTION_CHOSEN = "INTERVENTION_CHOSEN";
+    public static final String INTERVENTION_SYMBOL_CREATED = "INTERVENTION_SYMBOL_CREATED";
+    public static final String INTERVENTION_SYMBOL_UPDATED = "INTERVENTION_SYMBOL_UPDATED";
+    public static final String INTERVENTION_SYMBOL_DELETED = "INTERVENTION_SYMBOL_DELETED";
+    public static final String INTERVENTION_UNIT_CREATED = "INTERVENTION_UNIT_CREATED";
+    public static final String INTERVENTION_UNIT_UPDATED = "INTERVENTION_UNIT_UPDATED";
+    public static final String DEMANDE_ACCEPTED = "DEMANDE_ACCEPTED";
+    public static final String DEMANDE_DENIED = "DEMANDE_DENIED";
+    public static final String DEMANDE_CREATED = "DEMANDE_CREATED";
+    public static final String DRONE_PING = "DRONE_PING";
+    public static final String DRONE_PHOTO = "DRONE_PHOTO";
+
+    //For Client
+    public static final String PROTOCOL_ERROR = "PROTOCOL_ERROR";
+    public static final String PROTOCOL_CLOSE = "PROTOCOL_CLOSE";
 
     private static final String USERNAME_HEADER_KEY = "userlogin";
     private static final String PASSWORD_HEADER_KEY = "userpassword";
@@ -113,7 +113,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
                         this.performInitializationSubscription(initializeApplication.getUser());
                         // The string "my-integer" will be used to filer the intent
-                        Intent initializeAppIntent = new Intent(ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION);
+                        Intent initializeAppIntent = new Intent(CONNECT_TO_APPLICATION);
                         // Adding some data
                         initializeAppIntent.putExtra(InitializeApplication.class.getName(), initializeApplication);
 
@@ -130,12 +130,15 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                     Log.d(TAG, "STOMP CONNECTION ERROR");
 
                     // Notify Registered Activity from SUCCESS AUTH
-                    Intent errorAuthIntent = new Intent(ACTION_AUTHENTICATION_ERROR);
-                    LocalBroadcastManager.getInstance(this).sendBroadcast(errorAuthIntent);
+                    Intent errorIntent = new Intent(PROTOCOL_ERROR);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
 
                 case CLOSED:
                     Log.d(TAG, "STOMP CONNECTION CLOSED");
+                    // Notify Registered Activity from SUCCESS AUTH
+                    Intent closeIntent  = new Intent(PROTOCOL_CLOSE);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(closeIntent);
                     break;
             }
         });
@@ -241,16 +244,48 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     public void performInitializationSubscription(User user) {
         this.client.topic("/topic/interventions/created").subscribe(message -> {
             Log.i(TAG, "[/interventions/created] Received message: " + message.getPayload());
+
+            Intent interventionCreated  = new Intent(getApplicationContext(), ModelService.class);
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    return false;
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return clazz.equals(Photo.class);
+                }
+            }).create();
+
+            interventionCreated.setAction(INTERVENTION_CREATED);
+            interventionCreated.putExtra(INTERVENTION_CREATED, gson.fromJson(message.getPayload(), Intervention.class));
+            getApplicationContext().startService(interventionCreated);
+
         });
 
 
         this.client.topic("/topic/interventions/closed").subscribe(message -> {
             Log.i(TAG, "[/interventions/closed] Received message: " + message.getPayload());
+
+            Intent interventionClosed  = new Intent(getApplicationContext(), ModelService.class);
+            interventionClosed.setAction(INTERVENTION_CLOSED);
+            getApplicationContext().startService(interventionClosed);
         });
 
 
         this.client.topic("/topic/users/" + user.getUsername() + "/intervention-chosen").subscribe(message -> {
             Log.i(TAG, "[/users/" + user.getUsername() + "/intervention-chosen] Received message: " + message.getPayload());
+
+
+            Intent interventionChosen  = new Intent(getApplicationContext(), ModelService.class);
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+            interventionChosen.setAction(INTERVENTION_CREATED);
+            interventionChosen.putExtra(INTERVENTION_CREATED, gson.fromJson(message.getPayload(), Intervention.class));
+            getApplicationContext().startService(interventionChosen);
         });
 
 
