@@ -22,4 +22,9 @@ public class ConfirmDemandVehicleMessage {
     public void setVehicle(IdMessage vehicle) {
         this.vehicle = vehicle;
     }
+
+    /**
+     * Empty Constructor
+     */
+    public ConfirmDemandVehicleMessage () {}
 }
