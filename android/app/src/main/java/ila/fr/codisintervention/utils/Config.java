@@ -1,6 +1,5 @@
 package ila.fr.codisintervention.utils;
 
-import android.content.SharedPreferences;
 import android.util.Log;
 
 /**
@@ -23,7 +22,7 @@ public class Config {
     private String uri;
 
     private Config() {
-        host = "192.168.43.226";
+        host = "192.168.1.15";
         port = 8080;
         uri = "stomp";
 

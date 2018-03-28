@@ -19,11 +19,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-
-import java.io.StringReader;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
@@ -31,10 +26,6 @@ import ila.fr.codisintervention.handlers.WebsocketServiceHandler;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ua.naiksoftware.stomp.client.StompClient;
-
-import static ua.naiksoftware.stomp.LifecycleEvent.Type.CLOSED;
-import static ua.naiksoftware.stomp.LifecycleEvent.Type.OPENED;
-import static ua.naiksoftware.stomp.LifecycleEvent.Type.ERROR;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -139,13 +130,7 @@ public class MainActivity extends AppCompatActivity {
      * En fonction de la réponse du serveur, l'utilisateur est dirigé vers la page codis ou pompier.
      */
     private void connexion() {
-
-        if(service.connect(login, motDePasse)) {
-            Toast.makeText(this, getString(R.string.msg_success_credentials), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, getString(R.string.error_invalid_credentials), Toast.LENGTH_LONG).show();
-        }
-
+        service.connect(login, motDePasse);
     }
 
 
@@ -153,9 +138,11 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         // This registers mMessageReceiver to receive messages.
-        LocalBroadcastManager.getInstance(this)
-                .registerReceiver(mMessageReceiver,
-                        new IntentFilter("initialize-application"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_ERROR));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_SUCCESS));
+
+
     }
 
 
@@ -163,11 +150,14 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // Extract data included in the Intent
-            String json = intent.getStringExtra("message");
 
-            if("initialize-application".equals(intent.getAction())) {
-                Log.i(TAG, "MainActivity receive intent action: initialize-application");
+            Log.d(TAG, "Intent Received: " + intent.getAction());
+            // Extract data included in the Intent
+
+            if(WebsocketService.ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION.equals(intent.getAction())) {
+                Toast.makeText(MainActivity.this, getString(R.string.msg_success_credentials), Toast.LENGTH_LONG).show();
+
+                String json = intent.getStringExtra("message");
                 Gson gson = new GsonBuilder().create();
                 //TODO: Here we receive the object pushed from server
                 InitializeApplication initializeApplication = gson.fromJson(intent.getStringExtra("message"), InitializeApplication.class);
@@ -176,10 +166,15 @@ public class MainActivity extends AppCompatActivity {
 //                TODO: Initialize application for both types of user
 
                 if(initializeApplication.getUser().isCodisUser()) {
+                    Log.i(TAG, initializeApplication.getUser().getUsername() + " is a CODIS USER");
 //                        TODO: Initialize application for codis user.
-                } else {
-
+                } else if(initializeApplication.getUser().isSimpleUser()) {
+                    Log.i(TAG, initializeApplication.getUser().getUsername() + " is a SIMPLE USER");
                 }
+            }
+
+            if(WebsocketService.ACTION_AUTHENTICATION_ERROR.equals(intent.getAction())) {
+                Toast.makeText(MainActivity.this, getString(R.string.error_invalid_credentials), Toast.LENGTH_LONG).show();
             }
         }
     };

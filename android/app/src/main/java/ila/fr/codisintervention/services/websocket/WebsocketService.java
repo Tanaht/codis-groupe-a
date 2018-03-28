@@ -12,8 +12,6 @@ import java.util.List;
 
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
 import ila.fr.codisintervention.utils.Config;
-import rx.Subscriber;
-import ua.naiksoftware.stomp.LifecycleEvent;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
@@ -24,6 +22,9 @@ import ua.naiksoftware.stomp.client.StompClient;
  */
 
 public class WebsocketService extends Service implements WebsocketServiceBinder.IMyServiceMethod {
+    public static final String ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION = "initialize-application";
+    public static final String ACTION_AUTHENTICATION_ERROR = "authentication-error";
+
     private static final String TAG = "WebSocketService";
 
     private static final String USERNAME_HEADER_KEY = "userlogin";
@@ -32,10 +33,11 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     private StompClient client;
 
     private IBinder binder;
+    private String url;
 
     public WebsocketService() {
 
-        String url = "http://{host}:{port}/{uri}"
+        this.url = "http://{host}:{port}/{uri}"
                 .replace("{host}", Config.get().getHost())
                 .replace("{port}",Integer.toString(Config.get().getPort()))
                 .replace("{uri}",Config.get().getUri());
@@ -56,8 +58,13 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
 
     @Override
-    public boolean connect(String username, String password) {
+    public  void connect(String username, String password) {
         Log.d(TAG, "Connect to Server with following credentials: " + username + ", " + password);
+
+        if(client.isConnected() || client.isConnecting()) {
+            client.disconnect();
+            this.client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
+        }
 
         List<StompHeader> stompHeader = Arrays.asList(
                 new StompHeader(USERNAME_HEADER_KEY, username),
@@ -68,17 +75,16 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
             switch (lifecycleEvent.getType()) {
 
                 case OPENED:
-                    Log.d(TAG, "Stomp connection opened");
-
+                    Log.d(TAG, "STOMP CONNECTION OPENED");
 
                     client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
                         Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
 
                         // The string "my-integer" will be used to filer the intent
-                        Intent intent = new Intent("initialize-application");
+                        Intent initializeAppIntent = new Intent(ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION);
                         // Adding some data
-                        intent.putExtra("message", message.getPayload());
-                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                        initializeAppIntent.putExtra("message", message.getPayload());
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(initializeAppIntent);
                     });
 
                     client.send("/users/" + username + "/subscribed", "PING").subscribe(
@@ -88,31 +94,24 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                     break;
 
                 case ERROR:
-                    Log.d(TAG, "Thread Name: " + Thread.currentThread().getName());
-                    Log.e(TAG, "Error", lifecycleEvent.getException());
+                    Log.d(TAG, "STOMP CONNECTION ERROR");
+
+                    // Notify Registered Activity from SUCCESS AUTH
+                    Intent errorAuthIntent = new Intent(ACTION_AUTHENTICATION_ERROR);
+                    LocalBroadcastManager.getInstance(this).sendBroadcast(errorAuthIntent);
                     break;
 
                 case CLOSED:
-                    Log.d(TAG, "Stomp connection closed");
+                    Log.d(TAG, "STOMP CONNECTION CLOSED");
                     break;
             }
         });
 
         try {
             client.connect(stompHeader);
-            return true;
         } catch(Exception e) {
             Log.e(TAG, e.getMessage(), e);
-            return false;
         }
-    }
-
-    @Override
-    public boolean connect(String username, String password, Subscriber<LifecycleEvent> subscriber) {
-        Log.d(TAG, "Connect to Server");
-        this.client.lifecycle().subscribe(subscriber);
-
-        return connect(username, password);
     }
 
     @Override
