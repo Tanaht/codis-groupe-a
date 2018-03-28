@@ -39,4 +39,8 @@ public class ListUnitMessage {
     public void setUnits(List<UnitMessage> units) {
         this.units = units;
     }
+
+    public ListUnitMessage(){
+
+    }
 }

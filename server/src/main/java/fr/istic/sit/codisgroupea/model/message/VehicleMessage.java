@@ -7,6 +7,9 @@ import fr.istic.sit.codisgroupea.model.entity.VehicleStatus;
  * Represent a vehicule send to the client
  */
 public class VehicleMessage {
+    public VehicleMessage(){
+        
+    }
     /**
      * vehicle label
      */

@@ -176,6 +176,8 @@ public class InterventionSocketController {
     @SendTo({RoutesConfig.CREATE_INTERVENTION_SERVER})
     public InterventionCreatedMessage createIntervention(Principal principal,
                                                          CreateInterventionMessage dataSentByClient) {
+
+
         SinisterCode sinisterCode = sinisterCodeRepository.findByCode(dataSentByClient.code);
 
         Intervention intervention = new Intervention(
