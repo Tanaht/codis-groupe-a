@@ -24,12 +24,14 @@ import java.util.Locale;
 
 import ila.fr.codisintervention.Entities.Moyen;
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.Services.InterventionService;
 import ila.fr.codisintervention.Services.MoyensService;
 import ila.fr.codisintervention.Utils.GooglePlacesAutocompleteAdapter;
 import ila.fr.codisintervention.Utils.MoyenListAdapter;
 
 public class NewInterventionActivity extends AppCompatActivity {
 
+    InterventionService interventionService;
     MoyenListAdapter dataAdapter;
     String inputtedAddress;
     LatLng latlngAddress;
@@ -51,36 +53,37 @@ public class NewInterventionActivity extends AppCompatActivity {
            // Toast.makeText(getApplicationContext(),inputtedAddress , Toast.LENGTH_SHORT).show();
         });
 
+        // get codes sinistre from server
+        interventionService = new InterventionService();
+        ArrayList<String> codesSinistre = interventionService.getCodesSinistre();
         // Code Sinistre List (Liste déroulante)
-        displaySpinner();
+        displaySpinner(codesSinistre);
 
+        // get moyenList from server
+        ArrayList<Moyen> interventionMoyens = interventionService.getMoyensDispo();
         // Moyen List
-        displayListView();
+        displayListView(interventionMoyens);
 
         // Send intervention
         checkButtonClick();
 
     }
 
-    private void displaySpinner(){
+    private void displaySpinner(ArrayList<String> codesSinistre){
         Spinner spinnerCodes = (Spinner) findViewById(R.id.CodeList);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(this,
-                R.array.InterventionCodes, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, codesSinistre);
 
         // Specify the layout to use when the list of choices appears
-        adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         // Apply the adapter to the spinners
-        spinnerCodes.setAdapter(adapter1);
+        spinnerCodes.setAdapter(adapter);
     }
 
-    private void displayListView(){
-
-        // Moyens Dispos List
-        MoyensService ms = new MoyensService();
-        ArrayList<Moyen> moyenList = ms.getMoyensDispo();
+    private void displayListView(ArrayList<Moyen> moyenList){
 
         //create an ArrayAdaptar from the String Array
         dataAdapter = new MoyenListAdapter(this,

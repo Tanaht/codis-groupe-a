@@ -21,4 +21,24 @@ public class InterventionService {
         return interventionList;
         // if empty return new  ArrayList<Intervention>();
     }
+
+    public ArrayList<String> getCodesSinistre() {
+        ArrayList<String> codesSinistre = new ArrayList<String>();
+        codesSinistre.add("Secours à personne (SAP)");
+        codesSinistre.add("Incendie (INC)");
+        return codesSinistre;
+    }
+
+    public ArrayList<Moyen> getMoyensDispo(){
+        ArrayList<Moyen> MoyenDispoList = new ArrayList<Moyen>();
+        MoyenDispoList.add(new Moyen("VLCG-13XP201","VLCG",false));
+        MoyenDispoList.add(new Moyen("VLCG-13XP103","VLCG",true));
+        MoyenDispoList.add(new Moyen("VLCG-13XP205","VLCG",false));
+        MoyenDispoList.add(new Moyen("VSAV-12VS32","VSAV",true));
+        MoyenDispoList.add(new Moyen("VSAV-12VS20","VSAV",true));
+        MoyenDispoList.add(new Moyen("FPT-F21","FPT",false));
+        MoyenDispoList.add(new Moyen("FPT-F14","FPT",false));
+        return MoyenDispoList;
+        // if empty return new  ArrayList<Moyen>();
+    }
 }
