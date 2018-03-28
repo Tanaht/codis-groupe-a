@@ -24,22 +24,45 @@ public class ListUnitMessage {
         this.units = units;
     }
 
+    /**
+     * Gets type.
+     *
+     * @return the type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Sets type.
+     *
+     * @param type the type
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Gets units.
+     *
+     * @return the units
+     */
     public List<UnitMessage> getUnits() {
         return units;
     }
 
+    /**
+     * Sets units.
+     *
+     * @param units the units
+     */
     public void setUnits(List<UnitMessage> units) {
         this.units = units;
     }
 
+    /**
+     * Instantiates a new List unit message.
+     */
     public ListUnitMessage(){
 
     }

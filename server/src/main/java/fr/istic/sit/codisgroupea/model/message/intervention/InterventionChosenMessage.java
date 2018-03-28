@@ -6,38 +6,81 @@ import java.util.List;
  * The intervention-chosen message.
  */
 public class InterventionChosenMessage {
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Gets symbols.
+     *
+     * @return the symbols
+     */
     public List<Symbol> getSymbols() {
         return symbols;
     }
 
+    /**
+     * Sets symbols.
+     *
+     * @param symbols the symbols
+     */
     public void setSymbols(List<Symbol> symbols) {
         this.symbols = symbols;
     }
 
+    /**
+     * Gets units.
+     *
+     * @return the units
+     */
     public List<Unit> getUnits() {
         return units;
     }
 
+    /**
+     * Sets units.
+     *
+     * @param units the units
+     */
     public void setUnits(List<Unit> units) {
         this.units = units;
     }
 
+    /**
+     * Gets photos.
+     *
+     * @return the photos
+     */
     public List<Photo> getPhotos() {
         return photos;
     }
 
+    /**
+     * Sets photos.
+     *
+     * @param photos the photos
+     */
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
     }
 
+    /**
+     * Instantiates a new Intervention chosen message.
+     */
     public InterventionChosenMessage(){
 
     }
@@ -47,6 +90,9 @@ public class InterventionChosenMessage {
      */
     public static class Symbol {
 
+        /**
+         * Instantiates a new Symbol.
+         */
         public Symbol(){
 
         }
@@ -75,22 +121,45 @@ public class InterventionChosenMessage {
                 this.details = details;
             }
 
+            /**
+             * Instantiates a new Payload.
+             */
             public Payload(){
 
             }
 
+            /**
+             * Gets identifier.
+             *
+             * @return the identifier
+             */
             public String getIdentifier() {
                 return identifier;
             }
 
+            /**
+             * Sets identifier.
+             *
+             * @param identifier the identifier
+             */
             public void setIdentifier(String identifier) {
                 this.identifier = identifier;
             }
 
+            /**
+             * Gets details.
+             *
+             * @return the details
+             */
             public String getDetails() {
                 return details;
             }
 
+            /**
+             * Sets details.
+             *
+             * @param details the details
+             */
             public void setDetails(String details) {
                 this.details = details;
             }
@@ -141,6 +210,9 @@ public class InterventionChosenMessage {
      */
     public static class Unit {
 
+        /**
+         * Instantiates a new Unit.
+         */
         public Unit(){
 
         }
@@ -149,6 +221,9 @@ public class InterventionChosenMessage {
          * The type Vehicle.
          */
         public static class Vehicle {
+            /**
+             * Instantiates a new Vehicle.
+             */
             public Vehicle(){
 
             }
@@ -179,26 +254,56 @@ public class InterventionChosenMessage {
                 this.status = status;
             }
 
+            /**
+             * Gets label.
+             *
+             * @return the label
+             */
             public String getLabel() {
                 return label;
             }
 
+            /**
+             * Sets label.
+             *
+             * @param label the label
+             */
             public void setLabel(String label) {
                 this.label = label;
             }
 
+            /**
+             * Gets type.
+             *
+             * @return the type
+             */
             public String getType() {
                 return type;
             }
 
+            /**
+             * Sets type.
+             *
+             * @param type the type
+             */
             public void setType(String type) {
                 this.type = type;
             }
 
+            /**
+             * Gets status.
+             *
+             * @return the status
+             */
             public String getStatus() {
                 return status;
             }
 
+            /**
+             * Sets status.
+             *
+             * @param status the status
+             */
             public void setStatus(String status) {
                 this.status = status;
             }
@@ -208,6 +313,9 @@ public class InterventionChosenMessage {
          * The type Symbol.
          */
         public static class Symbol {
+            /**
+             * Instantiates a new Symbol.
+             */
             public Symbol(){
 
             }
@@ -238,26 +346,56 @@ public class InterventionChosenMessage {
                 this.location = location;
             }
 
+            /**
+             * Gets shape.
+             *
+             * @return the shape
+             */
             public String getShape() {
                 return shape;
             }
 
+            /**
+             * Sets shape.
+             *
+             * @param shape the shape
+             */
             public void setShape(String shape) {
                 this.shape = shape;
             }
 
+            /**
+             * Gets color.
+             *
+             * @return the color
+             */
             public String getColor() {
                 return color;
             }
 
+            /**
+             * Sets color.
+             *
+             * @param color the color
+             */
             public void setColor(String color) {
                 this.color = color;
             }
 
+            /**
+             * Gets location.
+             *
+             * @return the location
+             */
             public Position getLocation() {
                 return location;
             }
 
+            /**
+             * Sets location.
+             *
+             * @param location the location
+             */
             public void setLocation(Position location) {
                 this.location = location;
             }
@@ -308,51 +446,110 @@ public class InterventionChosenMessage {
         }
 
 
-
+        /**
+         * Gets id.
+         *
+         * @return the id
+         */
         public int getId() {
             return id;
         }
 
+        /**
+         * Sets id.
+         *
+         * @param id the id
+         */
         public void setId(int id) {
             this.id = id;
         }
 
+        /**
+         * Gets date reserved.
+         *
+         * @return the date reserved
+         */
         public long getDate_reserved() {
             return date_reserved;
         }
 
+        /**
+         * Sets date reserved.
+         *
+         * @param date_reserved the date reserved
+         */
         public void setDate_reserved(long date_reserved) {
             this.date_reserved = date_reserved;
         }
 
+        /**
+         * Gets date granted.
+         *
+         * @return the date granted
+         */
         public Long getDate_granted() {
             return date_granted;
         }
 
+        /**
+         * Sets date granted.
+         *
+         * @param date_granted the date granted
+         */
         public void setDate_granted(Long date_granted) {
             this.date_granted = date_granted;
         }
 
+        /**
+         * Is moving boolean.
+         *
+         * @return the boolean
+         */
         public boolean isMoving() {
             return moving;
         }
 
+        /**
+         * Sets moving.
+         *
+         * @param moving the moving
+         */
         public void setMoving(boolean moving) {
             this.moving = moving;
         }
 
+        /**
+         * Gets vehicle.
+         *
+         * @return the vehicle
+         */
         public Vehicle getVehicle() {
             return vehicle;
         }
 
+        /**
+         * Sets vehicle.
+         *
+         * @param vehicle the vehicle
+         */
         public void setVehicle(Vehicle vehicle) {
             this.vehicle = vehicle;
         }
 
+        /**
+         * Gets symbol.
+         *
+         * @return the symbol
+         */
         public Symbol getSymbol() {
             return symbol;
         }
 
+        /**
+         * Sets symbol.
+         *
+         * @param symbol the symbol
+         */
         public void setSymbol(Symbol symbol) {
             this.symbol = symbol;
         }
@@ -362,6 +559,9 @@ public class InterventionChosenMessage {
      * The type Photo.
      */
     public static class Photo {
+        /**
+         * Instantiates a new Photo.
+         */
         public Photo(){
 
         }
@@ -392,26 +592,56 @@ public class InterventionChosenMessage {
             this.location = location;
         }
 
+        /**
+         * Gets url.
+         *
+         * @return the url
+         */
         public String getUrl() {
             return url;
         }
 
+        /**
+         * Sets url.
+         *
+         * @param url the url
+         */
         public void setUrl(String url) {
             this.url = url;
         }
 
+        /**
+         * Gets date.
+         *
+         * @return the date
+         */
         public long getDate() {
             return date;
         }
 
+        /**
+         * Sets date.
+         *
+         * @param date the date
+         */
         public void setDate(long date) {
             this.date = date;
         }
 
+        /**
+         * Gets location.
+         *
+         * @return the location
+         */
         public Position getLocation() {
             return location;
         }
 
+        /**
+         * Sets location.
+         *
+         * @param location the location
+         */
         public void setLocation(Position location) {
             this.location = location;
         }
