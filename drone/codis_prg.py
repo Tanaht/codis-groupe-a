@@ -3,11 +3,15 @@ from __future__ import print_function
 import droneIstic
 from utils.SocketIstic import SocketIstic
 from config.Config import Config
+import os
 
 config = Config()
 client = SocketIstic.get_socket()
 
 while True:
+
+    # Start Google Earth Application
+    # os.startfile("")
 
     # wait something from the server socket
     ma_mission = client.wait_a_mission()
