@@ -9,9 +9,17 @@ import java.util.List;
  */
 @Entity
 public class Path {
+
+    /** The id of the path */
     private int id;
+
+    /** The altitude of the path */
     private double altitude;
+
+    /** List of {@link Position} for all the point in the path */
     private List<Position> points;
+
+    /** Instance of {@link PathType} for the type of the path */
     private PathType type;
 
     /**

@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/InterventionListItemId"
-        android:layout_width="wrap_content"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         app:layout_columnWeight="1"
         android:text="id"
@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/InterventionListItemDate"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="Date"
         android:textSize="18sp"
@@ -26,7 +26,7 @@
 
     <TextView
         android:id="@+id/InterventionListItemAddress"
-        android:layout_width="wrap_content"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         app:layout_columnWeight="1"
         android:text="Address"

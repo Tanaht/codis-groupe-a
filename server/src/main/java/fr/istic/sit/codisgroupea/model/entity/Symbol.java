@@ -8,10 +8,15 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class Symbol {
+
+    /** The id of the symbol */
     private int id;
+
+    /** Instance of {@link Color} for the color of the symbol */
     private Color color;
+
+    /** Instance of {@link Shape} for the shape of the symbol */
     private Shape shape;
-    private String payload;
 
     /**
      * Instantiates a new Symbol.
@@ -24,12 +29,10 @@ public class Symbol {
      *
      * @param color    the color
      * @param shape    the shape
-     * @param payload  the payload
      */
-    public Symbol(Color color, Shape shape, String payload) {
+    public Symbol(Color color, Shape shape) {
         this.color = color;
         this.shape = shape;
-        this.payload = payload;
     }
 
     /**
@@ -90,23 +93,5 @@ public class Symbol {
      */
     public void setShape(Shape shape) {
         this.shape = shape;
-    }
-
-    /**
-     * Gets payload.
-     *
-     * @return the payload
-     */
-    public String getPayload() {
-        return payload;
-    }
-
-    /**
-     * Sets payload.
-     *
-     * @param payload the payload
-     */
-    public void setPayload(String payload) {
-        this.payload = payload;
     }
 }

@@ -21,3 +21,11 @@ drone/config/
 drone/droneIstic\.pyc
 
 drone/utils\.pyc
+
+server/src/main/resources/imagesDrone/
+
+\.metadata/
+
+\.recommenders/
+
+RemoteSystemsTempFiles/

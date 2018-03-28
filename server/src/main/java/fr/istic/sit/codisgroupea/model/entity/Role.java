@@ -1,17 +1,20 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.security.core.GrantedAuthority;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
  * The type Role.
  */
 @Entity
-public class Role {
+public class Role implements GrantedAuthority {
+
+    /** The id of the role */
     private Long id;
+
+    /** The label of the role */
     private String label;
 
     /**
@@ -51,5 +54,15 @@ public class Role {
      */
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    /**
+     * Use with spring security, transient because it's the same data in label
+     * @return name of the role
+     */
+    @Transient
+    @Override
+    public String getAuthority() {
+        return label;
     }
 }
