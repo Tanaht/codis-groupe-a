@@ -7,6 +7,7 @@
     <string name="MenuCodisPageTitle">Menu Codis</string>
     <string name="NewInterventionPageTitle">Ajouter une nouvelle intervention</string>
     <string name="InterventionAddressLabel">Adresse de l\'intervention :</string>
+    <string name="InterventionAddressHint">Veuillez entrer l\'adresse de l\'intervention</string>
     <string name="InterventionAddressNumero">Numero de la voie :</string>
     <string name="InterventionAddressCP">Code postale :</string>
     <string name="InterventionAddressCity">Ville :</string>
@@ -34,4 +35,12 @@
 
     <!-- Error Message must be prefixed by error-->
     <string name="error_invalid_credentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>
+    <string name="title_activity_map">Map</string>
+
+    <string name="action_tableau_moyen">Tableau Moyen</string>
+    <string name="action_drone">Envoyer Drone</string>
+    <string name="action_demande_moyen">Demande Moyen</string>
+    <string name="action_deconnexion">Deconnexion</string>
+
+
 </resources>

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
  * SpringData repository for path entity.
  */
 @Repository
-public interface PathRepository extends JpaRepository<Path, Long> {
+public interface PathRepository extends JpaRepository<Path, Integer> {
 }

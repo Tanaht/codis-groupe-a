@@ -9,10 +9,18 @@ import java.util.List;
  */
 @Entity
 public class User {
+
+    /** The id of the user */
     private Long id;
+
+    /** The username of the user */
     private String username;
-    private String password;
-    private List<Role> roles;
+
+    /** The password of the user */
+    private transient String password;
+
+    /** Instance of {@link Role} for the role of the user */
+    private Role role;
 
     /**
      * Gets id.
@@ -77,17 +85,17 @@ public class User {
      *
      * @return the roles
      */
-    @OneToMany
-    public List<Role> getRoles() {
-        return roles;
+    @OneToOne
+    public Role getRoles() {
+        return role;
     }
 
     /**
      * Sets roles.
      *
-     * @param roles the roles
+     * @param role the role
      */
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRoles(Role role) {
+        this.role = role;
     }
 }

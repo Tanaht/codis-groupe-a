@@ -8,5 +8,6 @@ import org.springframework.stereotype.Repository;
  * SpringData repository for sinister-code entity.
  */
 @Repository
-public interface SinisterCodeRepository extends JpaRepository<SinisterCode, Long> {
+public interface SinisterCodeRepository extends JpaRepository<SinisterCode, Integer> {
+    SinisterCode findByCode(String code);
 }

@@ -10,9 +10,21 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class SymbolSitac implements SigEntry {
+
+    /** The id of the symbol sitac */
     private int id;
+
+    /** Instance of {@link Intervention} for the intervention of the symbol sitac */
+    private Intervention intervention;
+
+    /** Instance of {@link Symbol} for the symbol of the symbol sitac */
     private Symbol symbol;
+
+    /** Instance of {@link Position} for the location of the symbol sitac */
     private Position location;
+
+    /** Instance of {@link Payload} for the payload of the symbol sitac */
+    private Payload payload;
 
     /**
      * Instantiates a new Symbol sitac.
@@ -23,12 +35,16 @@ public class SymbolSitac implements SigEntry {
     /**
      * Instantiates a new Symbol sitac.
      *
-     * @param symbol   the symbol
-     * @param location the location
+     * @param intervention the intervention
+     * @param symbol       the symbol
+     * @param location     the location
+     * @param payload  the payload
      */
-    public SymbolSitac(Symbol symbol, Position location) {
+    public SymbolSitac(Intervention intervention, Symbol symbol, Position location, Payload payload) {
+        this.intervention = intervention;
         this.symbol = symbol;
         this.location = location;
+        this.payload = payload;
     }
 
     /**
@@ -49,6 +65,25 @@ public class SymbolSitac implements SigEntry {
      */
     public void setId(int id) {
         this.id = id;
+    }
+
+    /**
+     * Gets intervention.
+     *
+     * @return the intervention
+     */
+    @ManyToOne
+    public Intervention getIntervention() {
+        return intervention;
+    }
+
+    /**
+     * Sets intervention.
+     *
+     * @param intervention the intervention
+     */
+    public void setIntervention(Intervention intervention) {
+        this.intervention = intervention;
     }
 
     /**
@@ -77,7 +112,6 @@ public class SymbolSitac implements SigEntry {
      * @return the location
      */
     @OneToOne
-    @NotNull
     public Position getLocation() {
         return location;
     }
@@ -89,5 +123,25 @@ public class SymbolSitac implements SigEntry {
      */
     public void setLocation(Position location) {
         this.location = location;
+    }
+
+    /**
+     * Gets payload.
+     *
+     * @return the payload
+     */
+    @OneToOne
+    @NotNull
+    public Payload getPayload() {
+        return payload;
+    }
+
+    /**
+     * Sets payload.
+     *
+     * @param payload the payload
+     */
+    public void setPayload(Payload payload) {
+        this.payload = payload;
     }
 }

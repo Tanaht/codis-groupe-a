@@ -2,15 +2,27 @@ package fr.istic.sit.codisgroupea.model.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 
 /**
  * Photo informations stored in the database.
  */
 @Entity
 public class Photo {
+
+    /** The id of the photo */
     private int id;
+
+    /** The url of the photo */
     private String uri;
+
+    /** Instance of {@link Position} for the location of the photo */
     private Position coordinates;
+
+    /** Instance of {@link Timestamp} for the date of the photo */
+    private Timestamp date;
+
+    /** Instance of {@link Intervention} for the intervention of the photo */
     private Intervention intervention;
 
     /**
@@ -25,11 +37,13 @@ public class Photo {
      *
      * @param uri          the uri
      * @param coordinates  the coordinates
+     * @param date         the date
      * @param intervention the intervention
      */
-    public Photo(String uri, Position coordinates, Intervention intervention) {
+    public Photo(String uri, Position coordinates, Timestamp date, Intervention intervention) {
         this.uri = uri;
         this.coordinates = coordinates;
+        this.date = date;
         this.intervention = intervention;
     }
 
@@ -90,6 +104,25 @@ public class Photo {
      */
     public void setCoordinates(Position coordinates) {
         this.coordinates = coordinates;
+    }
+
+    /**
+     * Gets date.
+     *
+     * @return the date
+     */
+    @NotNull
+    public Timestamp getDate() {
+        return date;
+    }
+
+    /**
+     * Sets date.
+     *
+     * @param date the date
+     */
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 
     /**
