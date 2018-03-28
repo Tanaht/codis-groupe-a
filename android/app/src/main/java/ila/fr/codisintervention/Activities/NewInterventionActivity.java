@@ -120,11 +120,12 @@ public class NewInterventionActivity extends AppCompatActivity {
                         responseText.append("\n" + moyen.getName());
                     }
                 }
-                String text = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();
-                /* TODO send :
+                String codeSinistre = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();
+                /* TODO send Intervention to Service:
                     inputtedAddress;
                     latlngAddress.longitude
                     latlngAddress.latitude
+                    code sinistre
                     liste des moyens */
                 Toast.makeText(getApplicationContext(),
                         responseText, Toast.LENGTH_LONG).show();
