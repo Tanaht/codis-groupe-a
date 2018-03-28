@@ -17,9 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
 import ila.fr.codisintervention.handlers.WebsocketServiceHandler;
@@ -54,11 +51,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        InitializeApplication initializeApplication = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson("{\"user\":{\"username\":\"codis_user\",\"role\":\"ROLE_CODIS_USER\"},\"types\":[{\"label\":\"VSAV\"},{\"label\":\"FPT\"},{\"label\":\"VLCG\"}],\"codes\":[{\"label\":\"INC\",\"description\":\"\"},{\"label\":\"SAP\",\"description\":\"\"}],\"vehicles\":[{\"label\":\"vehicule 1\",\"type\":\"VSAV\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 2\",\"type\":\"VSAV\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 3\",\"type\":\"FPT\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 4\",\"type\":\"FPT\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 5\",\"type\":\"VLCG\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 6\",\"type\":\"VLCG\",\"status\":\"AVAILABLE\"}],\"demandes\":[],\"interventions\":[{\"id\":1,\"date\":1522159274,\"code\":\"INC\",\"adresse\":\"11 Rue du Bois Perrin\",\"drone_available\":true,\"location\":{\"lat\":48.116486,\"lng\":-1.647416}},{\"id\":2,\"date\":1522159274,\"code\":\"SAP\",\"adresse\":\"Cours des Alliés, 35024 Rennes\",\"drone_available\":true,\"location\":{\"lat\":48.10573,\"lng\":-1.67472}}]}", InitializeApplication.class);
-
-
-        Log.d(TAG, "json to Object to Json = " + new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(initializeApplication));
 
         handler = new WebsocketServiceHandler();
 
@@ -163,8 +155,6 @@ public class MainActivity extends AppCompatActivity {
             if(WebsocketService.ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION.equals(intent.getAction())) {
                 Toast.makeText(MainActivity.this, getString(R.string.msg_success_credentials), Toast.LENGTH_LONG).show();
 
-                String json = intent.getStringExtra("message");
-                Gson gson = new GsonBuilder().create();
                 //TODO: Here we receive the object pushed from server
                 InitializeApplication initializeApplication = intent.getParcelableExtra(InitializeApplication.class.getName());
 

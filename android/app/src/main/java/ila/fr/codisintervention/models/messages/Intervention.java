@@ -6,6 +6,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 import ila.fr.codisintervention.models.Location;
 
 /**
@@ -31,6 +33,10 @@ public class Intervention implements Parcelable {
 
     @Expose
     private Location location;
+
+
+    @Expose
+    private List<Photo> photos;
 
 
     public int getId() {
@@ -93,8 +99,17 @@ public class Intervention implements Parcelable {
         }
     };
 
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
+
     public Intervention() {
     }
+
 
     protected Intervention(Parcel in) {
         id = in.readInt();
@@ -102,6 +117,7 @@ public class Intervention implements Parcelable {
         code = in.readString();
         address = in.readString();
         drone_available = in.readByte() != 0;
+        photos = in.createTypedArrayList(Photo.CREATOR);
     }
 
 
@@ -119,5 +135,6 @@ public class Intervention implements Parcelable {
         dest.writeString(address);
         dest.writeInt(drone_available ? 1 : 0);
         dest.writeParcelable(location, flags);
+        dest.writeList(photos);
     }
 }
