@@ -17,6 +17,21 @@ public class SymbolCreateMessage {
     /** The instance of the object {@link SymbolCreateMessage.Payload} for the symbol. */
     private Payload payload;
 
+    public void setShape(Shape shape) {
+        this.shape = shape;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setPayload(Payload payload) {
+        this.payload = payload;
+    }
 
     public Shape getShape() {
         return shape;
@@ -75,6 +90,14 @@ public class SymbolCreateMessage {
             this.lat = lat;
             this.lng = lng;
         }
+
+        public void setLat(double lat) {
+            this.lat = lat;
+        }
+
+        public void setLng(double lng) {
+            this.lng = lng;
+        }
     }
 
     /** The Payload of the symbols */
@@ -101,6 +124,14 @@ public class SymbolCreateMessage {
          */
         public Payload (String identifier, String details) {
             this.identifier = identifier;
+            this.details = details;
+        }
+
+        public void setIdentifier(String identifier) {
+            this.identifier = identifier;
+        }
+
+        public void setDetails(String details) {
             this.details = details;
         }
     }

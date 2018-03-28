@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SymbolSitacRepository extends JpaRepository<SymbolSitac, Long> {
+public interface SymbolSitacRepository extends JpaRepository<SymbolSitac, Integer> {
     Iterable<? extends SymbolSitac> findAllByIntervention(Intervention intervention);
 }

@@ -84,6 +84,14 @@ public class SymbolMessage {
             this.lat = lat;
             this.lng = lng;
         }
+
+        public void setLat(double lat) {
+            this.lat = lat;
+        }
+
+        public void setLng(double lng) {
+            this.lng = lng;
+        }
     }
 
     /** The Payload of the symbols */
@@ -112,5 +120,33 @@ public class SymbolMessage {
             this.identifier = identifier;
             this.details = details;
         }
+
+        public void setIdentifier(String identifier) {
+            this.identifier = identifier;
+        }
+
+        public void setDetails(String details) {
+            this.details = details;
+        }
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setShape(Shape shape) {
+        this.shape = shape;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setPayload(Payload payload) {
+        this.payload = payload;
     }
 }

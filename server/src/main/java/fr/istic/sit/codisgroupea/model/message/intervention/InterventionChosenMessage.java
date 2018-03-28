@@ -6,6 +6,38 @@ import java.util.List;
  * The intervention-chosen message.
  */
 public class InterventionChosenMessage {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public List<Symbol> getSymbols() {
+        return symbols;
+    }
+
+    public void setSymbols(List<Symbol> symbols) {
+        this.symbols = symbols;
+    }
+
+    public List<Unit> getUnits() {
+        return units;
+    }
+
+    public void setUnits(List<Unit> units) {
+        this.units = units;
+    }
+
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<Photo> photos) {
+        this.photos = photos;
+    }
+
     /**
      * The type Symbol.
      */
@@ -31,6 +63,22 @@ public class InterventionChosenMessage {
              */
             public Payload(String identifier, String details) {
                 this.identifier = identifier;
+                this.details = details;
+            }
+
+            public String getIdentifier() {
+                return identifier;
+            }
+
+            public void setIdentifier(String identifier) {
+                this.identifier = identifier;
+            }
+
+            public String getDetails() {
+                return details;
+            }
+
+            public void setDetails(String details) {
                 this.details = details;
             }
         }
@@ -107,6 +155,30 @@ public class InterventionChosenMessage {
                 this.type = type;
                 this.status = status;
             }
+
+            public String getLabel() {
+                return label;
+            }
+
+            public void setLabel(String label) {
+                this.label = label;
+            }
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+
+            public String getStatus() {
+                return status;
+            }
+
+            public void setStatus(String status) {
+                this.status = status;
+            }
         }
 
         /**
@@ -136,6 +208,30 @@ public class InterventionChosenMessage {
             public Symbol(String shape, String color, Position location) {
                 this.shape = shape;
                 this.color = color;
+                this.location = location;
+            }
+
+            public String getShape() {
+                return shape;
+            }
+
+            public void setShape(String shape) {
+                this.shape = shape;
+            }
+
+            public String getColor() {
+                return color;
+            }
+
+            public void setColor(String color) {
+                this.color = color;
+            }
+
+            public Position getLocation() {
+                return location;
+            }
+
+            public void setLocation(Position location) {
                 this.location = location;
             }
         }
@@ -183,6 +279,54 @@ public class InterventionChosenMessage {
             this.vehicle = vehicle;
             this.symbol = symbol;
         }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public long getDate_reserved() {
+            return date_reserved;
+        }
+
+        public void setDate_reserved(long date_reserved) {
+            this.date_reserved = date_reserved;
+        }
+
+        public Long getDate_granted() {
+            return date_granted;
+        }
+
+        public void setDate_granted(Long date_granted) {
+            this.date_granted = date_granted;
+        }
+
+        public boolean isMoving() {
+            return moving;
+        }
+
+        public void setMoving(boolean moving) {
+            this.moving = moving;
+        }
+
+        public Vehicle getVehicle() {
+            return vehicle;
+        }
+
+        public void setVehicle(Vehicle vehicle) {
+            this.vehicle = vehicle;
+        }
+
+        public Symbol getSymbol() {
+            return symbol;
+        }
+
+        public void setSymbol(Symbol symbol) {
+            this.symbol = symbol;
+        }
     }
 
     /**
@@ -212,6 +356,30 @@ public class InterventionChosenMessage {
         public Photo(String url, long date, Position location) {
             this.url = url;
             this.date = date;
+            this.location = location;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public long getDate() {
+            return date;
+        }
+
+        public void setDate(long date) {
+            this.date = date;
+        }
+
+        public Position getLocation() {
+            return location;
+        }
+
+        public void setLocation(Position location) {
             this.location = location;
         }
     }
@@ -247,4 +415,5 @@ public class InterventionChosenMessage {
         this.units = units;
         this.photos = photos;
     }
+
 }
