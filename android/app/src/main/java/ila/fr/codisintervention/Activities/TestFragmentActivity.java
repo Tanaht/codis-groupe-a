@@ -1,51 +1,43 @@
 package ila.fr.codisintervention.Activities;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import java.util.List;
 
 import ila.fr.codisintervention.Entities.SymboleDispo;
 import ila.fr.codisintervention.Fragments.DessinFragment;
+import ila.fr.codisintervention.Fragments.FragmentInterventionForm;
 import ila.fr.codisintervention.Fragments.ListeSymbolesFragment;
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.Services.SymboleDispoService;
 
 public class TestFragmentActivity  extends FragmentActivity implements ListeSymbolesFragment.OnFragmentInteractionListener,
-                                                                        DessinFragment.OnFragmentInteractionListener ,
-                                                                        View.OnTouchListener   {
+                                                                        DessinFragment.OnFragmentInteractionListener {
 
-    private SymboleDispo symboleDispo = new SymboleDispo();
 
     String couleur = "";
-    ImageView ressourceEau;
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_test_fragment);
-
-    }
-
-    public void imageClick(View view){
-        ressourceEau = (ImageView) view.findViewById(R.id.ressource_eau);
-        ressourceEau.setImageResource(R.drawable.ressource_eau_glow);
-
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
 
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-//        int x = (int)event.getX();
-//        int y = (int)event.getY();
-//        Toast.makeText(this, "x"+x+"y"+y, Toast.LENGTH_SHORT).show();
-        return false;
     }
 
     @Override

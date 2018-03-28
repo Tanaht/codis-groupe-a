@@ -11,7 +11,7 @@ import ila.fr.codisintervention.Entities.SymboleDispo;
 
 public class SymboleDispoService {
 
-    public List<SymboleDispo> getListeSymbolesDispo (){
+    public static List<SymboleDispo> getListeSymbolesDispo (){
         List<SymboleDispo> liste = new ArrayList<>();
         liste.add(new SymboleDispo("ressource_eau", "ressource_eau_glow", "ressource_eau", false));
         liste.add(new SymboleDispo("sinistre","sinistre_glow", "sinistre", false));
@@ -24,4 +24,5 @@ public class SymboleDispoService {
         liste.add(new SymboleDispo("zone","zone_glow", "zone", false));
         return liste;
     }
+
 }

@@ -14,10 +14,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import ila.fr.codisintervention.Activities.MainActivity;
 import ila.fr.codisintervention.Activities.MainMenuCodis;
 import ila.fr.codisintervention.Activities.TestFragmentActivity;
+import ila.fr.codisintervention.Entities.SymboleDispo;
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.Services.SymboleDispoService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,7 +33,7 @@ import ila.fr.codisintervention.R;
  */
 public class ListeSymbolesFragment extends Fragment{
 
-    private ImageView ressourceEau;
+    private static List<SymboleDispo> liste = SymboleDispoService.getListeSymbolesDispo();
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -78,25 +82,33 @@ public class ListeSymbolesFragment extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_liste_symboles, container, false);
 
-
-//        ressourceEau = (ImageView) view.findViewById(R.id.ressource_eau);
-//        ressourceEau.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                Toast.makeText(getActivity(), "selected", Toast.LENGTH_SHORT).show();
-//                ressourceEau.setImageDrawable(getResources().getDrawable(R.drawable.ressource_eau_glow));
-//            }
-//        });
-
-
-
+        ajouterImageView(liste, view);
+        ajouterImageViewListeners(liste, view);
 
         return view;
     }
 
+    public void ajouterImageView(List<SymboleDispo> liste, View view){
+        for (SymboleDispo symbole: liste) {
+            symbole.setImageView((ImageView) view.findViewById(getResources().getIdentifier(symbole.getId(), "id", getActivity().getPackageName())));
+        }
+    }
 
+    public void ajouterImageViewListeners(List<SymboleDispo> liste, View view){
+        for (SymboleDispo symbole: liste){
+            symbole.getImageView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    symbole.getImageView().setImageResource(getResources().getIdentifier(symbole.getIconeSelected(), "drawable", getActivity().getPackageName()));
+                    for (SymboleDispo symbole2 : liste){
+                        if(symbole != symbole2){
+                            symbole2.getImageView().setImageResource(getResources().getIdentifier(symbole2.getIconeNonSelected(), "drawable", getActivity().getPackageName()));
+                        }
+                    }
+                }
+            });
+        }
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
