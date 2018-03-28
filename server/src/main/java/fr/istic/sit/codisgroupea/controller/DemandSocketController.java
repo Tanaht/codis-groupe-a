@@ -78,6 +78,8 @@ public class DemandSocketController {
      */
     @MessageMapping(RoutesConfig.CREATE_UNIT_CLIENT)
     public void createUnit(@DestinationVariable("id") final int id, Principal principal, CreateUnitMessage dataSendByClient) {
+        logger.trace(RoutesConfig.CREATE_UNIT_CLIENT+" --> data receive "+dataSendByClient);
+
         Intervention intervention = interventionRepository.getOne(id);
         String userLogin = principal.getName();
         Timestamp now = new Timestamp(new Date().getTime());
@@ -110,10 +112,18 @@ public class DemandSocketController {
                 new UnitCreatedMessage.Vehicle(dataSendByClient.vehicle.type)
         );
 
-        //Message for the client
-        simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CLIENT,unitCreated);
+        Gson jason = new Gson();
 
-        simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CODIS,new DemandesCreatedMessage(unit));
+        //Message for the client
+        String toJson = jason.toJson(unitCreated);
+        String urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CLIENT;
+        logger.trace(urlToSend+" --> data send "+toJson);
+        simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CLIENT,toJson);
+
+        toJson = jason.toJson(new DemandesCreatedMessage(unit));
+        urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CODIS;
+        logger.trace(urlToSend+" --> data send "+toJson);
+        simpMessagingTemplate.convertAndSend(urlToSend,toJson);
     }
 
     /**
@@ -127,6 +137,9 @@ public class DemandSocketController {
     @MessageMapping(RoutesConfig.UPDATE_UNIT_CLIENT)
     @SendTo({RoutesConfig.UPDATE_UNIT_SERVER})
     public ListUnitMessage updateUnit(@DestinationVariable("id") final int idInterventions, Principal principal, List<UnitMessage> dataSendByClient) {
+        Gson jason = new Gson();
+        logger.trace(RoutesConfig.UPDATE_UNIT_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
+
         Optional<Intervention> intervention = interventionRepository.findById(idInterventions);
 
         if (!intervention.isPresent()){
@@ -175,8 +188,9 @@ public class DemandSocketController {
             listUnitUpdated.add(unitUpdated);
         }
 
-
-        return new ListUnitMessage("UPDATE", listUnitUpdated);
+        ListUnitMessage toReturn = new ListUnitMessage("UPDATE", listUnitUpdated);
+        logger.trace(RoutesConfig.UPDATE_UNIT_SERVER+" --> data send "+jason.toJson(toReturn));
+        return toReturn;
     }
 
     /**
@@ -188,8 +202,10 @@ public class DemandSocketController {
      */
     @MessageMapping(RoutesConfig.CONFIRM_DEMAND_CLIENT)
     public void confirmDemand(@DestinationVariable("idUnit") final int idUnit, Principal principal, ConfirmDemandVehicleMessage dataSendByClient) {
-        String userLogin = principal.getName();
+        Gson jason = new Gson();
+        logger.trace(RoutesConfig.CONFIRM_DEMAND_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
 
+        String userLogin = principal.getName();
         Optional<Unit> unit = unitRepository.findById(idUnit);
         if (!unit.isPresent()){
             logger.error("Unit with id "+idUnit+" doesn't exist in bdd");
@@ -202,9 +218,14 @@ public class DemandSocketController {
 
         Gson gson = new Gson();
 
+        String routeToSend = "/topic/interventions/" +unit.get().getIntervention().getId()+
+                "/units/"+idUnit+"/accepted";
+
+        String toJson = gson.toJson(unitToSend,UnitMessage.class);
+
+        logger.trace(routeToSend+" --> data send "+toJson);
         //Message for the client
-        simpMessagingTemplate.convertAndSend("/topic/interventions/" +unit.get().getIntervention().getId()+
-                "/units/"+idUnit+"/accepted",gson.toJson(unitToSend,UnitMessage.class));
+        simpMessagingTemplate.convertAndSend(routeToSend,toJson);
     }
 
     /**
@@ -216,6 +237,9 @@ public class DemandSocketController {
      */
     @MessageMapping(RoutesConfig.DENY_DEMAND_CLIENT)
     public void denyDemand(@DestinationVariable("idUnit") final int idUnit, Principal principal, String dataSendByClient) {
+        Gson jason = new Gson();
+        logger.trace(RoutesConfig.DENY_DEMAND_CLIENT +" --> data receive "+dataSendByClient);
+
         String userLogin = principal.getName();
         Optional<Unit> unit = unitRepository.findById(idUnit);
 
@@ -224,11 +248,16 @@ public class DemandSocketController {
         }
 
 
+        String toSend = "denied";
+        logger.trace(RoutesConfig.DENY_DEMAND_SERVER_CODIS+" --> data send "+toSend);
         //Message for the codis
-        simpMessagingTemplate.convertAndSend(RoutesConfig.DENY_DEMAND_SERVER_CODIS,"denied");
+        simpMessagingTemplate.convertAndSend(RoutesConfig.DENY_DEMAND_SERVER_CODIS,toSend);
 
+        toSend = "denied";
+        String urlToSend = "/topic/interventions/"+
+                unit.get().getIntervention().getId()+"/units/"+idUnit+"/denied";
+        logger.trace(urlToSend+" --> data send "+toSend);
         //Message for the client
-        simpMessagingTemplate.convertAndSend("/topic/interventions/"+
-                unit.get().getIntervention().getId()+"/units/"+idUnit+"/denied","denied");
+        simpMessagingTemplate.convertAndSend(urlToSend,toSend);
     }
 }

@@ -21,11 +21,9 @@ public interface SigRepository<T extends SigEntry> {
     SymbolSitac createSymbolFromSigEntry(Intervention intervention, T entry);
 
     /**
-     * Gets entries within rect.
      *
-     * @param upperLeft  the upper left corner of the rect
-     * @param lowerRight the lower right corner of the rect
-     * @return the entries within rect
+     * @param intervention
+     * @return
      */
-    List<T> getEntriesWithinRect(Position upperLeft, Position lowerRight);
+    List<T> getSymbolsInTheIntervention(Intervention intervention);
 }

@@ -6,6 +6,8 @@ import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.Position;
 import fr.istic.sit.codisgroupea.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -22,6 +24,9 @@ import java.util.List;
  */
 @Controller
 public class InterventionSocketController {
+
+    /** The logger */
+    private static final Logger logger = LoggerFactory.getLogger(InterventionSocketController.class);
 
     private SimpMessagingTemplate simpMessagingTemplate;
 
@@ -164,19 +169,23 @@ public class InterventionSocketController {
     public void chooseIntervention(@DestinationVariable("id") final int id,
                                                         Principal principal,
                                                         String dataSentByClient) {
+        logger.trace(RoutesConfig.CHOOSE_INTERVENTION_CLIENT +" --> data receive "+dataSentByClient);
         String username = principal.getName();
         Intervention intervention = interventionRepository.getOne(id);
 
 
         Gson gson = new Gson();
-        simpMessagingTemplate.convertAndSend("/topic/users/"+username+"/intervention-chosen",
-            gson.toJson(new InterventionChosenMessage(
-                    id,
-                    populateSymbolList(intervention),
-                    populateUnitList(intervention),
-                    populatePhotoList(intervention)
-            ))
-        );
+
+        String toJson = gson.toJson(new InterventionChosenMessage(
+                id,
+                populateSymbolList(intervention),
+                populateUnitList(intervention),
+                populatePhotoList(intervention)
+        ));
+
+        String urlToSend = "/topic/users/"+username+"/intervention-chosen";
+        logger.trace(urlToSend+" --> data send "+toJson);
+        simpMessagingTemplate.convertAndSend(urlToSend, toJson);
     }
 
     /**
@@ -190,6 +199,9 @@ public class InterventionSocketController {
     @SendTo({RoutesConfig.CREATE_INTERVENTION_SERVER})
     public InterventionCreatedMessage createIntervention(Principal principal,
                                                          CreateInterventionMessage dataSentByClient) {
+        Gson jason = new Gson();
+
+        logger.trace(RoutesConfig.CREATE_INTERVENTION_CLIENT +" --> data receive "+jason.toJson(dataSentByClient));
 
 
         SinisterCode sinisterCode = sinisterCodeRepository.findByCode(dataSentByClient.code);
@@ -207,14 +219,17 @@ public class InterventionSocketController {
 
         Intervention persisted = interventionRepository.save(intervention);
 
-        return new InterventionCreatedMessage(
+        InterventionCreatedMessage toReturn = new InterventionCreatedMessage(
                 persisted.getId(),
                 persisted.getDate(),
                 persisted.getSinisterCode().toString(),
                 persisted.getAddress(),
                 true,
-                new Position(persisted.getPosition())
-        );
+                new Position(persisted.getPosition()));
+
+        logger.trace(RoutesConfig.CREATE_INTERVENTION_SERVER+" --> data send "+jason.toJson(toReturn));
+
+        return toReturn;
     }
 
     /**
@@ -230,9 +245,14 @@ public class InterventionSocketController {
     public IdMessage closeIntervention(@DestinationVariable("id") final int id,
                                        Principal principal,
                                        String dataSentByClient) {
+        logger.trace(RoutesConfig.CLOSE_INTERVENTION_CLIENT +" --> data receive "+dataSentByClient);
+
         Intervention intervention = interventionRepository.getOne(id);
         intervention.setOpened(false);
         interventionRepository.save(intervention);
-        return new IdMessage(id);
+
+        IdMessage toSend = new IdMessage(id);
+        logger.trace(RoutesConfig.CLOSE_INTERVENTION_SERVER +" --> data send "+toSend);
+        return toSend;
     }
 }

@@ -82,7 +82,9 @@ public class AuthenticationController {
      */
     @MessageMapping(RoutesConfig.SUBSCRIBED)
     public void getInfoUser(Principal principal, @DestinationVariable("username") final String username) {
-        logger.info("msg receive from : "+principal.getName());
+        logger.trace(RoutesConfig.SUBSCRIBED +" --> data receive : empty string");
+
+        logger.info("msg receive from "+principal.getName());
 
         Optional<User> user = authenticationService.getUser(principal.getName());
 
@@ -119,8 +121,11 @@ public class AuthenticationController {
         InitializeApplicationMessage iniAppli = new InitializeApplicationMessage(user.get(),
                 types,codes,vehicles,demandes, interventionsAvailable);
 
+        String urlToSend = "/topic/users/"+principal.getName()+"/initialize-application";
+
         Gson gson = new Gson();
-        simpMessagingTemplate.convertAndSend("/topic/users/"+principal.getName()+"/initialize-application",
-                gson.toJson(iniAppli,InitializeApplicationMessage.class));
+        String toJson = gson.toJson(iniAppli,InitializeApplicationMessage.class);
+        logger.trace(urlToSend+" --> data send "+toJson);
+        simpMessagingTemplate.convertAndSend(urlToSend, toJson);
     }
 }

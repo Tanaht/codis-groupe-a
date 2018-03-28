@@ -2,6 +2,8 @@ package fr.istic.sit.codisgroupea.sig.stub;
 
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.sig.SigRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +11,17 @@ import java.util.List;
 /**
  * List SIG repository.
  */
-public class ListSigRepository implements SigRepository<SymbolSitac> {
+@Service
+public class ListSigService implements SigRepository<SymbolSitac> {
     private List<SymbolSitac> symbols;
+
+    @Value("${bouchon.sizeFromInterventionCenter}")
+    private int sizeFromTheInterventionCenter;
 
     /**
      * Instantiates a new List SIG repository.
      */
-    public ListSigRepository() {
+    public ListSigService() {
         symbols = new ArrayList<>();
 
         addToSig(Color.BLUE, Shape.CIRCLE, null, new Position(48.11540, -1.63813));
@@ -42,6 +48,30 @@ public class ListSigRepository implements SigRepository<SymbolSitac> {
     }
 
     @Override
+    public List<SymbolSitac> getSymbolsInTheIntervention(Intervention intervention){
+        List<SymbolSitac> listSymbolBouchon = new ArrayList<>();
+
+
+        List<SymbolSitac> listSymbAssociateWithIntervention = new ArrayList<>();
+        for (SymbolSitac symbolSitac : listSymbolBouchon){
+
+            SymbolSitac copySymbolSitac = new SymbolSitac();
+
+            copySymbolSitac.setLocation(symbolSitac.getLocation());
+            copySymbolSitac.setSymbol(symbolSitac.getSymbol());
+            copySymbolSitac.setId(symbolSitac.getId());
+            copySymbolSitac.setPayload(symbolSitac.getPayload());
+
+            copySymbolSitac.setIntervention(intervention);
+
+            listSymbAssociateWithIntervention.add(copySymbolSitac);
+        }
+
+
+        return listSymbAssociateWithIntervention;
+    }
+
+
     public List<SymbolSitac> getEntriesWithinRect(Position upperLeft, Position lowerRight) {
         List<SymbolSitac> syms = new ArrayList<>();
 
