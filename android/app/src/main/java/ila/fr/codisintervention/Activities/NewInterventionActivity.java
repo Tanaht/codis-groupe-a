@@ -1,7 +1,11 @@
 package ila.fr.codisintervention.Activities;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -11,7 +15,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import ila.fr.codisintervention.Entities.Moyen;
 import ila.fr.codisintervention.R;
@@ -22,6 +31,8 @@ import ila.fr.codisintervention.Utils.MoyenListAdapter;
 public class NewInterventionActivity extends AppCompatActivity {
 
     MoyenListAdapter dataAdapter;
+    String inputtedAddress;
+    LatLng latlngAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +45,10 @@ public class NewInterventionActivity extends AppCompatActivity {
         autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_item));
 
         autoCompView.setOnItemClickListener((parent, view, position, id) -> {
-            String str = (String) parent.getItemAtPosition(position);
-            Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+            inputtedAddress = (String) parent.getItemAtPosition(position);
+            latlngAddress = getLocationFromAddress(inputtedAddress);
+
+           // Toast.makeText(getApplicationContext(),inputtedAddress , Toast.LENGTH_SHORT).show();
         });
 
         // Code Sinistre List (Liste déroulante)
@@ -46,7 +59,6 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         // Send intervention
         checkButtonClick();
-
 
     }
 
@@ -108,12 +120,47 @@ public class NewInterventionActivity extends AppCompatActivity {
                         responseText.append("\n" + moyen.getName());
                     }
                 }
-
+                String text = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();
+                /* TODO send :
+                    inputtedAddress;
+                    latlngAddress.longitude
+                    latlngAddress.latitude
+                    liste des moyens */
                 Toast.makeText(getApplicationContext(),
                         responseText, Toast.LENGTH_LONG).show();
 
             }
         });
+    }
 
+    private LatLng getLocationFromAddress(String inputtedAddress) {
+        Geocoder coder = new Geocoder(this, Locale.getDefault());
+        List<Address> address = null;
+        LatLng resLatLng = null;
+        try {
+            // May throw an IOException
+
+            address = coder.getFromLocationName(inputtedAddress, 1);
+            if (address == null) {
+                return null;
+            }
+
+            if (address.size() == 0) {
+                return null;
+            }
+
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+
+            resLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        return resLatLng;
     }
 }
