@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.utils.Config;
@@ -29,6 +30,26 @@ import ua.naiksoftware.stomp.client.StompClient;
  */
 
 public class WebsocketService extends Service implements WebsocketServiceBinder.IMyServiceMethod {
+    public static enum IntentAction {
+        CONNECT_TO_APPLICATION,//initialize-application
+        DISCONNECT_TO_APPLICATION,
+        INTERVENTION_CREATED,
+        INTERVENTION_CLOSED,
+        INTERVENTION_SYMBOL_CREATED,
+        INTERVENTION_SYMBOL_UPDATED,
+        INTERVENTION_SYMBOL_DELETED,
+        INTERVENTION_UNIT_CREATED,
+        INTERVENTION_UNIT_UPDATED,
+        INTERVENTION_SYMBOL_ACCEPTED,
+        INTERVENTION_SYMBOL_DENIED,
+        DEMANDE_ACCEPTED,
+        DEMANDE_DENIED,
+        DEMANDE_CREATED
+
+
+    }
+
+
     public static final String ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION = "initialize-application";
     public static final String ACTION_AUTHENTICATION_ERROR = "authentication-error";
 
@@ -51,7 +72,6 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
 
         Log.d(TAG, "Instantiating WebSocket Service and connect to remote at " + url);
-
 
         this.client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
     }
@@ -84,16 +104,19 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                 case OPENED:
                     Log.d(TAG, "STOMP CONNECTION OPENED");
 
-
-
-
                     client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
                         Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
 
+                        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+                        InitializeApplication initializeApplication = gson.fromJson(message.getPayload(), InitializeApplication.class);
+
+                        this.performInitializationSubscription(initializeApplication.getUser());
                         // The string "my-integer" will be used to filer the intent
                         Intent initializeAppIntent = new Intent(ACTION_AUTHENTICATION_SUCCESS_AND_INITIALIZE_APPLICATION);
                         // Adding some data
-                        initializeAppIntent.putExtra("message", message.getPayload());
+                        initializeAppIntent.putExtra(InitializeApplication.class.getName(), initializeApplication);
+
                         LocalBroadcastManager.getInstance(this).sendBroadcast(initializeAppIntent);
                     });
 
@@ -181,7 +204,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         Log.i(TAG, "[/app/interventions/create] with message " + gson.toJson(intervention));
         this.client.send("/app/interventions/create", gson.toJson(intervention)).subscribe(
                 () -> Log.d(TAG, "[/app/interventions/create] Sent data!"),
-                error -> Log.e(TAG, "[/app/interventions/chosen] Error Encountered", error)
+                error -> Log.e(TAG, "[/app/interventions/create] Error Encountered", error)
         );
     }
 
@@ -203,9 +226,9 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
             Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
         });
 
-        this.client.send("/app/interventions/" + id + "/chosen", "PING").subscribe(
-                () -> Log.d(TAG, "[/app/interventions/" + id + "/chosen] Sent data!"),
-                error -> Log.e(TAG, "[/app/interventions/" + id + "/chosen] Error Encountered", error)
+        this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
         );
 //        this.client.topic("/topic/interventions/" + id + "/units/event");
 //        this.client.topic("/topic/interventions/" + id + "/units/event");

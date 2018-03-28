@@ -23,7 +23,9 @@ import com.google.gson.GsonBuilder;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
 import ila.fr.codisintervention.handlers.WebsocketServiceHandler;
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
+import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ua.naiksoftware.stomp.client.StompClient;
 
@@ -53,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        InitializeApplication initializeApplication = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson("{\"user\":{\"username\":\"codis_user\",\"role\":\"ROLE_CODIS_USER\"},\"types\":[{\"label\":\"VSAV\"},{\"label\":\"FPT\"},{\"label\":\"VLCG\"}],\"codes\":[{\"label\":\"INC\",\"description\":\"\"},{\"label\":\"SAP\",\"description\":\"\"}],\"vehicles\":[{\"label\":\"vehicule 1\",\"type\":\"VSAV\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 2\",\"type\":\"VSAV\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 3\",\"type\":\"FPT\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 4\",\"type\":\"FPT\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 5\",\"type\":\"VLCG\",\"status\":\"AVAILABLE\"},{\"label\":\"vehicule 6\",\"type\":\"VLCG\",\"status\":\"AVAILABLE\"}],\"demandes\":[],\"interventions\":[{\"id\":1,\"date\":1522159274,\"code\":\"INC\",\"adresse\":\"11 Rue du Bois Perrin\",\"drone_available\":true,\"location\":{\"lat\":48.116486,\"lng\":-1.647416}},{\"id\":2,\"date\":1522159274,\"code\":\"SAP\",\"adresse\":\"Cours des Alliés, 35024 Rennes\",\"drone_available\":true,\"location\":{\"lat\":48.10573,\"lng\":-1.67472}}]}", InitializeApplication.class);
+
+
+        Log.d(TAG, "json to Object to Json = " + new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(initializeApplication));
 
         handler = new WebsocketServiceHandler();
 
@@ -160,16 +166,27 @@ public class MainActivity extends AppCompatActivity {
                 String json = intent.getStringExtra("message");
                 Gson gson = new GsonBuilder().create();
                 //TODO: Here we receive the object pushed from server
-                InitializeApplication initializeApplication = gson.fromJson(intent.getStringExtra("message"), InitializeApplication.class);
+                InitializeApplication initializeApplication = intent.getParcelableExtra(InitializeApplication.class.getName());
 
 
 //                TODO: Initialize application for both types of user
 
                 if(initializeApplication.getUser().isCodisUser()) {
-                    Log.i(TAG, initializeApplication.getUser().getUsername() + " is a CODIS USER");
-//                        TODO: Initialize application for codis user.
+//                    Log.i(TAG, initializeApplication.getUser().getUsername() + " is a CODIS USER");
+////                        TODO: Initialize application for codis user.
+                    Intervention intervention = new Intervention();
+
+                    intervention.setId(10);
+                    intervention.setDate(10);
+                    intervention.setCode("INC");
+                    intervention.setAddress("ISTIC, Bat 12 D, Allée Henri Poincaré, Rennes");
+                    intervention.setLocation(new Location(48.1156746,-1.640608));
+                    service.createIntervention(intervention);
+                    service.chooseIntervention(1);
+
                 } else if(initializeApplication.getUser().isSimpleUser()) {
                     Log.i(TAG, initializeApplication.getUser().getUsername() + " is a SIMPLE USER");
+
                 }
             }
 
