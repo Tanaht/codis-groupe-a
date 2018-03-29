@@ -22,7 +22,6 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.Services.InterventionService;
 import ila.fr.codisintervention.Utils.InterventionListAdapter;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
@@ -48,20 +47,20 @@ public class InterventionsListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_interventions_list);
         setTitle(R.string.IntervenantListPageTitle);
 
-        // Interventions Dispos List
-        InterventionService is = new InterventionService();
-        interventionList = is.getInterventionList();
-
-        // Interventions List
-        if(interventionList.isEmpty()){
-            TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
-            tv.setText(R.string.noInterventionAvailable);
-            Toasty.warning(getApplicationContext(),
-                    getString(R.string.noInterventionAvailable), Toast.LENGTH_SHORT, true)
-                    .show();
-        } else {
-            displayListView(interventionList);
-        }
+//        // Interventions Dispos List
+//        InterventionService is = new InterventionService();
+//        interventionList = is.getInterventionList();
+//
+//        // Interventions List
+//        if(interventionList.isEmpty()){
+//            TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
+//            tv.setText(R.string.noInterventionAvailable);
+//            Toasty.warning(getApplicationContext(),
+//                    getString(R.string.noInterventionAvailable), Toast.LENGTH_SHORT, true)
+//                    .show();
+//        } else {
+//            displayListView(interventionList);
+//        }
 
         bindToService();
     }

@@ -20,7 +20,7 @@ import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_ADD_DEMANDE;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_ACCEPT_UTIL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_UTIL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_UTIL;
@@ -48,7 +48,7 @@ public class MapActivity extends AppCompatActivity {
         super.onResume();
         IntentFilter mapIntentFilter = new IntentFilter();
         mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_UPDATE_UTIL);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_ACCEPT_UTIL);
+        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_CREATE_UTIL);
         mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_DELETE_UTIL);
         mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL);
         mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL);
@@ -69,7 +69,7 @@ public class MapActivity extends AppCompatActivity {
                 case ACTION_UPDATE_INTERVENTION_UPDATE_UTIL:
                     unit = modelService.getUnit(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_ACCEPT_UTIL:
+                case ACTION_UPDATE_INTERVENTION_CREATE_UTIL:
                     unit = modelService.getUnit(id);
                     break;
                 case ACTION_UPDATE_INTERVENTION_DELETE_UTIL:

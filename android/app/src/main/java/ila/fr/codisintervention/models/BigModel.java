@@ -1,5 +1,7 @@
 package ila.fr.codisintervention.models;
 
+import android.util.Log;
+
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.User;
 
@@ -8,6 +10,7 @@ import ila.fr.codisintervention.models.messages.User;
  */
 
 public class BigModel {
+    private static final String TAG = "BigModel";
     private InitializeApplication messageInitialize;
     private InterventionChosen currentIntervention;
 
@@ -31,6 +34,9 @@ public class BigModel {
     }
 
     public User getUser() {
+        if(messageInitialize == null)
+            Log.d(TAG, "messageInitialize is null");
+        else Log.d(TAG, "messageInitialize.user: " + messageInitialize.getUser());
         return messageInitialize.getUser();
     }
 

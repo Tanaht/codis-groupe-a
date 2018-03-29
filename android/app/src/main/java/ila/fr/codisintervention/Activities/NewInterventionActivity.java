@@ -176,7 +176,7 @@ public class NewInterventionActivity extends AppCompatActivity {
                     if(latlngAddress != null)
                         intervention.setLocation(new Location(latlngAddress.latitude,latlngAddress.longitude));
                     else
-                        intervention.setLocation(new Location(50, 50));
+                        intervention.setLocation(new Location(48.1156746,-1.640608));
                     // TODO intervention.setMoyens(..)
 
                     //send Intervention to WS Service

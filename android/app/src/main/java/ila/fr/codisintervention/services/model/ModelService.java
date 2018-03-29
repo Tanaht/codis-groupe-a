@@ -77,6 +77,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 Log.d(TAG, "Connect to application with: " + initializeApplication.getInterventions().size() + " interventions");
                 Gson gson = new GsonBuilder().create();
                 Log.d(TAG, "RetrievedInitializeApplication: " + gson.toJson(initializeApplication));
+                model.setMessageInitialize(initializeApplication);
                 sendToEveryone(-1, ModelConstants.ACTION_INITIALIZE_APPLICATION);
                 break;
             case WebsocketService.INTERVENTION_CHOSEN:
