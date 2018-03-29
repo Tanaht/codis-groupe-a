@@ -16,12 +16,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
-import ila.fr.codisintervention.models.ModelService;
 import ila.fr.codisintervention.models.messages.Demande;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Photo;
 import ila.fr.codisintervention.models.messages.User;
+import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
