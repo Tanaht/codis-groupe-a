@@ -57,8 +57,6 @@
             android:value="@string/google_maps_key" />
 
 
-
-        <activity android:name=".Activities.TestFragmentActivity" />
     </application>
 
 </manifest>
