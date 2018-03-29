@@ -17,10 +17,12 @@ public class Demande implements Parcelable {
     @Expose
     private Vehicle vehicle;
 
+    public Demande() {
+    }
 
     protected Demande(Parcel in) {
         id = in.readInt();
-        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+//        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
     }
 
     public static final Creator<Demande> CREATOR = new Creator<Demande>() {
@@ -35,6 +37,22 @@ public class Demande implements Parcelable {
         }
     };
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -43,6 +61,6 @@ public class Demande implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeParcelable(vehicle, flags);
+//        dest.writeParcelable(vehicle, flags);
     }
 }

@@ -22,12 +22,11 @@ public class Vehicle implements Parcelable {
     @Expose
     private String status;
 
-    public Vehicle(Parcel in) {
-        this.label = in.readString();
-        this.type = in.readString();
-        this.status = in.readString();
+    protected Vehicle(Parcel in) {
+        label = in.readString();
+        type = in.readString();
+        status = in.readString();
     }
-
 
     public static final Creator<Vehicle> CREATOR = new Creator<Vehicle>() {
         @Override

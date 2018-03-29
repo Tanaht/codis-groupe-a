@@ -21,6 +21,11 @@
         android:theme="@style/AppTheme">
 
         <service android:name=".services.websocket.WebsocketService"/>
+        <service android:name=".services.model.ModelService">
+            <intent-filter>
+                <action android:name="CONNECT_TO_APPLICATION"/>
+            </intent-filter>
+        </service>
         <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

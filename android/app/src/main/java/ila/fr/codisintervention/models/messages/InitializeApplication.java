@@ -2,9 +2,11 @@ package ila.fr.codisintervention.models.messages;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +31,10 @@ public class InitializeApplication implements Parcelable{
     private List<Demande> demandes;
 
     @Expose
-    private List<Intervention> interventions;
+    private List<Intervention> interventions = new ArrayList<Intervention>();
+
+    public InitializeApplication() {
+    }
 
     public User getUser() {
         return user;
@@ -55,6 +60,26 @@ public class InitializeApplication implements Parcelable{
         return interventions;
     }
 
+    public Intervention getInterventionById (int id){
+        for(Intervention intervention : interventions){
+            if(intervention.getId() == id){
+                return intervention;
+            }
+        }
+        return null;
+    }
+
+    public void setInterventionClosedById (int id) {
+        //Si valeur id à -1 pas de supresion
+        if (id != -1) {
+            for (Intervention intervention : interventions) {
+                if (intervention.getId() == id) {
+                    interventions.remove(intervention);
+                }
+            }
+        }
+    }
+
     protected InitializeApplication(Parcel in) {
         user = in.readParcelable(User.class.getClassLoader());
         codes = in.createTypedArrayList(Code.CREATOR);
@@ -62,6 +87,9 @@ public class InitializeApplication implements Parcelable{
         vehicles = in.createTypedArrayList(Vehicle.CREATOR);
         demandes = in.createTypedArrayList(Demande.CREATOR);
         interventions = in.createTypedArrayList(Intervention.CREATOR);
+
+        Log.d("InitializeApplication", "Construct Codes Size: " + codes.size());
+        Log.d("InitializeApplication", "Construct Interventions Size: " + interventions.size());
     }
 
     public static final Creator<InitializeApplication> CREATOR = new Creator<InitializeApplication>() {
@@ -88,6 +116,9 @@ public class InitializeApplication implements Parcelable{
         dest.writeList(this.types);
         dest.writeList(this.vehicles);
         dest.writeList(this.demandes);
-        dest.writeList(this.interventions);
+        dest.writeTypedList(this.interventions);
+
+        Log.d("InitializeApplication", "Write Codes Size: " + codes.size());
+        Log.d("InitializeApplication", "Write Interventions Size: " + interventions.size());
     }
 }

@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
-import ila.fr.codisintervention.Entities.Intervention;
+import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.R;
 
 /**
@@ -61,10 +63,19 @@ public class InterventionListAdapter extends ArrayAdapter<Intervention> {
         }
 
         Intervention intervention = interventionList.get(position);
-        holder.id.setText(intervention.getCodeSinistre());
-        holder.date.setText(intervention.getDate());
+        holder.id.setText(intervention.getCode());
+
+        Date date = new Date(intervention.getDate());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String stringDate = df.format(date);
+        holder.date.setText(stringDate);
         holder.address.setText(intervention.getAddress());
 
         return convertView;
+    }
+
+    @Override
+    public int getCount() {
+        return interventionList.size();
     }
 }

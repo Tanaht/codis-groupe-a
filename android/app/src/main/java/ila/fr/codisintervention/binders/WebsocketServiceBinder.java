@@ -3,7 +3,6 @@ package ila.fr.codisintervention.binders;
 import android.os.Binder;
 
 import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.models.messages.User;
 
 /**
  * Created by tanaky on 27/03/18.
@@ -39,9 +38,6 @@ public class WebsocketServiceBinder extends Binder {
 
         void createIntervention(Intervention intervention);
         void chooseIntervention(int id);
-
-
-        void performInitializationSubscription(User user);
     }
 
 

@@ -1,10 +1,14 @@
 package ila.fr.codisintervention.Activities;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.location.Address;
 import android.location.Geocoder;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,19 +26,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.Entities.Moyen;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.InterventionService;
 import ila.fr.codisintervention.Services.MoyensService;
 import ila.fr.codisintervention.Utils.GooglePlacesAutocompleteAdapter;
 import ila.fr.codisintervention.Utils.MoyenListAdapter;
+import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.services.websocket.WebsocketService;
 
 public class NewInterventionActivity extends AppCompatActivity {
+    private static final String TAG = "NewInterventionActivity";
 
     InterventionService interventionService;
     MoyenListAdapter dataAdapter;
-    String inputtedAddress;
+    String inputtedAddress = "";
     LatLng latlngAddress;
+
+    // ServiceConnection permet de gérer l'état du lien entre l'activité et le service.
+    private ServiceConnection serviceConnection;
+    private WebsocketServiceBinder.IMyServiceMethod service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +63,6 @@ public class NewInterventionActivity extends AppCompatActivity {
         autoCompView.setOnItemClickListener((parent, view, position, id) -> {
             inputtedAddress = (String) parent.getItemAtPosition(position);
             latlngAddress = getLocationFromAddress(inputtedAddress);
-
-           // Toast.makeText(getApplicationContext(),inputtedAddress , Toast.LENGTH_SHORT).show();
         });
 
         // get codes sinistre from server
@@ -67,6 +79,31 @@ public class NewInterventionActivity extends AppCompatActivity {
         // Send intervention
         checkButtonClick();
 
+        // Bind activity to websocket service
+        bindToService();
+    }
+
+    private void bindToService() {
+        serviceConnection = new ServiceConnection() {
+            public void onServiceDisconnected(ComponentName name) {}
+            public void onServiceConnected(ComponentName arg0, IBinder binder) {
+
+                //on récupère l'instance du service dans l'activité
+                service = ((WebsocketServiceBinder)binder).getService();
+
+                //on genère l'évènement indiquant qu'on est "bindé"
+                //   handler.sendEmptyMessage(ON_BIND);
+            }
+        };
+        //démarre le service si il n'est pas démarré
+        //Le binding du service est configuré avec "BIND_AUTO_CREATE" ce qui normalement
+        //démarre le service si il n'est pas démarrer, la différence ici est que le fait de
+        //démarrer le service par "startService" fait que si l'activité est détruite, le service
+        //reste en vie (obligatoire pour l'application AlarmIngressStyle)
+        startService(new Intent(getApplicationContext(), WebsocketService.class));
+        Intent intent = new Intent(getApplicationContext(), WebsocketService.class);
+        //lance le binding du service
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void displaySpinner(ArrayList<String> codesSinistre){
@@ -112,7 +149,6 @@ public class NewInterventionActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
                 StringBuffer responseText = new StringBuffer();
                 responseText.append("The following were selected...\n");
 
@@ -124,15 +160,30 @@ public class NewInterventionActivity extends AppCompatActivity {
                     }
                 }
                 String codeSinistre = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();
-                /* TODO send Intervention to Service:
-                    inputtedAddress;
-                    latlngAddress.longitude
-                    latlngAddress.latitude
-                    code sinistre
-                    liste des moyens */
-                Toast.makeText(getApplicationContext(),
-                        responseText, Toast.LENGTH_LONG).show();
 
+                // Check if address is set
+                if(inputtedAddress.equals("")){
+                    Toasty.error(getApplicationContext(),
+                            getString(R.string.interventionNoAddress),
+                            Toast.LENGTH_LONG).show();
+                } else {
+
+                    Intervention intervention = new Intervention();
+                    intervention.setAddress(inputtedAddress);
+                    intervention.setCode(codeSinistre);
+
+                    latlngAddress = getLocationFromAddress(intervention.getAddress());
+                    Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
+
+                    if(latlngAddress != null)
+                        intervention.setLocation(new Location(latlngAddress.latitude,latlngAddress.longitude));
+                    else
+                        intervention.setLocation(new Location(50, 50));
+                    // TODO intervention.setMoyens(..)
+
+                    //send Intervention to WS Service
+                    service.createIntervention(intervention);
+                }
             }
         });
     }
@@ -165,6 +216,19 @@ public class NewInterventionActivity extends AppCompatActivity {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
+        Log.d(TAG, "LatLng retrieved: " + resLatLng);
+
         return resLatLng;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //on supprimer le binding entre l'activité et le websocketService.
+        if(serviceConnection != null)
+            unbindService(serviceConnection);
+//
+//        if(modelServiceConnection != null)
+//            unbindService(modelServiceConnection);
     }
 }

@@ -38,7 +38,6 @@ public class Intervention implements Parcelable {
     @Expose
     private List<Photo> photos;
 
-
     public int getId() {
         return id;
     }
@@ -87,18 +86,6 @@ public class Intervention implements Parcelable {
         this.location = location;
     }
 
-    public static final Creator<Intervention> CREATOR = new Creator<Intervention>() {
-        @Override
-        public Intervention createFromParcel(Parcel in) {
-            return new Intervention(in);
-        }
-
-        @Override
-        public Intervention[] newArray(int size) {
-            return new Intervention[size];
-        }
-    };
-
     public List<Photo> getPhotos() {
         return photos;
     }
@@ -110,17 +97,27 @@ public class Intervention implements Parcelable {
     public Intervention() {
     }
 
-
     protected Intervention(Parcel in) {
         id = in.readInt();
         date = in.readLong();
         code = in.readString();
         address = in.readString();
         drone_available = in.readByte() != 0;
+        location = in.readParcelable(Location.class.getClassLoader());
         photos = in.createTypedArrayList(Photo.CREATOR);
     }
 
+    public static final Creator<Intervention> CREATOR = new Creator<Intervention>() {
+        @Override
+        public Intervention createFromParcel(Parcel in) {
+            return new Intervention(in);
+        }
 
+        @Override
+        public Intervention[] newArray(int size) {
+            return new Intervention[size];
+        }
+    };
 
     @Override
     public int describeContents() {
@@ -137,4 +134,6 @@ public class Intervention implements Parcelable {
         dest.writeParcelable(location, flags);
         dest.writeList(photos);
     }
+
+
 }
