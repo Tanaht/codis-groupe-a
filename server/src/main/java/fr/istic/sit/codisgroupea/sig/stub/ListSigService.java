@@ -55,17 +55,18 @@ public class ListSigService implements SigRepository<SymbolSitac> {
 
         List<SymbolSitac> listSymbAssociateWithIntervention = new ArrayList<>();
         for (SymbolSitac symbolSitac : listSymbolBouchon){
+            if(getMeters(intervention.getPosition(), symbolSitac.getLocation()) <= sizeFromTheInterventionCenter){
+                SymbolSitac copySymbolSitac = new SymbolSitac();
 
-            SymbolSitac copySymbolSitac = new SymbolSitac();
+                copySymbolSitac.setLocation(symbolSitac.getLocation());
+                copySymbolSitac.setSymbol(symbolSitac.getSymbol());
+                copySymbolSitac.setId(symbolSitac.getId());
+                copySymbolSitac.setPayload(symbolSitac.getPayload());
 
-            copySymbolSitac.setLocation(symbolSitac.getLocation());
-            copySymbolSitac.setSymbol(symbolSitac.getSymbol());
-            copySymbolSitac.setId(symbolSitac.getId());
-            copySymbolSitac.setPayload(symbolSitac.getPayload());
+                copySymbolSitac.setIntervention(intervention);
 
-            copySymbolSitac.setIntervention(intervention);
-
-            listSymbAssociateWithIntervention.add(copySymbolSitac);
+                listSymbAssociateWithIntervention.add(copySymbolSitac);
+            }
         }
 
 
