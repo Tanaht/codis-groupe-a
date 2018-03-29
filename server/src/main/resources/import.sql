@@ -8,6 +8,12 @@ INSERT INTO user values(1,'codis_user','codis_user',1);
 INSERT INTO user values(2,'simple_user','simple_user',2);
 INSERT INTO user values(3,'drone_user','drone_user',3);
 INSERT INTO user values(4,'user','user',1);
+INSERT INTO user values(5,'codis_user1','codis_user1',1);
+INSERT INTO user values(6,'codis_user2','codis_user2',1);
+INSERT INTO user values(7,'codis_user3','codis_user3',1);
+INSERT INTO user values(8,'simple_user1','simple_user1',2);
+INSERT INTO user values(9,'simple_user2','simple_user2',2);
+INSERT INTO user values(10,'simple_user3','simple_user3',2);
 
 -- Insert Sinister code
 INSERT INTO sinister_code VALUES (1,'INC');

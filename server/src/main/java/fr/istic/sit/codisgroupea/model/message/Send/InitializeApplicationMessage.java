@@ -119,7 +119,7 @@ public class InitializeApplicationMessage {
         private String code;
 
         /** The address */
-        private String adress;
+        private String address;
 
         /** Boolean which tells if the drone is available or not */
         private boolean drone_available;
@@ -141,7 +141,7 @@ public class InitializeApplicationMessage {
             id = intervention.getId();
             date = intervention.getDate();
             code = intervention.getSinisterCode().getCode();
-            adress = intervention.getAddress();
+            address = intervention.getAddress();
             //TODO drone available à changer
             drone_available = true;
             location = new Position(intervention.getPosition());
@@ -172,11 +172,11 @@ public class InitializeApplicationMessage {
         }
 
         public String getAdresse() {
-            return adress;
+            return address;
         }
 
         public void setAdresse(String adress) {
-            this.adress = adress;
+            this.address = adress;
         }
 
         public boolean isDrone_available() {

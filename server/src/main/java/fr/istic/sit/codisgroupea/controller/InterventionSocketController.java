@@ -208,8 +208,7 @@ public class InterventionSocketController {
      */
     @MessageMapping(RoutesConfig.CREATE_INTERVENTION_CLIENT)
     @SendTo({RoutesConfig.CREATE_INTERVENTION_SERVER})
-    public InterventionCreatedMessage createIntervention(Principal principal,
-                                                         CreateInterventionMessage dataSentByClient) {
+    public void createIntervention(Principal principal, CreateInterventionMessage dataSentByClient) {
         Gson jason = new Gson();
 
         logger.trace(RoutesConfig.CREATE_INTERVENTION_CLIENT +" --> data receive "+jason.toJson(dataSentByClient));
@@ -238,9 +237,10 @@ public class InterventionSocketController {
                 true,
                 new Position(persisted.getPosition()));
 
-        logger.trace(RoutesConfig.CREATE_INTERVENTION_SERVER+" --> data send "+jason.toJson(toReturn));
+        String toJson = jason.toJson(toReturn);
 
-        return toReturn;
+        logger.trace(RoutesConfig.CREATE_INTERVENTION_SERVER+" --> data send "+toJson);
+        simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_INTERVENTION_SERVER, toJson);
     }
 
     /**
@@ -253,7 +253,7 @@ public class InterventionSocketController {
      */
     @MessageMapping(RoutesConfig.CLOSE_INTERVENTION_CLIENT)
     @SendTo({RoutesConfig.CLOSE_INTERVENTION_SERVER})
-    public IdMessage closeIntervention(@DestinationVariable("id") final int id,
+    public String closeIntervention(@DestinationVariable("id") final int id,
                                        Principal principal,
                                        String dataSentByClient) {
         logger.trace(RoutesConfig.CLOSE_INTERVENTION_CLIENT +" --> data receive "+dataSentByClient);
@@ -263,7 +263,12 @@ public class InterventionSocketController {
         interventionRepository.save(intervention);
 
         IdMessage toSend = new IdMessage(id);
-        logger.trace(RoutesConfig.CLOSE_INTERVENTION_SERVER +" --> data send "+toSend);
-        return toSend;
+
+        Gson jason = new Gson();
+
+        String toJson = jason.toJson(toSend);
+        logger.trace(RoutesConfig.CLOSE_INTERVENTION_SERVER +" --> data send "+toJson);
+
+        return toJson;
     }
 }
