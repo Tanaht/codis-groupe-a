@@ -72,7 +72,7 @@ public class ListSigService implements SigRepository<SymbolSitac> {
     }
 
 
-    public List<SymbolSitac> getEntriesWithinRect(Position upperLeft, Position lowerRight) {
+    private List<SymbolSitac> getEntriesWithinDist(Position upperLeft, Position lowerRight) {
         List<SymbolSitac> syms = new ArrayList<>();
 
         for(SymbolSitac sym : symbols) {
