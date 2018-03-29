@@ -155,7 +155,7 @@ public class InterventionSocketController {
     public InterventionChosenMessage chooseIntervention(@DestinationVariable("id") final int id,
                                                         Principal principal,
                                                         String dataSentByClient) {
-        Intervention intervention = interventionRepository.getOne((long) id);
+        Intervention intervention = interventionRepository.getOne(id);
 
         return new InterventionChosenMessage(
                 id,
@@ -211,7 +211,7 @@ public class InterventionSocketController {
     public IdMessage closeIntervention(@DestinationVariable("id") final int id,
                                        Principal principal,
                                        String dataSentByClient) {
-        Intervention intervention = interventionRepository.getOne((long) id);
+        Intervention intervention = interventionRepository.getOne(id);
         intervention.setOpened(false);
         interventionRepository.save(intervention);
         return new IdMessage(id);

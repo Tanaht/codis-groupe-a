@@ -1,23 +1,128 @@
 package ila.fr.codisintervention.Activities;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.models.messages.Symbol;
+import ila.fr.codisintervention.models.messages.Unit;
+
+import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_ADD_DEMANDE;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_ACCEPT_UTIL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_UTIL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UTIL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_VALIDATION_MOYEN;
 
 public class MapActivity extends AppCompatActivity {
+
+    // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.
+    private ServiceConnection modelServiceConnection;
+
+    //Model service
+    private ModelServiceBinder.IMyServiceMethod modelService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter mapIntentFilter = new IntentFilter();
+        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_UPDATE_UTIL);
+        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_ACCEPT_UTIL);
+        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_DELETE_UTIL);
+        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL);
+        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL);
+        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL);
+        mapIntentFilter.addAction(ACTION_ADD_DEMANDE);
+        mapIntentFilter.addAction(ACTION_VALIDATION_MOYEN);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, mapIntentFilter);
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int id = (int) intent.getExtras().get("id");
+            Symbol symbol;
+            Unit unit;
+            switch (intent.getAction()) {
+                case ACTION_UPDATE_INTERVENTION_UPDATE_UTIL:
+                    unit = modelService.getUnit(id);
+                    break;
+                case ACTION_UPDATE_INTERVENTION_ACCEPT_UTIL:
+                    unit = modelService.getUnit(id);
+                    break;
+                case ACTION_UPDATE_INTERVENTION_DELETE_UTIL:
+                    unit = modelService.getUnit(id);
+                    break;
+                case ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL:
+                    symbol = modelService.getSymbol(id);
+                    break;
+                case ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL:
+                    symbol = modelService.getSymbol(id);
+                    break;
+                case ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL:
+                    symbol = modelService.getSymbol(id);
+                    break;
+                case ACTION_ADD_DEMANDE:
+                    break;
+                case ACTION_VALIDATION_MOYEN:
+                    unit = modelService.getUnit(id);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+
+    //Bind activity with services
+    private void bindToService() {
+        modelServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                //on recupere l'instance du modelService dans l'activité
+                modelService = ((ModelServiceBinder) binder).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+            }
+        };
+
+        //Binding Activity with ModelService
+        startService(new Intent(this, ila.fr.codisintervention.services.model.ModelService.class));
+        Intent intent = new Intent(this, ila.fr.codisintervention.services.model.ModelService.class);
+
+        //lance le binding du websocketService
+        bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onPause() {
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onPause();
     }
 
     /* Menu part */
@@ -51,6 +156,14 @@ public class MapActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (modelServiceConnection != null)
+            unbindService(modelServiceConnection);
     }
 
 }

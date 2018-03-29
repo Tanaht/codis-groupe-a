@@ -7,13 +7,14 @@
     <string name="MenuCodisPageTitle">Menu Codis</string>
     <string name="NewInterventionPageTitle">Ajouter une nouvelle intervention</string>
     <string name="InterventionAddressLabel">Adresse de l\'intervention :</string>
+    <string name="InterventionAddressHint">Veuillez entrer l\'adresse de l\'intervention</string>
     <string name="InterventionAddressNumero">Numero de la voie :</string>
     <string name="InterventionAddressCP">Code postale :</string>
     <string name="InterventionAddressCity">Ville :</string>
     <string name="InterventionCodeLabel">Code sinistre :</string>
     <string-array name="InterventionCodes">
-        <item>Secours à personne (SAP)</item>
-        <item>Incendie (INC)</item>
+        <item>SAP</item>
+        <item>INC</item>
     </string-array>
     <string name="InterventionMoyensLabel">Liste des moyens :</string>
     <string-array name="InterventionMoyens">
@@ -28,12 +29,19 @@
     <string name="lbl_liste_des_interventions">Liste des interventions</string>
     <string name="lbl_liste_des_moyen">Liste des moyens demandés</string>
     <string name="lbl_creer_intervention">Créer intervention</string>
+
+    <!-- Message must be prefixed by msg-->
+    <string name="msg_success_credentials">Connexions effectué avec succès !</string>
+
+    <!-- Error Message must be prefixed by error-->
+    <string name="error_invalid_credentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>
     <string name="title_activity_map">Map</string>
 
     <string name="action_tableau_moyen">Tableau Moyen</string>
     <string name="action_drone">Envoyer Drone</string>
     <string name="action_demande_moyen">Demande Moyen</string>
     <string name="action_deconnexion">Deconnexion</string>
-
+    <string name="interventionNoAddress">Veuillez saisir l\'addresse de l\'intervention svp !</string>
+    <string name="noInterventionAvailable">    - Il n\'y a pas d\'interventions en cours !</string>
 
 </resources>

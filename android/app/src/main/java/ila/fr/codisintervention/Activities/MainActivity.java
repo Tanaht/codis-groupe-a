@@ -1,7 +1,14 @@
 package ila.fr.codisintervention.Activities;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -9,13 +16,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import ila.fr.codisintervention.R;
-import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.StompHeader;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.models.messages.User;
+import ila.fr.codisintervention.services.constants.ModelConstants;
+import ila.fr.codisintervention.services.model.ModelService;
+import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ua.naiksoftware.stomp.client.StompClient;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,39 +37,18 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText_mdp;
     private Button boutonValider;
 
+
+    // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.
+    private ServiceConnection webSocketServiceConnection;
+    private ServiceConnection modelServiceConnection;
+
+    private WebsocketServiceBinder.IMyServiceMethod websocketService;
+    private ModelServiceBinder.IMyServiceMethod modelService;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "http://192.168.43.226:8080/stomp");
-
-/*
-        StompClient client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, "http://192.168.43.226:8080/stomp");
-        List<StompHeader> stompHeader = Arrays.asList(
-                new StompHeader("userlogin","user"),
-                new StompHeader("userpassword","pass"));
-        client.connect(stompHeader);
-        client.topic("/topic/broadcastTest").subscribe(message -> {
-            Log.i(TAG, "Received message: " + message.getPayload());
-        });
-        client.send("/broadcastTest", "hello").subscribe(
-                () -> Log.d(TAG, "Sent data!"),
-                error -> Log.e(TAG, "Encountered error while sending data!", error)
-        );
-        client.lifecycle().subscribe(lifecycleEvent -> {
-            switch (lifecycleEvent.getType()) {
-                case OPENED:
-                    Log.d(TAG, "Stomp connection opened");
-                    break;
-                case CLOSED:
-                    Log.d(TAG, "Stomp connection closed");
-                    break;
-                case ERROR:
-                    Log.e(TAG, "Stomp connection error", lifecycleEvent.getException());
-                    break;
-            }
-        });
-*/
 
         setContentView(R.layout.activity_main);
         editText_login = (EditText) this.findViewById(R.id.editText_login);
@@ -78,11 +64,61 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bindToService();
+    }
 
+    private void bindToService() {
+        webSocketServiceConnection = new ServiceConnection() {
+            public void onServiceDisconnected(ComponentName name) {}
+            public void onServiceConnected(ComponentName arg0, IBinder binder) {
+                //on récupère l'instance du websocketService dans l'activité
+                websocketService = ((WebsocketServiceBinder)binder).getService();
+
+                //on genère l'évènement indiquant qu'on est "bindé"
+//                handler.sendEmptyMessage(ON_BIND);
+            }
+        };
+
+        modelServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                //on récupère l'instance du modelService dans l'activité
+                modelService = ((ModelServiceBinder)binder).getService();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {}
+        };
+
+
+        // Start the service by the method startService() prevent the service to be free if the activity is free.
+
+        //Binding Activity with ModelService
+        startService(new Intent(getApplicationContext(), ModelService.class));
+        Intent intentModelService = new Intent(getApplicationContext(), ModelService.class);
+        //lance le binding du websocketService
+        bindService(intentModelService, modelServiceConnection, Context.BIND_AUTO_CREATE);
+
+
+        // Binding Activity with WebSocketService
+        startService(new Intent(getApplicationContext(), WebsocketService.class));
+        Intent intentWebsocketService = new Intent(getApplicationContext(), WebsocketService.class);
+        //lance le binding du websocketService
+        bindService(intentWebsocketService, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
 
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //on supprimer le binding entre l'activité et le websocketService.
+        if(webSocketServiceConnection != null)
+            unbindService(webSocketServiceConnection);
+
+        if(modelServiceConnection != null)
+            unbindService(modelServiceConnection);
+    }
 
     /**
      * Méthode qui vérifie que l'utilisateur a saisi un login et un mot de passe
@@ -108,19 +144,53 @@ public class MainActivity extends AppCompatActivity {
      * En fonction de la réponse du serveur, l'utilisateur est dirigé vers la page codis ou pompier.
      */
     private void connexion() {
+        websocketService.connect(login, motDePasse);
+    }
 
-        if (login.equals("codis")){
-            Intent intent = new Intent( MainActivity.this, MainMenuCodis.class);
-            startActivity(intent);
-        }
-        else if (login.equals("pompier")){
-            Intent intent = new Intent( MainActivity.this, MainMenuIntervenant.class);
-            startActivity(intent);
-        }
-        else {
-            Toast.makeText(this, "Pas de Connexion", Toast.LENGTH_SHORT).show();
-        }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // This registers mMessageReceiver to receive messages.
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(ModelConstants.ACTION_INITIALIZE_APPLICATION));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_ERROR));
+//        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_SUCCESS));
+
+
+    }
+
+
+    // Handling the received Intents for the "my-integer" event
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Log.d(TAG, "Intent Received: " + intent.getAction());
+            // Extract data included in the Intent
+
+            if(ModelConstants.ACTION_INITIALIZE_APPLICATION.equals(intent.getAction())) {
+                User user = modelService.getUser(); //TODO: retrieve user in model;
+
+                if(user.isCodisUser()) {
+
+                    Intent gotoMainMenuCodis = new Intent( MainActivity.this, MainMenuCodis.class);
+                    startActivity(gotoMainMenuCodis);
+                }
+                if(user.isSimpleUser()) {
+
+                    Intent gotoMainMenuIntervenant = new Intent( MainActivity.this, MainMenuIntervenant.class);
+                    startActivity(gotoMainMenuIntervenant);
+                }
+            }
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        // Unregister since the activity is not visible
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(mMessageReceiver);
+        super.onPause();
     }
 
 }

@@ -95,7 +95,7 @@ public class SymbolSocketController {
      */
     @MessageMapping(RoutesConfig.CREATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.CREATE_SYMBOL_SERVER})
-    public SymbolsMessage createSymbols(@DestinationVariable("id") final Long id, List<SymbolCreateMessage> dataSendByClient) {
+    public SymbolsMessage createSymbols(@DestinationVariable("id") final int id, List<SymbolCreateMessage> dataSendByClient) {
 
         List<SymbolMessage> listMessage = new ArrayList<>();
 
@@ -142,7 +142,7 @@ public class SymbolSocketController {
      */
     @MessageMapping(RoutesConfig.DELETE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.DELETE_SYMBOL_SERVER})
-    public SymbolsMessage deleteSymbols(@DestinationVariable("id") final Long id, List<IdMessage> dataSendByClient) {
+    public SymbolsMessage deleteSymbols(@DestinationVariable("id") final int id, List<IdMessage> dataSendByClient) {
 
         List<SymbolMessage> listMessage = new ArrayList<>();
 
@@ -151,7 +151,7 @@ public class SymbolSocketController {
         }
 
         for (IdMessage idMessage : dataSendByClient) {
-            Optional<SymbolSitac> optSitac = symbolSitacRepository.findById((long) idMessage.id);
+            Optional<SymbolSitac> optSitac = symbolSitacRepository.findById(idMessage.id);
 
             if (!optSitac.isPresent()) {
                 logger.error("Le symbol Sitac n'existe pas.");
@@ -178,7 +178,7 @@ public class SymbolSocketController {
      */
     @MessageMapping(RoutesConfig.UPDATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.UPDATE_SYMBOL_SERVER})
-    public SymbolsMessage updateSymbols(@DestinationVariable("id") final Long id, List<SymbolMessage> dataSendByClient) {
+    public SymbolsMessage updateSymbols(@DestinationVariable("id") final int id, List<SymbolMessage> dataSendByClient) {
 
         List<SymbolMessage> listMessage = new ArrayList<>();
 
@@ -197,7 +197,7 @@ public class SymbolSocketController {
             }
 
             //Create a nex SymbolSitac
-            Optional <SymbolSitac> optSitac = symbolSitacRepository.findById((long) data.getId());
+            Optional <SymbolSitac> optSitac = symbolSitacRepository.findById(data.getId());
 
             if(!optSitac.isPresent()){
                 logger.error("Le symbol Sitac n'existe pas.");

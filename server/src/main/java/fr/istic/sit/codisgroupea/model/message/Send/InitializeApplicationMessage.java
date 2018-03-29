@@ -35,8 +35,53 @@ public class InitializeApplicationMessage {
     /** Intervention list */
     private List<InterventionMessage> interventions;
 
+    public UserMessage getUser() {
+        return user;
+    }
 
+    public void setUser(UserMessage user) {
+        this.user = user;
+    }
 
+    public List<VehicleTypeMessage> getTypes() {
+        return types;
+    }
+
+    public void setTypes(List<VehicleTypeMessage> types) {
+        this.types = types;
+    }
+
+    public List<SinisterCodeMessage> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(List<SinisterCodeMessage> codes) {
+        this.codes = codes;
+    }
+
+    public List<VehicleMessage> getVehicles() {
+        return vehicles;
+    }
+
+    public void setVehicles(List<VehicleMessage> vehicles) {
+        this.vehicles = vehicles;
+    }
+
+    public List<DemandMessage> getDemandes() {
+        return demandes;
+    }
+
+    public void setDemandes(List<DemandMessage> demandes) {
+        this.demandes = demandes;
+    }
+
+    public List<InterventionMessage> getInterventions() {
+        return interventions;
+    }
+
+    public void setInterventions(List<InterventionMessage> interventions) {
+        this.interventions = interventions;
+    }
 
     /**
      *  @param usr User who ask data
@@ -90,7 +135,54 @@ public class InitializeApplicationMessage {
             //TODO drone available à changer
             drone_available = true;
             location = new Position(intervention.getPosition());
+        }
 
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public long getDate() {
+            return date;
+        }
+
+        public void setDate(long date) {
+            this.date = date;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public String getAdresse() {
+            return adresse;
+        }
+
+        public void setAdresse(String adresse) {
+            this.adresse = adresse;
+        }
+
+        public boolean isDrone_available() {
+            return drone_available;
+        }
+
+        public void setDrone_available(boolean drone_available) {
+            this.drone_available = drone_available;
+        }
+
+        public Position getLocation() {
+            return location;
+        }
+
+        public void setLocation(Position location) {
+            this.location = location;
         }
     }
 
@@ -112,6 +204,13 @@ public class InitializeApplicationMessage {
             label = vehicleType.getName();
         }
 
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
     }
 
 
@@ -140,6 +239,22 @@ public class InitializeApplicationMessage {
             username = user.getUsername();
             role = user.getRoles().getAuthority();
         }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        public void setRole(String role) {
+            this.role = role;
+        }
     }
     /**
      * represente a sinister code send to a client
@@ -162,6 +277,22 @@ public class InitializeApplicationMessage {
         public SinisterCodeMessage(SinisterCode sinisterCode){
             label = sinisterCode.getCode()+"";
             description = "";
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
         }
     }
 
@@ -191,7 +322,22 @@ public class InitializeApplicationMessage {
 
             this.id = unit.getId();
             this.vehicle = new VehicleMessage(unit.getVehicle());
+        }
 
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public VehicleMessage getVehicle() {
+            return vehicle;
+        }
+
+        public void setVehicle(VehicleMessage vehicle) {
+            this.vehicle = vehicle;
         }
     }
 

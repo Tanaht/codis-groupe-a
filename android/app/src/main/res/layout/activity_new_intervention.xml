@@ -10,7 +10,7 @@
         android:id="@+id/fragment_place"
         android:name="ila.fr.codisintervention.Fragments.FragmentInterventionForm"
         android:layout_width="match_parent"
-        android:layout_height="393dp" />
+        android:layout_height="241dp" />
 
     <TextView
         android:id="@+id/moyenLabel"
@@ -23,12 +23,12 @@
 
     <ListView
         android:id="@+id/listView1"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_height="152dp"
         android:layout_width="wrap_content"
+        android:layout_height="271dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
         android:divider="#FFCC00"
-        android:dividerHeight="2dp"/>
+        android:dividerHeight="2dp" />
 
     <Button
         android:id="@+id/SendIntervention"

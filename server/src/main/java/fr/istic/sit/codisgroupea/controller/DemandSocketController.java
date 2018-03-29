@@ -77,8 +77,8 @@ public class DemandSocketController {
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.CREATE_UNIT_CLIENT)
-    public void createUnit(@DestinationVariable("id") final String id, Principal principal, CreateUnitMessage dataSendByClient) {
-        Intervention intervention = interventionRepository.getOne(Long.valueOf(id));
+    public void createUnit(@DestinationVariable("id") final int id, Principal principal, CreateUnitMessage dataSendByClient) {
+        Intervention intervention = interventionRepository.getOne(id);
         String userLogin = principal.getName();
         Timestamp now = new Timestamp(new Date().getTime());
 
@@ -126,7 +126,7 @@ public class DemandSocketController {
      */
     @MessageMapping(RoutesConfig.UPDATE_UNIT_CLIENT)
     @SendTo({RoutesConfig.UPDATE_UNIT_SERVER})
-    public ListUnitMessage updateUnit(@DestinationVariable("id") final long idInterventions, Principal principal, List<UnitMessage> dataSendByClient) {
+    public ListUnitMessage updateUnit(@DestinationVariable("id") final int idInterventions, Principal principal, List<UnitMessage> dataSendByClient) {
         Optional<Intervention> intervention = interventionRepository.findById(idInterventions);
 
         if (!intervention.isPresent()){

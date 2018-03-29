@@ -42,4 +42,20 @@ public class Position {
     public fr.istic.sit.codisgroupea.model.entity.Position toPositionEntity() {
         return new fr.istic.sit.codisgroupea.model.entity.Position(lat, lng);
     }
+
+    public float getLat() {
+        return lat;
+    }
+
+    public void setLat(float lat) {
+        this.lat = lat;
+    }
+
+    public float getLng() {
+        return lng;
+    }
+
+    public void setLng(float lng) {
+        this.lng = lng;
+    }
 }
