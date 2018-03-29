@@ -52,30 +52,28 @@
         inner class for test
          */
         public class DronePoint{
-            int numero = 0;
+            int id = 0;
             double lat;
             double lon;
             public DronePoint( int num, double lat, double lon ){
-                this.numero = num;
+                this.id = num;
                 this.lat = lat;
                 this.lon = lon;
             }
         }
 
-        DronePoint position_Drone;
-        // compteur incrément numéro des point du parcours drone.
-        // 0 pour la position actuelle du drone
-        int cpt_numero = 1;
-        //liste des points pour le parcours du drone
+        // update the point id to order the drone way.
+        // 0 : id for the drone
+        int cpt_id = 1;
+        //list of points for the drone way
         Map<Integer,DronePoint> parcours = new HashMap<Integer,DronePoint>();
-        List<Marker> markers = new ArrayList<Marker>();
         MapView mMapView;
         private GoogleMap googleMap;
         private final static int LOCATION_REQ_CODE = 456;
         private static final String TAG = MapActivity.class.getSimpleName();
 
         /*
-        Raffraichir la carte avec le parcours du drone tracé
+        Refresh the map with the drone way
          */
         public void updateUI(GoogleMap mMap){
             mMap.clear();
@@ -83,7 +81,7 @@
             java.util.Set<Integer> keyList = parcours.keySet();
             for (Integer num : keyList){
                 DronePoint point = parcours.get(num);
-                if (num.equals(0)) {    // cas particulier du drone lui-meme
+                if (num.equals(0)) {    // specific case : drone itself
                     if (previous != null) {
                         Polyline line = mMap.addPolyline(new PolylineOptions()
                                 .add(new LatLng(previous.lat, previous.lon), new LatLng(point.lat, point.lon))
@@ -123,34 +121,33 @@
                     googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                     /*
-                        Gestion du clic long : création d'un point
+                        Manage long clic : create a point
                      */
                     googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
                         @Override
                         public void onMapLongClick(LatLng latLng) {
                             /* add DronePoint */
-                            DronePoint pt = new DronePoint(cpt_numero,latLng.latitude,latLng.longitude);
-                            parcours.put(new Integer(cpt_numero),pt);   // ajout dans la liste des points
-//                            LatLng ln = addMarker_Zoom(pt);             // ajout sur la carte
-                            cpt_numero += 1;                            // incrément compteur général
-                            updateUI(googleMap);                        // raffraichir la map
+                            DronePoint pt = new DronePoint(cpt_id,latLng.latitude,latLng.longitude);
+                            parcours.put(new Integer(cpt_id),pt);   // add a point in the list
+                            cpt_id += 1;                            // increase general id
+                            updateUI(googleMap);                    // refresh the map
                         }
 
                     });
 
                     /*
-                        Drag and drop d'un marker sur un appui long
+                        Drag and drop a marker with a long clic
                      */
                     googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
                         Integer num;
                         @Override
                         public void onMarkerDragStart(Marker marker) {
-                            num = new Integer(marker.getTitle());   // numéro du marker sélectionné
+                            num = new Integer(marker.getTitle());   // id of the selected marker
                         }
 
                         @Override
                         public void onMarkerDrag(Marker marker) {
-                            if (num!=null) {                        // update des coordonnées du marker
+                            if (num!=null) {                        // update from the maker's position
                                 parcours.get(num).lat = marker.getPosition().latitude;
                                 parcours.get(num).lon = marker.getPosition().longitude;
                             }
@@ -158,7 +155,7 @@
 
                         @Override
                         public void onMarkerDragEnd(Marker marker) {
-                            updateUI(googleMap);                    // raffraichir la map
+                            updateUI(googleMap);                    // refresh the map
                         }
                     });
                 }
@@ -221,7 +218,7 @@
        public LatLng addMarker_Zoom (DronePoint point) {
            LatLng coord = new LatLng(point.lat,point.lon);
            // For dropping a marker Coord at a point on the MapActivity
-           Marker mark = googleMap.addMarker(new MarkerOptions().position(coord).draggable(true).title(""+point.numero).snippet(""));
+           Marker mark = googleMap.addMarker(new MarkerOptions().position(coord).draggable(true).title(""+point.id).snippet(""));
            mark.showInfoWindow();
            return coord;
        }
