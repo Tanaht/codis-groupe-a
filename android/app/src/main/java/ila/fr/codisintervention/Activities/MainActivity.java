@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +18,6 @@ import android.widget.Toast;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
-import ila.fr.codisintervention.handlers.WebsocketServiceHandler;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -45,14 +43,14 @@ public class MainActivity extends AppCompatActivity {
     // ServiceConnection permet de gérer l'état du lien entre l'activité et le service.
     private ServiceConnection serviceConnection;
     private WebsocketServiceBinder.IMyServiceMethod service;
-    private static Handler handler;
+//    private static Handler handler;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        handler = new WebsocketServiceHandler();
+//        handler = new WebsocketServiceHandler();
 
         setContentView(R.layout.activity_main);
         editText_login = (EditText) this.findViewById(R.id.editText_login);
@@ -80,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 service = ((WebsocketServiceBinder)binder).getService();
 
                 //on genère l'évènement indiquant qu'on est "bindé"
-                handler.sendEmptyMessage(ON_BIND);
+//                handler.sendEmptyMessage(ON_BIND);
             }
         };
 
