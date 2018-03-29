@@ -22,8 +22,17 @@ public class CreateInterventionMessage {
      */
     public Position location;
 
+
+
     public List<Unit> units;
 
+    public List<Unit> getUnits() {
+        return units;
+    }
+
+    public void setUnits(List<Unit> units) {
+        this.units = units;
+    }
     /**
      * Instantiates a new create-intervention message.
      *
