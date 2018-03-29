@@ -4,6 +4,10 @@
     import android.annotation.SuppressLint;
     import android.content.Context;
     import android.content.pm.PackageManager;
+    import android.content.res.Resources;
+    import android.graphics.Bitmap;
+    import android.graphics.BitmapFactory;
+    import android.graphics.drawable.BitmapDrawable;
     import android.net.Uri;
     import android.os.Bundle;
     import android.app.Fragment;
@@ -18,17 +22,21 @@
     import com.google.android.gms.maps.MapView;
     import com.google.android.gms.maps.MapsInitializer;
     import com.google.android.gms.maps.OnMapReadyCallback;
+    import com.google.android.gms.maps.model.BitmapDescriptorFactory;
     import com.google.android.gms.maps.model.CameraPosition;
     import com.google.android.gms.maps.model.LatLng;
+    import com.google.android.gms.maps.model.MapStyleOptions;
     import com.google.android.gms.maps.model.MarkerOptions;
 
+    import ila.fr.codisintervention.Activities.MapActivity;
     import ila.fr.codisintervention.R;
 
 
     public class MapsFragment extends Fragment {
         MapView mMapView;
         private GoogleMap googleMap;
-        private final static int LOCATION_REQ_CODE=456;
+        private final static int LOCATION_REQ_CODE = 456;
+        private static final String TAG = MapActivity.class.getSimpleName();
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,17 +58,70 @@
                 @SuppressLint("MissingPermission")
                 @Override
                 public void onMapReady(GoogleMap mMap) {
+
                     googleMap = mMap;
 
                     //googleMap.setMyLocationEnabled(true);
 
+                    /* For customizing the map
+                    try {
+
+                        // Customise the styling of the base map using a JSON object defined
+                        // in a raw resource file.
+                        boolean success = googleMap.setMapStyle(
+                                MapStyleOptions.loadRawResourceStyle(
+                                        getActivity(), R.raw.style_json));
+
+                        if (!success) {
+                            Log.e(TAG, "Style parsing failed.");
+                        }
+                    } catch (Resources.NotFoundException e) {
+                        Log.e(TAG, "Can't find style. Error: ", e);
+                    }
+                    */
+
                     LatLng surprise = new LatLng(48.873756, 2.294946);
                     addMarker_Zoom(surprise);
+                    //click event handler for the map
+                    googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                        @Override
+                        public void onMapLongClick(LatLng latlng) {
+                            /*retrieve the coordinates got by the long click */
+                            /*create a marker and set up it's options */
+
+                            MarkerOptions marker = new MarkerOptions();
+                            marker.position(latlng);
+                            marker.title("coordinates : " + latlng.latitude + " , " + latlng.longitude);
+                            marker.isDraggable();
+
+                            int x = 50, y = 50;
+                            BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.pompier);
+                            Bitmap b = bitmapdraw.getBitmap();
+                            Bitmap smallMarker = Bitmap.createScaledBitmap(b, x, y, false);
+                            marker.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+
+                            /*clear the map*/
+                            //googleMap.clear();
+                            CameraPosition cameraPosition = new CameraPosition.Builder().target(latlng).zoom(18).build();
+                            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                            /*add the marker on the map */
+                            googleMap.addMarker(marker);
+                        }
+                    });
                 }
             });
 
             return rootView;
         }
+
+
+        /*
+        public Bitmap resizeBitmap(String drawableName,int width, int height){
+            Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(drawableName, "drawable", getPackageName()));
+            return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        }
+        */
 
         /*Method used to add à marker and zoom on it */
         public void addMarker_Zoom (LatLng Coord) {

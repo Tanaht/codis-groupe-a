@@ -1,0 +1,23 @@
+  [
+    { "featureType": "administrative",
+      "elementType": "geometry",
+      "stylers": [ { "visibility": "off" } ] },
+
+    { "featureType": "landscape",
+      "stylers": [ { "color": "#ffffff" } ] },
+
+    { "featureType": "poi",
+      "stylers": [ { "visibility": "off" } ] },
+
+    { "featureType": "road",
+      "stylers": [ { "color": "#7b7b7b" } ] },
+
+    { "featureType": "road", "elementType": "labels.icon",
+      "stylers": [ { "visibility": "off" } ] },
+
+    { "featureType": "transit",
+      "stylers": [ { "visibility": "off" } ] },
+
+    { "featureType": "water",
+      "stylers": [ { "color": "#3b5bff" } ] }
+  ]
