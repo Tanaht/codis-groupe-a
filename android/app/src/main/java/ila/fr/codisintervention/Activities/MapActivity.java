@@ -16,6 +16,8 @@ import android.view.MenuItem;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.models.messages.Symbol;
+import ila.fr.codisintervention.models.messages.Unit;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_ADD_DEMANDE;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_ACCEPT_UTIL;
@@ -60,22 +62,32 @@ public class MapActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            int id = (int) intent.getExtras().get("id");
+            Symbol symbol;
+            Unit unit;
             switch (intent.getAction()) {
                 case ACTION_UPDATE_INTERVENTION_UPDATE_UTIL:
+                    unit = modelService.getUnit(id);
                     break;
                 case ACTION_UPDATE_INTERVENTION_ACCEPT_UTIL:
+                    unit = modelService.getUnit(id);
                     break;
                 case ACTION_UPDATE_INTERVENTION_DELETE_UTIL:
+                    unit = modelService.getUnit(id);
                     break;
                 case ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL:
+                    symbol = modelService.getSymbol(id);
                     break;
                 case ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL:
+                    symbol = modelService.getSymbol(id);
                     break;
                 case ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL:
+                    symbol = modelService.getSymbol(id);
                     break;
                 case ACTION_ADD_DEMANDE:
                     break;
                 case ACTION_VALIDATION_MOYEN:
+                    unit = modelService.getUnit(id);
                     break;
                 default:
                     break;

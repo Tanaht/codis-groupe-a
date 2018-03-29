@@ -134,7 +134,7 @@ public class InterventionsListActivity extends AppCompatActivity {
      * @param intervention : the new item
      * @param position : the position of the new item in the list
      */
-    private void addElement(Intervention intervention, int position) {
+    private void addElement(Intervention intervention) {
         // on insère l'intervention dans la liste des interventions liés à l'adapter
        //interventionList.add(1,intervention);
         dataAdapter.add(intervention);
@@ -170,10 +170,11 @@ public class InterventionsListActivity extends AppCompatActivity {
             Intervention intervention = modelService.getInterventions().get(id);
             switch (intent.getAction()){
                 case ModelConstants.ACTION_ADD_INTERVENTION:
-                    //dataAdapter.addIntervention(intervention);
+                    addElement(intervention);
                     break;
                 case ModelConstants.ACTION_DELETE_INTERVENTION:
-                    //dataAdapter.removeIntervention(intervention);
+                    int position = dataAdapter.getPosition(intervention);
+                    deleteElement(position);
                     break;
                 default:
                     break;
