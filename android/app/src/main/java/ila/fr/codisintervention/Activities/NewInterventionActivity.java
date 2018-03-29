@@ -1,8 +1,12 @@
 package ila.fr.codisintervention.Activities;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,23 +26,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import es.dmoral.toasty.Toasty;
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.Entities.Moyen;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.MoyensService;
 import ila.fr.codisintervention.Utils.GooglePlacesAutocompleteAdapter;
 import ila.fr.codisintervention.Utils.MoyenListAdapter;
+import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.services.websocket.WebsocketService;
 
 public class NewInterventionActivity extends AppCompatActivity {
 
     MoyenListAdapter dataAdapter;
-    String inputtedAddress;
+    String inputtedAddress = "";
     LatLng latlngAddress;
+
+    // ServiceConnection permet de gérer l'état du lien entre l'activité et le service.
+    private ServiceConnection serviceConnection;
+    private WebsocketServiceBinder.IMyServiceMethod service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_intervention);
         setTitle(R.string.NewInterventionPageTitle);
+
+        // Bind activity to websocket service
+        bindToService();
 
         // AutoComplete Address
         AutoCompleteTextView autoCompView = findViewById(R.id.autoCompleteTextView);
@@ -47,8 +63,6 @@ public class NewInterventionActivity extends AppCompatActivity {
         autoCompView.setOnItemClickListener((parent, view, position, id) -> {
             inputtedAddress = (String) parent.getItemAtPosition(position);
             latlngAddress = getLocationFromAddress(inputtedAddress);
-
-           // Toast.makeText(getApplicationContext(),inputtedAddress , Toast.LENGTH_SHORT).show();
         });
 
         // Code Sinistre List (Liste déroulante)
@@ -59,7 +73,29 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         // Send intervention
         checkButtonClick();
+    }
 
+    private void bindToService() {
+        serviceConnection = new ServiceConnection() {
+            public void onServiceDisconnected(ComponentName name) {}
+            public void onServiceConnected(ComponentName arg0, IBinder binder) {
+
+                //on récupère l'instance du service dans l'activité
+                service = ((WebsocketServiceBinder)binder).getService();
+
+                //on genère l'évènement indiquant qu'on est "bindé"
+                //   handler.sendEmptyMessage(ON_BIND);
+            }
+        };
+        //démarre le service si il n'est pas démarré
+        //Le binding du service est configuré avec "BIND_AUTO_CREATE" ce qui normalement
+        //démarre le service si il n'est pas démarrer, la différence ici est que le fait de
+        //démarrer le service par "startService" fait que si l'activité est détruite, le service
+        //reste en vie (obligatoire pour l'application AlarmIngressStyle)
+        startService(new Intent(this, WebsocketService.class));
+        Intent intent = new Intent(this, WebsocketService.class);
+        //lance le binding du service
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void displaySpinner(){
@@ -109,7 +145,6 @@ public class NewInterventionActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
                 StringBuffer responseText = new StringBuffer();
                 responseText.append("The following were selected...\n");
 
@@ -121,15 +156,23 @@ public class NewInterventionActivity extends AppCompatActivity {
                     }
                 }
                 String codeSinistre = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();
-                /* TODO send Intervention to Service:
-                    inputtedAddress;
-                    latlngAddress.longitude
-                    latlngAddress.latitude
-                    code sinistre
-                    liste des moyens */
-                Toast.makeText(getApplicationContext(),
-                        responseText, Toast.LENGTH_LONG).show();
 
+                // Check if address is set
+                if(inputtedAddress.equals("")){
+                    Toasty.error(getApplicationContext(),
+                            responseText, Toast.LENGTH_LONG).show();
+                } else {
+
+                    Intervention intervention = new Intervention();
+                    intervention.setAddress(inputtedAddress);
+                    intervention.setCode(codeSinistre);
+                    intervention.setLocation(
+                            new Location(latlngAddress.latitude,latlngAddress.longitude));
+                    // TODO intervention.setMoyens(..)
+                    
+                    //send Intervention to WS Service
+                    service.createIntervention(intervention);
+                }
             }
         });
     }
