@@ -9,7 +9,7 @@ import ila.fr.codisintervention.models.messages.Intervention;
 
 public class BigModel {
     private InitializeApplication messageInitialize;
-    private Intervention currentIntervention;
+    private InterventionChosen currentIntervention;
 
     public BigModel() {
     }
@@ -22,11 +22,11 @@ public class BigModel {
         this.messageInitialize = messageInitialize;
     }
 
-    public Intervention getCurrentIntervention() {
+    public InterventionChosen getCurrentIntervention() {
         return currentIntervention;
     }
 
-    public void setCurrentIntervention(Intervention currentIntervention) {
+    public void setCurrentIntervention(InterventionChosen currentIntervention) {
         this.currentIntervention = currentIntervention;
     }
 

@@ -11,6 +11,7 @@ import java.util.List;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.models.BigModel;
+import ila.fr.codisintervention.models.InterventionChosen;
 import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Symbol;
@@ -81,25 +82,25 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 intentClosedIntervention.putExtra("id",id);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intentClosedIntervention);
                 break;
-            case "INTERVENTION_SYMBOL_CREATED" :
+            case WebsocketService.INTERVENTION_SYMBOL_CREATED :
                break;
-            case "INTERVENTION_SYMBOL_UPDATED" :
+            case WebsocketService.INTERVENTION_SYMBOL_UPDATED :
                 break;
-            case "INTERVENTION_SYMBOL_DELETED" :
+            case WebsocketService.INTERVENTION_SYMBOL_DELETED :
                 break;
-            case "INTERVENTION_UNIT_CREATED" :
+            case WebsocketService.INTERVENTION_UNIT_CREATED :
                 break;
-            case "INTERVENTION_UNIT_UPDATED" :
+            case WebsocketService.INTERVENTION_UNIT_UPDATED :
                 break;
-            case "DEMANDE_ACCEPTED" :
+            case WebsocketService.DEMANDE_ACCEPTED :
                 break;
-            case "DEMANDE_DENIED" :
+            case WebsocketService.DEMANDE_DENIED :
                 break;
-            case "DEMANDE_CREATED" :
+            case WebsocketService.DEMANDE_CREATED :
                 break;
-            case "DRONE_PING" :
+            case WebsocketService.DRONE_PING:
                 break;
-            case "DRONE_PHOTO" :
+            case WebsocketService.DRONE_PHOTO :
                 break;
             //Si l'action est mal définit
             default :
@@ -126,7 +127,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     }
 
     @Override
-    public Intervention getSelectedIntervention() {
+    public InterventionChosen getSelectedIntervention() {
         return model.getCurrentIntervention();
     }
 

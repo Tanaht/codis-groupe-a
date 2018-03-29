@@ -137,4 +137,6 @@ public class Intervention implements Parcelable {
         dest.writeParcelable(location, flags);
         dest.writeList(photos);
     }
+
+
 }

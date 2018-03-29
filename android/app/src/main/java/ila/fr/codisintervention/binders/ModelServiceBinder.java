@@ -4,6 +4,7 @@ import android.os.Binder;
 
 import java.util.List;
 
+import ila.fr.codisintervention.models.InterventionChosen;
 import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Symbol;
@@ -30,7 +31,7 @@ public class ModelServiceBinder extends Binder {
 
     /** les méthodes de cette interface seront accessibles par l'activité */
     public interface IMyServiceMethod {
-        Intervention getSelectedIntervention();
+        InterventionChosen getSelectedIntervention();
         List<Intervention> getInterventions();
         List<Code> getCodes();
         List<Vehicle> getAvailableVehicle();
