@@ -113,9 +113,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                         InitializeApplication initializeApplication = gson.fromJson(message.getPayload(), InitializeApplication.class);
 
                         this.performInitializationSubscription(initializeApplication);
-                        // The string "my-integer" will be used to filer the intent
                         Intent initializeAppIntent = new Intent(CONNECT_TO_APPLICATION);
-                        // Adding some data
                         initializeAppIntent.putExtra(InitializeApplication.class.getName(), initializeApplication);
 
                         LocalBroadcastManager.getInstance(this).sendBroadcast(initializeAppIntent);
@@ -280,8 +278,8 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-            interventionChosen.setAction(INTERVENTION_CREATED);
-            interventionChosen.putExtra(INTERVENTION_CREATED, gson.fromJson(message.getPayload(), Intervention.class));
+            interventionChosen.setAction(INTERVENTION_CHOSEN);
+            interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), Intervention.class));
             getApplicationContext().startService(interventionChosen);
         });
 
