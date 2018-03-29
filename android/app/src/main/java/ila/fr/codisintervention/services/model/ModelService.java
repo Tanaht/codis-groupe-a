@@ -127,22 +127,23 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
     @Override
     public Intervention getSelectedIntervention() {
-        return null;
+        return model.getCurrentIntervention();
     }
 
     @Override
     public List<Intervention> getInterventions() {
-        return null;
+
+        return model.getMessageInitialize().getInterventions();
     }
 
     @Override
     public List<Code> getCodes() {
-        return null;
+        return model.getMessageInitialize().getCodes();
     }
 
     @Override
     public List<Vehicle> getAvailableVehicle() {
-        return null;
+        return model.getMessageInitialize().getVehicles();
     }
 
     @Override
