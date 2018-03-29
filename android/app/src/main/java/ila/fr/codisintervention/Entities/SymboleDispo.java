@@ -1,9 +1,6 @@
 package ila.fr.codisintervention.Entities;
 
-import android.view.View;
 import android.widget.ImageView;
-
-import ila.fr.codisintervention.R;
 
 /**
  * Created by christophe on 27/03/18.
@@ -58,7 +55,7 @@ public class SymboleDispo {
         return id;
     }
 
-    public void clicOnSymbol(){
+    public void clicOnSymbol() {
         this.selected = !(this.selected);
     }
 

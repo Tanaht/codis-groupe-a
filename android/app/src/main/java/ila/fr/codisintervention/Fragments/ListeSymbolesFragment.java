@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import java.util.List;
+
 import ila.fr.codisintervention.Entities.SymboleDispo;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.SymboleDispoService;
@@ -23,7 +24,7 @@ import ila.fr.codisintervention.Services.SymboleDispoService;
  * Use the {@link ListeSymbolesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListeSymbolesFragment extends Fragment{
+public class ListeSymbolesFragment extends Fragment {
 
     private static List<SymboleDispo> liste = SymboleDispoService.getListeSymbolesDispo();
     private String couleur;
@@ -72,20 +73,20 @@ public class ListeSymbolesFragment extends Fragment{
         return view;
     }
 
-    public void ajouterImageView(List<SymboleDispo> liste, View view){
-        for (SymboleDispo symbole: liste) {
+    public void ajouterImageView(List<SymboleDispo> liste, View view) {
+        for (SymboleDispo symbole : liste) {
             symbole.setImageView((ImageView) view.findViewById(getResources().getIdentifier(symbole.getId(), "id", getActivity().getPackageName())));
         }
     }
 
-    public void ajouterImageViewListeners(List<SymboleDispo> liste){
-        for (SymboleDispo symbole: liste){
+    public void ajouterImageViewListeners(List<SymboleDispo> liste) {
+        for (SymboleDispo symbole : liste) {
             symbole.getImageView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     symbole.getImageView().setImageResource(getResources().getIdentifier(symbole.getIconeSelected(), "drawable", getActivity().getPackageName()));
-                    for (SymboleDispo symbole2 : liste){
-                        if(symbole != symbole2){
+                    for (SymboleDispo symbole2 : liste) {
+                        if (symbole != symbole2) {
                             symbole2.getImageView().setImageResource(getResources().getIdentifier(symbole2.getIconeNonSelected(), "drawable", getActivity().getPackageName()));
                         }
                     }
@@ -102,7 +103,7 @@ public class ListeSymbolesFragment extends Fragment{
         this.couleur = couleur;
     }
 
-    public void ajouterRadioButtonListeners(View view){
+    public void ajouterRadioButtonListeners(View view) {
 
         RadioButton rbRouge = (RadioButton) view.findViewById(R.id.radioButtonrouge);
         rbRouge.setOnClickListener(new View.OnClickListener() {
@@ -164,7 +165,6 @@ public class ListeSymbolesFragment extends Fragment{
         super.onDetach();
         mListener = null;
     }
-
 
 
     /**
