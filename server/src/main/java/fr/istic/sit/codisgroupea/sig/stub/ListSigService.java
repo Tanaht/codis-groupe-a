@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import static java.lang.Math.*;
 
 /**
  * List SIG repository.
@@ -71,21 +72,35 @@ public class ListSigService implements SigRepository<SymbolSitac> {
         return listSymbAssociateWithIntervention;
     }
 
+    /**
+     *Method to get the distance in meters between two positions
+     *
+     * @param pos1 The fist position
+     * @param pos2 The second position
+     * @return The distance in meters
+     */
+    private double getMeters(Position pos1, Position pos2) {
+        //Radius of the Earth
+        double r = 6371 * pow(10, 3);
 
-    private List<SymbolSitac> getEntriesWithinDist(Position upperLeft, Position lowerRight) {
-        List<SymbolSitac> syms = new ArrayList<>();
+        //Coordinates of the first point
+        double lat1 = toRadians(pos1.getLatitude());
+        double lng1 = toRadians(pos1.getLongitude());
 
-        for(SymbolSitac sym : symbols) {
-            Position pos = sym.getLocation();
+        //Coordinates of the first point
+        double lat2 = toRadians(pos2.getLongitude());
+        double lng2 = toRadians(pos2.getLongitude());
 
-            if(upperLeft.getLongitude() <= pos.getLongitude()
-                    && lowerRight.getLatitude() <= pos.getLatitude()
-                    && pos.getLongitude() <= lowerRight.getLongitude()
-                    && pos.getLatitude() <= upperLeft.getLatitude()) {
-                syms.add(sym);
-            }
-        }
+        //Difference between each coordinates
+        double diff1 = lat2 - lat1;
+        double diff2 = lng2 - lng1;
 
-        return syms;
+        //Partial Result
+        double partialResult1 = sin(diff1/2) * sin(diff2/2) +
+                cos(lat1) * cos(lat2) * sin(diff2) * sin(diff2);
+        double partialResult2 = atan2(sqrt(partialResult1), sqrt(1 - partialResult1));
+
+        //Result
+        return  r * partialResult2;
     }
 }
