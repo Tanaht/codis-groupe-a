@@ -7,13 +7,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Toast;
 
+import ila.fr.codisintervention.Fragments.DessinFragment;
+import ila.fr.codisintervention.Fragments.ListeSymbolesFragment;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.models.messages.Symbol;
@@ -28,7 +34,8 @@ import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UTIL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_VALIDATION_MOYEN;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements ListeSymbolesFragment.OnFragmentInteractionListener,
+        DessinFragment.OnFragmentInteractionListener {
 
     // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.
     private ServiceConnection modelServiceConnection;
@@ -36,6 +43,7 @@ public class MapActivity extends AppCompatActivity {
     //Model service
     private ModelServiceBinder.IMyServiceMethod modelService;
 
+    private String couleur = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,4 +175,42 @@ public class MapActivity extends AppCompatActivity {
             unbindService(modelServiceConnection);
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        int x = (int)event.getX();
+        int y = (int)event.getY();
+        Toast.makeText(this, "x"+x+"y"+y, Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    public void clicRouge(View view){
+        couleur = "rouge";
+        Toast.makeText(this, "rouge", Toast.LENGTH_SHORT).show();
+    }
+
+    public void clicVert(View view){
+        couleur = "vert";
+        Toast.makeText(this, "vert", Toast.LENGTH_SHORT).show();
+    }
+
+    public void clicBleu(View view){
+        couleur = "bleu";
+        Toast.makeText(this, "bleu", Toast.LENGTH_SHORT).show();
+    }
+
+    public void clicOrange(View view){
+        couleur = "orange";
+        Toast.makeText(this, "orange", Toast.LENGTH_SHORT).show();
+    }
+
+    public void clicViolet(View view){
+        couleur = "violet";
+        Toast.makeText(this, "violet", Toast.LENGTH_SHORT).show();
+    }
 }
