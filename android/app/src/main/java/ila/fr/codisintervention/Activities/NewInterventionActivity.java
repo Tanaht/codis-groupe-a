@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,17 +27,18 @@ import java.util.List;
 import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
-import ila.fr.codisintervention.models.Location;
-import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.Entities.Moyen;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.MoyensService;
 import ila.fr.codisintervention.Utils.GooglePlacesAutocompleteAdapter;
 import ila.fr.codisintervention.Utils.MoyenListAdapter;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 
 public class NewInterventionActivity extends AppCompatActivity {
+    private static final String TAG = "NewInterventionActivity";
 
     MoyenListAdapter dataAdapter;
     String inputtedAddress = "";
@@ -167,8 +168,12 @@ public class NewInterventionActivity extends AppCompatActivity {
                     Intervention intervention = new Intervention();
                     intervention.setAddress(inputtedAddress);
                     intervention.setCode(codeSinistre);
-                    intervention.setLocation(
-                            new Location(latlngAddress.latitude,latlngAddress.longitude));
+                    Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
+
+                    if(latlngAddress != null)
+                        intervention.setLocation(new Location(latlngAddress.latitude,latlngAddress.longitude));
+                    else
+                        intervention.setLocation(new Location(0, 0));
                     // TODO intervention.setMoyens(..)
 
                     //send Intervention to WS Service

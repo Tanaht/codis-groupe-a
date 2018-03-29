@@ -17,6 +17,7 @@ import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
+import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.models.messages.Vehicle;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
@@ -158,6 +159,11 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     @Override
     public List<Vehicle> getAvailableVehicle() {
         return model.getMessageInitialize().getVehicles();
+    }
+
+    @Override
+    public User getUser() {
+        return model.getUser();
     }
 
     @Override

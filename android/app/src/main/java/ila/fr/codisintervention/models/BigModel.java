@@ -1,7 +1,7 @@
 package ila.fr.codisintervention.models;
 
 import ila.fr.codisintervention.models.messages.InitializeApplication;
-import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.User;
 
 /**
  * Created by marzin on 28/03/18.
@@ -28,6 +28,10 @@ public class BigModel {
 
     public void setCurrentIntervention(InterventionChosen currentIntervention) {
         this.currentIntervention = currentIntervention;
+    }
+
+    public User getUser() {
+        return messageInitialize.getUser();
     }
 
 }

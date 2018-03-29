@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
             // Extract data included in the Intent
 
             if(ModelConstants.ACTION_INITIALIZE_APPLICATION.equals(intent.getAction())) {
-                User user = null; //TODO: retrieve user in model;
+                User user = modelService.getUser(); //TODO: retrieve user in model;
 
                 if(user.isCodisUser()) {
 

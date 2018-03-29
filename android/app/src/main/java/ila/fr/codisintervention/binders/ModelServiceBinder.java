@@ -9,6 +9,7 @@ import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
+import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.models.messages.Vehicle;
 
 /**
@@ -36,6 +37,7 @@ public class ModelServiceBinder extends Binder {
         List<Code> getCodes();
         List<Vehicle> getAvailableVehicle();
 
+        User getUser();
         Symbol getSymbol(int id);
         Unit getUnit(int id);
     }
