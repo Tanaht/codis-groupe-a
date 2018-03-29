@@ -186,10 +186,11 @@ public class InterventionsListActivity extends AppCompatActivity {
             Intervention intervention = modelService.getInterventions().get(id);
             switch (intent.getAction()){
                 case ModelConstants.ACTION_ADD_INTERVENTION:
-                    //dataAdapter.addIntervention(intervention);
+                    addElement(intervention);
                     break;
                 case ModelConstants.ACTION_DELETE_INTERVENTION:
-                    //dataAdapter.removeIntervention(intervention);
+                    int position = dataAdapter.getPosition(intervention);
+                    deleteElement(position);
                     break;
                 default:
                     break;

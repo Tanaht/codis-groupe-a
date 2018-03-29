@@ -165,7 +165,15 @@ public class InterventionChosen implements Parcelable {
         dest.writeList(units);
         dest.writeList(symbols);
     }
-    public InterventionChosen createByIntervention (Intervention intervention, List<Symbol> symbols, List<Unit> units){
+    public static InterventionChosen createByInterventionWithAll (Intervention intervention, List<Symbol> symbols, List<Unit> units){
+        InterventionChosen interventionChosen = createByIntervention(intervention);
+        interventionChosen.setUnits(units);
+        interventionChosen.setSymbols(symbols);
+
+        return interventionChosen;
+    }
+
+    public static InterventionChosen createByIntervention (Intervention intervention){
         InterventionChosen interventionChosen = new InterventionChosen();
 
         interventionChosen.setAddress(intervention.getAddress());
@@ -175,10 +183,52 @@ public class InterventionChosen implements Parcelable {
         interventionChosen.setId(intervention.getId());
         interventionChosen.setLocation(intervention.getLocation());
         interventionChosen.setPhotos(intervention.getPhotos());
-        interventionChosen.setUnits(units);
-        interventionChosen.setSymbols(symbols);
 
         return interventionChosen;
+    }
+
+    public void changeSymbol(Symbol symbolChanged){
+        for(Symbol symbol : this.getSymbols()){
+            if(symbol.getId().equals(symbolChanged.getId())){
+                symbol = symbolChanged;
+            }
+        }
+    }
+
+    public Symbol getSymbolId(int id){
+        for(Symbol symbol : this.getSymbols()){
+            if(symbol.getId().equals(id)){
+                return symbol;
+            }
+        }
+        return null;
+    }
+
+    public void deleteSymbolById(int id){
+        if(id!=-1) {
+            for (Symbol symbol : this.getSymbols()) {
+                if (symbol.getId().equals(id)) {
+                    this.symbols.remove(symbol);
+                }
+            }
+        }
+    }
+
+    public void changeUnit(Unit unitChanged){
+        for(Unit unit : this.getUnits()){
+            if(unit.getId()==(unitChanged.getId())){
+                unit = unitChanged;
+            }
+        }
+    }
+
+    public Unit getUnitById(int id){
+        for(Unit unit : this.getUnits()){
+            if(unit.getId()==id){
+                return unit;
+            }
+        }
+        return null;
     }
 }
 
