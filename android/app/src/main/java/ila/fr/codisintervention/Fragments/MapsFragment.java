@@ -186,14 +186,15 @@
         }
 
         /*method for resizing the bitmap that is used to customize a marker*/
-        }
-            return smallMarker;
-            Bitmap smallMarker = Bitmap.createScaledBitmap(b, targetWidth, targetHeight, false);
-            Bitmap b = bitmapdraw.getBitmap();
+        public Bitmap resizeBitmap (int drawablePath, int targetWidth, int targetHeight) {
             BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(drawablePath);
-        public Bitmap resizeBitmap (int drawablePath, int targetWidth, int targetHeight){
+            Bitmap b = bitmapdraw.getBitmap();
+            Bitmap smallMarker = Bitmap.createScaledBitmap(b, targetWidth, targetHeight, false);
+            return smallMarker;
+        }
             // For dropping a marker Coord at a point on the MapActivity
         /*Method used to add a marker */
+
         public void addCustomMarker_Zoom (LatLng Coord, Bitmap Customizer) {
 
             MarkerOptions marker = new MarkerOptions();
@@ -214,6 +215,18 @@
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
         }
+
+        /*Method used to add à marker and zoom on it*/
+
+       public LatLng addMarker_Zoom (DronePoint point) {
+           LatLng coord = new LatLng(point.lat,point.lon);
+           // For dropping a marker Coord at a point on the MapActivity
+           Marker mark = googleMap.addMarker(new MarkerOptions().position(coord).draggable(true).title(""+point.numero).snippet(""));
+           mark.showInfoWindow();
+           return coord;
+       }
+
+
 
         /*
             add or modify the drone position
