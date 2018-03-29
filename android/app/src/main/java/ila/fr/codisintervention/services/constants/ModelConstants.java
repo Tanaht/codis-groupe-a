@@ -11,7 +11,7 @@ public class ModelConstants {
     public static final String ACTION_DELETE_INTERVENTION = "delete-intervention";
 
     public static final String ACTION_UPDATE_INTERVENTION_UPDATE_UTIL = "update-intervention-update-util";
-    public static final String ACTION_UPDATE_INTERVENTION_ACCEPT_UTIL = "update-intervention-accept-util";
+    public static final String ACTION_UPDATE_INTERVENTION_CREATE_UTIL = "update-intervention-create-util";
     public static final String ACTION_UPDATE_INTERVENTION_DELETE_UTIL = "update-intervention-delete-util";
 
     public static final String ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL = "update-intervention-update-symbol";

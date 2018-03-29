@@ -44,7 +44,7 @@ public class NewInterventionActivity extends AppCompatActivity {
     InterventionService interventionService;
     MoyenListAdapter dataAdapter;
     String inputtedAddress = "";
-    LatLng latlngAddress;
+    LatLng latlngAddress = null;
 
     // ServiceConnection permet de gérer l'état du lien entre l'activité et le service.
     private ServiceConnection serviceConnection;
@@ -173,12 +173,13 @@ public class NewInterventionActivity extends AppCompatActivity {
                     intervention.setCode(codeSinistre);
 
                     latlngAddress = getLocationFromAddress(intervention.getAddress());
+//                    System.out.println("\n***********"+latlngAddress.latitude+","+latlngAddress.longitude);
                     Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
 
                     if(latlngAddress != null)
                         intervention.setLocation(new Location(latlngAddress.latitude,latlngAddress.longitude));
                     else
-                        intervention.setLocation(new Location(50, 50));
+                        intervention.setLocation(new Location(48.1156746,-1.640608));
                     // TODO intervention.setMoyens(..)
 
                     //send Intervention to WS Service
@@ -197,16 +198,23 @@ public class NewInterventionActivity extends AppCompatActivity {
 
             address = coder.getFromLocationName(inputtedAddress, 1);
             if (address == null) {
+                System.out.println("============================================================");
+                System.out.println("address null");
                 return null;
+
             }
 
             if (address.size() == 0) {
+                System.out.println("============================================================");
+                System.out.println("size 0");
                 return null;
             }
 
             Address location = address.get(0);
             location.getLatitude();
             location.getLongitude();
+            System.out.println("============================================================");
+            System.out.println(location.getLatitude()+","+location.getLongitude());
 
             resLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 

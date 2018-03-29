@@ -108,6 +108,7 @@ public class InterventionsListActivity extends AppCompatActivity {
         dataAdapter = new InterventionListAdapter(this,
                 R.layout.interventions_list_item_layout, (ArrayList) interventionList);
         ListView listView = (ListView) findViewById(R.id.interventionsList);
+
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
 
@@ -117,14 +118,15 @@ public class InterventionsListActivity extends AppCompatActivity {
                 // When clicked, show a toast with the TextView text
                 Intervention intervention = (Intervention) parent.getItemAtPosition(position);
 
-//                addElement(intervention,0);
+                addElement(intervention);
+
                 Toasty.info(getApplicationContext(),
                         "Intervention with id:"+intervention.getId()+" has been sent to wss",
                         Toast.LENGTH_SHORT, true)
                     .show();
 
                 // Send Intervention choice to WSS
-                service.chooseIntervention(intervention.getId());
+               service.chooseIntervention(intervention.getId());
             }
         });
     }
@@ -132,11 +134,9 @@ public class InterventionsListActivity extends AppCompatActivity {
     /**
      * Add new item , and notify to the adapter that item has been added
      * @param intervention : the new item
-     * @param position : the position of the new item in the list
      */
     private void addElement(Intervention intervention) {
-        // on insère l'intervention dans la liste des interventions liés à l'adapter
-       //interventionList.add(1,intervention);
+        // on insère l'intervention dans la liste des interventions liée à l'adapter
         dataAdapter.add(intervention);
         // on notifie à l'adapter ce changement
         dataAdapter.notifyDataSetChanged();
