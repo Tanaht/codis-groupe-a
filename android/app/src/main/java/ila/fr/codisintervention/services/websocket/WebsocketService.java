@@ -63,6 +63,9 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
     private IBinder binder;
     private String url;
+//
+//    private ServiceConnection modelServiceConnection;
+//    private ModelServiceBinder.IMyServiceMethod modelService;
 
     public WebsocketService() {
 
@@ -77,10 +80,25 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         this.client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
     }
 
+//    private void bindToService() {
+//        modelServiceConnection = new ServiceConnection() {
+//            @Override
+//            public void onServiceConnected(ComponentName name, IBinder binder) {
+//                //on récupère l'instance du modelService dans l'activité
+//                modelService = ((ModelServiceBinder)binder).getService();
+//            }
+//
+//            @Override
+//            public void onServiceDisconnected(ComponentName name) {}
+//        };
+//    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "OnCreate WebSocket Service");
+
+//        bindToService();
         binder = new WebsocketServiceBinder(this);
     }
 
@@ -112,6 +130,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
                         InitializeApplication initializeApplication = gson.fromJson(message.getPayload(), InitializeApplication.class);
 
+                        Log.d(TAG, "JsonToObject of InitializeApplication, retrieved: " + initializeApplication.getInterventions().size() + " interventions");
                         this.performInitializationSubscription(initializeApplication);
 
 
@@ -150,6 +169,17 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
             Log.e(TAG, e.getMessage(), e);
         }
     }
+
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        //on supprimer le binding entre l'activité et le websocketService.
+//        if(modelServiceConnection != null)
+//            unbindService(modelServiceConnection);
+//    }
+
+
+
 
     @Override
     public boolean isConnected() {

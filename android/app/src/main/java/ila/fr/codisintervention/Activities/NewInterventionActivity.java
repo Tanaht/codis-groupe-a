@@ -54,9 +54,6 @@ public class NewInterventionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_intervention);
         setTitle(R.string.NewInterventionPageTitle);
 
-        // Bind activity to websocket service
-        bindToService();
-
         // AutoComplete Address
         AutoCompleteTextView autoCompView = findViewById(R.id.autoCompleteTextView);
         autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_item));
@@ -74,6 +71,9 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         // Send intervention
         checkButtonClick();
+
+        // Bind activity to websocket service
+        bindToService();
     }
 
     private void bindToService() {

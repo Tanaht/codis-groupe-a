@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -17,11 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import es.dmoral.toasty.Toasty;
-import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.Services.InterventionService;
 import ila.fr.codisintervention.Utils.InterventionListAdapter;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
@@ -31,6 +31,7 @@ import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 
 public class InterventionsListActivity extends AppCompatActivity {
+    protected final static String TAG = "InterventionsListAct";
 
     InterventionListAdapter dataAdapter;
     ArrayList<Intervention> interventionList;
@@ -45,21 +46,6 @@ public class InterventionsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interventions_list);
         setTitle(R.string.IntervenantListPageTitle);
-
-        // Interventions Dispos List
-        InterventionService is = new InterventionService();
-        interventionList = is.getInterventionList();
-
-        // Interventions List
-        if(interventionList.isEmpty()){
-            TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
-            tv.setText(R.string.noInterventionAvailable);
-            Toasty.warning(getApplicationContext(),
-                    getString(R.string.noInterventionAvailable), Toast.LENGTH_SHORT, true)
-                    .show();
-        } else {
-            displayListView(interventionList);
-        }
 
         bindToService();
     }
@@ -82,6 +68,16 @@ public class InterventionsListActivity extends AppCompatActivity {
             public void onServiceConnected(ComponentName name, IBinder binder) {
                 //on récupère l'instance du modelService dans l'activité
                 modelService = ((ModelServiceBinder)binder).getService();
+                Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
+                if(modelService.getInterventions() == null || modelService.getInterventions().size() == 0){
+                    TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
+                    tv.setText(R.string.noInterventionAvailable);
+                    Toasty.warning(getApplicationContext(),
+                            getString(R.string.noInterventionAvailable), Toast.LENGTH_SHORT, true)
+                            .show();
+                } else {
+                    displayListView(modelService.getInterventions());
+                }
             }
 
             @Override
@@ -106,11 +102,11 @@ public class InterventionsListActivity extends AppCompatActivity {
         bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    private void displayListView(ArrayList<Intervention> interventionList){
+    private void displayListView(List<Intervention> interventionList){
 
         //create an ArrayAdapter from the String Array
         dataAdapter = new InterventionListAdapter(this,
-                R.layout.interventions_list_item_layout, interventionList);
+                R.layout.interventions_list_item_layout, (ArrayList) interventionList);
         ListView listView = (ListView) findViewById(R.id.interventionsList);
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);

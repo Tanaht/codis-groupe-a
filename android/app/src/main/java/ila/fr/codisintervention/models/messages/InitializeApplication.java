@@ -2,6 +2,7 @@ package ila.fr.codisintervention.models.messages;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.google.gson.annotations.Expose;
 
@@ -30,14 +31,9 @@ public class InitializeApplication implements Parcelable{
     private List<Demande> demandes;
 
     @Expose
-    private List<Intervention> interventions;
+    private List<Intervention> interventions = new ArrayList<Intervention>();
 
     public InitializeApplication() {
-        codes = new ArrayList<>();
-        types = new ArrayList<>();
-        vehicles = new ArrayList<>();
-        demandes = new ArrayList<>();
-        interventions = new ArrayList<>();
     }
 
     public User getUser() {
@@ -85,19 +81,15 @@ public class InitializeApplication implements Parcelable{
     }
 
     protected InitializeApplication(Parcel in) {
-        //FIXME: WRONG PARCELATION of demandes List, interventions List
-        codes = new ArrayList<>();
-        types = new ArrayList<>();
-        vehicles = new ArrayList<>();
-//        demandes = new ArrayList<>();
-//        interventions = new ArrayList<>();
-
         user = in.readParcelable(User.class.getClassLoader());
         codes = in.createTypedArrayList(Code.CREATOR);
         types = in.createTypedArrayList(Type.CREATOR);
         vehicles = in.createTypedArrayList(Vehicle.CREATOR);
-//        demandes = in.createTypedArrayList(Demande.CREATOR);
-//        interventions = in.createTypedArrayList(Intervention.CREATOR);
+        demandes = in.createTypedArrayList(Demande.CREATOR);
+        interventions = in.createTypedArrayList(Intervention.CREATOR);
+
+        Log.d("InitializeApplication", "Construct Codes Size: " + codes.size());
+        Log.d("InitializeApplication", "Construct Interventions Size: " + interventions.size());
     }
 
     public static final Creator<InitializeApplication> CREATOR = new Creator<InitializeApplication>() {
@@ -123,7 +115,10 @@ public class InitializeApplication implements Parcelable{
         dest.writeList(this.codes);
         dest.writeList(this.types);
         dest.writeList(this.vehicles);
-//        dest.writeList(this.demandes);
-//        dest.writeList(this.interventions);
+        dest.writeList(this.demandes);
+        dest.writeTypedList(this.interventions);
+
+        Log.d("InitializeApplication", "Write Codes Size: " + codes.size());
+        Log.d("InitializeApplication", "Write Interventions Size: " + interventions.size());
     }
 }

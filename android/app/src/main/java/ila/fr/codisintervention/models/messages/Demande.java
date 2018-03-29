@@ -20,6 +20,23 @@ public class Demande implements Parcelable {
     public Demande() {
     }
 
+    protected Demande(Parcel in) {
+        id = in.readInt();
+//        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+    }
+
+    public static final Creator<Demande> CREATOR = new Creator<Demande>() {
+        @Override
+        public Demande createFromParcel(Parcel in) {
+            return new Demande(in);
+        }
+
+        @Override
+        public Demande[] newArray(int size) {
+            return new Demande[size];
+        }
+    };
+
     public int getId() {
         return id;
     }
@@ -36,23 +53,6 @@ public class Demande implements Parcelable {
         this.vehicle = vehicle;
     }
 
-    protected Demande(Parcel in) {
-        id = in.readInt();
-        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
-    }
-
-    public static final Creator<Demande> CREATOR = new Creator<Demande>() {
-        @Override
-        public Demande createFromParcel(Parcel in) {
-            return new Demande(in);
-        }
-
-        @Override
-        public Demande[] newArray(int size) {
-            return new Demande[size];
-        }
-    };
-
     @Override
     public int describeContents() {
         return 0;
@@ -61,6 +61,6 @@ public class Demande implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeParcelable(vehicle, flags);
+//        dest.writeParcelable(vehicle, flags);
     }
 }

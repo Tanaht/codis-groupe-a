@@ -73,7 +73,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
             //Pour les messages
             case  WebsocketService.CONNECT_TO_APPLICATION:
                 InitializeApplication initializeApplication = intent.getParcelableExtra(WebsocketService.CONNECT_TO_APPLICATION);
-
+                Log.d(TAG, "Connect to application with: "+ initializeApplication.getInterventions().size() + " interventions");
                 model.setMessageInitialize(initializeApplication);
 
                 Intent initializeApplicationIntent = new Intent(ModelConstants.ACTION_INITIALIZE_APPLICATION);
@@ -140,6 +140,17 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
         return model;
     }
 
+//    @Override
+//    public void sendInitializeApplication(InitializeApplication initializeApplication) {
+//        Log.d(TAG, "Connect to application with: "+ initializeApplication.getInterventions().size() + " interventions");
+//        model.setMessageInitialize(initializeApplication);
+//
+//        Intent initializeApplicationIntent = new Intent(ModelConstants.ACTION_INITIALIZE_APPLICATION);
+//
+//        Log.d(TAG, "Broadcoast Intent: " + initializeApplicationIntent.getAction());
+//        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(initializeApplicationIntent);
+//    }
+
     @Override
     public InterventionChosen getSelectedIntervention() {
         return model.getCurrentIntervention();
@@ -147,7 +158,6 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
     @Override
     public List<Intervention> getInterventions() {
-
         return model.getMessageInitialize().getInterventions();
     }
 

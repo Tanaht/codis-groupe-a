@@ -13,8 +13,8 @@
     <string name="InterventionAddressCity">Ville :</string>
     <string name="InterventionCodeLabel">Code sinistre :</string>
     <string-array name="InterventionCodes">
-        <item>Secours à personne (SAP)</item>
-        <item>Incendie (INC)</item>
+        <item>SAP</item>
+        <item>INC</item>
     </string-array>
     <string name="InterventionMoyensLabel">Liste des moyens :</string>
     <string-array name="InterventionMoyens">
