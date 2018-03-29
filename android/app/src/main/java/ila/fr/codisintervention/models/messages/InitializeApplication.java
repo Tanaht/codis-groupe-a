@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +31,14 @@ public class InitializeApplication implements Parcelable{
 
     @Expose
     private List<Intervention> interventions;
+
+    public InitializeApplication() {
+        codes = new ArrayList<>();
+        types = new ArrayList<>();
+        vehicles = new ArrayList<>();
+        demandes = new ArrayList<>();
+        interventions = new ArrayList<>();
+    }
 
     public User getUser() {
         return user;
@@ -76,12 +85,19 @@ public class InitializeApplication implements Parcelable{
     }
 
     protected InitializeApplication(Parcel in) {
+        //FIXME: WRONG PARCELATION of demandes List, interventions List
+        codes = new ArrayList<>();
+        types = new ArrayList<>();
+        vehicles = new ArrayList<>();
+//        demandes = new ArrayList<>();
+//        interventions = new ArrayList<>();
+
         user = in.readParcelable(User.class.getClassLoader());
         codes = in.createTypedArrayList(Code.CREATOR);
         types = in.createTypedArrayList(Type.CREATOR);
         vehicles = in.createTypedArrayList(Vehicle.CREATOR);
-        demandes = in.createTypedArrayList(Demande.CREATOR);
-        interventions = in.createTypedArrayList(Intervention.CREATOR);
+//        demandes = in.createTypedArrayList(Demande.CREATOR);
+//        interventions = in.createTypedArrayList(Intervention.CREATOR);
     }
 
     public static final Creator<InitializeApplication> CREATOR = new Creator<InitializeApplication>() {
@@ -107,7 +123,7 @@ public class InitializeApplication implements Parcelable{
         dest.writeList(this.codes);
         dest.writeList(this.types);
         dest.writeList(this.vehicles);
-        dest.writeList(this.demandes);
-        dest.writeList(this.interventions);
+//        dest.writeList(this.demandes);
+//        dest.writeList(this.interventions);
     }
 }

@@ -93,17 +93,20 @@ public class MainActivity extends AppCompatActivity {
 
         // Start the service by the method startService() prevent the service to be free if the activity is free.
 
-        // Binding Activity with WebSocketService
-        startService(new Intent(this, WebsocketService.class));
-        Intent intent = new Intent(this, WebsocketService.class);
-        //lance le binding du websocketService
-        bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
-
         //Binding Activity with ModelService
-        startService(new Intent(this, ModelService.class));
-        intent = new Intent(this, ModelService.class);
+        startService(new Intent(getApplicationContext(), ModelService.class));
+        Intent intentModelService = new Intent(getApplicationContext(), ModelService.class);
         //lance le binding du websocketService
-        bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
+        bindService(intentModelService, modelServiceConnection, Context.BIND_AUTO_CREATE);
+
+
+        // Binding Activity with WebSocketService
+        startService(new Intent(getApplicationContext(), WebsocketService.class));
+        Intent intentWebsocketService = new Intent(getApplicationContext(), WebsocketService.class);
+        //lance le binding du websocketService
+        bindService(intentWebsocketService, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
+
+
     }
 
     @Override

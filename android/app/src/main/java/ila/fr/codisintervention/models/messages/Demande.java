@@ -17,6 +17,8 @@ public class Demande implements Parcelable {
     @Expose
     private Vehicle vehicle;
 
+    public Demande() {
+    }
 
     public int getId() {
         return id;

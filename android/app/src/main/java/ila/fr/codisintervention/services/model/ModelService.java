@@ -13,6 +13,7 @@ import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.models.BigModel;
 import ila.fr.codisintervention.models.InterventionChosen;
 import ila.fr.codisintervention.models.messages.Code;
+import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
@@ -30,28 +31,54 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     private BigModel model;
     private IBinder binder;
 
+    public ModelService() {
+        this.model = new BigModel();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return binder;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(TAG, "OnCreate ModelService");
+        binder = new ModelServiceBinder(this);
+
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.i(TAG, "START COMMAND by " + intent);
 
-        Log.d(TAG, "Intent received: " + intent.getAction());
-        updateTheModel(intent);
-        return START_NOT_STICKY;
+        try {
+            updateTheModel(intent);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+        return super.onStartCommand(intent, flags, startId);
     }
 
 
 
     //Méthode pour metre à jour le model
     public void updateTheModel (Intent intent) {
+        if(intent.getAction() == null)
+            return;
+
         switch (intent.getAction()){
             //Pour les messages
             case  WebsocketService.CONNECT_TO_APPLICATION:
-                model.setMessageInitialize(intent.getParcelableExtra("CONNECT_TO_APPLICATION"));
+                InitializeApplication initializeApplication = intent.getParcelableExtra(WebsocketService.CONNECT_TO_APPLICATION);
 
-                Intent initializeApplication = new Intent(ModelConstants.ACTION_INITIALIZE_APPLICATION);
+                model.setMessageInitialize(initializeApplication);
 
-                Log.d(TAG, "Broadcoast Intent: " + initializeApplication.getAction());
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(initializeApplication);
+                Intent initializeApplicationIntent = new Intent(ModelConstants.ACTION_INITIALIZE_APPLICATION);
+
+                Log.d(TAG, "Broadcoast Intent: " + initializeApplicationIntent.getAction());
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(initializeApplicationIntent);
 
                 break;
             //Pour le current Intervention
@@ -106,20 +133,6 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
             default :
                 Log.e("Erreur", "Erreur d'action non reconnu pour la mise à jour du model");
         }
-    }
-
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Log.d(TAG, "OnCreate ModelService");
-        binder = new ModelServiceBinder(this);
-
     }
 
     public BigModel getModel() {

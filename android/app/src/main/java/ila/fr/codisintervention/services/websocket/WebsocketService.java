@@ -113,10 +113,12 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                         InitializeApplication initializeApplication = gson.fromJson(message.getPayload(), InitializeApplication.class);
 
                         this.performInitializationSubscription(initializeApplication);
-                        Intent initializeAppIntent = new Intent(CONNECT_TO_APPLICATION);
-                        initializeAppIntent.putExtra(InitializeApplication.class.getName(), initializeApplication);
 
-                        LocalBroadcastManager.getInstance(this).sendBroadcast(initializeAppIntent);
+
+                        Intent initializeAppIntent  = new Intent(getApplicationContext(), ModelService.class);
+                        initializeAppIntent.setAction(CONNECT_TO_APPLICATION);
+                        initializeAppIntent.putExtra(CONNECT_TO_APPLICATION, initializeApplication);
+                        getApplicationContext().startService(initializeAppIntent);
                     });
 
                     client.send("/users/" + username + "/subscribed", "PING").subscribe(
