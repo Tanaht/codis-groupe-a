@@ -93,8 +93,8 @@ public class NewInterventionActivity extends AppCompatActivity {
         //démarre le service si il n'est pas démarrer, la différence ici est que le fait de
         //démarrer le service par "startService" fait que si l'activité est détruite, le service
         //reste en vie (obligatoire pour l'application AlarmIngressStyle)
-        startService(new Intent(this, WebsocketService.class));
-        Intent intent = new Intent(this, WebsocketService.class);
+        startService(new Intent(getApplicationContext(), WebsocketService.class));
+        Intent intent = new Intent(getApplicationContext(), WebsocketService.class);
         //lance le binding du service
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -168,12 +168,14 @@ public class NewInterventionActivity extends AppCompatActivity {
                     Intervention intervention = new Intervention();
                     intervention.setAddress(inputtedAddress);
                     intervention.setCode(codeSinistre);
+
+                    latlngAddress = getLocationFromAddress(intervention.getAddress());
                     Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
 
                     if(latlngAddress != null)
                         intervention.setLocation(new Location(latlngAddress.latitude,latlngAddress.longitude));
                     else
-                        intervention.setLocation(new Location(0, 0));
+                        intervention.setLocation(new Location(50, 50));
                     // TODO intervention.setMoyens(..)
 
                     //send Intervention to WS Service
@@ -211,6 +213,19 @@ public class NewInterventionActivity extends AppCompatActivity {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
+        Log.d(TAG, "LatLng retrieved: " + resLatLng);
+
         return resLatLng;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //on supprimer le binding entre l'activité et le websocketService.
+        if(serviceConnection != null)
+            unbindService(serviceConnection);
+//
+//        if(modelServiceConnection != null)
+//            unbindService(modelServiceConnection);
     }
 }
