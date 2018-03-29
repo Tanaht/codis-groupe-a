@@ -38,4 +38,24 @@ public class InitializeApplication {
     public List<Intervention> getInterventions() {
         return interventions;
     }
+
+    public Intervention getInterventionById (int id){
+        for(Intervention intervention : interventions){
+            if(intervention.getId() == id){
+                return intervention;
+            }
+        }
+        return null;
+    }
+
+    public void setInterventionClosedById (int id) {
+        //Si valeur id à -1 pas de supresion
+        if (id != -1) {
+            for (Intervention intervention : interventions) {
+                if (intervention.getId() == id) {
+                    interventions.remove(intervention);
+                }
+            }
+        }
+    }
 }
