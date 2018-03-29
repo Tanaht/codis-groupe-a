@@ -84,7 +84,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 break;
             //Pour le current Intervention
             case WebsocketService.INTERVENTION_CHOSEN :
-                model.setCurrentIntervention(intent.getParcelableExtra("INTERVENTION_CHOSEN"));
+                model.setCurrentIntervention(InterventionChosen.createByIntervention(intent.getParcelableExtra("INTERVENTION_CHOSEN")));
                 break;
             case WebsocketService.DISCONNECT_TO_APPLICATION :
                 model = new BigModel();

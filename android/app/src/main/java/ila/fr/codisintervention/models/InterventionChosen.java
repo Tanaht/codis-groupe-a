@@ -165,7 +165,15 @@ public class InterventionChosen implements Parcelable {
         dest.writeList(units);
         dest.writeList(symbols);
     }
-    public InterventionChosen createByIntervention (Intervention intervention, List<Symbol> symbols, List<Unit> units){
+    public static InterventionChosen createByInterventionWithAll (Intervention intervention, List<Symbol> symbols, List<Unit> units){
+        InterventionChosen interventionChosen = createByIntervention(intervention);
+        interventionChosen.setUnits(units);
+        interventionChosen.setSymbols(symbols);
+
+        return interventionChosen;
+    }
+
+    public static InterventionChosen createByIntervention (Intervention intervention){
         InterventionChosen interventionChosen = new InterventionChosen();
 
         interventionChosen.setAddress(intervention.getAddress());
@@ -175,8 +183,6 @@ public class InterventionChosen implements Parcelable {
         interventionChosen.setId(intervention.getId());
         interventionChosen.setLocation(intervention.getLocation());
         interventionChosen.setPhotos(intervention.getPhotos());
-        interventionChosen.setUnits(units);
-        interventionChosen.setSymbols(symbols);
 
         return interventionChosen;
     }
