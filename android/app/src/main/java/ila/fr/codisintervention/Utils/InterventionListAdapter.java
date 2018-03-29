@@ -21,18 +21,12 @@ import ila.fr.codisintervention.R;
 
 public class InterventionListAdapter extends ArrayAdapter<Intervention> {
     private final Context context;
-    private ArrayList<Intervention> interventionList;
 
     public InterventionListAdapter(Context context, int textViewResourceId,
                             ArrayList<Intervention> interventionList) {
         super(context, textViewResourceId, interventionList);
         this.context = context;
-        this.interventionList = new ArrayList<Intervention>();
-        this.interventionList.addAll(interventionList);
-    }
-
-    public ArrayList<Intervention> getInterventionList() {
-        return interventionList;
+        this.addAll(interventionList);
     }
 
     private class ViewHolder {
@@ -45,7 +39,7 @@ public class InterventionListAdapter extends ArrayAdapter<Intervention> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder = null;
-        Log.v("ConvertView", String.valueOf(position));
+        //Log.v("ConvertView", String.valueOf(position));
 
         if (convertView == null) {
             LayoutInflater vi = (LayoutInflater)context.getSystemService(
@@ -61,21 +55,16 @@ public class InterventionListAdapter extends ArrayAdapter<Intervention> {
         else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-        Intervention intervention = interventionList.get(position);
-        holder.id.setText(intervention.getCode());
+        Intervention intervention = this.getItem(position);
 
         Date date = new Date(intervention.getDate());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String stringDate = df.format(date);
+
+        holder.id.setText(intervention.getCode());
         holder.date.setText(stringDate);
         holder.address.setText(intervention.getAddress());
 
         return convertView;
-    }
-
-    @Override
-    public int getCount() {
-        return interventionList.size();
     }
 }
