@@ -111,7 +111,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intentCreatedIntervention);
                 break;
             case WebsocketService.INTERVENTION_CLOSED :
-                int id = intent.getIntExtra("INTERVENTION_CLOSED",-1);
+                int id = intent.getIntExtra(WebsocketService.INTERVENTION_CLOSED,-1);
                 model.getMessageInitialize().setInterventionClosedById(intent.getIntExtra("INTERVENTION_CLOSED",-1));
                 Intent intentClosedIntervention = new Intent(ModelConstants.ACTION_DELETE_INTERVENTION);
                 // Adding some data
@@ -119,14 +119,71 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intentClosedIntervention);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_CREATED :
-               break;
+                Symbol symbolCreated = intent.getParcelableExtra(WebsocketService.INTERVENTION_SYMBOL_CREATED);
+                model.getCurrentIntervention().getSymbols().add(symbolCreated);
+
+                Intent intentCreatedSymbol = new Intent(ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL);
+                // Adding some data
+                intentCreatedSymbol.putExtra("id",symbolCreated.getId());
+
+                Log.d(TAG, "Broadcoast Intent: " + intentCreatedSymbol.getAction());
+
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intentCreatedSymbol);
+
+                break;
             case WebsocketService.INTERVENTION_SYMBOL_UPDATED :
+                Symbol symbolUpdated = intent.getParcelableExtra
+                        (WebsocketService.INTERVENTION_SYMBOL_UPDATED);
+                model.getCurrentIntervention()
+                        .changeSymbol(symbolUpdated);
+                Intent intentUpdatedSymbol = new Intent(ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL);
+                // Adding some data
+                intentUpdatedSymbol.putExtra("id",symbolUpdated.getId());
+
+                Log.d(TAG, "Broadcoast Intent: " + intentUpdatedSymbol.getAction());
+
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intentUpdatedSymbol);
+
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_DELETED :
+                int idSymbol = intent.getIntExtra(WebsocketService.INTERVENTION_SYMBOL_DELETED,-1);
+                model.getCurrentIntervention().deleteSymbolById(idSymbol);
+                Intent intentDeleteSymbol = new Intent(ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL);
+                // Adding some data
+                intentDeleteSymbol.putExtra("id",idSymbol);
+
+                Log.d(TAG, "Broadcoast Intent: " + intentDeleteSymbol.getAction());
+
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intentDeleteSymbol);
+
                 break;
             case WebsocketService.INTERVENTION_UNIT_CREATED :
+                Unit unitCreated = intent.getParcelableExtra
+                        (WebsocketService.INTERVENTION_UNIT_CREATED);
+                model.getCurrentIntervention().getUnits().add(unitCreated);
+
+                Intent intentCreatedUnit = new Intent(ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_UTIL);
+                // Adding some data
+                intentCreatedUnit.putExtra("id",unitCreated.getId());
+
+                Log.d(TAG, "Broadcoast Intent: " + intentCreatedUnit.getAction());
+
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intentCreatedUnit);
+
                 break;
             case WebsocketService.INTERVENTION_UNIT_UPDATED :
+               Unit unitUpdated = intent.getParcelableExtra
+                       (WebsocketService.INTERVENTION_UNIT_UPDATED);
+                model.getCurrentIntervention().changeUnit(unitUpdated);
+
+                Intent intentUpdatedUnit = new Intent(ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UTIL);
+                // Adding some data
+                intentUpdatedUnit.putExtra("id",unitUpdated.getId());
+
+                Log.d(TAG, "Broadcoast Intent: " + intentUpdatedUnit.getAction());
+
+                LocalBroadcastManager.getInstance(this).sendBroadcast(intentUpdatedUnit);
+
                 break;
             case WebsocketService.DEMANDE_ACCEPTED :
                 break;
@@ -175,11 +232,11 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
     @Override
     public Symbol getSymbol(int id) {
-        return null;
+        return model.getCurrentIntervention().getSymbolId(id);
     }
 
     @Override
     public Unit getUnit(int id) {
-        return null;
+        return model.getCurrentIntervention().getUnitById(id);
     }
 }

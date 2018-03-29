@@ -186,5 +186,49 @@ public class InterventionChosen implements Parcelable {
 
         return interventionChosen;
     }
+
+    public void changeSymbol(Symbol symbolChanged){
+        for(Symbol symbol : this.getSymbols()){
+            if(symbol.getId().equals(symbolChanged.getId())){
+                symbol = symbolChanged;
+            }
+        }
+    }
+
+    public Symbol getSymbolId(int id){
+        for(Symbol symbol : this.getSymbols()){
+            if(symbol.getId().equals(id)){
+                return symbol;
+            }
+        }
+        return null;
+    }
+
+    public void deleteSymbolById(int id){
+        if(id!=-1) {
+            for (Symbol symbol : this.getSymbols()) {
+                if (symbol.getId().equals(id)) {
+                    this.symbols.remove(symbol);
+                }
+            }
+        }
+    }
+
+    public void changeUnit(Unit unitChanged){
+        for(Unit unit : this.getUnits()){
+            if(unit.getId()==(unitChanged.getId())){
+                unit = unitChanged;
+            }
+        }
+    }
+
+    public Unit getUnitById(int id){
+        for(Unit unit : this.getUnits()){
+            if(unit.getId()==id){
+                return unit;
+            }
+        }
+        return null;
+    }
 }
 

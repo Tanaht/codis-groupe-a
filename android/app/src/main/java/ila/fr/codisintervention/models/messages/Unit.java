@@ -64,4 +64,12 @@ public class Unit implements Parcelable {
         dest.writeParcelable(vehicle, flags);
 //        dest.writeParcelable(symbol, flags);
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

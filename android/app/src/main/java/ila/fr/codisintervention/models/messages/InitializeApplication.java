@@ -69,6 +69,7 @@ public class InitializeApplication implements Parcelable{
         return null;
     }
 
+
     public void setInterventionClosedById (int id) {
         //Si valeur id à -1 pas de supresion
         if (id != -1) {
