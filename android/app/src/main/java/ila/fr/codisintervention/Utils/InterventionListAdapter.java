@@ -73,4 +73,9 @@ public class InterventionListAdapter extends ArrayAdapter<Intervention> {
 
         return convertView;
     }
+
+    @Override
+    public int getCount() {
+        return interventionList.size();
+    }
 }
