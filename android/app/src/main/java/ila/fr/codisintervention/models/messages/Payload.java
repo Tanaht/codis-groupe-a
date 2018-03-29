@@ -17,6 +17,22 @@ public class Payload implements Parcelable {
     @Expose
     private String details;
 
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
     protected Payload(Parcel in) {
         identifier = in.readString();
         details = in.readString();

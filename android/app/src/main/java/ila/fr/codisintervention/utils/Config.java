@@ -22,7 +22,7 @@ public class Config {
     private String uri;
 
     private Config() {
-        host = "192.168.43.223";
+        host = "192.168.43.226";
         port = 8080;
         uri = "stomp";
 

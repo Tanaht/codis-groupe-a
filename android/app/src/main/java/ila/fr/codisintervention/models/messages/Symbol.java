@@ -1,5 +1,8 @@
 package ila.fr.codisintervention.models.messages;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 
 import ila.fr.codisintervention.models.Location;
@@ -8,19 +11,7 @@ import ila.fr.codisintervention.models.Location;
  * Created by tanaky on 28/03/18.
  */
 
-public class Symbol {
-
-//    {
-//        id: int,
-//        shape: String,
-//                color: String,
-//            location: {lat: float, lng: float},
-//			/* La payload n'est utile que pour certain symbole (les points d'eau peuvent ou non avoir un identifiant) */
-//			?payload: {
-//        identifier: String,
-//                details: String
-//    }
-//    },
+public class Symbol implements Parcelable {
 
     @Expose
     private Integer id;
@@ -37,5 +28,81 @@ public class Symbol {
     @Expose
     private Payload payload;
 
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getShape() {
+        return shape;
+    }
+
+    public void setShape(String shape) {
+        this.shape = shape;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Payload getPayload() {
+        return payload;
+    }
+
+    public void setPayload(Payload payload) {
+        this.payload = payload;
+    }
+
+    protected Symbol(Parcel in) {
+        if (in.readByte() == 0) {
+            id = null;
+        } else {
+            id = in.readInt();
+        }
+        shape = in.readString();
+        color = in.readString();
+        location = in.readParcelable(Location.class.getClassLoader());
+        payload = in.readParcelable(Payload.class.getClassLoader());
+    }
+
+    public static final Creator<Symbol> CREATOR = new Creator<Symbol>() {
+        @Override
+        public Symbol createFromParcel(Parcel in) {
+            return new Symbol(in);
+        }
+
+        @Override
+        public Symbol[] newArray(int size) {
+            return new Symbol[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(shape);
+        dest.writeString(color);
+        dest.writeParcelable(location, flags);
+        dest.writeParcelable(payload, flags);
+    }
 }

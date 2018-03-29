@@ -17,6 +17,7 @@ import java.util.List;
 
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
 import ila.fr.codisintervention.models.ModelService;
+import ila.fr.codisintervention.models.messages.Demande;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Photo;
@@ -111,7 +112,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
                         InitializeApplication initializeApplication = gson.fromJson(message.getPayload(), InitializeApplication.class);
 
-                        this.performInitializationSubscription(initializeApplication.getUser());
+                        this.performInitializationSubscription(initializeApplication);
                         // The string "my-integer" will be used to filer the intent
                         Intent initializeAppIntent = new Intent(CONNECT_TO_APPLICATION);
                         // Adding some data
@@ -233,15 +234,11 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                 () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
                 error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
         );
-//        this.client.topic("/topic/interventions/" + id + "/units/event");
-//        this.client.topic("/topic/interventions/" + id + "/units/event");
-
-
-
-
     }
 
-    public void performInitializationSubscription(User user) {
+    public void performInitializationSubscription(InitializeApplication initializeApplication) {
+        User user = initializeApplication.getUser();
+
         this.client.topic("/topic/interventions/created").subscribe(message -> {
             Log.i(TAG, "[/interventions/created] Received message: " + message.getPayload());
 
@@ -294,6 +291,21 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         } else if(user.isCodisUser()) {
             this.client.topic("/topic/demandes/created").subscribe(message -> {
                 Log.i(TAG, "[/demandes/created] Received message: " + message.getPayload());
+            });
+
+            performDemandeSubscriptionInitialization(initializeApplication.getDemandes());
+
+        }
+    }
+
+    private void performDemandeSubscriptionInitialization(List<Demande> demandes) {
+        for(Demande demande : demandes) {
+
+            this.client.topic("/topic/demandes/" + demande.getId() + "/accepted").subscribe(message -> {
+                Log.i(TAG, "[/topic/demandes/" + demande.getId() + "/accepted] Received message: " + message.getPayload());
+            });
+            this.client.topic("/topic/demandes/" + demande.getId() + "/denied").subscribe(message -> {
+                Log.i(TAG, "[/topic/demandes/" + demande.getId() + "/denied] Received message: " + message.getPayload());
             });
         }
     }
