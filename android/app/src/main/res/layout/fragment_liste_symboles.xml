@@ -1,0 +1,113 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="55dp"
+    android:layout_height="match_parent"
+    tools:context="ila.fr.codisintervention.Fragments.ListeSymbolesFragment"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <RadioButton
+        android:id="@+id/radioButtonrouge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:background="@color/rouge" />
+
+    <RadioButton
+        android:id="@+id/radioButtonvert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:background="@color/vert" />
+
+    <RadioButton
+        android:id="@+id/radioButtonbleu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:background="@color/bleu" />
+
+    <RadioButton
+        android:id="@+id/radioButtonorange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:background="@color/orange" />
+
+        <RadioButton
+            android:id="@+id/radioButtonviolet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:background="@color/violet" />
+
+    </RadioGroup>
+
+
+    <ImageView
+        android:id="@+id/ressource_eau"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/ressource_eau" />
+
+
+    <ImageView
+        android:id="@+id/sinistre"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/sinistre" />
+
+    <ImageView
+        android:id="@+id/triangle_bas"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/triangle_bas" />
+
+    <ImageView
+        android:id="@+id/triangle_haut"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/triangle_haut" />
+
+    <ImageView
+        android:id="@+id/vehicule"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/vehicule" />
+
+    <ImageView
+        android:id="@+id/vehicule_non_valide"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/vehicule_non_valide" />
+
+    <ImageView
+        android:id="@+id/vehicule_pompier"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/vehicule_pompier" />
+
+    <ImageView
+        android:id="@+id/vehicule_pompier_non_valide"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/vehicule_pompier_non_valide" />
+
+    <ImageView
+        android:id="@+id/zone"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/zone" />
+
+    <ImageView
+        android:id="@+id/drone"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:src="@drawable/drone" />
+
+</LinearLayout>
