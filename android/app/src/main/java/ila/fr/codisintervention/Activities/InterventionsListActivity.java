@@ -16,7 +16,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
-import ila.fr.codisintervention.Entities.Intervention;
+import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.InterventionService;
 import ila.fr.codisintervention.Utils.InterventionListAdapter;
@@ -42,9 +42,9 @@ public class InterventionsListActivity extends AppCompatActivity {
         // Interventions List
         if(interventionList.isEmpty()){
             TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
-            tv.setText("    - Il n'y a pas d'interventions en cours !");
+            tv.setText(R.string.noInterventionAvailable);
             Toasty.warning(getApplicationContext(),
-                    "Pas d'intervention en cours !", Toast.LENGTH_SHORT, true)
+                    getString(R.string.noInterventionAvailable), Toast.LENGTH_SHORT, true)
                     .show();
         } else {
             displayListView(interventionList);
@@ -93,8 +93,13 @@ public class InterventionsListActivity extends AppCompatActivity {
                 // When clicked, show a toast with the TextView text
                 Intervention intervention = (Intervention) parent.getItemAtPosition(position);
 
+                Toasty.info(getApplicationContext(),
+                        "Intervention with id:"+intervention.getId()+" has been sent to wss",
+                        Toast.LENGTH_SHORT, true)
+                    .show();
                 //TODO: retrieve intervention ID
-//                service.chooseIntervention();
+                // Send Intervention choice to WSS
+                service.chooseIntervention(intervention.getId());
             }
         });
     }

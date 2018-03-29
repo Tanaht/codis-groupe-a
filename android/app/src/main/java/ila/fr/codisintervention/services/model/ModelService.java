@@ -17,6 +17,7 @@ import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
 import ila.fr.codisintervention.models.messages.Vehicle;
 import ila.fr.codisintervention.services.constants.ModelConstants;
+import ila.fr.codisintervention.services.websocket.WebsocketService;
 
 /**
  * Created by marzin on 28/03/18.
@@ -29,29 +30,50 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     private IBinder binder;
 
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.d(TAG, "Intent received: " + intent.getAction());
+        updateTheModel(intent);
+        return START_NOT_STICKY;
+    }
+
+
+
     //Méthode pour metre à jour le model
     public void updateTheModel (Intent intent) {
         switch (intent.getAction()){
             //Pour les messages
-            case "CONNECT_TO_APPLICATION" :
+            case  WebsocketService.CONNECT_TO_APPLICATION:
                 model.setMessageInitialize(intent.getParcelableExtra("CONNECT_TO_APPLICATION"));
+
+                Intent initializeApplication = new Intent(ModelConstants.ACTION_INITIALIZE_APPLICATION);
+
+                Log.d(TAG, "Broadcoast Intent: " + initializeApplication.getAction());
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(initializeApplication);
+
                 break;
             //Pour le current Intervention
-            case "INTERVENTION_CHOSEN" :
+            case WebsocketService.INTERVENTION_CHOSEN :
                 model.setCurrentIntervention(intent.getParcelableExtra("INTERVENTION_CHOSEN"));
                 break;
-            case "DISCONNECT_TO_APPLICATION" :
+            case WebsocketService.DISCONNECT_TO_APPLICATION :
                 model = new BigModel();
                  break;
-            case "INTERVENTION_CREATED" :
+            case WebsocketService.INTERVENTION_CREATED :
                 Intervention intervention = intent.getParcelableExtra("INTERVENTION_CREATED");
                 model.getMessageInitialize().getInterventions().add(intervention);
+
+
                 Intent intentCreatedIntervention = new Intent(ModelConstants.ACTION_ADD_INTERVENTION);
                 // Adding some data
                 intentCreatedIntervention.putExtra("id",intervention.getId());
+
+                Log.d(TAG, "Broadcoast Intent: " + intentCreatedIntervention.getAction());
+
                 LocalBroadcastManager.getInstance(this).sendBroadcast(intentCreatedIntervention);
                 break;
-            case "INTERVENTION_CLOSED" :
+            case WebsocketService.INTERVENTION_CLOSED :
                 int id = intent.getIntExtra("INTERVENTION_CLOSED",-1);
                 model.getMessageInitialize().setInterventionClosedById(intent.getIntExtra("INTERVENTION_CLOSED",-1));
                 Intent intentClosedIntervention = new Intent(ModelConstants.ACTION_DELETE_INTERVENTION);
@@ -105,22 +127,23 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
     @Override
     public Intervention getSelectedIntervention() {
-        return null;
+        return model.getCurrentIntervention();
     }
 
     @Override
     public List<Intervention> getInterventions() {
-        return null;
+
+        return model.getMessageInitialize().getInterventions();
     }
 
     @Override
     public List<Code> getCodes() {
-        return null;
+        return model.getMessageInitialize().getCodes();
     }
 
     @Override
     public List<Vehicle> getAvailableVehicle() {
-        return null;
+        return model.getMessageInitialize().getVehicles();
     }
 
     @Override

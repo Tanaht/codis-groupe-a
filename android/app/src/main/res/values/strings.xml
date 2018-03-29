@@ -42,6 +42,6 @@
     <string name="action_demande_moyen">Demande Moyen</string>
     <string name="action_deconnexion">Deconnexion</string>
     <string name="interventionNoAddress">Veuillez saisir l\'addresse de l\'intervention svp !</string>
-
+    <string name="noInterventionAvailable">    - Il n\'y a pas d\'interventions en cours !</string>
 
 </resources>
