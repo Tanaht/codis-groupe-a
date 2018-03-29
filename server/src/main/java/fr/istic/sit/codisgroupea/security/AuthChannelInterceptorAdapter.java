@@ -23,6 +23,7 @@ public class AuthChannelInterceptorAdapter extends ChannelInterceptorAdapter {
         final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
 
+
         if (StompCommand.CONNECT == accessor.getCommand()) {
             final String username = accessor.getFirstNativeHeader(USERNAME_HEADER);
             final String password = accessor.getFirstNativeHeader(PASS_HEADER);
