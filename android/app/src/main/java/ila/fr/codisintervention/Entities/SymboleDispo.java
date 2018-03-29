@@ -51,6 +51,10 @@ public class SymboleDispo {
         this.selected = selected;
     }
 
+    public void setId(String id){
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }

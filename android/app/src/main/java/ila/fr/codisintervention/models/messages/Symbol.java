@@ -2,6 +2,7 @@ package ila.fr.codisintervention.models.messages;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.ImageView;
 
 import com.google.gson.annotations.Expose;
 
@@ -27,6 +28,14 @@ public class Symbol implements Parcelable {
 
     @Expose
     private Payload payload;
+
+    @Expose
+    private boolean selected;
+
+    private ImageView imageView;
+
+    private String iconeNonSelected;
+    private String iconeSelected;
 
     public Integer getId() {
         return id;
@@ -104,5 +113,39 @@ public class Symbol implements Parcelable {
         dest.writeString(color);
         dest.writeParcelable(location, flags);
         dest.writeParcelable(payload, flags);
+    }
+
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
+    }
+
+
+    public String getIconeNonSelected() {
+        return iconeNonSelected;
+    }
+
+    public void setIconeNonSelected(String iconeNonSelected) {
+        this.iconeNonSelected = iconeNonSelected;
+    }
+
+    public String getIconeSelected() {
+        return iconeSelected;
+    }
+
+    public void setIconeSelected(String iconeSelected) {
+        this.iconeSelected = iconeSelected;
     }
 }

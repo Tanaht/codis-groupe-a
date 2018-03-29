@@ -12,7 +12,7 @@ import android.widget.RadioButton;
 
 import java.util.List;
 
-import ila.fr.codisintervention.Entities.SymboleDispo;
+import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.SymboleDispoService;
 
@@ -26,8 +26,10 @@ import ila.fr.codisintervention.Services.SymboleDispoService;
  */
 public class ListeSymbolesFragment extends Fragment {
 
-    private static List<SymboleDispo> liste = SymboleDispoService.getListeSymbolesDispo();
+    //Get symbols from model
+    private static List<Symbol> liste = SymboleDispoService.getListeSymbolesDispo();
     private String couleur;
+    private Symbol currentSymbol;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -73,26 +75,37 @@ public class ListeSymbolesFragment extends Fragment {
         return view;
     }
 
-    public void ajouterImageView(List<SymboleDispo> liste, View view) {
-        for (SymboleDispo symbole : liste) {
-            symbole.setImageView((ImageView) view.findViewById(getResources().getIdentifier(symbole.getId(), "id", getActivity().getPackageName())));
+    public void ajouterImageView(List<Symbol> liste, View view) {
+        for (Symbol symbole : liste) {
+            symbole.setImageView((ImageView) view.findViewById(getResources().getIdentifier(Integer.toString(symbole.getId()), "id", getActivity().getPackageName())));
         }
     }
 
-    public void ajouterImageViewListeners(List<SymboleDispo> liste) {
-        for (SymboleDispo symbole : liste) {
+    public void ajouterImageViewListeners(List<Symbol> liste) {
+        for (Symbol symbole : liste) {
             symbole.getImageView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     symbole.getImageView().setImageResource(getResources().getIdentifier(symbole.getIconeSelected(), "drawable", getActivity().getPackageName()));
-                    for (SymboleDispo symbole2 : liste) {
+                    for (Symbol symbole2 : liste) {
+                        symbole2.setSelected(false);
                         if (symbole != symbole2) {
                             symbole2.getImageView().setImageResource(getResources().getIdentifier(symbole2.getIconeNonSelected(), "drawable", getActivity().getPackageName()));
                         }
                     }
+                    symbole.setSelected(true);
                 }
             });
         }
+    }
+
+    public Symbol getSelectedSymbol(){
+        for(Symbol symbole : liste){
+            if(symbole.isSelected()){
+                return symbole;
+            }
+        }
+        return null;
     }
 
     public String getCouleur() {

@@ -32,7 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 import ila.fr.codisintervention.Activities.MapActivity;
+import ila.fr.codisintervention.Entities.SymboleDispo;
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.models.messages.Symbol;
 
 
 public class MapsFragment extends Fragment {
@@ -124,6 +126,9 @@ public class MapsFragment extends Fragment {
 //                            LatLng ln = addMarker_Zoom(pt);             // ajout sur la carte
                         cpt_numero += 1;                            // incrément compteur général
                         updateUI(googleMap);                        // raffraichir la map
+//                        Symbol symbole = getSymbolFragment();
+//                        Bitmap marker = resizeBitmap(Integer.valueOf(symbole.getId()), 50, 50);
+//                        addCustomMarker_Zoom(latLng, marker);
                     }
 
                 });
@@ -158,6 +163,10 @@ public class MapsFragment extends Fragment {
 
         mMapView.setClickable(true);
         return rootView;
+    }
+
+    public Symbol getSymbolFragment(){
+        return ((MapActivity)getActivity()).getSelectedSymbol();
     }
 
     /* method for customizing the map */
