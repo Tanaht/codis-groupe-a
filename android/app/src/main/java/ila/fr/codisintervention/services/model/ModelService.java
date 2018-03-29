@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
@@ -74,9 +77,14 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
             case  WebsocketService.CONNECT_TO_APPLICATION:
                 InitializeApplication initializeApplication = intent.getParcelableExtra(WebsocketService.CONNECT_TO_APPLICATION);
                 Log.d(TAG, "Connect to application with: "+ initializeApplication.getInterventions().size() + " interventions");
+                Gson gson = new GsonBuilder().create();
+
+                Log.d(TAG, "RetrievedInitializeApplication: " +  gson.toJson(initializeApplication));
+
                 model.setMessageInitialize(initializeApplication);
 
                 Intent initializeApplicationIntent = new Intent(ModelConstants.ACTION_INITIALIZE_APPLICATION);
+
 
                 Log.d(TAG, "Broadcoast Intent: " + initializeApplicationIntent.getAction());
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(initializeApplicationIntent);

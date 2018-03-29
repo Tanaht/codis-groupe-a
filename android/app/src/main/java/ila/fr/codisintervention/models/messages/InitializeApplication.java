@@ -112,13 +112,10 @@ public class InitializeApplication implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.user, flags);
-        dest.writeList(this.codes);
-        dest.writeList(this.types);
-        dest.writeList(this.vehicles);
-        dest.writeList(this.demandes);
+        dest.writeTypedList(this.codes);
+        dest.writeTypedList(this.types);
+        dest.writeTypedList(this.vehicles);
+        dest.writeTypedList(this.demandes);
         dest.writeTypedList(this.interventions);
-
-        Log.d("InitializeApplication", "Write Codes Size: " + codes.size());
-        Log.d("InitializeApplication", "Write Interventions Size: " + interventions.size());
     }
 }
