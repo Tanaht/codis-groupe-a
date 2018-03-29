@@ -22,6 +22,7 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.Services.InterventionService;
 import ila.fr.codisintervention.Utils.InterventionListAdapter;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
@@ -46,6 +47,21 @@ public class InterventionsListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interventions_list);
         setTitle(R.string.IntervenantListPageTitle);
+
+        // Interventions Dispos List
+        InterventionService is = new InterventionService();
+        interventionList = is.getInterventionList();
+
+        // Interventions List
+        if(interventionList.isEmpty()){
+            TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
+            tv.setText(R.string.noInterventionAvailable);
+            Toasty.warning(getApplicationContext(),
+                    getString(R.string.noInterventionAvailable), Toast.LENGTH_SHORT, true)
+                    .show();
+        } else {
+            displayListView(interventionList);
+        }
 
         bindToService();
     }
@@ -108,6 +124,7 @@ public class InterventionsListActivity extends AppCompatActivity {
         dataAdapter = new InterventionListAdapter(this,
                 R.layout.interventions_list_item_layout, (ArrayList) interventionList);
         ListView listView = (ListView) findViewById(R.id.interventionsList);
+
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
 
@@ -117,14 +134,15 @@ public class InterventionsListActivity extends AppCompatActivity {
                 // When clicked, show a toast with the TextView text
                 Intervention intervention = (Intervention) parent.getItemAtPosition(position);
 
-                addElement(intervention,0);
+                addElement(intervention);
+
                 Toasty.info(getApplicationContext(),
                         "Intervention with id:"+intervention.getId()+" has been sent to wss",
                         Toast.LENGTH_SHORT, true)
                     .show();
 
                 // Send Intervention choice to WSS
-                service.chooseIntervention(intervention.getId());
+               service.chooseIntervention(intervention.getId());
             }
         });
     }
@@ -132,11 +150,9 @@ public class InterventionsListActivity extends AppCompatActivity {
     /**
      * Add new item , and notify to the adapter that item has been added
      * @param intervention : the new item
-     * @param position : the position of the new item in the list
      */
-    private void addElement(Intervention intervention, int position) {
-        // on insère l'intervention dans la liste des interventions liés à l'adapter
-       //interventionList.add(1,intervention);
+    private void addElement(Intervention intervention) {
+        // on insère l'intervention dans la liste des interventions liée à l'adapter
         dataAdapter.add(intervention);
         // on notifie à l'adapter ce changement
         dataAdapter.notifyDataSetChanged();
