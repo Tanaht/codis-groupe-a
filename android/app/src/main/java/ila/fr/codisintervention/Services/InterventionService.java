@@ -55,8 +55,8 @@ public class InterventionService {
 
     public ArrayList<String> getCodesSinistre() {
         ArrayList<String> codesSinistre = new ArrayList<String>();
-        codesSinistre.add("Secours à personne (SAP)");
-        codesSinistre.add("Incendie (INC)");
+        codesSinistre.add("SAP");
+        codesSinistre.add("INC");
         return codesSinistre;
     }
 
