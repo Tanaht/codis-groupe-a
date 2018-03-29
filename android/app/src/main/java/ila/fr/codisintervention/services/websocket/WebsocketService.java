@@ -81,8 +81,6 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "OnCreate WebSocket Service");
-
-//        bindToService();
         binder = new WebsocketServiceBinder(this);
     }
 
