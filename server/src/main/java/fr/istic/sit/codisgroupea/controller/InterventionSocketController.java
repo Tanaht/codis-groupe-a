@@ -234,7 +234,7 @@ public class InterventionSocketController {
         InterventionCreatedMessage toReturn = new InterventionCreatedMessage(
                 persisted.getId(),
                 persisted.getDate(),
-                persisted.getSinisterCode().toString(),
+                persisted.getSinisterCode().getCode(),
                 persisted.getAddress(),
                 true,
                 new Position(persisted.getPosition()));
