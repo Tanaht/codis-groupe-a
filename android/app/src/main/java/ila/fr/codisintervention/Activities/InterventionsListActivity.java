@@ -26,6 +26,7 @@ import ila.fr.codisintervention.services.websocket.WebsocketService;
 public class InterventionsListActivity extends AppCompatActivity {
 
     InterventionListAdapter dataAdapter;
+    ArrayList<Intervention> interventionList;
     private ServiceConnection serviceConnection;
     private WebsocketServiceBinder.IMyServiceMethod service;
 
@@ -37,7 +38,7 @@ public class InterventionsListActivity extends AppCompatActivity {
 
         // Interventions Dispos List
         InterventionService is = new InterventionService();
-        ArrayList<Intervention> interventionList = is.getInterventionList();
+        interventionList = is.getInterventionList();
 
         // Interventions List
         if(interventionList.isEmpty()){
@@ -93,14 +94,40 @@ public class InterventionsListActivity extends AppCompatActivity {
                 // When clicked, show a toast with the TextView text
                 Intervention intervention = (Intervention) parent.getItemAtPosition(position);
 
+                addElement(intervention,0);
                 Toasty.info(getApplicationContext(),
                         "Intervention with id:"+intervention.getId()+" has been sent to wss",
                         Toast.LENGTH_SHORT, true)
                     .show();
-                //TODO: retrieve intervention ID
+
                 // Send Intervention choice to WSS
                 service.chooseIntervention(intervention.getId());
             }
         });
+    }
+
+    /**
+     * Add new item , and notify to the adapter that item has been added
+     * @param intervention : the new item
+     * @param position : the position of the new item in the list
+     */
+    private void addElement(Intervention intervention, int position) {
+        // on insère l'intervention dans la liste des interventions liés à l'adapter
+       //interventionList.add(1,intervention);
+        dataAdapter.add(intervention);
+        // on notifie à l'adapter ce changement
+        dataAdapter.notifyDataSetChanged();
+    }
+
+
+    /**
+     * Delete item , and notify to the adapter that item has been added
+     * @param position : the position of the item to delete
+     */
+    public void deleteElement(int position) {
+        // on supprime l'intervention
+        dataAdapter.remove(dataAdapter.getItem(position));
+        // on notifie à l'adapter ce changement
+        dataAdapter.notifyDataSetChanged();
     }
 }
