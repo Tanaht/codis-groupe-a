@@ -6,6 +6,7 @@ import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.Position;
 import fr.istic.sit.codisgroupea.repository.*;
+import fr.istic.sit.codisgroupea.sig.stub.ListSigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -48,21 +49,24 @@ public class InterventionSocketController {
     /** {@link PositionRepository} instance */
     private PositionRepository positionRepository;
 
+    private ListSigService listSigService;
+
     /**
      * Constructor of the class {@link InterventionSocketController}.
-     *  @param simpMessagingTemplate
+     * @param simpMessagingTemplate
      * @param interventionRepository {@link InterventionRepository} instance
      * @param sinisterCodeRepository {@link SinisterCodeRepository} instance
      * @param symbolSitacRepository {@link SymbolSitacRepository} instance
      * @param unitRepository {@link UnitRepository} instance
      * @param photoRepository {@link PhotoRepository} instance
      * @param positionRepository
+     * @param listSigService
      */
     public InterventionSocketController(SimpMessagingTemplate simpMessagingTemplate, InterventionRepository interventionRepository,
                                         SinisterCodeRepository sinisterCodeRepository,
                                         SymbolSitacRepository symbolSitacRepository,
                                         UnitRepository unitRepository,
-                                        PhotoRepository photoRepository, PositionRepository positionRepository) {
+                                        PhotoRepository photoRepository, PositionRepository positionRepository, ListSigService listSigService) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.interventionRepository = interventionRepository;
         this.sinisterCodeRepository = sinisterCodeRepository;
@@ -70,6 +74,7 @@ public class InterventionSocketController {
         this.unitRepository = unitRepository;
         this.photoRepository = photoRepository;
         this.positionRepository = positionRepository;
+        this.listSigService = listSigService;
     }
 
     /**
@@ -81,7 +86,13 @@ public class InterventionSocketController {
     private List<InterventionChosenMessage.Symbol> populateSymbolList(Intervention intervention) {
         List<InterventionChosenMessage.Symbol> symbols = new ArrayList<>();
 
-        for(SymbolSitac symSitac : symbolSitacRepository.findAllByIntervention(intervention)) {
+        List<SymbolSitac> listSymbol = symbolSitacRepository.findAllByIntervention(intervention);
+        List<SymbolSitac> listSymbolBouchon = listSigService.getSymbolsInTheIntervention(intervention);
+
+        List<SymbolSitac> union = new ArrayList<>(listSymbol);
+        union.addAll(listSymbolBouchon);
+
+        for(SymbolSitac symSitac : union) {
             Symbol actualSymbol = symSitac.getSymbol();
             Payload payload = symSitac.getPayload();
 
