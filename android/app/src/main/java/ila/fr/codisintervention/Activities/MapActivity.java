@@ -17,6 +17,7 @@ public class MapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_map);
     }
 
