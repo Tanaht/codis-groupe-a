@@ -21,6 +21,9 @@ import ila.fr.codisintervention.binders.WebsocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.handlers.WebsocketServiceHandler;
+import ila.fr.codisintervention.models.messages.User;
+import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ua.naiksoftware.stomp.client.StompClient;
 
@@ -36,14 +39,18 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText_mdp;
     private Button boutonValider;
 
-    //code de l'élevenement indiquant que l'activité est bindé avec le service
+    //code de l'élevenement indiquant que l'activité est bindé avec le websocketService
     private static final int ON_BIND = 1;
 
 
-    // ServiceConnection permet de gérer l'état du lien entre l'activité et le service.
-    private ServiceConnection serviceConnection;
-    private WebsocketServiceBinder.IMyServiceMethod service;
-//    private static Handler handler;
+    // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.
+    private ServiceConnection webSocketServiceConnection;
+    private ServiceConnection modelServiceConnection;
+
+    private WebsocketServiceBinder.IMyServiceMethod websocketService;
+    private ModelServiceBinder.IMyServiceMethod modelService;
+
+    private static Handler handler;
 
 
     @Override
@@ -70,36 +77,55 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void bindToService() {
-        serviceConnection = new ServiceConnection() {
+        webSocketServiceConnection = new ServiceConnection() {
             public void onServiceDisconnected(ComponentName name) {}
             public void onServiceConnected(ComponentName arg0, IBinder binder) {
-
-                //on récupère l'instance du service dans l'activité
-                service = ((WebsocketServiceBinder)binder).getService();
+                //on récupère l'instance du websocketService dans l'activité
+                websocketService = ((WebsocketServiceBinder)binder).getService();
 
                 //on genère l'évènement indiquant qu'on est "bindé"
 //                handler.sendEmptyMessage(ON_BIND);
             }
         };
 
+        modelServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                //on récupère l'instance du websocketService dans l'activité
+                modelService = ((ModelService)binder).getService();
+            }
 
-        //démarre le service si il n'est pas démarré
-        //Le binding du service est configuré avec "BIND_AUTO_CREATE" ce qui normalement
-        //démarre le service si il n'est pas démarrer, la différence ici est que le fait de
-        //démarrer le service par "startService" fait que si l'activité est détruite, le service
-        //reste en vie (obligatoire pour l'application AlarmIngressStyle)
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        };
+
+
+        // Start the service by the method startService() prevent the service to be free if the activity is free.
+
+        // Binding Activity with WebSocketService
         startService(new Intent(this, WebsocketService.class));
         Intent intent = new Intent(this, WebsocketService.class);
-        //lance le binding du service
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        //lance le binding du websocketService
+        bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
+
+        //Binding Activity with ModelService
+        startService(new Intent(this, ModelService.class));
+        intent = new Intent(this, ModelService.class);
+        //lance le binding du websocketService
+        bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //on supprimer le binding entre l'activité et le service.
-        if(serviceConnection != null)
-            unbindService(serviceConnection);
+        //on supprimer le binding entre l'activité et le websocketService.
+        if(webSocketServiceConnection != null)
+            unbindService(webSocketServiceConnection);
+
+        if(modelServiceConnection != null)
+            unbindService(modelServiceConnection);
     }
 
     /**
@@ -126,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
      * En fonction de la réponse du serveur, l'utilisateur est dirigé vers la page codis ou pompier.
      */
     private void connexion() {
-        service.connect(login, motDePasse);
+        websocketService.connect(login, motDePasse);
     }
 
 
@@ -134,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         // This registers mMessageReceiver to receive messages.
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.CONNECT_TO_APPLICATION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(ModelConstants.ACTION_INITIALIZE_APPLICATION));
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_ERROR));
 //        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_SUCCESS));
 
@@ -150,37 +176,20 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Intent Received: " + intent.getAction());
             // Extract data included in the Intent
 
-            if(WebsocketService.CONNECT_TO_APPLICATION.equals(intent.getAction())) {
-                Toast.makeText(MainActivity.this, getString(R.string.msg_success_credentials), Toast.LENGTH_LONG).show();
+            if(ModelConstants.ACTION_INITIALIZE_APPLICATION.equals(intent.getAction())) {
+                User user = null; //TODO: retrieve user in model;
 
-                //TODO: Here we receive the object pushed from server
-                InitializeApplication initializeApplication = intent.getParcelableExtra(InitializeApplication.class.getName());
+                if(user.isCodisUser()) {
 
+                    Intent gotoMainMenuCodis = new Intent( MainActivity.this, MainMenuCodis.class);
+                    startActivity(gotoMainMenuCodis);
+                }
+                if(user.isSimpleUser()) {
 
-//                TODO: Initialize application for both types of user
-
-                if(initializeApplication.getUser().isCodisUser()) {
-//                    Log.i(TAG, initializeApplication.getUser().getUsername() + " is a CODIS USER");
-////                        TODO: Initialize application for codis user.
-                    Intervention intervention = new Intervention();
-
-                    intervention.setId(10);
-                    intervention.setDate(10);
-                    intervention.setCode("INC");
-                    intervention.setAddress("ISTIC, Bat 12 D, Allée Henri Poincaré, Rennes");
-                    intervention.setLocation(new Location(48.1156746,-1.640608));
-                    service.createIntervention(intervention);
-                    service.chooseIntervention(1);
-
-                } else if(initializeApplication.getUser().isSimpleUser()) {
-                    Log.i(TAG, initializeApplication.getUser().getUsername() + " is a SIMPLE USER");
-
+                    Intent gotoMainMenuIntervenant = new Intent( MainActivity.this, MainMenuIntervenant.class);
+                    startActivity(gotoMainMenuIntervenant);
                 }
             }
-
-//            if(WebsocketService.ACTION_AUTHENTICATION_ERROR.equals(intent.getAction())) {
-//                Toast.makeText(MainActivity.this, getString(R.string.error_invalid_credentials), Toast.LENGTH_LONG).show();
-//            }
         }
     };
 

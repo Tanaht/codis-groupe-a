@@ -55,6 +55,26 @@ public class InitializeApplication implements Parcelable{
         return interventions;
     }
 
+    public Intervention getInterventionById (int id){
+        for(Intervention intervention : interventions){
+            if(intervention.getId() == id){
+                return intervention;
+            }
+        }
+        return null;
+    }
+
+    public void setInterventionClosedById (int id) {
+        //Si valeur id à -1 pas de supresion
+        if (id != -1) {
+            for (Intervention intervention : interventions) {
+                if (intervention.getId() == id) {
+                    interventions.remove(intervention);
+                }
+            }
+        }
+    }
+
     protected InitializeApplication(Parcel in) {
         user = in.readParcelable(User.class.getClassLoader());
         codes = in.createTypedArrayList(Code.CREATOR);
