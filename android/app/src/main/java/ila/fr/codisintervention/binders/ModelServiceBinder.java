@@ -39,7 +39,6 @@ public class ModelServiceBinder extends Binder {
 
         User getUser();
         Symbol getSymbol(int id);
-//        void sendInitializeApplication(InitializeApplication initializeApplication);
         Unit getUnit(int id);
     }
 }
