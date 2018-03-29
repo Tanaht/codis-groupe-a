@@ -17,13 +17,11 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
-import ila.fr.codisintervention.models.Location;
-import ila.fr.codisintervention.models.messages.InitializeApplication;
-import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.handlers.WebsocketServiceHandler;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.services.constants.ModelConstants;
+import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ua.naiksoftware.stomp.client.StompClient;
 
@@ -39,9 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText_mdp;
     private Button boutonValider;
 
-    //code de l'élevenement indiquant que l'activité est bindé avec le websocketService
-    private static final int ON_BIND = 1;
-
 
     // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.
     private ServiceConnection webSocketServiceConnection;
@@ -50,14 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private WebsocketServiceBinder.IMyServiceMethod websocketService;
     private ModelServiceBinder.IMyServiceMethod modelService;
 
-    private static Handler handler;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        handler = new WebsocketServiceHandler();
 
         setContentView(R.layout.activity_main);
         editText_login = (EditText) this.findViewById(R.id.editText_login);
@@ -90,15 +81,13 @@ public class MainActivity extends AppCompatActivity {
 
         modelServiceConnection = new ServiceConnection() {
             @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                //on récupère l'instance du websocketService dans l'activité
-                modelService = ((ModelService)binder).getService();
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                //on récupère l'instance du modelService dans l'activité
+                modelService = ((ModelServiceBinder)binder).getService();
             }
 
             @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-            }
+            public void onServiceDisconnected(ComponentName name) {}
         };
 
 

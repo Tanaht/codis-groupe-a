@@ -1,6 +1,5 @@
 package ila.fr.codisintervention.services.model;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -8,22 +7,27 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import ila.fr.codisintervention.binders.WebsocketServiceBinder;
-import ila.fr.codisintervention.models.BigModel;
-import ila.fr.codisintervention.models.messages.InitializeApplication;
-import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.services.constants.ModelConstants;
+import java.util.List;
 
-import static android.content.ContentValues.TAG;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.models.BigModel;
+import ila.fr.codisintervention.models.messages.Code;
+import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.Symbol;
+import ila.fr.codisintervention.models.messages.Unit;
+import ila.fr.codisintervention.models.messages.Vehicle;
+import ila.fr.codisintervention.services.constants.ModelConstants;
 
 /**
  * Created by marzin on 28/03/18.
  */
 
-public class ModelService extends Service {
+public class ModelService extends Service implements ModelServiceBinder.IMyServiceMethod {
+    private final static String TAG = "ModelService";
 
     private BigModel model;
     private IBinder binder;
+
 
     //Méthode pour metre à jour le model
     public void updateTheModel (Intent intent) {
@@ -91,10 +95,41 @@ public class ModelService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "OnCreate ModelService");
+        binder = new ModelServiceBinder(this);
 
     }
 
     public BigModel getModel() {
         return model;
+    }
+
+    @Override
+    public Intervention getSelectedIntervention() {
+        return null;
+    }
+
+    @Override
+    public List<Intervention> getInterventions() {
+        return null;
+    }
+
+    @Override
+    public List<Code> getCodes() {
+        return null;
+    }
+
+    @Override
+    public List<Vehicle> getAvailableVehicle() {
+        return null;
+    }
+
+    @Override
+    public Symbol getSymbol(int id) {
+        return null;
+    }
+
+    @Override
+    public Unit getUnit(int id) {
+        return null;
     }
 }
