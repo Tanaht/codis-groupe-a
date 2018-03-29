@@ -160,7 +160,8 @@ public class NewInterventionActivity extends AppCompatActivity {
                 // Check if address is set
                 if(inputtedAddress.equals("")){
                     Toasty.error(getApplicationContext(),
-                            responseText, Toast.LENGTH_LONG).show();
+                            getString(R.string.interventionNoAddress),
+                            Toast.LENGTH_LONG).show();
                 } else {
 
                     Intervention intervention = new Intervention();
@@ -169,7 +170,7 @@ public class NewInterventionActivity extends AppCompatActivity {
                     intervention.setLocation(
                             new Location(latlngAddress.latitude,latlngAddress.longitude));
                     // TODO intervention.setMoyens(..)
-                    
+
                     //send Intervention to WS Service
                     service.createIntervention(intervention);
                 }
