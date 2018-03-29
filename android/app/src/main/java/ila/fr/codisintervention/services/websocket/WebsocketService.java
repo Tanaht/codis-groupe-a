@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Demande;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -268,6 +269,20 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
         this.client.topic("/topic/interventions/closed").subscribe(message -> {
             Log.i(TAG, "[/interventions/closed] Received message: " + message.getPayload());
+
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipField(FieldAttributes f) {
+                    return Arrays.asList("date", "code", "address", "drone_available").equals(f.getName());
+                }
+
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return Arrays.asList(Photo.class, Location.class).contains(clazz);
+                }
+            }).create();
+
 
             Intent interventionClosed  = new Intent(getApplicationContext(), ModelService.class);
             interventionClosed.setAction(INTERVENTION_CLOSED);
