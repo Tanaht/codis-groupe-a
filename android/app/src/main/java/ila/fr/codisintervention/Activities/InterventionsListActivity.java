@@ -47,21 +47,6 @@ public class InterventionsListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_interventions_list);
         setTitle(R.string.IntervenantListPageTitle);
 
-//        // Interventions Dispos List
-//        InterventionService is = new InterventionService();
-//        interventionList = is.getInterventionList();
-//
-//        // Interventions List
-//        if(interventionList.isEmpty()){
-//            TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
-//            tv.setText(R.string.noInterventionAvailable);
-//            Toasty.warning(getApplicationContext(),
-//                    getString(R.string.noInterventionAvailable), Toast.LENGTH_SHORT, true)
-//                    .show();
-//        } else {
-//            displayListView(interventionList);
-//        }
-
         bindToService();
     }
 
