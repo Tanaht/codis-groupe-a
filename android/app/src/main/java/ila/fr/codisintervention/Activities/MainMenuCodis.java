@@ -14,7 +14,7 @@ public class MainMenuCodis extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu_codis);
-        setTitle(R.string.MenuIntervenantPageTitle);
+        setTitle(R.string.MenuCodisPageTitle);
 
         Button buttonNewInterv = ((Button) this.findViewById(R.id.textView_CreerIntervention));
         buttonNewInterv.setOnClickListener(new View.OnClickListener() {
