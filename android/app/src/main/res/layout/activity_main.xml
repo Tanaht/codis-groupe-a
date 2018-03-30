@@ -52,7 +52,7 @@
         android:shadowDy="2"
         android:textColor="@android:color/black"
         android:textSize="25dp"
-        android:text="pompier"
+        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_login" />
@@ -67,7 +67,7 @@
         android:shadowColor="@android:color/black"
         android:shadowDx="2"
         android:shadowDy="2"
-        android:text="@string/lbl_mdp"
+        android:text=""
         android:textColor="@android:color/background_light"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
