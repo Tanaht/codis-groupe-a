@@ -20,7 +20,9 @@ import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Demande;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
+import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
@@ -242,6 +244,43 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
                 () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
                 error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
+        );
+    }
+
+    @Override
+    public void updateSymbol(int interventionId, List<Symbol> symbol) {
+
+    }
+
+    @Override
+    public void createSymbol(int interventionId, List<Symbol> symbol) {
+
+    }
+
+    /**
+     * In this method we send to the server the symbol list we want to delete
+     * @param interventionId
+     * @param symbols
+     */
+    @Override
+    public void deleteSymbol(int interventionId, List<Symbol> symbols) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return Arrays.asList("shape", "color").equals(f.getName());
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return Arrays.asList(Location.class, Payload.class).contains(clazz);
+            }
+        }).create();
+
+        String gsonData = gson.toJson(symbols);
+
+        this.client.send("/app/interventions/" + interventionId + "/symbols/delete", gsonData).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "//symbols/delete] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "//symbols/delete] Error Encountered", error)
         );
     }
 
