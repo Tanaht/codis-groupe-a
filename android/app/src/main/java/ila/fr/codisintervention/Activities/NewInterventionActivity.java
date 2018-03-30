@@ -30,7 +30,6 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.Entities.Moyen;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.InterventionService;
-import ila.fr.codisintervention.Services.MoyensService;
 import ila.fr.codisintervention.Utils.GooglePlacesAutocompleteAdapter;
 import ila.fr.codisintervention.Utils.MoyenListAdapter;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
@@ -62,7 +61,7 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         autoCompView.setOnItemClickListener((parent, view, position, id) -> {
             inputtedAddress = (String) parent.getItemAtPosition(position);
-            latlngAddress = getLocationFromAddress(inputtedAddress);
+            Log.i(TAG, "Set address to: " + inputtedAddress);
         });
 
         // get codes sinistre from server
@@ -90,16 +89,9 @@ public class NewInterventionActivity extends AppCompatActivity {
 
                 //on récupère l'instance du service dans l'activité
                 service = ((WebsocketServiceBinder)binder).getService();
-
-                //on genère l'évènement indiquant qu'on est "bindé"
-                //   handler.sendEmptyMessage(ON_BIND);
             }
         };
-        //démarre le service si il n'est pas démarré
-        //Le binding du service est configuré avec "BIND_AUTO_CREATE" ce qui normalement
-        //démarre le service si il n'est pas démarrer, la différence ici est que le fait de
-        //démarrer le service par "startService" fait que si l'activité est détruite, le service
-        //reste en vie (obligatoire pour l'application AlarmIngressStyle)
+
         startService(new Intent(getApplicationContext(), WebsocketService.class));
         Intent intent = new Intent(getApplicationContext(), WebsocketService.class);
         //lance le binding du service
@@ -173,24 +165,30 @@ public class NewInterventionActivity extends AppCompatActivity {
                     intervention.setCode(codeSinistre);
 
                     latlngAddress = getLocationFromAddress(intervention.getAddress());
-//                    System.out.println("\n***********"+latlngAddress.latitude+","+latlngAddress.longitude);
                     Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
 
-                    if(latlngAddress != null)
-                        intervention.setLocation(new Location(latlngAddress.latitude,latlngAddress.longitude));
-                    else
-                        intervention.setLocation(new Location(48.1156746,-1.640608));
-                    // TODO intervention.setMoyens(..)
+                    if(latlngAddress != null) {
+                        intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
+                        // TODO intervention.setUnit(..) when available
+                        service.createIntervention(intervention);
+                    } else {
+
+                        Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
+                    }
 
                     //send Intervention to WS Service
-                    service.createIntervention(intervention);
+
                 }
             }
         });
     }
 
     private LatLng getLocationFromAddress(String inputtedAddress) {
-        Geocoder coder = new Geocoder(this, Locale.getDefault());
+        if(!Geocoder.isPresent()) {
+            Log.w(TAG, "Geocoder Method not implemented");
+        }
+        Geocoder coder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
         List<Address> address = null;
         LatLng resLatLng = null;
         try {
@@ -198,33 +196,29 @@ public class NewInterventionActivity extends AppCompatActivity {
 
             address = coder.getFromLocationName(inputtedAddress, 1);
             if (address == null) {
-                System.out.println("============================================================");
-                System.out.println("address null");
+                Log.w(TAG, "Address is null for '" + inputtedAddress + "'");
                 return null;
 
             }
 
             if (address.size() == 0) {
-                System.out.println("============================================================");
-                System.out.println("size 0");
+                Log.w(TAG, "There is no address for '"+ inputtedAddress + "'");
                 return null;
             }
 
             Address location = address.get(0);
             location.getLatitude();
             location.getLongitude();
-            System.out.println("============================================================");
-            System.out.println(location.getLatitude()+","+location.getLongitude());
+
+            Log.d(TAG, "'" + inputtedAddress + "' converted to [" + location.getLatitude() + ", " + location.getLongitude() + "]");
 
             resLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         } catch (IOException ex) {
-
-            ex.printStackTrace();
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_LONG).show();
+            Log.e(TAG, ex.getMessage(), ex);
         }
 
-        Log.d(TAG, "LatLng retrieved: " + resLatLng);
+        Log.d(TAG, "getLocationFromAddress retrieved: " + resLatLng);
 
         return resLatLng;
     }
