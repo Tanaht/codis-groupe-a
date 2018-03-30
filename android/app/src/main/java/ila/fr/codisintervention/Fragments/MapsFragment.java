@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import ila.fr.codisintervention.Activities.MapActivity;
 import ila.fr.codisintervention.Entities.SymboleDispo;
@@ -57,7 +58,7 @@ public class MapsFragment extends Fragment {
     // 0 : for the drone's real position
     int cpt_id = 1;
     //list of points for the drone's course
-    Map<Integer, DronePoint> course = new HashMap<Integer, DronePoint>();
+    Map<Integer, DronePoint> course = new TreeMap<Integer, DronePoint>();
     List<MarkerOptions> markers = new ArrayList<MarkerOptions>();
     MapView mMapView;
     private GoogleMap googleMap;
@@ -73,7 +74,7 @@ public class MapsFragment extends Fragment {
         java.util.Set<Integer> keyList = course.keySet();
         for (Integer num : keyList) {
             DronePoint point = course.get(num);
-//            if (num.equals(0)) {    // specific case of the drone, itself.
+            if (!num.equals(0)) {    // specific case of the drone, itself.
                 if (previous != null) {
                     Polyline line = mMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(previous.lat, previous.lon), new LatLng(point.lat, point.lon))
@@ -81,7 +82,7 @@ public class MapsFragment extends Fragment {
                             .color(Color.RED));
                 }
                 previous = point;
-//            }
+            }
             addMarker_Zoom(point);
         }
 
