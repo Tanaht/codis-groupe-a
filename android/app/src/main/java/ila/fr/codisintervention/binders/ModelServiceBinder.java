@@ -34,6 +34,7 @@ public class ModelServiceBinder extends Binder {
     public interface IMyServiceMethod {
         InterventionChosen getSelectedIntervention();
         List<Intervention> getInterventions();
+        Intervention getIntervention(int id);
         List<Code> getCodes();
         List<Vehicle> getAvailableVehicle();
 
