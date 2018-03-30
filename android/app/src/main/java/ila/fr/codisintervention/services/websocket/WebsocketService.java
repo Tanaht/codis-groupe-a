@@ -21,6 +21,7 @@ import ila.fr.codisintervention.models.messages.Demande;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Photo;
+import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
@@ -243,6 +244,45 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                 () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
                 error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
         );
+    }
+
+    @Override
+    public void updateSymbol(int interventionId, List<Symbol> symbols) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        String json = gson.toJson(symbols);
+        Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/create] with message " + json);
+        this.client.send("/app/interventions/" + interventionId + "/symbols/update", json).subscribe(
+                () -> Log.w(TAG, "[/app/interventions/" + interventionId + "/symbols/update] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/symbols/update] Error Encountered", error)
+        );
+    }
+
+    @Override
+    public void createSymbol(int interventionId, List<Symbol> symbols) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return f.getName().equals("id");
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        }).create();
+
+        String json = gson.toJson(symbols);
+        Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/create] with message " + json);
+        this.client.send("/app/interventions/" + interventionId + "/symbols/create", json).subscribe(
+                () -> Log.w(TAG, "[/app/interventions/" + interventionId + "/symbols/create] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/symbols/create] Error Encountered", error)
+        );
+    }
+
+    @Override
+    public void deleteSymbol(int interventionId, List<Symbol> symbols) {
+
     }
 
     /**
