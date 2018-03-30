@@ -41,6 +41,8 @@
         <activity
          android:name=".Activities.MapActivity"
          android:label="@string/title_activity_map"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation"
          android:theme="@style/AppTheme.NoActionBar"></activity>
 
         

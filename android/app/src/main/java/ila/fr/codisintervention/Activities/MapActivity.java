@@ -193,7 +193,7 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
         return true;
     }
 
-    public Symbol getSelectedSymbol(){
+    public SymboleDispo getSelectedSymbol(){
         return this.symbolFragment.getSelectedSymbol();
     }
 

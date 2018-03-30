@@ -34,8 +34,6 @@ import java.util.Map;
 import ila.fr.codisintervention.Activities.MapActivity;
 import ila.fr.codisintervention.Entities.SymboleDispo;
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.models.messages.Symbol;
-
 
 public class MapsFragment extends Fragment {
 
@@ -60,7 +58,7 @@ public class MapsFragment extends Fragment {
     int cpt_numero = 1;
     //liste des points pour le parcours du drone
     Map<Integer, DronePoint> parcours = new HashMap<Integer, DronePoint>();
-    List<Marker> markers = new ArrayList<Marker>();
+    List<MarkerOptions> markers = new ArrayList<MarkerOptions>();
     MapView mMapView;
     private GoogleMap googleMap;
     private final static int LOCATION_REQ_CODE = 456;
@@ -75,7 +73,7 @@ public class MapsFragment extends Fragment {
         java.util.Set<Integer> keyList = parcours.keySet();
         for (Integer num : keyList) {
             DronePoint point = parcours.get(num);
-            if (num.equals(0)) {    // cas particulier du drone lui-meme
+//            if (num.equals(0)) {    // cas particulier du drone lui-meme
                 if (previous != null) {
                     Polyline line = mMap.addPolyline(new PolylineOptions()
                             .add(new LatLng(previous.lat, previous.lon), new LatLng(point.lat, point.lon))
@@ -83,8 +81,12 @@ public class MapsFragment extends Fragment {
                             .color(Color.RED));
                 }
                 previous = point;
-            }
+//            }
             addMarker_Zoom(point);
+        }
+
+        for(MarkerOptions mo : markers){
+            googleMap.addMarker(mo);
         }
     }
 
@@ -121,14 +123,19 @@ public class MapsFragment extends Fragment {
                     @Override
                     public void onMapLongClick(LatLng latLng) {
                             /* add DronePoint */
-                        DronePoint pt = new DronePoint(cpt_numero, latLng.latitude, latLng.longitude);
-                        parcours.put(new Integer(cpt_numero), pt);   // ajout dans la liste des points
-//                            LatLng ln = addMarker_Zoom(pt);             // ajout sur la carte
-                        cpt_numero += 1;                            // incrément compteur général
-                        updateUI(googleMap);                        // raffraichir la map
-//                        Symbol symbole = getSymbolFragment();
-//                        Bitmap marker = resizeBitmap(Integer.valueOf(symbole.getId()), 50, 50);
-//                        addCustomMarker_Zoom(latLng, marker);
+                        SymboleDispo symbole = getSymbolFragment();
+                        if(symbole!=null) {
+                            if (symbole.getIdDrawable() == R.drawable.drone_icon_map) {
+                                DronePoint pt = new DronePoint(cpt_numero, latLng.latitude, latLng.longitude);
+                                parcours.put(new Integer(cpt_numero), pt);   // ajout dans la liste des points
+                                //                            LatLng ln = addMarker_Zoom(pt);             // ajout sur la carte
+                                cpt_numero += 1;                            // incrément compteur général
+                                updateUI(googleMap);                        // raffraichir la map
+                            } else {
+                                Bitmap marker = resizeBitmap(symbole.getIdDrawable(), 50, 50);
+                                addCustomMarker_Zoom(latLng, marker);
+                            }
+                        }
                     }
 
                 });
@@ -141,7 +148,9 @@ public class MapsFragment extends Fragment {
 
                     @Override
                     public void onMarkerDragStart(Marker marker) {
-                        num = new Integer(marker.getTitle());   // numéro du marker sélectionné
+                        if (!marker.getTitle().equals("")) {
+                            num = new Integer(marker.getTitle());   // numéro du marker sélectionné
+                        }
                     }
 
                     @Override
@@ -165,7 +174,7 @@ public class MapsFragment extends Fragment {
         return rootView;
     }
 
-    public Symbol getSymbolFragment(){
+    public SymboleDispo getSymbolFragment(){
         return ((MapActivity)getActivity()).getSelectedSymbol();
     }
 
@@ -197,13 +206,16 @@ public class MapsFragment extends Fragment {
 
     public void addCustomMarker_Zoom(LatLng Coord, Bitmap Customizer) {
 
-        MarkerOptions marker = new MarkerOptions();
-        marker.position(Coord).title("coordinates : " + Coord.latitude + " , " + Coord.longitude).isDraggable();
-        marker.icon(BitmapDescriptorFactory.fromBitmap(Customizer));
-        googleMap.addMarker(marker);
+//        MarkerOptions marker = new MarkerOptions();
+//        marker.position(Coord).title("coordinates : " + Coord.latitude + " , " + Coord.longitude).isDraggable();
+//        marker.icon(BitmapDescriptorFactory.fromBitmap(Customizer));
+//        googleMap.addMarker(marker);
+        MarkerOptions mo = new MarkerOptions().position(Coord).draggable(true).title("").snippet("").icon(BitmapDescriptorFactory.fromBitmap(Customizer));
+        googleMap.addMarker(mo);
+        markers.add(mo);
            /*Zoom on the newly added marker*/
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(Coord).zoom(17).build();
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//        CameraPosition cameraPosition = new CameraPosition.Builder().target(Coord).zoom(17).build();
+//        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
 
     }
@@ -221,7 +233,8 @@ public class MapsFragment extends Fragment {
     public LatLng addMarker_Zoom(DronePoint point) {
         LatLng coord = new LatLng(point.lat, point.lon);
         // For dropping a marker Coord at a point on the MapActivity
-        Marker mark = googleMap.addMarker(new MarkerOptions().position(coord).draggable(true).title("" + point.numero).snippet(""));
+//        addCustomMarker_Zoom(coord, resizeBitmap(R.drawable.drone_icon_map, 50, 50));
+        Marker mark = googleMap.addMarker(new MarkerOptions().position(coord).draggable(true).title("" + point.numero).snippet("").icon(BitmapDescriptorFactory.fromBitmap(resizeBitmap(R.drawable.drone_icon_map, 50, 50))));
         mark.showInfoWindow();
         return coord;
     }
