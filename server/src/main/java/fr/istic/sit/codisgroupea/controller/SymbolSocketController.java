@@ -98,7 +98,6 @@ public class SymbolSocketController {
     @SendTo({RoutesConfig.CREATE_SYMBOL_SERVER})
     public SymbolsMessage createSymbols(@DestinationVariable("id") final int id, List<SymbolCreateMessage> dataSendByClient) {
         Gson jason = new Gson();
-
         logger.trace(RoutesConfig.CREATE_SYMBOL_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
 
         List<SymbolMessage> listMessage = new ArrayList<>();
@@ -110,22 +109,35 @@ public class SymbolSocketController {
 
             //Verify if the two optional are present
             if(!optSymbol.isPresent()) {
-                logger.error("Le symbol n'existe pas.");
+                logger.error("Le symbol n'existe pas. Couleur : "+data.getColor().toString()+" forme : "+data.getShape().toString());
             }
+
 
             if(!optionalIntervention.isPresent()){
                 logger.error("L'intervention n'existe pas.");
             }
 
-            //Create a nex SymbolSitac
-            SymbolSitac symbolSitac = symbolSitacRepository.save(
-                    new SymbolSitac(
-                            optionalIntervention.get(),
-                            optSymbol.get(),
-                            positionRepository.save(new Position(data.getLocation().getLat(), data.getLocation().getLng())),
-                            payloadRepository.save(new Payload(data.getPayload().getIdentifier(), data.getPayload().getDetails()))
-                    )
-            );
+            SymbolSitac symbolSitac;
+
+            if (data.getPayload() == null){
+                symbolSitac = symbolSitacRepository.save(
+                        new SymbolSitac(
+                                optionalIntervention.get(),
+                                optSymbol.get(),
+                                positionRepository.save(new Position(data.getLocation().getLat(), data.getLocation().getLng())),
+                                payloadRepository.save(new Payload("",""))
+                        )
+                );
+            }else{
+                symbolSitac = symbolSitacRepository.save(
+                        new SymbolSitac(
+                                optionalIntervention.get(),
+                                optSymbol.get(),
+                                positionRepository.save(new Position(data.getLocation().getLat(), data.getLocation().getLng())),
+                                payloadRepository.save(new Payload(data.getPayload().getIdentifier(), data.getPayload().getDetails()))
+                        )
+                );
+            }
 
             //Create the return message
             SymbolMessage symbolMessage = createSymbolMessage(symbolSitac);

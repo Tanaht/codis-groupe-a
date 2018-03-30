@@ -1,7 +1,7 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
 /**
- * The enum Shape.
+ * The enum Shape. start to 0 in mysql
  */
 public enum Shape {
     /**
