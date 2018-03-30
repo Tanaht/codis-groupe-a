@@ -318,7 +318,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     }
 
     @Override
-    public void updateSymbol(int interventionId, List<Symbol> symbols) {
+    public void updateSymbols(int interventionId, List<Symbol> symbols) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
         String json = gson.toJson(symbols);
@@ -330,7 +330,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     }
 
     @Override
-    public void createSymbol(int interventionId, List<Symbol> symbols) {
+    public void createSymbols(int interventionId, List<Symbol> symbols) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {
@@ -357,7 +357,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
      * @param symbols
      */
     @Override
-    public void deleteSymbol(int interventionId, List<Symbol> symbols) {
+    public void deleteSymbols(int interventionId, List<Symbol> symbols) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {

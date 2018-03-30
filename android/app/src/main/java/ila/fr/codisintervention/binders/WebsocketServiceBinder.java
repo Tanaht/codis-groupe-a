@@ -47,21 +47,21 @@ public class WebsocketServiceBinder extends Binder {
          * @param interventionId
          * @param symbols
          */
-        void updateSymbol(int interventionId, List<Symbol> symbols);
+        void updateSymbols(int interventionId, List<Symbol> symbols);
 
         /**
          * This method is used to create a symbol on a specific intervention
          * @param interventionId
          * @param symbols
          */
-        void createSymbol(int interventionId, List<Symbol> symbols);
+        void createSymbols(int interventionId, List<Symbol> symbols);
 
         /**
          * This method is used to delete a symbol on a specific intervention
          * @param interventionId
          * @param symbols
          */
-        void deleteSymbol(int interventionId, List<Symbol> symbols);
+        void deleteSymbols(int interventionId, List<Symbol> symbols);
     }
 
 
