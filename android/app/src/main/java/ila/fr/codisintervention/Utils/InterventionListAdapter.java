@@ -26,7 +26,6 @@ public class InterventionListAdapter extends ArrayAdapter<Intervention> {
                             ArrayList<Intervention> interventionList) {
         super(context, textViewResourceId, interventionList);
         this.context = context;
-        this.addAll(interventionList);
     }
 
     private class ViewHolder {
