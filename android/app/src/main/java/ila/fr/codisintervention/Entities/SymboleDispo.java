@@ -9,6 +9,8 @@ import android.widget.ImageView;
 public class SymboleDispo {
 
     private String id;
+
+    private int idDrawable;
     private ImageView imageView;
     private String iconeNonSelected;
     private String iconeSelected;
@@ -22,8 +24,9 @@ public class SymboleDispo {
         this.selected = false;
     }
 
-    public SymboleDispo(String id, String iconeSelected, String iconeNonSelected, boolean selected) {
+    public SymboleDispo(String id, int idDrawable, String iconeSelected, String iconeNonSelected, boolean selected) {
         this.id = id;
+        this.idDrawable = idDrawable;
         this.imageView = null;
         this.iconeSelected = iconeSelected;
         this.iconeNonSelected = iconeNonSelected;
@@ -51,8 +54,21 @@ public class SymboleDispo {
         this.selected = selected;
     }
 
+    public void setId(String id){
+        this.id = id;
+    }
+
     public String getId() {
         return id;
+    }
+
+
+    public int getIdDrawable() {
+        return idDrawable;
+    }
+
+    public void setIdDrawable(int idDrawable) {
+        this.idDrawable = idDrawable;
     }
 
     public void clicOnSymbol() {

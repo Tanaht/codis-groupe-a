@@ -8,8 +8,14 @@
     tools:context="ila.fr.codisintervention.Activities.MapActivity"
     tools:showIn="@layout/activity_map">
 
+    <fragment android:name="ila.fr.codisintervention.Fragments.ListeSymbolesFragment"
+        android:id="@+id/listSymbolFragment"
+        android:layout_weight="0"
+        android:layout_width="55dp"
+        android:layout_height="match_parent" />
+
     <fragment
-        android:id="@+id/fragment"
+        android:id="@+id/mapFragment"
         android:name="ila.fr.codisintervention.Fragments.MapsFragment"
         android:layout_width="1062dp"
         android:layout_height="671dp"

@@ -10,16 +10,16 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Toast;
 
-import ila.fr.codisintervention.Fragments.DessinFragment;
+import ila.fr.codisintervention.Entities.SymboleDispo;
 import ila.fr.codisintervention.Fragments.ListeSymbolesFragment;
+import ila.fr.codisintervention.Fragments.MapsFragment;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.models.messages.Symbol;
@@ -34,8 +34,7 @@ import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UTIL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_VALIDATION_MOYEN;
 
-public class MapActivity extends AppCompatActivity implements ListeSymbolesFragment.OnFragmentInteractionListener,
-        DessinFragment.OnFragmentInteractionListener {
+public class MapActivity extends AppCompatActivity implements ListeSymbolesFragment.OnFragmentInteractionListener {
 
     // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.
     private ServiceConnection modelServiceConnection;
@@ -45,11 +44,18 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
 
     private String couleur = "";
 
+    ListeSymbolesFragment symbolFragment;
+    MapsFragment mapFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_map);
+
+        FragmentManager manager = getSupportFragmentManager();
+        symbolFragment = (ListeSymbolesFragment) manager.findFragmentById(R.id.listSymbolFragment);
+        mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
     }
 
     @Override
@@ -176,41 +182,28 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public boolean onTouchEvent(MotionEvent event) {
+
+//        double x = (double) event.getX();
+//        double y = (double) event.getY();
+//        SymboleDispo symbole = symbolFragment.getSelectedSymbol();
+//        Bitmap marker = mapFragment.resizeBitmap(Integer.valueOf(symbole.getId()), 50, 50);
+//        mapFragment.addCustomMarker_Zoom(new LatLng(x,y), marker);
+        //Toast.makeText(this, "x" + x + "y" + y, Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
+    public SymboleDispo getSelectedSymbol(){
+        return this.symbolFragment.getSelectedSymbol();
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public void onFragmentInteraction(Uri uri) {
 
-        int x = (int)event.getX();
-        int y = (int)event.getY();
-        Toast.makeText(this, "x"+x+"y"+y, Toast.LENGTH_SHORT).show();
-        return true;
-    }
-
-    public void clicRouge(View view){
-        couleur = "rouge";
-        Toast.makeText(this, "rouge", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clicVert(View view){
-        couleur = "vert";
-        Toast.makeText(this, "vert", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clicBleu(View view){
-        couleur = "bleu";
-        Toast.makeText(this, "bleu", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clicOrange(View view){
-        couleur = "orange";
-        Toast.makeText(this, "orange", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clicViolet(View view){
-        couleur = "violet";
-        Toast.makeText(this, "violet", Toast.LENGTH_SHORT).show();
     }
 }

@@ -26,8 +26,10 @@ import ila.fr.codisintervention.Services.SymboleDispoService;
  */
 public class ListeSymbolesFragment extends Fragment {
 
+    //Get symbols from model
     private static List<SymboleDispo> liste = SymboleDispoService.getListeSymbolesDispo();
-    private String couleur;
+    private String couleur = "rouge";
+    private SymboleDispo currentSymbol;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -86,13 +88,174 @@ public class ListeSymbolesFragment extends Fragment {
                 public void onClick(View v) {
                     symbole.getImageView().setImageResource(getResources().getIdentifier(symbole.getIconeSelected(), "drawable", getActivity().getPackageName()));
                     for (SymboleDispo symbole2 : liste) {
+                        symbole2.setSelected(false);
                         if (symbole != symbole2) {
                             symbole2.getImageView().setImageResource(getResources().getIdentifier(symbole2.getIconeNonSelected(), "drawable", getActivity().getPackageName()));
                         }
                     }
+                    symbole.setSelected(true);
                 }
             });
         }
+    }
+
+    public SymboleDispo getSelectedSymbol(){
+        for(SymboleDispo symbole : liste){
+            if(symbole.isSelected()){
+                switch(symbole.getId()){
+                    case "ressource_eau":
+                        break;
+                    case "sinistre":
+                        switch(couleur){
+                            case "rouge":
+                                symbole.setIdDrawable(R.drawable.sinistrerouge);
+                                break;
+                            case "orange":
+                                symbole.setIdDrawable(R.drawable.sinistreorange);
+                                break;
+                            case "violet":
+                                break;
+                            case "vert":
+                                symbole.setIdDrawable(R.drawable.sinistrevert);
+                                break;
+                            case "bleu":
+                                symbole.setIdDrawable(R.drawable.sinistrebleu);
+                                break;
+                        }
+                        break;
+                    case "triangle_bas":
+                        switch(couleur){
+                            case "rouge":
+                                symbole.setIdDrawable(R.drawable.dangerrougebas);
+                                break;
+                            case "orange":
+                                symbole.setIdDrawable(R.drawable.dangerorangebas);
+                                break;
+                            case "violet":
+                                break;
+                            case "vert":
+                                symbole.setIdDrawable(R.drawable.dangervertbas);
+                                break;
+                            case "bleu":
+                                symbole.setIdDrawable(R.drawable.dangerbleubas);
+                                break;
+                        }
+                        break;
+                    case "triangle_haut":
+                        switch(couleur){
+                            case "rouge":
+                                symbole.setIdDrawable(R.drawable.dangerrougehaut);
+                                break;
+                            case "orange":
+                                symbole.setIdDrawable(R.drawable.dangerorangehaut);
+                                break;
+                            case "violet":
+                                break;
+                            case "vert":
+                                symbole.setIdDrawable(R.drawable.dangerverthaut);
+                                break;
+                            case "bleu":
+                                symbole.setIdDrawable(R.drawable.dangerbleuhaut);
+                                break;
+                        }
+                        break;
+                    case "vehicule":
+                        switch(couleur){
+                            case "rouge":
+                                symbole.setIdDrawable(R.drawable.vehiculerouge);
+                                break;
+                            case "orange":
+                                symbole.setIdDrawable(R.drawable.vehiculeorange);
+                                break;
+                            case "violet":
+                                symbole.setIdDrawable(R.drawable.vehiculeviolet);
+                                break;
+                            case "vert":
+                                symbole.setIdDrawable(R.drawable.vehiculevert);
+                                break;
+                            case "bleu":
+                                symbole.setIdDrawable(R.drawable.vehiculebleu);
+                                break;
+                        }
+                        break;
+                    case "vehicule_non_valide":
+                        switch(couleur){
+                            case "rouge":
+                                symbole.setIdDrawable(R.drawable.vehiculerougenonvalide);
+                                break;
+                            case "orange":
+                                symbole.setIdDrawable(R.drawable.vehiculeorangenonvalide);
+                                break;
+                            case "violet":
+                                symbole.setIdDrawable(R.drawable.vehiculevioletnonvalide);
+                                break;
+                            case "vert":
+                                symbole.setIdDrawable(R.drawable.vehiculevertnonvalide);
+                                break;
+                            case "bleu":
+                                symbole.setIdDrawable(R.drawable.vehiculebleunonvalide);
+                                break;
+                        }
+                        break;
+                    case "vehicule_pompier":
+                        switch(couleur){
+                            case "rouge":
+                                symbole.setIdDrawable(R.drawable.vehiculepompierrouge);
+                                break;
+                            case "orange":
+                                break;
+                            case "violet":
+                                symbole.setIdDrawable(R.drawable.vehiculepompierviolet);
+                                break;
+                            case "vert":
+                                symbole.setIdDrawable(R.drawable.vehiculepompiervert);
+                                break;
+                            case "bleu":
+                                break;
+                        }
+                        break;
+                    case "vehicule_pompier_non_valide":
+                        switch(couleur){
+                            case "rouge":
+                                symbole.setIdDrawable(R.drawable.vehiculepompierrougenonvalide);
+                                break;
+                            case "orange":
+                                break;
+                            case "violet":
+                                symbole.setIdDrawable(R.drawable.vehiculepompiervioletnonvalide);
+                                break;
+                            case "vert":
+                                symbole.setIdDrawable(R.drawable.vehiculepompiervertnonvalide);
+                                break;
+                            case "bleu":
+                                break;
+                        }
+                        break;
+                    case "zone":
+                        switch(couleur){
+                            case "rouge":
+                                symbole.setIdDrawable(R.drawable.zoneactionrouge);
+                                break;
+                            case "orange":
+                                symbole.setIdDrawable(R.drawable.zoneactionorange);
+                                break;
+                            case "violet":
+                                break;
+                            case "vert":
+                                symbole.setIdDrawable(R.drawable.zoneactionverte);
+                                break;
+                            case "bleu":
+                                symbole.setIdDrawable(R.drawable.zoneactionbleu);
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                return symbole;
+            }
+        }
+        return null;
     }
 
     public String getCouleur() {
