@@ -170,14 +170,16 @@ public class NewInterventionActivity extends AppCompatActivity {
                     if(latlngAddress != null) {
                         intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
                         // TODO intervention.setUnit(..) when available
+                        // Send Intervention Details to WSS
                         service.createIntervention(intervention);
+
+                        // Intent to Intervention List Activity
+                        Intent intent = new Intent( getApplicationContext(), MainMenuCodis.class);
+                        startActivity(intent);
                     } else {
 
                         Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
                     }
-
-                    //send Intervention to WS Service
-
                 }
             }
         });
