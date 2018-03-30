@@ -65,6 +65,11 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     private IBinder binder;
     private String url;
 
+    /**
+     * websocket service constructor
+     * set the remote host url
+     * instantiate the client Stomp object
+     */
     public WebsocketService() {
 
         this.url = "http://{host}:{port}/{uri}"
@@ -240,6 +245,10 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         );
     }
 
+    /**
+     * In this method we initialize all the required subscription to websockets channels according to logged in user.
+     * @param initializeApplication
+     */
     public void performInitializationSubscription(InitializeApplication initializeApplication) {
         User user = initializeApplication.getUser();
 
@@ -316,6 +325,10 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         }
     }
 
+    /**
+     * In this channel we subscribe to channels of available demandes
+     * @param demandes
+     */
     private void performDemandeSubscriptionInitialization(List<Demande> demandes) {
         for(Demande demande : demandes) {
 
@@ -327,4 +340,6 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
             });
         }
     }
+
+
 }
