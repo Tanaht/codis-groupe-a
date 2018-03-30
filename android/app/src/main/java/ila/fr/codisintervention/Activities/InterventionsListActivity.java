@@ -125,6 +125,8 @@ public class InterventionsListActivity extends AppCompatActivity {
 
                 // Send Intervention choice to WSS
                service.chooseIntervention(intervention.getId());
+               Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
+               startActivity(mapIntent);
             }
         });
     }
