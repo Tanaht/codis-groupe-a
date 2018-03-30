@@ -12,6 +12,10 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,11 +33,13 @@ import ila.fr.codisintervention.utils.Config;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
+import ua.naiksoftware.stomp.client.StompMessage;
 
 /**
  * Service used to manage websocket api
  * Created by tanaky on 26/03/18.
  */
+@SuppressWarnings("squid:S1192")
 public class WebsocketService extends Service implements WebsocketServiceBinder.IMyServiceMethod {
     private static final String TAG = "WebSocketService";
 
@@ -137,6 +143,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
 
     private IBinder binder;
     private String url;
+
 
     /**
      * websocket service constructor
@@ -304,6 +311,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     public void chooseIntervention(int id){
         this.client.topic("/topic/interventions/" + id + "/symbols/event").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
+            deliverSymbolsEventIntents(message);
         });
 
 
@@ -315,6 +323,63 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                 () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
                 error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
         );
+
+    }
+
+
+    /**
+     * Class triggered when receiving events of type "/topic/interventions/{id}/symbols/event"
+     * It send the correct intent.
+     * @param message
+     */
+    private void deliverSymbolsEventIntents(StompMessage message) {
+        //FIXME: Refactoring this method can be done with enum (EventKind, EventType) or other class architecture
+
+        String type = "";
+
+        ArrayList<Symbol> symbols = new ArrayList<>();
+
+        try {
+            JSONObject object = new JSONObject(message.getPayload());
+
+            if(!object.has("type"))
+                throw new JSONException("JSON Message must have a 'type' key");
+
+            type = object.getString("type");
+
+            if(!Arrays.asList("CREATE", "UPDATE", "DELETE").contains(type)) {
+                throw new JSONException("JSON Message 'type' key must be one of the following: 'CREATE|UPDATE|DELETE'");
+            }
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+            //FIXME: Ugly but this must works. Need to test other way
+            symbols = new ArrayList<>(Arrays.asList(gson.fromJson(message.getPayload(), Symbol[].class)));
+
+
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        Intent toBeBroadcoastedIntent = null;
+
+        if("CREATE".equals(type)) {
+            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_CREATED);
+            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_CREATED, symbols);
+        }
+
+        if("UPDATE".equals(type)) {
+            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_UPDATED);
+            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_UPDATED, symbols);
+        }
+
+        if("DELETE".equals(type)) {
+            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_DELETED);
+            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_DELETED, symbols);
+        }
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
+
     }
 
     @Override
@@ -447,9 +512,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         });
 
 
-        if(user.isSimpleUser()) {
-
-        } else if(user.isCodisUser()) {
+        if(user.isCodisUser()) {
             this.client.topic("/topic/demandes/created").subscribe(message -> {
                 Log.i(TAG, "[/demandes/created] Received message: " + message.getPayload());
             });
