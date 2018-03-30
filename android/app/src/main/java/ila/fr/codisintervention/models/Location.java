@@ -3,12 +3,25 @@ package ila.fr.codisintervention.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+
 /**
+ * Represent a Location in term of gps coordinate
  * Created by tanaky on 27/03/18.
  */
 
 public class Location implements Parcelable {
+
+    /**
+     * The latitude of the gps coordinate
+     */
+    @Expose
     private double lat;
+
+    /**
+     * The latitude of the gps coordinate
+     */
+    @Expose
     private double lng;
 
     public Location(double lat, double lng) {

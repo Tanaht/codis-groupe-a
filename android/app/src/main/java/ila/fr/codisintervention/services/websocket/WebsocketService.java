@@ -12,6 +12,10 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,44 +24,119 @@ import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Demande;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
+import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
+import ua.naiksoftware.stomp.client.StompMessage;
 
 /**
  * Service used to manage websocket api
  * Created by tanaky on 26/03/18.
  */
-
+@SuppressWarnings("squid:S1192")
 public class WebsocketService extends Service implements WebsocketServiceBinder.IMyServiceMethod {
     private static final String TAG = "WebSocketService";
 
-    //For Modèle
+    //FIXME: Export all the constants related to Intent Action in a separacted empty class. For code purpose an Intent action must be a string constant and not an enum.
+    /**
+     * The constant CONNECT_TO_APPLICATION.
+     * Define the Intent action send to model when the user account is connected and the server has send initialize application data.
+     */
     public static final String CONNECT_TO_APPLICATION = "CONNECT_TO_APPLICATION";//initialize-application
+    /**
+     * The constant DISCONNECT_TO_APPLICATION.
+     * Define the Intent action send to model when the user account is disconnected.
+     */
     public static final String DISCONNECT_TO_APPLICATION = "DISCONNECT_TO_APPLICATION";
+    /**
+     * The constant INTERVENTION_CREATED.
+     * Define the Intent action send in case of intervention created event send from Server
+     */
     public static final String INTERVENTION_CREATED = "INTERVENTION_CREATED";
+    /**
+     * The constant INTERVENTION_CLOSED.
+     * Define the Intent action send in case of intervention closed event send from Server
+     */
     public static final String INTERVENTION_CLOSED = "INTERVENTION_CLOSED";
+    /**
+     * The constant INTERVENTION_CHOSEN.
+     * Define the Intent action send in case of intervention chosen event send from Server
+     */
     public static final String INTERVENTION_CHOSEN = "INTERVENTION_CHOSEN";
+    /**
+     * The constant INTERVENTION_SYMBOL_CREATED.
+     * Define the Intent action send in case of created Symbols send from Server
+     */
     public static final String INTERVENTION_SYMBOL_CREATED = "INTERVENTION_SYMBOL_CREATED";
+    /**
+     * The constant INTERVENTION_SYMBOL_UPDATED.
+     * Define the Intent action send in case of Updated Symbols send from Server
+     */
     public static final String INTERVENTION_SYMBOL_UPDATED = "INTERVENTION_SYMBOL_UPDATED";
+    /**
+     * The constant INTERVENTION_SYMBOL_DELETED.
+     * Define the Intent action send in case of Deleted Symbols send from Server
+     */
     public static final String INTERVENTION_SYMBOL_DELETED = "INTERVENTION_SYMBOL_DELETED";
+    /**
+     * The constant INTERVENTION_UNIT_CREATED.
+     * Define the Intent action send in case of created units send from Server
+     */
     public static final String INTERVENTION_UNIT_CREATED = "INTERVENTION_UNIT_CREATED";
+    /**
+     * The constant INTERVENTION_UNIT_UPDATED.
+     * Define the Intent action send in case of updated Units send from Server
+     */
     public static final String INTERVENTION_UNIT_UPDATED = "INTERVENTION_UNIT_UPDATED";
+
+    /**
+     * The constant DEMANDE_ACCEPTED.
+     * Define the Intent action send in case of Accepted Demand send from Server
+     */
     public static final String DEMANDE_ACCEPTED = "DEMANDE_ACCEPTED";
+
+    /**
+     * The constant DEMANDE_DENIED.
+     * Define the Intent action send in case of Denied Demand send from Server
+     */
     public static final String DEMANDE_DENIED = "DEMANDE_DENIED";
+
+    /**
+     * The constant DEMANDE_CREATED.
+     * Define the Intent action send in case of Created Demand send from Server
+     */
     public static final String DEMANDE_CREATED = "DEMANDE_CREATED";
+    /**
+     * The constant DRONE_PING.
+     * Define the Intent action send in case of Receive Drone Ping from server
+     */
     public static final String DRONE_PING = "DRONE_PING";
+    /**
+     * The constant DRONE_PHOTO.
+     * Define the Intent action send in case of Received Photo from server
+     */
     public static final String DRONE_PHOTO = "DRONE_PHOTO";
 
-    //For Client
+    /**
+     * The constant PROTOCOL_ERROR.
+     * Define the Intent action send in case of ERROR Websocket
+     */
     public static final String PROTOCOL_ERROR = "PROTOCOL_ERROR";
+    /**
+     * The constant PROTOCOL_CLOSE.
+     * Define the Intent action send in case of CLOSE Websocket
+     */
     public static final String PROTOCOL_CLOSE = "PROTOCOL_CLOSE";
 
     private static final String USERNAME_HEADER_KEY = "userlogin";
+
+    @SuppressWarnings("squid:S2068")
     private static final String PASSWORD_HEADER_KEY = "userpassword";
 
     private StompClient client;
@@ -65,6 +144,12 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     private IBinder binder;
     private String url;
 
+
+    /**
+     * websocket service constructor
+     * set the remote host url
+     * instantiate the client Stomp object
+     */
     public WebsocketService() {
 
         this.url = "http://{host}:{port}/{uri}"
@@ -187,7 +272,6 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {
-//                Log.d(TAG, "Name: '" + f.getName() + "' DeclaredClass: '" + f.getDeclaredClass() + "' DeclaringClass: '" + f.getDeclaringClass() + "'");
                 if(f.getDeclaringClass().equals(Intervention.class)) {
                     switch (f.getName()) {
                         case "drone_available":
@@ -227,6 +311,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     public void chooseIntervention(int id){
         this.client.topic("/topic/interventions/" + id + "/symbols/event").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
+            deliverSymbolsEventIntents(message);
         });
 
 
@@ -238,8 +323,131 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                 () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
                 error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
         );
+
     }
 
+
+    /**
+     * Class triggered when receiving events of type "/topic/interventions/{id}/symbols/event"
+     * It send the correct intent.
+     * @param message
+     */
+    private void deliverSymbolsEventIntents(StompMessage message) {
+        //FIXME: Refactoring this method can be done with enum (EventKind, EventType) or other class architecture
+
+        String type = "";
+
+        ArrayList<Symbol> symbols = new ArrayList<>();
+
+        try {
+            JSONObject object = new JSONObject(message.getPayload());
+
+            if(!object.has("type"))
+                throw new JSONException("JSON Message must have a 'type' key");
+
+            type = object.getString("type");
+
+            if(!Arrays.asList("CREATE", "UPDATE", "DELETE").contains(type)) {
+                throw new JSONException("JSON Message 'type' key must be one of the following: 'CREATE|UPDATE|DELETE'");
+            }
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+            //FIXME: Ugly but this must works. Need to test other way
+            symbols = new ArrayList<>(Arrays.asList(gson.fromJson(message.getPayload(), Symbol[].class)));
+
+
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        Intent toBeBroadcoastedIntent = null;
+
+        if("CREATE".equals(type)) {
+            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_CREATED);
+            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_CREATED, symbols);
+        }
+
+        if("UPDATE".equals(type)) {
+            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_UPDATED);
+            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_UPDATED, symbols);
+        }
+
+        if("DELETE".equals(type)) {
+            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_DELETED);
+            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_DELETED, symbols);
+        }
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
+
+    }
+
+    @Override
+    public void updateSymbols(int interventionId, List<Symbol> symbols) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        String json = gson.toJson(symbols);
+        Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/create] with message " + json);
+        this.client.send("/app/interventions/" + interventionId + "/symbols/update", json).subscribe(
+                () -> Log.w(TAG, "[/app/interventions/" + interventionId + "/symbols/update] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/symbols/update] Error Encountered", error)
+        );
+    }
+
+    @Override
+    public void createSymbols(int interventionId, List<Symbol> symbols) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return f.getName().equals("id");
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        }).create();
+
+        String json = gson.toJson(symbols);
+        Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/create] with message " + json);
+        this.client.send("/app/interventions/" + interventionId + "/symbols/create", json).subscribe(
+                () -> Log.w(TAG, "[/app/interventions/" + interventionId + "/symbols/create] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/symbols/create] Error Encountered", error)
+        );
+    }
+
+    /**
+     * In this method we send to the server the symbol list we want to delete
+     * @param interventionId
+     * @param symbols
+     */
+    @Override
+    public void deleteSymbols(int interventionId, List<Symbol> symbols) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return Arrays.asList("shape", "color").contains(f.getName());
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return Arrays.asList(Location.class, Payload.class).contains(clazz);
+            }
+        }).create();
+
+        String gsonData = gson.toJson(symbols);
+
+        this.client.send("/app/interventions/" + interventionId + "/symbols/delete", gsonData).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "//symbols/delete] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "//symbols/delete] Error Encountered", error)
+        );
+    }
+
+    /**
+     * In this method we initialize all the required subscription to websockets channels according to logged in user.
+     *
+     * @param initializeApplication the initialize application
+     */
     public void performInitializationSubscription(InitializeApplication initializeApplication) {
         User user = initializeApplication.getUser();
 
@@ -274,7 +482,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
                 @Override
                 public boolean shouldSkipField(FieldAttributes f) {
-                    return Arrays.asList("date", "code", "address", "drone_available").equals(f.getName());
+                    return Arrays.asList("date", "code", "address", "drone_available").contains(f.getName());
                 }
 
                 @Override
@@ -304,9 +512,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         });
 
 
-        if(user.isSimpleUser()) {
-
-        } else if(user.isCodisUser()) {
+        if(user.isCodisUser()) {
             this.client.topic("/topic/demandes/created").subscribe(message -> {
                 Log.i(TAG, "[/demandes/created] Received message: " + message.getPayload());
             });
@@ -316,6 +522,10 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
         }
     }
 
+    /**
+     * In this channel we subscribe to channels of available demandes
+     * @param demandes
+     */
     private void performDemandeSubscriptionInitialization(List<Demande> demandes) {
         for(Demande demande : demandes) {
 
@@ -327,4 +537,6 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
             });
         }
     }
+
+
 }
