@@ -118,8 +118,6 @@ public class InterventionsListActivity extends AppCompatActivity {
                 // When clicked, show a toast with the TextView text
                 Intervention intervention = (Intervention) parent.getItemAtPosition(position);
 
-                addElement(intervention);
-
                 Toasty.info(getApplicationContext(),
                         "Intervention with id:"+intervention.getId()+" has been sent to wss",
                         Toast.LENGTH_SHORT, true)
