@@ -19,10 +19,8 @@ public class FullPhotoViewer extends AppCompatActivity {
 
         // Selected image id
         int position = i.getExtras().getInt("id");
-        PhotoAdapter imageAdapter = new PhotoAdapter(this);
-
         ImageView imageView = (ImageView) findViewById(R.id.full_image_view);
-        imageView.setImageResource(imageAdapter.mThumbIds[position]);
-    }
+
+
     }
 }

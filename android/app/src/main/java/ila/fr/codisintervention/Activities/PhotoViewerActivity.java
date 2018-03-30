@@ -55,7 +55,7 @@ public class PhotoViewerActivity extends AppCompatActivity {
         });
     }
 
-    private Bitmap urlImageToBitmap(String imageUrl) throws Exception {
+    public static Bitmap urlImageToBitmap(String imageUrl) throws Exception {
         Bitmap result = null;
         URL url = new URL(imageUrl);
         if(url != null) {
