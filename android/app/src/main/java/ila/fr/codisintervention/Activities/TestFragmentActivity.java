@@ -40,38 +40,38 @@ public class TestFragmentActivity  extends FragmentActivity implements ListeSymb
 
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//
+////        int x = (int)event.getX();
+////        int y = (int)event.getY();
+////        Toast.makeText(this, "x"+x+"y"+y, Toast.LENGTH_SHORT).show();
+//        return true;
+//    }
 
-        int x = (int)event.getX();
-        int y = (int)event.getY();
-        Toast.makeText(this, "x"+x+"y"+y, Toast.LENGTH_SHORT).show();
-        return true;
-    }
-
-    public void clicRouge(View view){
-        couleur = "rouge";
-        Toast.makeText(this, "rouge", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clicVert(View view){
-        couleur = "vert";
-        Toast.makeText(this, "vert", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clicBleu(View view){
-        couleur = "bleu";
-        Toast.makeText(this, "bleu", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clicOrange(View view){
-        couleur = "orange";
-        Toast.makeText(this, "orange", Toast.LENGTH_SHORT).show();
-    }
-
-    public void clicViolet(View view){
-        couleur = "violet";
-        Toast.makeText(this, "violet", Toast.LENGTH_SHORT).show();
-    }
+//    public void clicRouge(View view){
+//        couleur = "rouge";
+//        Toast.makeText(this, "rouge", Toast.LENGTH_SHORT).show();
+//    }
+//
+//    public void clicVert(View view){
+//        couleur = "vert";
+//        Toast.makeText(this, "vert", Toast.LENGTH_SHORT).show();
+//    }
+//
+//    public void clicBleu(View view){
+//        couleur = "bleu";
+//        Toast.makeText(this, "bleu", Toast.LENGTH_SHORT).show();
+//    }
+//
+//    public void clicOrange(View view){
+//        couleur = "orange";
+//        Toast.makeText(this, "orange", Toast.LENGTH_SHORT).show();
+//    }
+//
+//    public void clicViolet(View view){
+//        couleur = "violet";
+//        Toast.makeText(this, "violet", Toast.LENGTH_SHORT).show();
+//    }
 
 }

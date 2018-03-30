@@ -1,14 +1,20 @@
 package ila.fr.codisintervention.Fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -34,7 +40,7 @@ public class ListeSymbolesFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     private ListeSymbolesFragment.OnFragmentInteractionListener mListener;
-
+    Intent intent;
     public ListeSymbolesFragment() {
         // Required empty public constructor
     }
@@ -59,7 +65,20 @@ public class ListeSymbolesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("custom-event-name"));
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("message");
+            Toast.makeText(context, "azerty", Toast.LENGTH_SHORT).show();
+            Log.d("receiver", "Got message: " + message);
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +88,7 @@ public class ListeSymbolesFragment extends Fragment {
         ajouterImageView(liste, view);
         ajouterImageViewListeners(liste);
         ajouterRadioButtonListeners(view);
+
 
         return view;
     }
@@ -95,6 +115,7 @@ public class ListeSymbolesFragment extends Fragment {
         }
     }
 
+
     public String getCouleur() {
         return couleur;
     }
@@ -110,6 +131,7 @@ public class ListeSymbolesFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 setCouleur("rouge");
+
             }
         });
         RadioButton rbVert = (RadioButton) view.findViewById(R.id.radioButtonvert);
@@ -181,5 +203,11 @@ public class ListeSymbolesFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    @Override
+    public void onDestroy() {
+        // Unregister since the activity is about to be closed.
+        LocalBroadcastManager.getInstance(this.getActivity()).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
 
 }
