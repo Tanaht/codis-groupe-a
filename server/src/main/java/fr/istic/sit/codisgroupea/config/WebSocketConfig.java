@@ -1,5 +1,6 @@
 package fr.istic.sit.codisgroupea.config;
 
+import fr.istic.sit.codisgroupea.handler.HttpHandshakeInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -18,7 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
-        registry.addEndpoint("stomp");
+        registry.addEndpoint("stomp").addInterceptors(new HttpHandshakeInterceptor());
     }
 
 

@@ -207,23 +207,25 @@ public class InterventionSocketController {
      * @return the string
      */
     @MessageMapping(RoutesConfig.CREATE_INTERVENTION_CLIENT)
-    @SendTo({RoutesConfig.CREATE_INTERVENTION_SERVER})
-    public void createIntervention(Principal principal, CreateInterventionMessage dataSentByClient) {
+    public void createIntervention(Principal principal, String dataSentByClient) {
+
+        logger.trace(RoutesConfig.CREATE_INTERVENTION_CLIENT +" --> data receive "+dataSentByClient);
+
         Gson jason = new Gson();
 
-        logger.trace(RoutesConfig.CREATE_INTERVENTION_CLIENT +" --> data receive "+jason.toJson(dataSentByClient));
+        CreateInterventionMessage dataFromClient = jason.fromJson(dataSentByClient,CreateInterventionMessage.class);
 
 
-        SinisterCode sinisterCode = sinisterCodeRepository.findByCode(dataSentByClient.code);
+        SinisterCode sinisterCode = sinisterCodeRepository.findByCode(dataFromClient.code);
 
-        fr.istic.sit.codisgroupea.model.entity.Position pos = dataSentByClient.location.toPositionEntity();
+        fr.istic.sit.codisgroupea.model.entity.Position pos = dataFromClient.location.toPositionEntity();
 
         fr.istic.sit.codisgroupea.model.entity.Position posPersisted = positionRepository.save(pos);
 
         Intervention intervention = new Intervention();
         intervention.setDate(new Date().getTime());
         intervention.setPosition(posPersisted);
-        intervention.setAddress(dataSentByClient.address);
+        intervention.setAddress(dataFromClient.address);
         intervention.setSinisterCode(sinisterCode);
         intervention.setOpened(true);
 
@@ -232,7 +234,7 @@ public class InterventionSocketController {
         InterventionCreatedMessage toReturn = new InterventionCreatedMessage(
                 persisted.getId(),
                 persisted.getDate(),
-                persisted.getSinisterCode().toString(),
+                persisted.getSinisterCode().getCode(),
                 persisted.getAddress(),
                 true,
                 new Position(persisted.getPosition()));
@@ -252,8 +254,7 @@ public class InterventionSocketController {
      * @return the string
      */
     @MessageMapping(RoutesConfig.CLOSE_INTERVENTION_CLIENT)
-    @SendTo({RoutesConfig.CLOSE_INTERVENTION_SERVER})
-    public String closeIntervention(@DestinationVariable("id") final int id,
+    public void closeIntervention(@DestinationVariable("id") final int id,
                                        Principal principal,
                                        String dataSentByClient) {
         logger.trace(RoutesConfig.CLOSE_INTERVENTION_CLIENT +" --> data receive "+dataSentByClient);
@@ -269,6 +270,6 @@ public class InterventionSocketController {
         String toJson = jason.toJson(toSend);
         logger.trace(RoutesConfig.CLOSE_INTERVENTION_SERVER +" --> data send "+toJson);
 
-        return toJson;
+        simpMessagingTemplate.convertAndSend(RoutesConfig.CLOSE_INTERVENTION_SERVER, toJson);
     }
 }
