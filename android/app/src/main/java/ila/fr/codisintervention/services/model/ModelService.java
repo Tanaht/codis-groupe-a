@@ -156,6 +156,11 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     }
 
     @Override
+    public Intervention getIntervention(int id) {
+        return model.getMessageInitialize().getInterventionById(id);
+    }
+
+    @Override
     public List<Code> getCodes() {
         return model.getMessageInitialize().getCodes();
     }
