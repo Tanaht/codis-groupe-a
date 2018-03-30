@@ -34,6 +34,8 @@
     <string name="msg_success_credentials">Connexions effectué avec succès !</string>
 
     <!-- Error Message must be prefixed by error-->
+    <string name="error_converting_address2geocode">Aucune coordonnée n\'a pu être récupéré pour cette adresse, veuillez choisir une autre adresse !</string>
+
     <string name="error_invalid_credentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>
     <string name="title_activity_map">Map</string>
 
