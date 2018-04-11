@@ -3,7 +3,7 @@ package ila.fr.codisintervention.Services;
 import java.util.ArrayList;
 import java.util.List;
 
-import ila.fr.codisintervention.Entities.SymboleDispo;
+import ila.fr.codisintervention.entities.SymboleDispo;
 import ila.fr.codisintervention.R;
 
 /**

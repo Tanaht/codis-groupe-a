@@ -2,7 +2,7 @@ package ila.fr.codisintervention.Services;
 
 import java.util.ArrayList;
 
-import ila.fr.codisintervention.Entities.Moyen;
+import ila.fr.codisintervention.entities.Moyen;
 
 /**
  * Created by aminesoumiaa on 23/03/18.

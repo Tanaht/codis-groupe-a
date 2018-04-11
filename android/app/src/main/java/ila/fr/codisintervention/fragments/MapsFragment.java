@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Fragments;
+package ila.fr.codisintervention.fragments;
 
 import android.annotation.SuppressLint;
 import android.support.v4.app.Fragment;
@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ila.fr.codisintervention.Activities.MapActivity;
-import ila.fr.codisintervention.Entities.SymboleDispo;
+import ila.fr.codisintervention.activities.MapActivity;
+import ila.fr.codisintervention.entities.SymboleDispo;
 import ila.fr.codisintervention.R;
 
 public class MapsFragment extends Fragment {

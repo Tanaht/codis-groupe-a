@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Fragments;
+package ila.fr.codisintervention.fragments;
 
 import android.content.Context;
 import android.net.Uri;

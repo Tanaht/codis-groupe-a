@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import ila.fr.codisintervention.Entities.Moyen;
+import ila.fr.codisintervention.entities.Moyen;
 import ila.fr.codisintervention.R;
 
 /**

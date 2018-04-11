@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Activities;
+package ila.fr.codisintervention.activities;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
-import ila.fr.codisintervention.Entities.Moyen;
+import ila.fr.codisintervention.entities.Moyen;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.InterventionService;
 import ila.fr.codisintervention.Utils.GooglePlacesAutocompleteAdapter;

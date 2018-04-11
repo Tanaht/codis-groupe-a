@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Activities;
+package ila.fr.codisintervention.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;

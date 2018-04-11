@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Fragments;
+package ila.fr.codisintervention.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;

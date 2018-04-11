@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Entities;
+package ila.fr.codisintervention.entities;
 
 import android.widget.ImageView;
 

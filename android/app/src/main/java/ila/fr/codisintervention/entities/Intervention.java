@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Entities;
+package ila.fr.codisintervention.entities;
 
 /**
  * Created by aminesoumiaa on 23/03/18.

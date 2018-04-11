@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Activities;
+package ila.fr.codisintervention.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

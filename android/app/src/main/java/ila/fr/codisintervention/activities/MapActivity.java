@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Activities;
+package ila.fr.codisintervention.activities;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
@@ -17,9 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import ila.fr.codisintervention.Entities.SymboleDispo;
-import ila.fr.codisintervention.Fragments.ListeSymbolesFragment;
-import ila.fr.codisintervention.Fragments.MapsFragment;
+import ila.fr.codisintervention.entities.SymboleDispo;
+import ila.fr.codisintervention.fragments.ListeSymbolesFragment;
+import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.models.messages.Symbol;

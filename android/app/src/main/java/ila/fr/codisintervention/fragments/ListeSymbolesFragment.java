@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Fragments;
+package ila.fr.codisintervention.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -12,7 +12,7 @@ import android.widget.RadioButton;
 
 import java.util.List;
 
-import ila.fr.codisintervention.Entities.SymboleDispo;
+import ila.fr.codisintervention.entities.SymboleDispo;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.Services.SymboleDispoService;
 

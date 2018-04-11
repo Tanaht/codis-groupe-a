@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ila.fr.codisintervention.Activities.NewInterventionActivity">
+    tools:context="ila.fr.codisintervention.activities.NewInterventionActivity">
 
     <fragment
         android:id="@+id/fragment_place"
-        android:name="ila.fr.codisintervention.Fragments.FragmentInterventionForm"
+        android:name="ila.fr.codisintervention.fragments.FragmentInterventionForm"
         android:layout_width="match_parent"
         android:layout_height="241dp" />
 
