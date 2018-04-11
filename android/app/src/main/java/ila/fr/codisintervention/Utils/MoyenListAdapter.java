@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Utils;
+package ila.fr.codisintervention.utils;
 
 import android.content.Context;
 import android.util.Log;

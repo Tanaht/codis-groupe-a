@@ -14,7 +14,7 @@ import java.util.List;
 
 import ila.fr.codisintervention.entities.SymboleDispo;
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.Services.SymboleDispoService;
+import ila.fr.codisintervention.services.SymboleDispoService;
 
 /**
  * A simple {@link Fragment} subclass.

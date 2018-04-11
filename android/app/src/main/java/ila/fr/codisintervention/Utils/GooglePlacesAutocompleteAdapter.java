@@ -1,8 +1,6 @@
-package ila.fr.codisintervention.Utils;
+package ila.fr.codisintervention.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;

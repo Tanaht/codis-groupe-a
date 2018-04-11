@@ -22,13 +22,13 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.Utils.InterventionListAdapter;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
+import ila.fr.codisintervention.utils.InterventionListAdapter;
 
 public class InterventionsListActivity extends AppCompatActivity {
     protected final static String TAG = "InterventionsListAct";

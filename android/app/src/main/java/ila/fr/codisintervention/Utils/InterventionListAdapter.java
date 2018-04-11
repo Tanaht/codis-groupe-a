@@ -1,7 +1,6 @@
-package ila.fr.codisintervention.Utils;
+package ila.fr.codisintervention.utils;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.models.messages.Intervention;
 
 /**
  * Created by aminesoumiaa on 23/03/18.
