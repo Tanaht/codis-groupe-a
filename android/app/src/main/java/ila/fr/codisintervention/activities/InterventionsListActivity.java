@@ -11,8 +11,6 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,11 +28,15 @@ import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ila.fr.codisintervention.utils.InterventionListAdapter;
 
+/**
+ * This activity is used to show to the user the List of Interventions
+ */
+@SuppressWarnings("squid:MaximumInheritanceDepth")
 public class InterventionsListActivity extends AppCompatActivity {
-    protected final static String TAG = "InterventionsListAct";
+    protected static final String TAG = "InterventionsListAct";
 
     InterventionListAdapter dataAdapter;
-    ArrayList<Intervention> interventionList;
+
     private ServiceConnection serviceConnection;
     private WebsocketServiceBinder.IMyServiceMethod service;
 
@@ -52,14 +54,13 @@ public class InterventionsListActivity extends AppCompatActivity {
 
     private void bindToService() {
         serviceConnection = new ServiceConnection() {
-            public void onServiceDisconnected(ComponentName name) {}
+            public void onServiceDisconnected(ComponentName name) {
+                Log.w(TAG, "The service " + name + " is disconnected");
+            }
             public void onServiceConnected(ComponentName arg0, IBinder binder) {
 
                 //on récupère l'instance du service dans l'activité
                 service = ((WebsocketServiceBinder)binder).getService();
-
-                //on genère l'évènement indiquant qu'on est "bindé"
-//                handler.sendEmptyMessage(ON_BIND);
             }
         };
 
@@ -81,7 +82,9 @@ public class InterventionsListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onServiceDisconnected(ComponentName name) {}
+            public void onServiceDisconnected(ComponentName name) {
+                Log.w(TAG, "The service " + name + " is disconnected");
+            }
         };
 
 
@@ -112,22 +115,19 @@ public class InterventionsListActivity extends AppCompatActivity {
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // When clicked, show a toast with the TextView text
-                Intervention intervention = (Intervention) parent.getItemAtPosition(position);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            // When clicked, show a toast with the TextView text
+            Intervention intervention = (Intervention) parent.getItemAtPosition(position);
 
-                Toasty.info(getApplicationContext(),
-                        "Intervention with id:"+intervention.getId()+" has been sent to wss",
-                        Toast.LENGTH_SHORT, true)
+            Toasty.info(getApplicationContext(),
+                    "Intervention with id:" + intervention.getId() + " has been sent to wss",
+                    Toast.LENGTH_SHORT, true)
                     .show();
 
-                // Send Intervention choice to WSS
-               service.chooseIntervention(intervention.getId());
-               Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
-               startActivity(mapIntent);
-            }
+            // Send Intervention choice to WSS
+            service.chooseIntervention(intervention.getId());
+            Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
+            startActivity(mapIntent);
         });
     }
 
