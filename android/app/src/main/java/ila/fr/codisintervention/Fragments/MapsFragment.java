@@ -59,7 +59,7 @@ public class MapsFragment extends Fragment {
     int cpt_id = 1;
     //list of points for the drone's course
     Map<Integer, DronePoint> course = new TreeMap<Integer, DronePoint>();
-    List<MarkerOptions> markers = new ArrayList<MarkerOptions>();
+    Map<String,MarkerOptions> markers = new HashMap<String,MarkerOptions>();
     MapView mMapView;
     private GoogleMap googleMap;
     private final static int LOCATION_REQ_CODE = 456;
@@ -86,8 +86,8 @@ public class MapsFragment extends Fragment {
             addMarker_Zoom(point);
         }
 
-        for(MarkerOptions mo : markers){
-            googleMap.addMarker(mo);
+        for(String str : markers.keySet()){
+            googleMap.addMarker(markers.get(str));
         }
     }
 
@@ -145,17 +145,21 @@ public class MapsFragment extends Fragment {
                      */
                 googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
                     Integer num;
+                    String idMarker;
 
                     @Override
                     public void onMarkerDragStart(Marker marker) {
                         if (!marker.getTitle().equals("")) {
-                            num = new Integer(marker.getTitle());   // the id of the point = marker's title
+                            num = new Integer(marker.getTitle());   // the id of the point = marker's title for drone's course
+                        }else{
+                            num=null;
+                            idMarker = marker.getId();
                         }
                     }
 
                     @Override
                     public void onMarkerDrag(Marker marker) {
-                        if (num != null) {                        // update des coordonnées du marker
+                        if (num != null) {                        // update marker for drone
                             course.get(num).lat = marker.getPosition().latitude;
                             course.get(num).lon = marker.getPosition().longitude;
                         }
@@ -163,6 +167,17 @@ public class MapsFragment extends Fragment {
 
                     @Override
                     public void onMarkerDragEnd(Marker marker) {
+                        if (num == null) {
+                            for(String str : markers.keySet()){
+                                if (str.equals(idMarker)) {
+                                    MarkerOptions mo = markers.get(str);
+                                    mo.position(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+                                    markers.put(marker.getId(), mo);
+                                    markers.remove(str);
+                                    //markers.get(str).position(new LatLng(marker.getPosition().latitude,marker.getPosition().longitude));
+                                }
+                            }
+                        }
                         updateUI(googleMap);                    // refresh the map
                     }
                 });
@@ -206,8 +221,8 @@ public class MapsFragment extends Fragment {
     /* For dropping a marker Coord at a point on the MapActivity */
     public void addCustomMarker_Zoom(LatLng Coord, Bitmap Customizer) {
         MarkerOptions mo = new MarkerOptions().position(Coord).draggable(true).title("").snippet("").icon(BitmapDescriptorFactory.fromBitmap(Customizer));
-        googleMap.addMarker(mo);
-        markers.add(mo);
+        Marker mark = googleMap.addMarker(mo);
+        markers.put(mark.getId(),mo);
     }
 
     /* For zooming automatically to the location of the marker */
