@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ila.fr.codisintervention.codisintervention.MainActivity">
+    tools:context="ila.fr.codisintervention.activities.MainActivity">
 
     <TextView
         android:id="@+id/Color"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView_login"
+        android:id="@+id/usernameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -30,7 +30,7 @@
         android:shadowColor="@android:color/black"
         android:shadowDx="2"
         android:shadowDy="2"
-        android:text="@string/lbl_login"
+        android:text="@string/usernameLabel"
         android:textColor="@android:color/background_light"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,7 +38,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText_login"
+        android:id="@+id/usernameEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -55,10 +55,10 @@
         android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_login" />
+        app:layout_constraintTop_toBottomOf="@+id/usernameTextView" />
 
     <TextView
-        android:id="@+id/textView_mdp"
+        android:id="@+id/passwordTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -72,10 +72,10 @@
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_login" />
+        app:layout_constraintTop_toBottomOf="@+id/usernameEditText" />
 
     <EditText
-        android:id="@+id/editText_mdp"
+        android:id="@+id/passwordEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -92,10 +92,10 @@
         android:text="tttt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_mdp" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextView" />
 
     <Button
-        android:id="@+id/button_valider"
+        android:id="@+id/submitButton"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -107,7 +107,7 @@
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_mdp" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -120,7 +120,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_valider"
+        app:layout_constraintTop_toBottomOf="@+id/submitButton"
         app:layout_constraintVertical_bias="0.409"
         app:srcCompat="@drawable/pompier" />
 

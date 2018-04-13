@@ -11,11 +11,10 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
@@ -23,144 +22,130 @@ import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
-import ua.naiksoftware.stomp.client.StompClient;
 
+/**
+ * Entrypoint Activity of Application
+ * In this activity user has to fill his credentials to attempt connection to the application.
+ */
+@SuppressWarnings("squid:MaximumInheritanceDepth")
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private StompClient client;
-    private String login;
-    private String motDePasse;
+    /**
+     * EditText used to show to user a username editable field and retrieve value from it
+     */
+    private EditText usernameEditText;
 
-    private EditText editText_login;
-    private EditText editText_mdp;
-    private Button boutonValider;
+    /**
+     * EditText used to show to user a password editable field and retrieve value from it
+     */
+    private EditText passwordEditText;
 
-
-    // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.
+    /**
+     * ServiceConnection instance with the WebSocketService
+     */
     private ServiceConnection webSocketServiceConnection;
+
+    /**
+     * Interface delivered by WebSocketService to be used by other android Component.
+     */
+    private WebsocketServiceBinder.IMyServiceMethod webSocketService;
+
+    /**
+     * ServiceConnection instance with the ModelService
+     */
     private ServiceConnection modelServiceConnection;
 
-    private WebsocketServiceBinder.IMyServiceMethod websocketService;
+    /**
+     * Interface delivered by ModelService to be used by other android Component, the purpose of this is to update the model.
+     */
     private ModelServiceBinder.IMyServiceMethod modelService;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
-        editText_login = (EditText) this.findViewById(R.id.editText_login);
-        editText_mdp = (EditText) this.findViewById(R.id.editText_mdp);
 
+        usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
+        passwordEditText = (EditText) this.findViewById(R.id.passwordEditText);
 
-        boutonValider = ((Button)this.findViewById(R.id.button_valider));
-        boutonValider.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (verificationSaisie()){
-                    connexion();
-                }
-            }
-        });
+        //TODO: Ugly, but less with lambda, see the wiki about coding convention: Used android:onClick in related xml layout file to avoid subscribing listener in the code.
+        this.findViewById(R.id.submitButton).setOnClickListener(view -> attemptConnection());
 
         bindToService();
     }
 
+    /**
+     * TODO: It could be mutualized because almost all Activities has to bind to ModelService or WebSocketService -> A separated class that do that has to be created ! like an Interface ModelServiceAware and WebsocketServiceAware, or a superclass Activity aware of services
+     * Method used to bind InterventionListActivity to WebsocketService and ModelService, with that, MainActivity is aware of ModelService and WebSocketService
+     */
     private void bindToService() {
         webSocketServiceConnection = new ServiceConnection() {
-            public void onServiceDisconnected(ComponentName name) {}
+            public void onServiceDisconnected(ComponentName name) {
+                Log.w(TAG, "The Service " + name + " is disconnected");
+            }
             public void onServiceConnected(ComponentName arg0, IBinder binder) {
-                //on récupère l'instance du websocketService dans l'activité
-                websocketService = ((WebsocketServiceBinder)binder).getService();
-
-                //on genère l'évènement indiquant qu'on est "bindé"
-//                handler.sendEmptyMessage(ON_BIND);
+                webSocketService = ((WebsocketServiceBinder)binder).getService();
             }
         };
 
         modelServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder binder) {
-                //on récupère l'instance du modelService dans l'activité
                 modelService = ((ModelServiceBinder)binder).getService();
             }
 
             @Override
-            public void onServiceDisconnected(ComponentName name) {}
+            public void onServiceDisconnected(ComponentName name) {
+                Log.w(TAG, "The Service " + name + " is disconnected");
+            }
         };
-
-
-        // Start the service by the method startService() prevent the service to be free if the activity is free.
 
         //Binding Activity with ModelService
         startService(new Intent(getApplicationContext(), ModelService.class));
         Intent intentModelService = new Intent(getApplicationContext(), ModelService.class);
-        //lance le binding du websocketService
+        //launch binding of ModelService
         bindService(intentModelService, modelServiceConnection, Context.BIND_AUTO_CREATE);
 
 
         // Binding Activity with WebSocketService
         startService(new Intent(getApplicationContext(), WebsocketService.class));
         Intent intentWebsocketService = new Intent(getApplicationContext(), WebsocketService.class);
-        //lance le binding du websocketService
+        //launch binding of webSocketService
         bindService(intentWebsocketService, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
-
-
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //on supprimer le binding entre l'activité et le websocketService.
-        if(webSocketServiceConnection != null)
-            unbindService(webSocketServiceConnection);
-
-        if(modelServiceConnection != null)
-            unbindService(modelServiceConnection);
     }
 
     /**
-     * Méthode qui vérifie que l'utilisateur a saisi un login et un mot de passe
-     *
-     * @return
+     * Check credential entered by user to test if it met with the validation criteria and if it is, attempt a connection with the server.
+     * FIXME: Due to WebSocket Stomp implementation bug, we cannot know if the connection was successfull or not.
      */
-    private boolean verificationSaisie(){
-        login = editText_login.getText().toString().trim();
-        motDePasse = editText_mdp.getText().toString().trim();
-        if (login.equals("")) {
-            Toast.makeText(this, "Vous devez saisir un login", Toast.LENGTH_SHORT).show();
-            return false;
+    private void attemptConnection(){
+        String username = usernameEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+
+        if(username.length() == 0 && password.length() == 0) {
+            Toasty.error(getApplicationContext(), getString(R.string.errorIncompleteCredentials), Toast.LENGTH_SHORT, true).show();
+        } else {
+            webSocketService.connect(username, password);
         }
-        else if (motDePasse.equals("")) {
-            Toast.makeText(this, "Vous devez saisir un mot de passe", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
     }
 
     /**
-     * Méthode qui réalise la connexion avec le serveur.
-     * En fonction de la réponse du serveur, l'utilisateur est dirigé vers la page codis ou pompier.
+     * Subscribe to Intents that will be used to update this Activity Model.
      */
-    private void connexion() {
-        websocketService.connect(login, motDePasse);
-    }
-
-
     @Override
     public void onResume() {
         super.onResume();
         // This registers mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(ModelConstants.ACTION_INITIALIZE_APPLICATION));
-//        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_ERROR));
-//        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(WebsocketService.ACTION_AUTHENTICATION_SUCCESS));
-
-
     }
 
-
-    // Handling the received Intents for the "my-integer" event
+    /**
+     * TODO: To mutualize equally with BindToService method
+     * Define BroadcoastReceiver Instance to get aware when an Intent is send to this activity among other
+     */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -169,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
             // Extract data included in the Intent
 
             if(ModelConstants.ACTION_INITIALIZE_APPLICATION.equals(intent.getAction())) {
-                User user = modelService.getUser(); //TODO: retrieve user in model;
+                User user = modelService.getUser();
 
                 if(user.isCodisUser()) {
 
@@ -185,12 +170,29 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    /**
+     * Unsubscribe from Broadcoast Receiver instance
+     */
     @Override
     protected void onPause() {
         // Unregister since the activity is not visible
         LocalBroadcastManager.getInstance(this)
                 .unregisterReceiver(mMessageReceiver);
         super.onPause();
+    }
+
+    /**
+     * We Unbind from binded service here to avoid memory leaks
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(webSocketServiceConnection != null)
+            unbindService(webSocketServiceConnection);
+
+        if(modelServiceConnection != null)
+            unbindService(modelServiceConnection);
     }
 
 }

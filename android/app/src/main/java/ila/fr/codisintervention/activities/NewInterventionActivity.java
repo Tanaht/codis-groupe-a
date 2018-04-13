@@ -178,7 +178,7 @@ public class NewInterventionActivity extends AppCompatActivity {
                         startActivity(intent);
                     } else {
 
-                        Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
+                        Toasty.error(getApplicationContext(),getString(R.string.errorConvertingAddress2geocode), Toast.LENGTH_LONG).show();
                     }
                 }
             }

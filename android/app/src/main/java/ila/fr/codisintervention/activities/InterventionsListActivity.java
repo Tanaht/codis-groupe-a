@@ -43,12 +43,12 @@ public class InterventionsListActivity extends AppCompatActivity {
     /**
      * ServiceConnection instance with the WebSocketService
      */
-    private ServiceConnection serviceConnection;
+    private ServiceConnection webSocketServiceConnection;
 
     /**
      * Interface delivered by WebSocketService to be used by other android Component.
      */
-    private WebsocketServiceBinder.IMyServiceMethod service;
+    private WebsocketServiceBinder.IMyServiceMethod webSocketService;
 
     /**
      * ServiceConnection instance with the ModelService
@@ -74,14 +74,12 @@ public class InterventionsListActivity extends AppCompatActivity {
      * Method used to bind InterventionListActivity to WebsocketService and ModelService, with that, InterventionListActivity is aware of ModelService and WebSocketService
      */
     private void bindToService() {
-        serviceConnection = new ServiceConnection() {
+        webSocketServiceConnection = new ServiceConnection() {
             public void onServiceDisconnected(ComponentName name) {
-                Log.w(TAG, "The service " + name + " is disconnected");
+                Log.w(TAG, "The Service " + name + " is disconnected");
             }
             public void onServiceConnected(ComponentName arg0, IBinder binder) {
-
-                //on récupère l'instance du service dans l'activité
-                service = ((WebsocketServiceBinder)binder).getService();
+                webSocketService = ((WebsocketServiceBinder)binder).getService();
             }
         };
 
@@ -104,25 +102,20 @@ public class InterventionsListActivity extends AppCompatActivity {
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                Log.w(TAG, "The service " + name + " is disconnected");
+                Log.w(TAG, "The Service " + name + " is disconnected");
             }
         };
 
-
-        //démarre le service si il n'est pas démarré
-        //Le binding du service est configuré avec "BIND_AUTO_CREATE" ce qui normalement
-        //démarre le service si il n'est pas démarrer, la différence ici est que le fait de
-        //démarrer le service par "startService" fait que si l'activité est détruite, le service
-        //reste en vie (obligatoire pour l'application AlarmIngressStyle)
+        //Binding Activity with WebSocketService
         startService(new Intent(this, WebsocketService.class));
         Intent intent = new Intent(this, WebsocketService.class);
-        //lance le binding du service
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        //launch binding of WebSocketService
+        bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
 
         //Binding Activity with ModelService
         startService(new Intent(this, ModelService.class));
         intent = new Intent(this, ModelService.class);
-        //lance le binding du websocketService
+        //launch binding of ModelService
         bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -151,7 +144,7 @@ public class InterventionsListActivity extends AppCompatActivity {
                     .show();
 
             // Send Intervention choice to WSS
-            service.chooseIntervention(intervention.getId());
+            webSocketService.chooseIntervention(intervention.getId());
             Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
             startActivity(mapIntent);
         });
@@ -180,6 +173,9 @@ public class InterventionsListActivity extends AppCompatActivity {
         dataAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Subscribe to Intents that will be used to update this Activity Model.
+     */
     @Override
     public void onResume(){
         super.onResume();
@@ -212,6 +208,9 @@ public class InterventionsListActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Unsubscribe from Broadcoast Receiver instance
+     */
     @Override
     protected void onPause() {
         // Unregister since the activity is not visible
@@ -219,12 +218,16 @@ public class InterventionsListActivity extends AppCompatActivity {
         super.onPause();
     }
 
+
+    /**
+     * We Unbind from binded service here to avoid memory leak
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         //on supprimer le binding entre l'activité et le websocketService.
-        if(serviceConnection != null)
-            unbindService(serviceConnection);
+        if(webSocketServiceConnection != null)
+            unbindService(webSocketServiceConnection);
 
         if(modelServiceConnection != null)
             unbindService(modelServiceConnection);

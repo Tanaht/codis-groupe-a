@@ -23,7 +23,7 @@
         <item>VLCG</item>
     </string-array>
 
-    <string name="lbl_login">Identifiant</string>
+    <string name="usernameLabel">Identifiant</string>
     <string name="lbl_mdp">Mot de Passe</string>
     <string name="btn_valider">Se connecter</string>
     <string name="lbl_liste_des_interventions">Liste des interventions</string>
@@ -31,12 +31,16 @@
     <string name="lbl_creer_intervention">Créer intervention</string>
 
     <!-- Message must be prefixed by msg-->
-    <string name="msg_success_credentials">Connexions effectué avec succès !</string>
+    <string name="msgSuccessCredentials">Connexion effectué avec succès !</string>
 
-    <!-- Error Message must be prefixed by error-->
-    <string name="error_converting_address2geocode">Aucune coordonnée n\'a pu être récupéré pour cette adresse, veuillez choisir une autre adresse !</string>
+    <!-- Error Message must be prefixed by error -->
+    <string name="errorIncompleteCredentials">Veuillez renseigner votre nom d\'utilisateur et votre mot de passe !</string>
+    <string name="errorInvalidCredentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>
+    <string name="errorConvertingAddress2geocode">Aucune coordonnée n\'a pu être récupéré pour cette adresse, veuillez choisir une autre adresse !</string>
 
-    <string name="error_invalid_credentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>
+
+
+    <!-- TODO: Please update the following strings according to its context -> error, message, warning or label, others ? -->
     <string name="title_activity_map">Map</string>
 
     <string name="action_tableau_moyen">Tableau Moyen</string>
