@@ -29,18 +29,35 @@ import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ila.fr.codisintervention.utils.InterventionListAdapter;
 
 /**
- * This activity is used to show to the user the List of Interventions
+ * This activity is used to show to the user the List of Interventions in progress
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
 public class InterventionsListActivity extends AppCompatActivity {
     protected static final String TAG = "InterventionsListAct";
 
+    /**
+     * InterventionList Adapter between model and view.
+     */
     InterventionListAdapter dataAdapter;
 
+    /**
+     * ServiceConnection instance with the WebSocketService
+     */
     private ServiceConnection serviceConnection;
+
+    /**
+     * Interface delivered by WebSocketService to be used by other android Component.
+     */
     private WebsocketServiceBinder.IMyServiceMethod service;
 
+    /**
+     * ServiceConnection instance with the ModelService
+     */
     private ServiceConnection modelServiceConnection;
+
+    /**
+     * Interface delivered by ModelService to be used by other android Component, the purpose of this is to update the model.
+     */
     private ModelServiceBinder.IMyServiceMethod modelService;
 
     @Override
@@ -52,6 +69,10 @@ public class InterventionsListActivity extends AppCompatActivity {
         bindToService();
     }
 
+    /**
+     * TODO: It could be mutualized because almost all Activities has to bind to ModelService or WebSocketService -> A separated class that do that has to be created ! like an Interface ModelServiceAware and WebsocketServiceAware, or a superclass Activity aware of services
+     * Method used to bind InterventionListActivity to WebsocketService and ModelService, with that, InterventionListActivity is aware of ModelService and WebSocketService
+     */
     private void bindToService() {
         serviceConnection = new ServiceConnection() {
             public void onServiceDisconnected(ComponentName name) {
@@ -105,6 +126,11 @@ public class InterventionsListActivity extends AppCompatActivity {
         bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * Method used to display list in interface,
+     * In this method we instanciate {@link InterventionListAdapter} and initialize correct ClickListener on Intervention Clicked.
+     * @param interventionList list to display
+     */
     private void displayListView(List<Intervention> interventionList){
 
         //create an ArrayAdapter from the String Array
@@ -132,8 +158,8 @@ public class InterventionsListActivity extends AppCompatActivity {
     }
 
     /**
-     * Add new item , and notify to the adapter that item has been added
-     * @param intervention : the new item
+     * Add new {@link Intervention}, and notify to the adapter that intervention has been added
+     * @param intervention : the new intervention
      */
     private void addElement(Intervention intervention) {
         // on insère l'intervention dans la liste des interventions liée à l'adapter
@@ -144,8 +170,8 @@ public class InterventionsListActivity extends AppCompatActivity {
 
 
     /**
-     * Delete item , and notify to the adapter that item has been added
-     * @param position : the position of the item to delete
+     * Delete {@link Intervention} , and notify to the adapter that Intervention has been deleted
+     * @param position : the position of the Intervention to delete
      */
     public void deleteElement(int position) {
         // on supprime l'intervention
@@ -163,6 +189,10 @@ public class InterventionsListActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, interventionListIntentFilter);
     }
 
+    /**
+     * TODO: To mutualize equally with BindToService method
+     * Define BroadcoastReceiver Instance to get aware when an Intent is send to this activity among other
+     */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
