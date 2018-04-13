@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Check credential entered by user to test if it met with the validation criteria and if it is, attempt a connection with the server.
+     * Check credential entered by user to test if it met with the validation criteria and if it is, attempt a connection with the server through {@link WebsocketService}.
      * FIXME: Due to WebSocket Stomp implementation bug, we cannot know if the connection was successfull or not.
      */
     private void attemptConnection(){
