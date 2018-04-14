@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import ila.fr.codisintervention.activities.MapActivity;
-import ila.fr.codisintervention.entities.AvailableSymbol;
+import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.R;
 
 public class MapsFragment extends Fragment {
@@ -122,7 +122,7 @@ public class MapsFragment extends Fragment {
                     @Override
                     public void onMapLongClick(LatLng latLng) {
                             /* add DronePoint */
-                        AvailableSymbol symbole = getSymbolFragment();
+                        SymbolKind symbole = getSymbolFragment();
                         if(symbole!=null) {
                             if (symbole.getIdDrawable() == R.drawable.drone_icon_map) {
                                 DronePoint pt = new DronePoint(cpt_id, latLng.latitude, latLng.longitude);
@@ -188,7 +188,7 @@ public class MapsFragment extends Fragment {
     }
 
     /* Get symbole from activity SymbolFragment */
-    public AvailableSymbol getSymbolFragment(){
+    public SymbolKind getSymbolFragment(){
         return ((MapActivity)getActivity()).getSelectedSymbol();
     }
 

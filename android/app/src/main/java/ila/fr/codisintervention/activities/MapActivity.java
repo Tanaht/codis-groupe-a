@@ -17,7 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import ila.fr.codisintervention.entities.AvailableSymbol;
+import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.fragments.ListeSymbolesFragment;
 import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.R;
@@ -186,14 +186,14 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
 
 //        double x = (double) event.getX();
 //        double y = (double) event.getY();
-//        AvailableSymbol symbole = symbolFragment.getSelectedSymbol();
+//        SymbolKind symbole = symbolFragment.getSelectedSymbol();
 //        Bitmap marker = mapFragment.resizeBitmap(Integer.valueOf(symbole.getId()), 50, 50);
 //        mapFragment.addCustomMarker_Zoom(new LatLng(x,y), marker);
         //Toast.makeText(this, "x" + x + "y" + y, Toast.LENGTH_SHORT).show();
         return true;
     }
 
-    public AvailableSymbol getSelectedSymbol(){
+    public SymbolKind getSelectedSymbol(){
         return this.symbolFragment.getSelectedSymbol();
     }
 

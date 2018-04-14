@@ -12,9 +12,9 @@ import android.widget.RadioButton;
 
 import java.util.List;
 
-import ila.fr.codisintervention.entities.AvailableSymbol;
+import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.services.AvailableSymbolFactory;
+import ila.fr.codisintervention.factory.SymbolKindFactory;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,9 +27,9 @@ import ila.fr.codisintervention.services.AvailableSymbolFactory;
 public class ListeSymbolesFragment extends Fragment {
 
     //Get symbols from model
-    private static List<AvailableSymbol> liste = AvailableSymbolFactory.getAvailableSymbols();
+    private static List<SymbolKind> liste = SymbolKindFactory.getAvailableSymbols();
     private String couleur = "rouge";
-    private AvailableSymbol currentSymbol;
+    private SymbolKind currentSymbol;
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -75,22 +75,22 @@ public class ListeSymbolesFragment extends Fragment {
         return view;
     }
 
-    public void ajouterImageView(List<AvailableSymbol> liste, View view) {
-        for (AvailableSymbol symbole : liste) {
+    public void ajouterImageView(List<SymbolKind> liste, View view) {
+        for (SymbolKind symbole : liste) {
             symbole.setImageView((ImageView) view.findViewById(getResources().getIdentifier(symbole.getId(), "id", getActivity().getPackageName())));
         }
     }
 
-    public void ajouterImageViewListeners(List<AvailableSymbol> liste) {
-        for (AvailableSymbol symbole : liste) {
+    public void ajouterImageViewListeners(List<SymbolKind> liste) {
+        for (SymbolKind symbole : liste) {
             symbole.getImageView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    symbole.getImageView().setImageResource(getResources().getIdentifier(symbole.getIconeSelected(), "drawable", getActivity().getPackageName()));
-                    for (AvailableSymbol symbole2 : liste) {
+                    symbole.getImageView().setImageResource(getResources().getIdentifier(symbole.getSelectedIcon(), "drawable", getActivity().getPackageName()));
+                    for (SymbolKind symbole2 : liste) {
                         symbole2.setSelected(false);
                         if (symbole != symbole2) {
-                            symbole2.getImageView().setImageResource(getResources().getIdentifier(symbole2.getIconeNonSelected(), "drawable", getActivity().getPackageName()));
+                            symbole2.getImageView().setImageResource(getResources().getIdentifier(symbole2.getDefaultIcon(), "drawable", getActivity().getPackageName()));
                         }
                     }
                     symbole.setSelected(true);
@@ -99,8 +99,8 @@ public class ListeSymbolesFragment extends Fragment {
         }
     }
 
-    public AvailableSymbol getSelectedSymbol(){
-        for(AvailableSymbol symbole : liste){
+    public SymbolKind getSelectedSymbol(){
+        for(SymbolKind symbole : liste){
             if(symbole.isSelected()){
                 switch(symbole.getId()){
                     case "ressource_eau":
