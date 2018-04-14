@@ -12,7 +12,7 @@ import ila.fr.codisintervention.R;
  * Created by aminesoumiaa on 22/03/18.
  */
 
-public class FragmentInterventionForm extends Fragment {
+public class InterventionFormFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {

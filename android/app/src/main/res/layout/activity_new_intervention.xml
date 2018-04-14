@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/fragment_place"
-        android:name="ila.fr.codisintervention.fragments.FragmentInterventionForm"
+        android:name="ila.fr.codisintervention.fragments.InterventionFormFragment"
         android:layout_width="match_parent"
         android:layout_height="241dp" />
 

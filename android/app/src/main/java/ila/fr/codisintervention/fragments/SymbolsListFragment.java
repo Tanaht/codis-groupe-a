@@ -19,15 +19,16 @@ import ila.fr.codisintervention.factory.SymbolKindFactory;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ListeSymbolesFragment.OnFragmentInteractionListener} interface
+ * {@link SymbolsListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ListeSymbolesFragment#newInstance} factory method to
+ * Use the {@link SymbolsListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListeSymbolesFragment extends Fragment {
+public class SymbolsListFragment extends Fragment {
 
     //Get symbols from model
     private static List<SymbolKind> liste = SymbolKindFactory.getAvailableSymbols();
+
     private String couleur = "rouge";
     private SymbolKind currentSymbol;
 
@@ -35,9 +36,9 @@ public class ListeSymbolesFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private ListeSymbolesFragment.OnFragmentInteractionListener mListener;
+    private SymbolsListFragment.OnFragmentInteractionListener mListener;
 
-    public ListeSymbolesFragment() {
+    public SymbolsListFragment() {
         // Required empty public constructor
     }
 
@@ -49,8 +50,8 @@ public class ListeSymbolesFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment BlankFragment.
      */
-    public static ListeSymbolesFragment newInstance(String param1, String param2) {
-        ListeSymbolesFragment fragment = new ListeSymbolesFragment();
+    public static SymbolsListFragment newInstance(String param1, String param2) {
+        SymbolsListFragment fragment = new SymbolsListFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -315,8 +316,8 @@ public class ListeSymbolesFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ListeSymbolesFragment.OnFragmentInteractionListener) {
-            mListener = (ListeSymbolesFragment.OnFragmentInteractionListener) context;
+        if (context instanceof SymbolsListFragment.OnFragmentInteractionListener) {
+            mListener = (SymbolsListFragment.OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");

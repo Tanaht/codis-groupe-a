@@ -18,7 +18,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import ila.fr.codisintervention.entities.SymbolKind;
-import ila.fr.codisintervention.fragments.ListeSymbolesFragment;
+import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
@@ -34,7 +34,7 @@ import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UTIL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_VALIDATION_MOYEN;
 
-public class MapActivity extends AppCompatActivity implements ListeSymbolesFragment.OnFragmentInteractionListener {
+public class MapActivity extends AppCompatActivity implements SymbolsListFragment.OnFragmentInteractionListener {
 
     // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.
     private ServiceConnection modelServiceConnection;
@@ -44,7 +44,7 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
 
     private String couleur = "";
 
-    ListeSymbolesFragment symbolFragment;
+    SymbolsListFragment symbolFragment;
     MapsFragment mapFragment;
 
     @Override
@@ -54,7 +54,7 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
         setContentView(R.layout.activity_map);
 
         FragmentManager manager = getSupportFragmentManager();
-        symbolFragment = (ListeSymbolesFragment) manager.findFragmentById(R.id.listSymbolFragment);
+        symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
         mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
     }
 

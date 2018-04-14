@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/listSymbolFragment"
-        android:name="ila.fr.codisintervention.fragments.ListeSymbolesFragment"
+        android:name="ila.fr.codisintervention.fragments.SymbolsListFragment"
         android:layout_width="55dp"
         android:layout_height="match_parent"
         android:layout_marginBottom="8dp"
