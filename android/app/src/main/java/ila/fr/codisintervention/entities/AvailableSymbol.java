@@ -3,10 +3,14 @@ package ila.fr.codisintervention.entities;
 import android.widget.ImageView;
 
 /**
+ * FIXME: Delete as soon as possible
  * Created by christophe on 27/03/18.
+ * Stub waiting for a true model for this, represent a vehicle
+ *
+ * This class is not commented because it has to be removed.
  */
 
-public class SymboleDispo {
+public class AvailableSymbol {
 
     private String id;
 
@@ -16,7 +20,7 @@ public class SymboleDispo {
     private String iconeSelected;
     private boolean selected;
 
-    public SymboleDispo() {
+    public AvailableSymbol() {
         this.id = "";
         this.imageView = null;
         this.iconeSelected = "";
@@ -24,7 +28,7 @@ public class SymboleDispo {
         this.selected = false;
     }
 
-    public SymboleDispo(String id, int idDrawable, String iconeSelected, String iconeNonSelected, boolean selected) {
+    public AvailableSymbol(String id, int idDrawable, String iconeSelected, String iconeNonSelected, boolean selected) {
         this.id = id;
         this.idDrawable = idDrawable;
         this.imageView = null;

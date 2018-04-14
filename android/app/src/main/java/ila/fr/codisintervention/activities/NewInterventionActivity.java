@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
-import ila.fr.codisintervention.entities.Moyen;
+import ila.fr.codisintervention.entities.Vehicle;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.services.InterventionService;
 import ila.fr.codisintervention.utils.GooglePlacesAutocompleteAdapter;
@@ -71,9 +71,9 @@ public class NewInterventionActivity extends AppCompatActivity {
         displaySpinner(codesSinistre);
 
         // get moyenList from server
-        ArrayList<Moyen> interventionMoyens = interventionService.getMoyensDispo();
-        // Moyen List
-        displayListView(interventionMoyens);
+        ArrayList<Vehicle> vehiclesIntervention = interventionService.getMoyensDispo();
+        // Vehicle List
+        displayListView(vehiclesIntervention);
 
         // Send intervention
         checkButtonClick();
@@ -112,11 +112,11 @@ public class NewInterventionActivity extends AppCompatActivity {
         spinnerCodes.setAdapter(adapter);
     }
 
-    private void displayListView(ArrayList<Moyen> moyenList){
+    private void displayListView(ArrayList<Vehicle> vehiclesList){
 
         //create an ArrayAdaptar from the String Array
         dataAdapter = new MoyenListAdapter(this,
-                R.layout.moyen_infos_layout, moyenList);
+                R.layout.moyen_infos_layout, vehiclesList);
         ListView listView = (ListView) findViewById(R.id.listView1);
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
@@ -125,9 +125,9 @@ public class NewInterventionActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // When clicked, show a toast with the TextView text
-                Moyen moyen = (Moyen) parent.getItemAtPosition(position);
+                Vehicle vehicle = (Vehicle) parent.getItemAtPosition(position);
                 Toast.makeText(getApplicationContext(),
-                        "Clicked on Row: " + moyen.getName(),
+                        "Clicked on Row: " + vehicle.getName(),
                         Toast.LENGTH_LONG).show();
             }
         });
@@ -144,11 +144,11 @@ public class NewInterventionActivity extends AppCompatActivity {
                 StringBuffer responseText = new StringBuffer();
                 responseText.append("The following were selected...\n");
 
-                ArrayList<Moyen> moyenList = dataAdapter.getMoyenList();
-                for(int i=0;i<moyenList.size();i++){
-                    Moyen moyen = moyenList.get(i);
-                    if(moyen.isSelected()){
-                        responseText.append("\n" + moyen.getName());
+                ArrayList<Vehicle> vehiclesList = dataAdapter.getVehiclesList();
+                for(int i = 0; i< vehiclesList.size(); i++){
+                    Vehicle vehicle = vehiclesList.get(i);
+                    if(vehicle.isSelected()){
+                        responseText.append("\n" + vehicle.getName());
                     }
                 }
                 String codeSinistre = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();

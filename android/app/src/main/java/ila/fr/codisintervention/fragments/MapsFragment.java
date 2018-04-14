@@ -26,14 +26,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import ila.fr.codisintervention.activities.MapActivity;
-import ila.fr.codisintervention.entities.SymboleDispo;
+import ila.fr.codisintervention.entities.AvailableSymbol;
 import ila.fr.codisintervention.R;
 
 public class MapsFragment extends Fragment {
@@ -124,7 +122,7 @@ public class MapsFragment extends Fragment {
                     @Override
                     public void onMapLongClick(LatLng latLng) {
                             /* add DronePoint */
-                        SymboleDispo symbole = getSymbolFragment();
+                        AvailableSymbol symbole = getSymbolFragment();
                         if(symbole!=null) {
                             if (symbole.getIdDrawable() == R.drawable.drone_icon_map) {
                                 DronePoint pt = new DronePoint(cpt_id, latLng.latitude, latLng.longitude);
@@ -190,7 +188,7 @@ public class MapsFragment extends Fragment {
     }
 
     /* Get symbole from activity SymbolFragment */
-    public SymboleDispo getSymbolFragment(){
+    public AvailableSymbol getSymbolFragment(){
         return ((MapActivity)getActivity()).getSelectedSymbol();
     }
 

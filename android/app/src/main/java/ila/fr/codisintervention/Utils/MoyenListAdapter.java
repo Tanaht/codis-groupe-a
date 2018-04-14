@@ -12,27 +12,27 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import ila.fr.codisintervention.entities.Moyen;
+import ila.fr.codisintervention.entities.Vehicle;
 import ila.fr.codisintervention.R;
 
 /**
  * Created by aminesoumiaa on 22/03/18.
  */
 
-public class MoyenListAdapter extends ArrayAdapter<Moyen> {
+public class MoyenListAdapter extends ArrayAdapter<Vehicle> {
     private final Context context;
-    private ArrayList<Moyen> moyenList;
+    private ArrayList<Vehicle> vehiclesList;
 
     public MoyenListAdapter(Context context, int textViewResourceId,
-                           ArrayList<Moyen> moyenList) {
-        super(context, textViewResourceId, moyenList);
+                           ArrayList<Vehicle> vehiclesList) {
+        super(context, textViewResourceId, vehiclesList);
         this.context = context;
-        this.moyenList = new ArrayList<Moyen>();
-        this.moyenList.addAll(moyenList);
+        this.vehiclesList = new ArrayList<Vehicle>();
+        this.vehiclesList.addAll(vehiclesList);
     }
 
-    public ArrayList<Moyen> getMoyenList() {
-        return moyenList;
+    public ArrayList<Vehicle> getVehiclesList() {
+        return vehiclesList;
     }
 
     private class ViewHolder {
@@ -59,12 +59,12 @@ public class MoyenListAdapter extends ArrayAdapter<Moyen> {
             holder.name.setOnClickListener( new View.OnClickListener() {
                 public void onClick(View v) {
                     CheckBox cb = (CheckBox) v ;
-                    Moyen moyen = (Moyen) cb.getTag();
+                    Vehicle vehicle = (Vehicle) cb.getTag();
                     Toast.makeText(context.getApplicationContext(),
                             "Clicked on Checkbox: " + cb.getText() +
                                     " is " + cb.isChecked(),
                             Toast.LENGTH_LONG).show();
-                    moyen.setSelected(cb.isChecked());
+                    vehicle.setSelected(cb.isChecked());
                 }
             });
         }
@@ -72,11 +72,11 @@ public class MoyenListAdapter extends ArrayAdapter<Moyen> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Moyen moyen = moyenList.get(position);
-        holder.code.setText(" (" +  moyen.getCode() + ")");
-        holder.name.setText(moyen.getName());
-        holder.name.setChecked(moyen.isSelected());
-        holder.name.setTag(moyen);
+        Vehicle vehicle = vehiclesList.get(position);
+        holder.code.setText(" (" +  vehicle.getCode() + ")");
+        holder.name.setText(vehicle.getName());
+        holder.name.setChecked(vehicle.isSelected());
+        holder.name.setTag(vehicle);
 
         return convertView;
     }
