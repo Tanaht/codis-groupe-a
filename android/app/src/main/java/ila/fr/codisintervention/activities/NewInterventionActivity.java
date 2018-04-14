@@ -174,7 +174,7 @@ public class NewInterventionActivity extends AppCompatActivity {
                         service.createIntervention(intervention);
 
                         // Intent to Intervention List Activity
-                        Intent intent = new Intent( getApplicationContext(), codisMainMenu.class);
+                        Intent intent = new Intent( getApplicationContext(), CodisMainMenu.class);
                         startActivity(intent);
                     } else {
 

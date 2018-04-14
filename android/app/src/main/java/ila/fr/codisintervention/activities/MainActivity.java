@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(user.isCodisUser()) {
 
-                    Intent gotoMainMenuCodis = new Intent( MainActivity.this, codisMainMenu.class);
+                    Intent gotoMainMenuCodis = new Intent( MainActivity.this, CodisMainMenu.class);
                     startActivity(gotoMainMenuCodis);
                 }
                 if(user.isSimpleUser()) {
