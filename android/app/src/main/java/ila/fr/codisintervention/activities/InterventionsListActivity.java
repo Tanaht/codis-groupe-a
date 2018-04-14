@@ -64,7 +64,7 @@ public class InterventionsListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interventions_list);
-        setTitle(R.string.IntervenantListPageTitle);
+        setTitle(R.string.title_interventions_in_progress_list);
 
         bindToService();
     }
@@ -91,9 +91,9 @@ public class InterventionsListActivity extends AppCompatActivity {
                 Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
                 if(modelService.getInterventions() == null || modelService.getInterventions().size() == 0){
                     TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
-                    tv.setText(R.string.noInterventionAvailable);
+                    tv.setText(R.string.msg_no_intervention_in_progress);
                     Toasty.warning(getApplicationContext(),
-                            getString(R.string.noInterventionAvailable), Toast.LENGTH_SHORT, true)
+                            getString(R.string.msg_no_intervention_in_progress), Toast.LENGTH_SHORT, true)
                             .show();
                 } else {
                     displayListView(modelService.getInterventions());

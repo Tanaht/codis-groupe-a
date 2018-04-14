@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
         String username = usernameEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
 
-        if(username.length() == 0 && password.length() == 0) {
-            Toasty.error(getApplicationContext(), getString(R.string.errorIncompleteCredentials), Toast.LENGTH_SHORT, true).show();
+        if(username.length() == 0 || password.length() == 0) {
+            Toasty.error(getApplicationContext(), getString(R.string.error_incomplete_credentials), Toast.LENGTH_SHORT, true).show();
         } else {
             webSocketService.connect(username, password);
         }
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if(user.isCodisUser()) {
 
-                    Intent gotoMainMenuCodis = new Intent( MainActivity.this, MainMenuCodis.class);
+                    Intent gotoMainMenuCodis = new Intent( MainActivity.this, codisMainMenu.class);
                     startActivity(gotoMainMenuCodis);
                 }
                 if(user.isSimpleUser()) {

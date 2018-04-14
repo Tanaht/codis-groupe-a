@@ -14,7 +14,7 @@ public class MainMenuIntervenant extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu_intervenant);
-        setTitle(R.string.MenuIntervenantPageTitle);
+        setTitle(R.string.title_user_menu);
 
         Button buttonIntervList = ((Button) this.findViewById(R.id.textView_ListeIntervention2));
         buttonIntervList.setOnClickListener(new View.OnClickListener() {

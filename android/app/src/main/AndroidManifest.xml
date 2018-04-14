@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.MainMenuCodis" />
+        <activity android:name=".activities.codisMainMenu" />
         <activity android:name=".activities.MainMenuIntervenant" />
         <activity android:name=".activities.InterventionsListActivity" />
         <activity android:name=".activities.NewInterventionActivity" />

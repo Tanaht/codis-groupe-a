@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:text="@string/Validate"
+        android:text="@string/label_validate"
         android:textAlignment="center" />
 
 </LinearLayout>

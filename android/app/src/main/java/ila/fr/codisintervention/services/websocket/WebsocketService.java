@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebsocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Demande;
@@ -217,14 +220,17 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
                 case ERROR:
                     Log.d(TAG, "STOMP CONNECTION ERROR");
 
-                    // Notify Registered Activity from SUCCESS AUTH
+                    // Notify Registered Activity from ERROR Connection
+                    Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
                     Intent errorIntent = new Intent(PROTOCOL_ERROR);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
 
                 case CLOSED:
                     Log.d(TAG, "STOMP CONNECTION CLOSED");
-                    // Notify Registered Activity from SUCCESS AUTH
+                    // Notify Registered Activity from CLOSE Connection
+
+                    Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
                     Intent closeIntent  = new Intent(PROTOCOL_CLOSE);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(closeIntent);
                     break;

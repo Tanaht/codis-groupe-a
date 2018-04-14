@@ -53,7 +53,7 @@ public class NewInterventionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_intervention);
-        setTitle(R.string.NewInterventionPageTitle);
+        setTitle(R.string.title_add_new_intervention);
 
         // AutoComplete Address
         AutoCompleteTextView autoCompView = findViewById(R.id.autoCompleteTextView);
@@ -156,7 +156,7 @@ public class NewInterventionActivity extends AppCompatActivity {
                 // Check if address is set
                 if(inputtedAddress.equals("")){
                     Toasty.error(getApplicationContext(),
-                            getString(R.string.interventionNoAddress),
+                            getString(R.string.error_address_field_empty),
                             Toast.LENGTH_LONG).show();
                 } else {
 
@@ -174,11 +174,11 @@ public class NewInterventionActivity extends AppCompatActivity {
                         service.createIntervention(intervention);
 
                         // Intent to Intervention List Activity
-                        Intent intent = new Intent( getApplicationContext(), MainMenuCodis.class);
+                        Intent intent = new Intent( getApplicationContext(), codisMainMenu.class);
                         startActivity(intent);
                     } else {
 
-                        Toasty.error(getApplicationContext(),getString(R.string.errorConvertingAddress2geocode), Toast.LENGTH_LONG).show();
+                        Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
                     }
                 }
             }

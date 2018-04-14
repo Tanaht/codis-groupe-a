@@ -33,7 +33,7 @@
         android:shadowColor="@android:color/black"
         android:shadowDx="2"
         android:shadowDy="2"
-        android:text="@string/lbl_liste_des_interventions"
+        android:text="@string/label_interventions_list"
         android:textColor="@android:color/background_light"
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
