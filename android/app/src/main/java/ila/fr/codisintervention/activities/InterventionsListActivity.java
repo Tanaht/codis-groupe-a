@@ -21,7 +21,7 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
-import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.model.ModelService;
@@ -48,7 +48,7 @@ public class InterventionsListActivity extends AppCompatActivity {
     /**
      * Interface delivered by WebSocketService to be used by other android Component.
      */
-    private WebsocketServiceBinder.IMyServiceMethod webSocketService;
+    private WebSocketServiceBinder.IMyServiceMethod webSocketService;
 
     /**
      * ServiceConnection instance with the ModelService
@@ -79,7 +79,7 @@ public class InterventionsListActivity extends AppCompatActivity {
                 Log.w(TAG, "The Service " + name + " is disconnected");
             }
             public void onServiceConnected(ComponentName arg0, IBinder binder) {
-                webSocketService = ((WebsocketServiceBinder)binder).getService();
+                webSocketService = ((WebSocketServiceBinder)binder).getService();
             }
         };
 

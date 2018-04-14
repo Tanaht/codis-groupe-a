@@ -9,13 +9,18 @@ import ila.fr.codisintervention.models.messages.Symbol;
 
 /**
  * Created by tanaky on 27/03/18.
+ * This class is a binder for the {@link ila.fr.codisintervention.services.websocket.WebsocketService}
+ * it allow other android components like activities to have access to the {@link ila.fr.codisintervention.services.websocket.WebsocketService} instance
  */
 
-public class WebsocketServiceBinder extends Binder {
+public class WebSocketServiceBinder extends Binder {
 
+    /**
+     * Instance of WebSocketService class, it define an interface WebSocketServiceBinder.IMyServiceMethod to allow request through a predefined API.
+     */
     private IMyServiceMethod service;
     //on recoit l'instance du service
-    public WebsocketServiceBinder(IMyServiceMethod service) {
+    public WebSocketServiceBinder(IMyServiceMethod service) {
         super();
         this.service = service;
     }

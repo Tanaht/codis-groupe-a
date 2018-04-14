@@ -32,7 +32,7 @@ import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.services.InterventionService;
 import ila.fr.codisintervention.utils.GooglePlacesAutocompleteAdapter;
 import ila.fr.codisintervention.utils.MoyenListAdapter;
-import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
@@ -47,7 +47,7 @@ public class NewInterventionActivity extends AppCompatActivity {
 
     // ServiceConnection permet de gérer l'état du lien entre l'activité et le service.
     private ServiceConnection serviceConnection;
-    private WebsocketServiceBinder.IMyServiceMethod service;
+    private WebSocketServiceBinder.IMyServiceMethod service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class NewInterventionActivity extends AppCompatActivity {
             public void onServiceConnected(ComponentName arg0, IBinder binder) {
 
                 //on récupère l'instance du service dans l'activité
-                service = ((WebsocketServiceBinder)binder).getService();
+                service = ((WebSocketServiceBinder)binder).getService();
             }
         };
 

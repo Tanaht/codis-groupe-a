@@ -22,7 +22,7 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Demande;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
@@ -43,7 +43,7 @@ import ua.naiksoftware.stomp.client.StompMessage;
  * Created by tanaky on 26/03/18.
  */
 @SuppressWarnings("squid:S1192")
-public class WebsocketService extends Service implements WebsocketServiceBinder.IMyServiceMethod {
+public class WebsocketService extends Service implements WebSocketServiceBinder.IMyServiceMethod {
     private static final String TAG = "WebSocketService";
 
     //FIXME: Export all the constants related to Intent Action in a separacted empty class. For code purpose an Intent action must be a string constant and not an enum.
@@ -170,7 +170,7 @@ public class WebsocketService extends Service implements WebsocketServiceBinder.
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "OnCreate WebSocket Service");
-        binder = new WebsocketServiceBinder(this);
+        binder = new WebSocketServiceBinder(this);
     }
 
 
