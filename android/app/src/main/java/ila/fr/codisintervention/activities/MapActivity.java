@@ -34,6 +34,7 @@ import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UTIL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_VALIDATION_MOYEN;
 
+@SuppressWarnings("squid:MaximumInheritanceDepth")
 public class MapActivity extends AppCompatActivity implements SymbolsListFragment.OnFragmentInteractionListener {
 
     // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.

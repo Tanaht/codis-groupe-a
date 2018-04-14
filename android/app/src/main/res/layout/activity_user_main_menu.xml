@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ila.fr.codisintervention.codisintervention.MainMenuIntervenant">
+    tools:context="ila.fr.codisintervention.activities.UserMainMenu">
 
 
     <TextView
@@ -36,6 +36,7 @@
         android:text="@string/label_interventions_list"
         android:textColor="@android:color/background_light"
         android:textSize="25dp"
+        android:onClick="showInterventionsList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

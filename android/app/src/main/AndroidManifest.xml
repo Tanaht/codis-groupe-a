@@ -35,7 +35,7 @@
         </activity>
 
         <activity android:name=".activities.CodisMainMenu" />
-        <activity android:name=".activities.MainMenuIntervenant" />
+        <activity android:name=".activities.UserMainMenu" />
         <activity android:name=".activities.InterventionsListActivity" />
         <activity android:name=".activities.NewInterventionActivity" />
         <activity

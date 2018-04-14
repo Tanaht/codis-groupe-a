@@ -37,6 +37,7 @@ import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 
+@SuppressWarnings("squid:MaximumInheritanceDepth")
 public class NewInterventionActivity extends AppCompatActivity {
     private static final String TAG = "NewInterventionActivity";
 

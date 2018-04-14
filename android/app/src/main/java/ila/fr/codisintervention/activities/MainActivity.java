@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(user.isSimpleUser()) {
 
-                    Intent gotoMainMenuIntervenant = new Intent( MainActivity.this, MainMenuIntervenant.class);
+                    Intent gotoMainMenuIntervenant = new Intent( MainActivity.this, UserMainMenu.class);
                     startActivity(gotoMainMenuIntervenant);
                 }
             }
