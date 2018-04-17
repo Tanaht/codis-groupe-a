@@ -31,12 +31,13 @@
         android:dividerHeight="2dp" />
 
     <Button
-        android:id="@+id/SendIntervention"
+        android:id="@+id/submitNewIntervention"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:text="@string/label_validate"
+        android:onClick="submitNewInterventionAction"
         android:textAlignment="center" />
 
 </LinearLayout>

@@ -11,9 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import ila.fr.codisintervention.entities.Vehicle;
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.entities.Vehicle;
 
 /**
  * Created by aminesoumiaa on 22/03/18.
@@ -21,17 +22,17 @@ import ila.fr.codisintervention.R;
 
 public class MoyenListAdapter extends ArrayAdapter<Vehicle> {
     private final Context context;
-    private ArrayList<Vehicle> vehiclesList;
+    private List<Vehicle> vehiclesList;
 
     public MoyenListAdapter(Context context, int textViewResourceId,
-                           ArrayList<Vehicle> vehiclesList) {
+                           List<Vehicle> vehiclesList) {
         super(context, textViewResourceId, vehiclesList);
         this.context = context;
         this.vehiclesList = new ArrayList<Vehicle>();
         this.vehiclesList.addAll(vehiclesList);
     }
 
-    public ArrayList<Vehicle> getVehiclesList() {
+    public List<Vehicle> getVehiclesList() {
         return vehiclesList;
     }
 
