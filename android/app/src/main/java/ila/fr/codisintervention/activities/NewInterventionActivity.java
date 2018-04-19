@@ -56,13 +56,13 @@ public class NewInterventionActivity extends AppCompatActivity {
     /**
      * String that represent the address of the intervention filled by the user.
      */
-    String inputtedAddress = "";
+    String inputtedAddress;
 
     /**
      * Tuple of Lat and Lng coordinate that reflect the address from inputtedAddress.
      * @see #getLocationFromAddress(String inputtedAddress)
      */
-    LatLng latlngAddress = null;
+    LatLng latlngAddress;
 
     /**
      * ServiceConnection instance with the WebSocketService
@@ -139,14 +139,9 @@ public class NewInterventionActivity extends AppCompatActivity {
     private void displaySpinner(List<String> sinisterCode){
         Spinner spinnerCodes = (Spinner) findViewById(R.id.CodeList);
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, sinisterCode);
-
-        // Specify the layout to use when the list of choices appears
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sinisterCode);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        // Apply the adapter to the spinners
         spinnerCodes.setAdapter(adapter);
     }
 
@@ -175,14 +170,12 @@ public class NewInterventionActivity extends AppCompatActivity {
      * @param v the view
      */
     public void submitNewInterventionAction(View v) {
-        StringBuilder responseText = new StringBuilder();
-        responseText.append("The following were selected...\n");
-
         List<Vehicle> vehiclesList = dataAdapter.getVehiclesList();
+
         for(int i = 0; i< vehiclesList.size(); i++){
             Vehicle vehicle = vehiclesList.get(i);
             if(vehicle.isSelected()){
-                responseText.append("\n" + vehicle.getName());
+                //TODO: we donothing for now
             }
         }
         String sinisterCode = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();
@@ -201,7 +194,6 @@ public class NewInterventionActivity extends AppCompatActivity {
 
             if(latlngAddress != null) {
                 intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
-                // TODO intervention.setUnit(..) when available
                 // Send Intervention Details to WSS
                 webSocketService.createIntervention(intervention);
 
@@ -229,7 +221,6 @@ public class NewInterventionActivity extends AppCompatActivity {
         List<Address> address = null;
         LatLng resLatLng = null;
         try {
-            // May throw an IOException
 
             address = coder.getFromLocationName(inputtedAddress, 1);
             if (address == null) {
