@@ -10,9 +10,9 @@ public class ModelConstants {
     public static final String ACTION_ADD_INTERVENTION = "add-intervention";
     public static final String ACTION_DELETE_INTERVENTION = "delete-intervention";
 
-    public static final String ACTION_UPDATE_INTERVENTION_UPDATE_UTIL = "update-intervention-update-util";
-    public static final String ACTION_UPDATE_INTERVENTION_CREATE_UTIL = "update-intervention-create-util";
-    public static final String ACTION_UPDATE_INTERVENTION_DELETE_UTIL = "update-intervention-delete-util";
+    public static final String ACTION_UPDATE_INTERVENTION_UPDATE_UNIT = "update-intervention-update-util";
+    public static final String ACTION_UPDATE_INTERVENTION_CREATE_UNIT = "update-intervention-create-util";
+    public static final String ACTION_UPDATE_INTERVENTION_DELETE_UNIT = "update-intervention-delete-util";
 
     public static final String ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL = "update-intervention-update-symbol";
     public static final String ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL = "update-intervention-delete-symbol";

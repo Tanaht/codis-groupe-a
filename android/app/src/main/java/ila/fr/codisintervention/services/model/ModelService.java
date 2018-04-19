@@ -117,13 +117,13 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 Unit unitCreated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_CREATED);
                 model.getCurrentIntervention().getUnits().add(unitCreated);
-                sendToEveryone(unitCreated.getId(), ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_UTIL);
+                sendToEveryone(unitCreated.getId(), ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_UNIT);
                 break;
             case WebsocketService.INTERVENTION_UNIT_UPDATED:
                 Unit unitUpdated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_UPDATED);
                 model.getCurrentIntervention().changeUnit(unitUpdated);
-                sendToEveryone(unitUpdated.getId(), ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UTIL);
+                sendToEveryone(unitUpdated.getId(), ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UNIT);
                 break;
             case WebsocketService.DEMANDE_ACCEPTED:
                 break;
