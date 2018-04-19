@@ -8,36 +8,58 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.models.messages.Intervention;
 
 /**
  * Created by aminesoumiaa on 23/03/18.
+ * Adapter used to be able to convert Model Based Intervention into Intervention selectable in a ListView
  */
 
 public class InterventionListAdapter extends ArrayAdapter<Intervention> {
+    private static final String TAG = "InterventionListAdapter";
+    /**
+     * Application Context
+     */
     private final Context context;
 
-    public InterventionListAdapter(Context context, int textViewResourceId,
-                            ArrayList<Intervention> interventionList) {
-        super(context, textViewResourceId, interventionList);
+    /**
+     * Constructor for the adapter
+     * @param context the application Context
+     * @param listItemLayoutResourceId id of the list item layout used
+     * @param interventionList List of the interventions to show them in the listview
+     */
+    public InterventionListAdapter(Context context, int listItemLayoutResourceId, List<Intervention> interventionList) {
+        super(context, listItemLayoutResourceId, interventionList);
         this.context = context;
     }
 
+    /**
+     * ViewHolder that represent elements bein displayed in a List Item.
+     */
     private class ViewHolder {
+        /**
+         * The Id of an Intervention
+         */
         TextView id;
+
+        /**
+         * The date of creation of an intervention
+         */
         TextView date;
+
+        /**
+         * The Address of the intervention
+         */
         TextView address;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
-        ViewHolder holder = null;
-        //Log.v("ConvertView", String.valueOf(position));
+        ViewHolder holder;
 
         if (convertView == null) {
             LayoutInflater vi = (LayoutInflater)context.getSystemService(

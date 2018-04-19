@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,28 +15,58 @@ import java.util.List;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.entities.Vehicle;
 
+import static android.content.ContentValues.TAG;
+
 /**
  * Created by aminesoumiaa on 22/03/18.
+ * Adapter used to be able to convert Model Based Intervention into Intervention selectable in a ListView
  */
-
 public class VehiclesListAdapter extends ArrayAdapter<Vehicle> {
+    /**
+     * Application Context
+     */
     private final Context context;
+
+    /**
+     * Vehicles List
+     */
     private List<Vehicle> vehiclesList;
 
-    public VehiclesListAdapter(Context context, int textViewResourceId,
+    /**
+     * Constructor for the adapter
+     *
+     * @param context                  the Application Context
+     * @param listItemLayoutResourceId id of the list item layout used
+     * @param vehiclesList             List of the vehicles to show them in the listview
+     */
+    public VehiclesListAdapter(Context context, int listItemLayoutResourceId,
                                List<Vehicle> vehiclesList) {
-        super(context, textViewResourceId, vehiclesList);
+        super(context, listItemLayoutResourceId, vehiclesList);
         this.context = context;
-        this.vehiclesList = new ArrayList<Vehicle>();
+        this.vehiclesList = new ArrayList<>();
         this.vehiclesList.addAll(vehiclesList);
     }
 
+    /**
+     * Gets vehicles list.
+     *
+     * @return the vehicles list
+     */
     public List<Vehicle> getVehiclesList() {
         return vehiclesList;
     }
 
+    /**
+     * ViewHolder that represent elements bein displayed in a List Item.
+     */
     private class ViewHolder {
+        /**
+         * The Code of a vehicle.
+         */
         TextView code;
+        /**
+         * The Name of a vehicle.
+         */
         CheckBox name;
     }
 
@@ -45,7 +74,6 @@ public class VehiclesListAdapter extends ArrayAdapter<Vehicle> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         ViewHolder holder = null;
-        Log.v("ConvertView", String.valueOf(position));
 
         if (convertView == null) {
             LayoutInflater vi = (LayoutInflater)context.getSystemService(
@@ -57,16 +85,13 @@ public class VehiclesListAdapter extends ArrayAdapter<Vehicle> {
             holder.name = (CheckBox) convertView.findViewById(R.id.checkBox1);
             convertView.setTag(holder);
 
-            holder.name.setOnClickListener( new View.OnClickListener() {
-                public void onClick(View v) {
-                    CheckBox cb = (CheckBox) v ;
-                    Vehicle vehicle = (Vehicle) cb.getTag();
-                    Toast.makeText(context.getApplicationContext(),
-                            "Clicked on Checkbox: " + cb.getText() +
-                                    " is " + cb.isChecked(),
-                            Toast.LENGTH_LONG).show();
-                    vehicle.setSelected(cb.isChecked());
-                }
+            holder.name.setOnClickListener(v -> {
+                CheckBox cb = (CheckBox) v ;
+                Vehicle vehicle = (Vehicle) cb.getTag();
+
+                Log.d(TAG, "Vehicle checked: " + vehicle.getName());
+
+                vehicle.setSelected(cb.isChecked());
             });
         }
         else {
