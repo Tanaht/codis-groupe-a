@@ -180,7 +180,7 @@ public class InterventionsListActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         IntentFilter interventionListIntentFilter = new IntentFilter();
-        interventionListIntentFilter.addAction(ModelConstants.ACTION_ADD_INTERVENTION);
+        interventionListIntentFilter.addAction(ModelConstants.ADD_INTERVENTION);
         interventionListIntentFilter.addAction(ModelConstants.ACTION_DELETE_INTERVENTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, interventionListIntentFilter);
     }
@@ -195,7 +195,7 @@ public class InterventionsListActivity extends AppCompatActivity {
             int id = (int) intent.getExtras().get("id");
             Intervention intervention = modelService.getInterventions().get(id);
             switch (intent.getAction()){
-                case ModelConstants.ACTION_ADD_INTERVENTION:
+                case ModelConstants.ADD_INTERVENTION:
                     addElement(intervention);
                     break;
                 case ModelConstants.ACTION_DELETE_INTERVENTION:

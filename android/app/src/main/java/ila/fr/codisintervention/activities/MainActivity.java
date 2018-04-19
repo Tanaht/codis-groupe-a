@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         // This registers mMessageReceiver to receive messages.
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(ModelConstants.ACTION_INITIALIZE_APPLICATION));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(ModelConstants.INITIALIZE_APPLICATION));
     }
 
     /**
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Intent Received: " + intent.getAction());
             // Extract data included in the Intent
 
-            if(ModelConstants.ACTION_INITIALIZE_APPLICATION.equals(intent.getAction())) {
+            if(ModelConstants.INITIALIZE_APPLICATION.equals(intent.getAction())) {
                 User user = modelService.getUser();
 
                 if(user.isCodisUser()) {

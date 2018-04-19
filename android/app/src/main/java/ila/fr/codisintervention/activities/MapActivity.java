@@ -25,14 +25,14 @@ import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
 
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_ADD_DEMANDE;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_UNIT;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_UNIT;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UNIT;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_VALIDATION_MOYEN;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_DELETE_UNIT;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT;
+import static ila.fr.codisintervention.services.constants.ModelConstants.VALIDATE_VEHICLE_REQUEST;
 
 /**
  * This activity is used to show the map of an intervention chosen
@@ -82,14 +82,14 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     public void onResume() {
         super.onResume();
         IntentFilter mapIntentFilter = new IntentFilter();
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_CREATE_UNIT);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_UPDATE_UNIT);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_DELETE_UNIT);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL);
-        mapIntentFilter.addAction(ACTION_ADD_DEMANDE);
-        mapIntentFilter.addAction(ACTION_VALIDATION_MOYEN);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_CREATE_UNIT);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_UPDATE_UNIT);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_DELETE_UNIT);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_CREATE_SYMBOL);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_UPDATE_SYMBOL);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_DELETE_SYMBOL);
+        mapIntentFilter.addAction(ADD_VEHICLE_REQUEST);
+        mapIntentFilter.addAction(VALIDATE_VEHICLE_REQUEST);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, mapIntentFilter);
     }
@@ -106,27 +106,27 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
             Unit unit;
 
             switch (intent.getAction()) {
-                case ACTION_UPDATE_INTERVENTION_UPDATE_UNIT:
+                case UPDATE_INTERVENTION_UPDATE_UNIT:
                     unit = modelService.getUnit(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_CREATE_UNIT:
+                case UPDATE_INTERVENTION_CREATE_UNIT:
                     unit = modelService.getUnit(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_DELETE_UNIT:
+                case UPDATE_INTERVENTION_DELETE_UNIT:
                     unit = modelService.getUnit(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL:
+                case UPDATE_INTERVENTION_UPDATE_SYMBOL:
                     symbol = modelService.getSymbol(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL:
+                case UPDATE_INTERVENTION_DELETE_SYMBOL:
                     symbol = modelService.getSymbol(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL:
+                case UPDATE_INTERVENTION_CREATE_SYMBOL:
                     symbol = modelService.getSymbol(id);
                     break;
-                case ACTION_ADD_DEMANDE:
+                case ADD_VEHICLE_REQUEST:
                     break;
-                case ACTION_VALIDATION_MOYEN:
+                case VALIDATE_VEHICLE_REQUEST:
                     unit = modelService.getUnit(id);
                     break;
                 default:

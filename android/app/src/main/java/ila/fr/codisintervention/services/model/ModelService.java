@@ -78,7 +78,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 Gson gson = new GsonBuilder().create();
                 Log.d(TAG, "RetrievedInitializeApplication: " + gson.toJson(initializeApplication));
                 model.setMessageInitialize(initializeApplication);
-                sendToEveryone(-1, ModelConstants.ACTION_INITIALIZE_APPLICATION);
+                sendToEveryone(-1, ModelConstants.INITIALIZE_APPLICATION);
                 break;
             case WebsocketService.INTERVENTION_CHOSEN:
                 model.setCurrentIntervention(InterventionChosen.createByIntervention(intent.getParcelableExtra("INTERVENTION_CHOSEN")));
@@ -89,7 +89,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
             case WebsocketService.INTERVENTION_CREATED:
                 Intervention intervention = intent.getParcelableExtra("INTERVENTION_CREATED");
                 model.getMessageInitialize().getInterventions().add(intervention);
-                sendToEveryone(intervention.getId(), ModelConstants.ACTION_ADD_INTERVENTION);
+                sendToEveryone(intervention.getId(), ModelConstants.ADD_INTERVENTION);
                 break;
             case WebsocketService.INTERVENTION_CLOSED:
                 int id = intent.getIntExtra(WebsocketService.INTERVENTION_CLOSED, -1);
@@ -99,31 +99,31 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
             case WebsocketService.INTERVENTION_SYMBOL_CREATED:
                 Symbol symbolCreated = intent.getParcelableExtra(WebsocketService.INTERVENTION_SYMBOL_CREATED);
                 model.getCurrentIntervention().getSymbols().add(symbolCreated);
-                sendToEveryone(symbolCreated.getId(), ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL);
+                sendToEveryone(symbolCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_UPDATED:
                 Symbol symbolUpdated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_SYMBOL_UPDATED);
                 model.getCurrentIntervention()
                         .changeSymbol(symbolUpdated);
-                sendToEveryone(symbolUpdated.getId(), ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL);
+                sendToEveryone(symbolUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_DELETED:
                 int idSymbol = intent.getIntExtra(WebsocketService.INTERVENTION_SYMBOL_DELETED, -1);
                 model.getCurrentIntervention().deleteSymbolById(idSymbol);
-                sendToEveryone(idSymbol, ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL);
+                sendToEveryone(idSymbol, ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_UNIT_CREATED:
                 Unit unitCreated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_CREATED);
                 model.getCurrentIntervention().getUnits().add(unitCreated);
-                sendToEveryone(unitCreated.getId(), ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_UNIT);
+                sendToEveryone(unitCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT);
                 break;
             case WebsocketService.INTERVENTION_UNIT_UPDATED:
                 Unit unitUpdated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_UPDATED);
                 model.getCurrentIntervention().changeUnit(unitUpdated);
-                sendToEveryone(unitUpdated.getId(), ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UNIT);
+                sendToEveryone(unitUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT);
                 break;
             case WebsocketService.DEMANDE_ACCEPTED:
                 break;

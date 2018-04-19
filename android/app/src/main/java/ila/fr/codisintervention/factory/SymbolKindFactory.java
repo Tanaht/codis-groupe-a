@@ -8,8 +8,8 @@ import ila.fr.codisintervention.R;
 
 /**
  * Created by christophe on 27/03/18.
+ * TODO: The finality is to refactor this Factory (an enum perhaps ?)
  */
-
 public class SymbolKindFactory {
 
     private SymbolKindFactory() {
