@@ -24,16 +24,8 @@
         android:text="@string/label_intervention_address"
         android:textSize="16sp" />
 
-    <!--EditText
-        android:id="@+id/interventionAddress"
-        android:layout_width="match_parent"
-        android:layout_height="34dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="40dp"
-        android:textSize="12sp"
-        tools:text="ggggfffF" /-->
     <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
+        android:id="@+id/autocomplete_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"

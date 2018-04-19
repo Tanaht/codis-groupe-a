@@ -20,12 +20,12 @@ import ila.fr.codisintervention.entities.Vehicle;
  * Created by aminesoumiaa on 22/03/18.
  */
 
-public class MoyenListAdapter extends ArrayAdapter<Vehicle> {
+public class VehiclesListAdapter extends ArrayAdapter<Vehicle> {
     private final Context context;
     private List<Vehicle> vehiclesList;
 
-    public MoyenListAdapter(Context context, int textViewResourceId,
-                           List<Vehicle> vehiclesList) {
+    public VehiclesListAdapter(Context context, int textViewResourceId,
+                               List<Vehicle> vehiclesList) {
         super(context, textViewResourceId, vehiclesList);
         this.context = context;
         this.vehiclesList = new ArrayList<Vehicle>();

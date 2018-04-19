@@ -32,8 +32,8 @@ import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.InterventionService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
-import ila.fr.codisintervention.utils.GooglePlacesAutocompleteAdapter;
-import ila.fr.codisintervention.utils.MoyenListAdapter;
+import ila.fr.codisintervention.utils.AutocompleteAdapter;
+import ila.fr.codisintervention.utils.VehiclesListAdapter;
 
 /**
  * This activity manage the interface used by Codis User to create a new Intervention
@@ -51,7 +51,7 @@ public class NewInterventionActivity extends AppCompatActivity {
     /**
      * An Adapter used to adapt the Model of a Vehicle with it's representation in the interface.
      */
-    MoyenListAdapter dataAdapter;
+    VehiclesListAdapter dataAdapter;
 
     /**
      * String that represent the address of the intervention filled by the user.
@@ -84,28 +84,30 @@ public class NewInterventionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_intervention);
         setTitle(R.string.title_add_new_intervention);
 
-        // AutoComplete Address
-        AutoCompleteTextView autoCompView = findViewById(R.id.autoCompleteTextView);
-        autoCompView.setAdapter(new GooglePlacesAutocompleteAdapter(this, R.layout.list_item));
+
+        autocompleteTextViewInitialization();
+
+        interventionService = new InterventionService();
+        ArrayList<String> codesSinistre = interventionService.getCodesSinistre();
+        displaySpinner(codesSinistre);
+
+        ArrayList<Vehicle> vehiclesIntervention = interventionService.getMoyensDispo();
+        displayListView(vehiclesIntervention);
+
+        bindToService();
+    }
+
+    /**
+     * This method initialize the AutocompleteTextview it rely on {@link AutocompleteAdapter}
+     */
+    private void autocompleteTextViewInitialization() {
+        AutoCompleteTextView autoCompView = findViewById(R.id.autocomplete_text_view);
+        autoCompView.setAdapter(new AutocompleteAdapter(this, R.layout.list_item));
 
         autoCompView.setOnItemClickListener((parent, view, position, id) -> {
             inputtedAddress = (String) parent.getItemAtPosition(position);
             Log.d(TAG, "Set address to: " + inputtedAddress);
         });
-
-        // get codes sinistre from server
-        interventionService = new InterventionService();
-        ArrayList<String> codesSinistre = interventionService.getCodesSinistre();
-        // Code Sinistre List (Liste déroulante)
-        displaySpinner(codesSinistre);
-
-        // get moyenList from server
-        ArrayList<Vehicle> vehiclesIntervention = interventionService.getMoyensDispo();
-        // Vehicle List
-        displayListView(vehiclesIntervention);
-
-        // Bind activity to websocket webSocketService
-        bindToService();
     }
 
     /**
@@ -153,18 +155,15 @@ public class NewInterventionActivity extends AppCompatActivity {
      * @param vehicles the list of vehicles used to hydrate the ListView
      */
     private void displayListView(List<Vehicle> vehicles){
+        dataAdapter = new VehiclesListAdapter(this, R.layout.moyen_infos_layout, vehicles);
 
-        //create an ArrayAdaptar from the String Array
-        dataAdapter = new MoyenListAdapter(this,
-                R.layout.moyen_infos_layout, vehicles);
         ListView listView = (ListView) findViewById(R.id.listView1);
-        // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
+
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            // When clicked, show a toast with the TextView text
             Vehicle vehicle = (Vehicle) parent.getItemAtPosition(position);
             Log.d(TAG, "VEHICLES ListView: item being clicked: " + vehicle.getName());
-    });
+        });
 
     }
 
@@ -210,7 +209,6 @@ public class NewInterventionActivity extends AppCompatActivity {
                 Intent intent = new Intent( getApplicationContext(), CodisMainMenu.class);
                 startActivity(intent);
             } else {
-
                 Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
             }
         }
