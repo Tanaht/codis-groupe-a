@@ -7,6 +7,8 @@ import ila.fr.codisintervention.models.messages.Intervention;
 
 /**
  * Created by aminesoumiaa on 23/03/18.
+ * FIXME: to remove
+ * It's a Stub to show date on the interface.
  */
 
 public class InterventionService {

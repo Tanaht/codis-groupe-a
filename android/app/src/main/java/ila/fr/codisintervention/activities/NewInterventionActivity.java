@@ -152,7 +152,7 @@ public class NewInterventionActivity extends AppCompatActivity {
     private void displayListView(List<Vehicle> vehicles){
         dataAdapter = new VehiclesListAdapter(this, R.layout.moyen_infos_layout, vehicles);
 
-        ListView listView = (ListView) findViewById(R.id.listView1);
+        ListView listView = (ListView) findViewById(R.id.vehicles_list);
         listView.setAdapter(dataAdapter);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {

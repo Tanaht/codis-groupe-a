@@ -5,7 +5,6 @@
         <item>SAP</item>
         <item>INC</item>
     </string-array>
-    <string name="InterventionMoyensLabel">Liste des moyens :</string>
     <string-array name="InterventionMoyens">
         <item>VSAV</item>
         <item>FPT</item>
@@ -21,11 +20,12 @@
     <string name="title_add_new_intervention">Ajouter une nouvelle intervention</string>
 
     <!-- All strings related to ihm are here, no special convention -->
+    <string name="label_vehicles_list">Liste des moyens :</string>
     <string name="label_username">Identifiant</string>
     <string name="label_password">Mot de Passe</string>
     <string name="button_submit">Connexion</string>
     <string name="label_interventions_list">Liste des interventions</string>
-    <string name="label_vehicles_list">Liste des moyens demandés</string>
+    <string name="label_vehicles_list_asked">Liste des moyens demandés</string>
     <string name="label_create_intervention">Créer intervention</string>
     <string name="label_validate">Valider</string>
     <string name="label_intervention_address">Adresse de l\'intervention :</string>

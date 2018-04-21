@@ -13,8 +13,8 @@
         android:layout_height="241dp" />
 
     <TextView
-        android:id="@+id/moyenLabel"
-        android:text="@string/InterventionMoyensLabel"
+        android:id="@+id/vehicles_label"
+        android:text="@string/label_vehicles_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -22,7 +22,7 @@
         android:textSize="24sp" />
 
     <ListView
-        android:id="@+id/listView1"
+        android:id="@+id/vehicles_list"
         android:layout_width="wrap_content"
         android:layout_height="271dp"
         android:layout_marginLeft="20dp"
