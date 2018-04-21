@@ -9,7 +9,7 @@ import com.google.gson.annotations.Expose;
  * Created by tanaky on 27/03/18.
  */
 
-public class Demande implements Parcelable {
+public class Request implements Parcelable {
 
     @Expose
     private int id;
@@ -17,23 +17,23 @@ public class Demande implements Parcelable {
     @Expose
     private Vehicle vehicle;
 
-    public Demande() {
+    public Request() {
     }
 
-    protected Demande(Parcel in) {
+    protected Request(Parcel in) {
         id = in.readInt();
 //        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
     }
 
-    public static final Creator<Demande> CREATOR = new Creator<Demande>() {
+    public static final Creator<Request> CREATOR = new Creator<Request>() {
         @Override
-        public Demande createFromParcel(Parcel in) {
-            return new Demande(in);
+        public Request createFromParcel(Parcel in) {
+            return new Request(in);
         }
 
         @Override
-        public Demande[] newArray(int size) {
-            return new Demande[size];
+        public Request[] newArray(int size) {
+            return new Request[size];
         }
     };
 

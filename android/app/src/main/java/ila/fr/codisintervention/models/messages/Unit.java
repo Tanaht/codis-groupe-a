@@ -19,12 +19,14 @@ public class Unit implements Parcelable {
 
     /**
      * Date of the acceptation of this unit
+     * Warning: Do not rename it must match the key of the json message
      */
     @Expose
     private long date_granted;
 
     /**
      * Date of the reservation of this unit
+     * Warning: Do not rename it must match the key of the json message
      */
     @Expose
     private long date_reserved;

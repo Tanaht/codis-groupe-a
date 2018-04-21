@@ -21,6 +21,7 @@ public class Vehicle implements Parcelable {
 
     /**
      * Type of the vehicle
+     * @see Type#label must match with this value.
      */
     @Expose
     private String type;

@@ -7,22 +7,37 @@ import com.google.gson.annotations.Expose;
 
 /**
  * Created by tanaky on 27/03/18.
+ * Represent a SinisterCode in terms of JSON Message
  */
 
 public class Code implements Parcelable {
 
+    /**
+     * String representation of the Sinister Code
+     */
     @Expose
     private String label;
 
+    /**
+     * Description of the SinisterCode
+     */
     @Expose
     private String description;
 
 
+    /**
+     * Constructor that require a Parcel to instanciate a Code Object
+     * @param in the parcel that contain the details of this class
+     */
     public Code(Parcel in) {
         this.label = in.readString();
         this.description = in.readString();
     }
 
+    /**
+     * The constant CREATOR.
+     * Usefull to Parcelize an instance of this class  {@link Parcelable}
+     */
     public static final Creator<Code> CREATOR = new Creator<Code>() {
         @Override
         public Code createFromParcel(Parcel in) {

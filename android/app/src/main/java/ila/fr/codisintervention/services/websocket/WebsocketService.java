@@ -24,7 +24,7 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
-import ila.fr.codisintervention.models.messages.Demande;
+import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Payload;
@@ -528,17 +528,17 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
     /**
-     * In this channel we subscribe to channels of available demandes
-     * @param demandes
+     * In this channel we subscribe to channels of available requests
+     * @param requests
      */
-    private void performDemandeSubscriptionInitialization(List<Demande> demandes) {
-        for(Demande demande : demandes) {
+    private void performDemandeSubscriptionInitialization(List<Request> requests) {
+        for(Request request : requests) {
 
-            this.client.topic("/topic/demandes/" + demande.getId() + "/accepted").subscribe(message -> {
-                Log.i(TAG, "[/topic/demandes/" + demande.getId() + "/accepted] Received message: " + message.getPayload());
+            this.client.topic("/topic/requests/" + request.getId() + "/accepted").subscribe(message -> {
+                Log.i(TAG, "[/topic/requests/" + request.getId() + "/accepted] Received message: " + message.getPayload());
             });
-            this.client.topic("/topic/demandes/" + demande.getId() + "/denied").subscribe(message -> {
-                Log.i(TAG, "[/topic/demandes/" + demande.getId() + "/denied] Received message: " + message.getPayload());
+            this.client.topic("/topic/requests/" + request.getId() + "/denied").subscribe(message -> {
+                Log.i(TAG, "[/topic/requests/" + request.getId() + "/denied] Received message: " + message.getPayload());
             });
         }
     }
