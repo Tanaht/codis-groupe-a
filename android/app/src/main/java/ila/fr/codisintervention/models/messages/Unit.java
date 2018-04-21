@@ -7,29 +7,52 @@ import com.google.gson.annotations.Expose;
 
 /**
  * Created by tanaky on 28/03/18.
+ * A Unit is a Vehicle inside of an Intervention
  */
-
 public class Unit implements Parcelable {
 
+    /**
+     * Uniq Identifier
+     */
     @Expose
     private int id;
 
+    /**
+     * Date of the acceptation of this unit
+     */
     @Expose
     private long date_granted;
 
+    /**
+     * Date of the reservation of this unit
+     */
     @Expose
     private long date_reserved;
 
+    /**
+     * Boolean to now if unit is in movement
+     */
     @Expose
     private boolean moving;
 
+    /**
+     * underlying Vehicle instance
+     */
     @Expose
     private Vehicle vehicle;
 
+    /**
+     * Symbol instance that represent the Unit in the Map
+     */
     @Expose
     private Symbol symbol;
 
 
+    /**
+     * Instantiates a new Unit.
+     *
+     * @param in the parcel that contain the details of this class
+     */
     protected Unit(Parcel in) {
         id = in.readInt();
         date_granted = in.readLong();
@@ -38,6 +61,10 @@ public class Unit implements Parcelable {
         vehicle = in.readParcelable(Vehicle.class.getClassLoader());
     }
 
+    /**
+     * Usefull to Parcelize an instance of this class  {@link Parcelable}
+     * The constant CREATOR.
+     */
     public static final Creator<Unit> CREATOR = new Creator<Unit>() {
         @Override
         public Unit createFromParcel(Parcel in) {
@@ -65,10 +92,20 @@ public class Unit implements Parcelable {
 //        dest.writeParcelable(symbol, flags);
     }
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(int id) {
         this.id = id;
     }

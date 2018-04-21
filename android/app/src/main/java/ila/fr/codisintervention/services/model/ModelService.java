@@ -13,7 +13,7 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
-import ila.fr.codisintervention.models.BigModel;
+import ila.fr.codisintervention.models.ApplicationModel;
 import ila.fr.codisintervention.models.InterventionChosen;
 import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
@@ -38,7 +38,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     /**
      * Instance that contain the model
      */
-    private BigModel model;
+    private ApplicationModel model;
 
     /**
      * Binder related to ModelService,
@@ -47,10 +47,10 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     private IBinder binder;
 
     /**
-     * Constructor to initialize the {@link BigModel } instance
+     * Constructor to initialize the {@link ApplicationModel } instance
      */
     public ModelService() {
-        this.model = new BigModel();
+        this.model = new ApplicationModel();
     }
 
     @Nullable
@@ -107,7 +107,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 model.setCurrentIntervention(InterventionChosen.createByIntervention(intent.getParcelableExtra("INTERVENTION_CHOSEN")));
                 break;
             case WebsocketService.DISCONNECT_TO_APPLICATION:
-                model = new BigModel();
+                model = new ApplicationModel();
                 break;
             case WebsocketService.INTERVENTION_CREATED:
                 Intervention intervention = intent.getParcelableExtra("INTERVENTION_CREATED");
@@ -166,9 +166,9 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
     /**
      * getter for the Model
-     * @return the instance of the {@link BigModel}
+     * @return the instance of the {@link ApplicationModel}
      */
-    public BigModel getModel() {
+    public ApplicationModel getModel() {
         return model;
     }
 

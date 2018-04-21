@@ -7,16 +7,16 @@ import ila.fr.codisintervention.models.messages.User;
 
 /**
  * Created by marzin on 28/03/18.
- * The BigModel is work is to contain the Model of the Interventions and Vehicles Requests
+ * The ApplicationModel is work is to contain the Model of the Interventions and Vehicles Requests
  * and to keep the integrity of the datas contained
  * <p>
- * FIXME: To refactor, for now the big model is just an ugly patchwork of severall Class used to represent JSON WebSocket Message
+ * FIXME: To refactor, for now the Application model is just an ugly patchwork of severall Class used to represent JSON WebSocket Message
  */
-public class BigModel {
-    private static final String TAG = "BigModel";
+public class ApplicationModel {
+    private static final String TAG = "ApplicationModel";
 
     /**
-     * FIXME: Why the BigModel rely on the InitializeApplication message ?
+     * FIXME: Why the ApplicationModel rely on the InitializeApplication message ?
      */
     private InitializeApplication messageInitialize;
 
@@ -28,7 +28,7 @@ public class BigModel {
     /**
      * Constructor
      */
-    public BigModel() {
+    public ApplicationModel() {
         // NoOp
     }
 

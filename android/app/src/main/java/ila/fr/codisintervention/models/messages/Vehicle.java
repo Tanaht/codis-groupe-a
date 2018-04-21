@@ -7,27 +7,46 @@ import com.google.gson.annotations.Expose;
 
 /**
  * Created by tanaky on 27/03/18.
+ * A vehicle with it's status
  */
-
 public class Vehicle implements Parcelable {
 
+    /**
+     * It has a constraint of Uniq Id
+     * Label of the vehicle
+     */
     @Expose
     private String label;
 
 
+    /**
+     * Type of the vehicle
+     */
     @Expose
     private String type;
 
 
+    /**
+     * Status of the vehicle
+     */
     @Expose
     private String status;
 
+    /**
+     * Instantiates a new Vehicle.
+     *
+     * @param in the parcel that contain the Vehicle Detail
+     */
     protected Vehicle(Parcel in) {
         label = in.readString();
         type = in.readString();
         status = in.readString();
     }
 
+    /**
+     * Usefull to Parcelize an instance of this class  {@link Parcelable}
+     * The constant CREATOR.
+     */
     public static final Creator<Vehicle> CREATOR = new Creator<Vehicle>() {
         @Override
         public Vehicle createFromParcel(Parcel in) {
