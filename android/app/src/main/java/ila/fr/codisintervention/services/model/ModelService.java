@@ -27,14 +27,28 @@ import ila.fr.codisintervention.services.websocket.WebsocketService;
 
 /**
  * Created by marzin on 28/03/18.
+ * Android Service used to serve Model of the application to all Activities
+ * This ModelService receive Explicit Intent send by {@link WebsocketService}
+ * these intents are notifications from the remote websocket server about an update of the model.
  */
 
 public class ModelService extends Service implements ModelServiceBinder.IMyServiceMethod {
-    private final static String TAG = "ModelService";
+    private static final String TAG = "ModelService";
 
+    /**
+     * Instance that contain the model
+     */
     private BigModel model;
+
+    /**
+     * Binder related to ModelService,
+     * it's an instance of {@link ModelServiceBinder}
+     */
     private IBinder binder;
 
+    /**
+     * Constructor to initialize the {@link BigModel } instance
+     */
     public ModelService() {
         this.model = new BigModel();
     }
@@ -48,11 +62,14 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "OnCreate ModelService");
         binder = new ModelServiceBinder(this);
 
     }
 
+    /**
+     * This method is used to receive updates from {@link WebsocketService}
+     * The lists of Intent Action possible is defined staticly in the {@link WebsocketService } class
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "START COMMAND by " + intent);
@@ -66,7 +83,13 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     }
 
 
-    //Méthode pour metre à jour le model
+    /**
+     * FIXME: Refactor me, perhaps with the pattern chain of responsibility ?
+     * @see <a href="https://en.wikipedia.org/wiki/Chain-of-responsibility_pattern">Pattern that can be used according to me</a>
+     *
+     * Ugly method used to receive intent and perform action related to kind of intent received.
+     * @param intent the explicit intent received from {@link WebsocketService}
+     */
     public void updateTheModel(Intent intent) {
         if (intent.getAction() == null)
             return;
@@ -137,10 +160,14 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 break;
             //Si l'action est mal définit
             default:
-                Log.e("Erreur", "Erreur d'action non reconnu pour la mise à jour du model");
+                Log.e(TAG, "Erreur d'action non reconnu pour la mise à jour du model");
         }
     }
 
+    /**
+     * getter for the Model
+     * @return the instance of the {@link BigModel}
+     */
     public BigModel getModel() {
         return model;
     }
@@ -185,8 +212,14 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
         return model.getCurrentIntervention().getUnitById(id);
     }
 
-    public void sendToEveryone(int id, String nameAction){
-        Intent intent = new Intent(nameAction);
+    /**
+     * FIXME: Every intent doesn't have the same extra signature, si it has to be removed -> it would be exported equally when we will refactor this class
+     * Workaround to broadcoast an intent to everyone,
+     * @param id the identifier to send in extra of the intent
+     * @param intentAction the intent action name
+     */
+    public void sendToEveryone(int id, String intentAction){
+        Intent intent = new Intent(intentAction);
         if(id!=-1) {
             // Adding some data
             intent.putExtra("id", id);

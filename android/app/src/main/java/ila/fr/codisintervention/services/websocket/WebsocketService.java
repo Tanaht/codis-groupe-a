@@ -169,7 +169,6 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "OnCreate WebSocket Service");
         binder = new WebSocketServiceBinder(this);
     }
 
