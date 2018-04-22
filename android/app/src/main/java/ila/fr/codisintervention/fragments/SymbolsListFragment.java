@@ -23,21 +23,33 @@ import ila.fr.codisintervention.factory.SymbolKindFactory;
  * to handle interaction events.
  * Use the {@link SymbolsListFragment#newInstance} factory method to
  * create an instance of this fragment.
+ *
+ * This fragment is used to show a left panel that serve as a tool box
  */
 public class SymbolsListFragment extends Fragment {
+    /**
+     * Retrieve all SymbolKind instance available from it's factory
+     */
+    private static final List<SymbolKind> list = SymbolKindFactory.getAvailableSymbols();
 
-    //Get symbols from model
-    private static List<SymbolKind> liste = SymbolKindFactory.getAvailableSymbols();
+    /**
+     * The selectedColor currently selected to create new Symbols
+     */
+    private String selectedColor = "rouge";
 
-    private String couleur = "rouge";
+    /**
+     * Field used to store the SymbolKind currently used to forge new Symbols
+     */
     private SymbolKind currentSymbol;
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private SymbolsListFragment.OnFragmentInteractionListener mListener;
 
+    /**
+     * Instantiates a new Symbols list fragment.
+     */
     public SymbolsListFragment() {
         // Required empty public constructor
     }
@@ -60,253 +72,268 @@ public class SymbolsListFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_liste_symboles, container, false);
 
-        ajouterImageView(liste, view);
-        ajouterImageViewListeners(liste);
-        ajouterRadioButtonListeners(view);
+        addImageView(list, view);
+        addImageViewListeners(list);
+        addRadioButtonListeners(view);
 
         return view;
     }
 
-    public void ajouterImageView(List<SymbolKind> liste, View view) {
-        for (SymbolKind symbole : liste) {
+    /**
+     * Iterate over all SymbolKind defined in {@link SymbolKindFactory} and populate it's imageView Variable
+     * @see SymbolKind#imageView
+     * Add image view.
+     *
+     * @param list the list
+     * @param view the view
+     */
+    public void addImageView(List<SymbolKind> list, View view) {
+        for (SymbolKind symbole : list) {
             symbole.setImageView((ImageView) view.findViewById(getResources().getIdentifier(symbole.getId(), "id", getActivity().getPackageName())));
         }
     }
 
-    public void ajouterImageViewListeners(List<SymbolKind> liste) {
-        for (SymbolKind symbole : liste) {
-            symbole.getImageView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    symbole.getImageView().setImageResource(getResources().getIdentifier(symbole.getSelectedIcon(), "drawable", getActivity().getPackageName()));
-                    for (SymbolKind symbole2 : liste) {
-                        symbole2.setSelected(false);
-                        if (symbole != symbole2) {
-                            symbole2.getImageView().setImageResource(getResources().getIdentifier(symbole2.getDefaultIcon(), "drawable", getActivity().getPackageName()));
-                        }
+    /**
+     * Add image view listeners.
+     *
+     * @param list the list
+     */
+    public void addImageViewListeners(List<SymbolKind> list) {
+        for (SymbolKind symbol : list) {
+            symbol.getImageView().setOnClickListener(v -> {
+                symbol.getImageView().setImageResource(getResources().getIdentifier(symbol.getSelectedIcon(), "drawable", getActivity().getPackageName()));
+                for (SymbolKind symbol2 : list) {
+                    symbol2.setSelected(false);
+                    if (symbol != symbol2) {
+                        symbol2.getImageView().setImageResource(getResources().getIdentifier(symbol2.getDefaultIcon(), "drawable", getActivity().getPackageName()));
                     }
-                    symbole.setSelected(true);
                 }
+                symbol.setSelected(true);
             });
         }
     }
 
+    /**
+     * decision table that associate the symbol kind with it's available selectedColor's
+     * FIXME: To Refactor: Enum is a better choice I think. In any case a switch with raw String instead of final static variable is not an option
+     * TODO: SonarLint said it's too complex and too repetitive
+     * @return symbol kind
+     */
     public SymbolKind getSelectedSymbol(){
-        for(SymbolKind symbole : liste){
-            if(symbole.isSelected()){
-                switch(symbole.getId()){
+        for(SymbolKind symbol : list){
+            /**
+             * TODO: It's not better to have a reference to the selected one instead of iterating over SymbolKind list ?
+             * @see currentSymbol what is the purpose of this field if not to solve this issue ?
+             */
+            if(symbol.isSelected()){
+                switch(symbol.getId()){
                     case "ressource_eau":
                         break;
                     case "sinistre":
-                        switch(couleur){
+                        switch(selectedColor){
                             case "rouge":
-                                symbole.setIdDrawable(R.drawable.sinistrerouge);
+                                symbol.setIdDrawable(R.drawable.sinistrerouge);
                                 break;
                             case "orange":
-                                symbole.setIdDrawable(R.drawable.sinistreorange);
+                                symbol.setIdDrawable(R.drawable.sinistreorange);
                                 break;
                             case "violet":
                                 break;
                             case "vert":
-                                symbole.setIdDrawable(R.drawable.sinistrevert);
+                                symbol.setIdDrawable(R.drawable.sinistrevert);
                                 break;
                             case "bleu":
-                                symbole.setIdDrawable(R.drawable.sinistrebleu);
+                                symbol.setIdDrawable(R.drawable.sinistrebleu);
                                 break;
                         }
                         break;
                     case "triangle_bas":
-                        switch(couleur){
+                        switch(selectedColor){
                             case "rouge":
-                                symbole.setIdDrawable(R.drawable.dangerrougebas);
+                                symbol.setIdDrawable(R.drawable.dangerrougebas);
                                 break;
                             case "orange":
-                                symbole.setIdDrawable(R.drawable.dangerorangebas);
+                                symbol.setIdDrawable(R.drawable.dangerorangebas);
                                 break;
                             case "violet":
                                 break;
                             case "vert":
-                                symbole.setIdDrawable(R.drawable.dangervertbas);
+                                symbol.setIdDrawable(R.drawable.dangervertbas);
                                 break;
                             case "bleu":
-                                symbole.setIdDrawable(R.drawable.dangerbleubas);
+                                symbol.setIdDrawable(R.drawable.dangerbleubas);
                                 break;
                         }
                         break;
                     case "triangle_haut":
-                        switch(couleur){
+                        switch(selectedColor){
                             case "rouge":
-                                symbole.setIdDrawable(R.drawable.dangerrougehaut);
+                                symbol.setIdDrawable(R.drawable.dangerrougehaut);
                                 break;
                             case "orange":
-                                symbole.setIdDrawable(R.drawable.dangerorangehaut);
+                                symbol.setIdDrawable(R.drawable.dangerorangehaut);
                                 break;
                             case "violet":
                                 break;
                             case "vert":
-                                symbole.setIdDrawable(R.drawable.dangerverthaut);
+                                symbol.setIdDrawable(R.drawable.dangerverthaut);
                                 break;
                             case "bleu":
-                                symbole.setIdDrawable(R.drawable.dangerbleuhaut);
+                                symbol.setIdDrawable(R.drawable.dangerbleuhaut);
                                 break;
                         }
                         break;
                     case "vehicule":
-                        switch(couleur){
+                        switch(selectedColor){
                             case "rouge":
-                                symbole.setIdDrawable(R.drawable.vehiculerouge);
+                                symbol.setIdDrawable(R.drawable.vehiculerouge);
                                 break;
                             case "orange":
-                                symbole.setIdDrawable(R.drawable.vehiculeorange);
+                                symbol.setIdDrawable(R.drawable.vehiculeorange);
                                 break;
                             case "violet":
-                                symbole.setIdDrawable(R.drawable.vehiculeviolet);
+                                symbol.setIdDrawable(R.drawable.vehiculeviolet);
                                 break;
                             case "vert":
-                                symbole.setIdDrawable(R.drawable.vehiculevert);
+                                symbol.setIdDrawable(R.drawable.vehiculevert);
                                 break;
                             case "bleu":
-                                symbole.setIdDrawable(R.drawable.vehiculebleu);
+                                symbol.setIdDrawable(R.drawable.vehiculebleu);
                                 break;
                         }
                         break;
                     case "vehicule_non_valide":
-                        switch(couleur){
+                        switch(selectedColor){
                             case "rouge":
-                                symbole.setIdDrawable(R.drawable.vehiculerougenonvalide);
+                                symbol.setIdDrawable(R.drawable.vehiculerougenonvalide);
                                 break;
                             case "orange":
-                                symbole.setIdDrawable(R.drawable.vehiculeorangenonvalide);
+                                symbol.setIdDrawable(R.drawable.vehiculeorangenonvalide);
                                 break;
                             case "violet":
-                                symbole.setIdDrawable(R.drawable.vehiculevioletnonvalide);
+                                symbol.setIdDrawable(R.drawable.vehiculevioletnonvalide);
                                 break;
                             case "vert":
-                                symbole.setIdDrawable(R.drawable.vehiculevertnonvalide);
+                                symbol.setIdDrawable(R.drawable.vehiculevertnonvalide);
                                 break;
                             case "bleu":
-                                symbole.setIdDrawable(R.drawable.vehiculebleunonvalide);
+                                symbol.setIdDrawable(R.drawable.vehiculebleunonvalide);
                                 break;
                         }
                         break;
                     case "vehicule_pompier":
-                        switch(couleur){
+                        switch(selectedColor){
                             case "rouge":
-                                symbole.setIdDrawable(R.drawable.vehiculepompierrouge);
+                                symbol.setIdDrawable(R.drawable.vehiculepompierrouge);
                                 break;
                             case "orange":
                                 break;
                             case "violet":
-                                symbole.setIdDrawable(R.drawable.vehiculepompierviolet);
+                                symbol.setIdDrawable(R.drawable.vehiculepompierviolet);
                                 break;
                             case "vert":
-                                symbole.setIdDrawable(R.drawable.vehiculepompiervert);
+                                symbol.setIdDrawable(R.drawable.vehiculepompiervert);
                                 break;
                             case "bleu":
                                 break;
                         }
                         break;
                     case "vehicule_pompier_non_valide":
-                        switch(couleur){
+                        switch(selectedColor){
                             case "rouge":
-                                symbole.setIdDrawable(R.drawable.vehiculepompierrougenonvalide);
+                                symbol.setIdDrawable(R.drawable.vehiculepompierrougenonvalide);
                                 break;
                             case "orange":
                                 break;
                             case "violet":
-                                symbole.setIdDrawable(R.drawable.vehiculepompiervioletnonvalide);
+                                symbol.setIdDrawable(R.drawable.vehiculepompiervioletnonvalide);
                                 break;
                             case "vert":
-                                symbole.setIdDrawable(R.drawable.vehiculepompiervertnonvalide);
+                                symbol.setIdDrawable(R.drawable.vehiculepompiervertnonvalide);
                                 break;
                             case "bleu":
                                 break;
                         }
                         break;
                     case "zone":
-                        switch(couleur){
+                        switch(selectedColor){
                             case "rouge":
-                                symbole.setIdDrawable(R.drawable.zoneactionrouge);
+                                symbol.setIdDrawable(R.drawable.zoneactionrouge);
                                 break;
                             case "orange":
-                                symbole.setIdDrawable(R.drawable.zoneactionorange);
+                                symbol.setIdDrawable(R.drawable.zoneactionorange);
                                 break;
                             case "violet":
                                 break;
                             case "vert":
-                                symbole.setIdDrawable(R.drawable.zoneactionverte);
+                                symbol.setIdDrawable(R.drawable.zoneactionverte);
                                 break;
                             case "bleu":
-                                symbole.setIdDrawable(R.drawable.zoneactionbleu);
+                                symbol.setIdDrawable(R.drawable.zoneactionbleu);
                                 break;
                         }
                         break;
                     default:
                         break;
                 }
-                return symbole;
+                return symbol;
             }
         }
         return null;
     }
 
-    public String getCouleur() {
-        return couleur;
+    /**
+     * Gets selectedColor.
+     *
+     * @return the selectedColor
+     */
+    public String getSelectedColor() {
+        return selectedColor;
     }
 
-    public void setCouleur(String couleur) {
-        this.couleur = couleur;
+    /**
+     * Sets selectedColor.
+     *
+     * @param selectedColor the selectedColor
+     */
+    public void setSelectedColor(String selectedColor) {
+        this.selectedColor = selectedColor;
     }
 
-    public void ajouterRadioButtonListeners(View view) {
-
+    /**
+     * Add all radio button listeners. to know the selectedColor chosen by end user
+     * TODO: Here we can also use an enum for the selectedColor {@link ila.fr.codisintervention.models.Color}
+     * TODO: you can update the layout for all radio buttons with the XML attribute android:onClick
+     *
+     * @param view the view
+     */
+    public void addRadioButtonListeners(View view) {
         RadioButton rbRouge = (RadioButton) view.findViewById(R.id.radioButtonrouge);
-        rbRouge.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCouleur("rouge");
-            }
-        });
+        rbRouge.setOnClickListener(v -> setSelectedColor("rouge"));
+
         RadioButton rbVert = (RadioButton) view.findViewById(R.id.radioButtonvert);
-        rbVert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCouleur("vert");
-            }
-        });
+        rbVert.setOnClickListener(v -> setSelectedColor("vert"));
+
         RadioButton rbBleu = (RadioButton) view.findViewById(R.id.radioButtonbleu);
-        rbBleu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCouleur("bleu");
-            }
-        });
+        rbBleu.setOnClickListener(v -> setSelectedColor("bleu"));
+
         RadioButton rbOrange = (RadioButton) view.findViewById(R.id.radioButtonorange);
-        rbOrange.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCouleur("orange");
-            }
-        });
+        rbOrange.setOnClickListener(v -> setSelectedColor("orange"));
+
         RadioButton rbViolet = (RadioButton) view.findViewById(R.id.radioButtonviolet);
-        rbViolet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCouleur("violet");
-            }
-        });
+        rbViolet.setOnClickListener(v -> setSelectedColor("violet"));
 
     }
 
+    /**
+     * On button pressed.
+     * TODO: Is this method in use ? Cannot determine If it is called by a layout or something else, but apparently it's a dead code !
+     * @param uri the uri
+     */
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -319,8 +346,7 @@ public class SymbolsListFragment extends Fragment {
         if (context instanceof SymbolsListFragment.OnFragmentInteractionListener) {
             mListener = (SymbolsListFragment.OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -342,6 +368,11 @@ public class SymbolsListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
+        /**
+         * On fragment interaction.
+         *
+         * @param uri the uri
+         */
         void onFragmentInteraction(Uri uri);
     }
 
