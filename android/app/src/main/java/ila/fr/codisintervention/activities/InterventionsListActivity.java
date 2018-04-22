@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Activities;
+package ila.fr.codisintervention.activities;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -11,8 +11,6 @@ import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,44 +20,66 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.Utils.InterventionListAdapter;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
-import ila.fr.codisintervention.binders.WebsocketServiceBinder;
+import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
+import ila.fr.codisintervention.utils.InterventionListAdapter;
 
+/**
+ * This activity is used to show to the user the List of Interventions in progress
+ */
+@SuppressWarnings("squid:MaximumInheritanceDepth")
 public class InterventionsListActivity extends AppCompatActivity {
-    protected final static String TAG = "InterventionsListAct";
+    protected static final String TAG = "InterventionsListAct";
 
+    /**
+     * InterventionList Adapter between model and view.
+     */
     InterventionListAdapter dataAdapter;
-    ArrayList<Intervention> interventionList;
-    private ServiceConnection serviceConnection;
-    private WebsocketServiceBinder.IMyServiceMethod service;
 
+    /**
+     * ServiceConnection instance with the WebSocketService
+     */
+    private ServiceConnection webSocketServiceConnection;
+
+    /**
+     * Interface delivered by WebSocketService to be used by other android Component.
+     */
+    private WebSocketServiceBinder.IMyServiceMethod webSocketService;
+
+    /**
+     * ServiceConnection instance with the ModelService
+     */
     private ServiceConnection modelServiceConnection;
+
+    /**
+     * Interface delivered by ModelService to be used by other android Component, the purpose of this is to update the model.
+     */
     private ModelServiceBinder.IMyServiceMethod modelService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interventions_list);
-        setTitle(R.string.IntervenantListPageTitle);
+        setTitle(R.string.title_interventions_in_progress_list);
 
         bindToService();
     }
 
+    /**
+     * TODO: It could be mutualized because almost all Activities has to bind to ModelService or WebSocketService -> A separated class that do that has to be created ! like an Interface ModelServiceAware and WebsocketServiceAware, or a superclass Activity aware of services
+     * Method used to bind InterventionListActivity to WebsocketService and ModelService, with that, InterventionListActivity is aware of ModelService and WebSocketService
+     */
     private void bindToService() {
-        serviceConnection = new ServiceConnection() {
-            public void onServiceDisconnected(ComponentName name) {}
+        webSocketServiceConnection = new ServiceConnection() {
+            public void onServiceDisconnected(ComponentName name) {
+                Log.w(TAG, "The Service " + name + " is disconnected");
+            }
             public void onServiceConnected(ComponentName arg0, IBinder binder) {
-
-                //on récupère l'instance du service dans l'activité
-                service = ((WebsocketServiceBinder)binder).getService();
-
-                //on genère l'évènement indiquant qu'on est "bindé"
-//                handler.sendEmptyMessage(ON_BIND);
+                webSocketService = ((WebSocketServiceBinder)binder).getService();
             }
         };
 
@@ -71,9 +91,9 @@ public class InterventionsListActivity extends AppCompatActivity {
                 Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
                 if(modelService.getInterventions() == null || modelService.getInterventions().size() == 0){
                     TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
-                    tv.setText(R.string.noInterventionAvailable);
+                    tv.setText(R.string.msg_no_intervention_in_progress);
                     Toasty.warning(getApplicationContext(),
-                            getString(R.string.noInterventionAvailable), Toast.LENGTH_SHORT, true)
+                            getString(R.string.msg_no_intervention_in_progress), Toast.LENGTH_SHORT, true)
                             .show();
                 } else {
                     displayListView(modelService.getInterventions());
@@ -81,27 +101,29 @@ public class InterventionsListActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onServiceDisconnected(ComponentName name) {}
+            public void onServiceDisconnected(ComponentName name) {
+                Log.w(TAG, "The Service " + name + " is disconnected");
+            }
         };
 
-
-        //démarre le service si il n'est pas démarré
-        //Le binding du service est configuré avec "BIND_AUTO_CREATE" ce qui normalement
-        //démarre le service si il n'est pas démarrer, la différence ici est que le fait de
-        //démarrer le service par "startService" fait que si l'activité est détruite, le service
-        //reste en vie (obligatoire pour l'application AlarmIngressStyle)
+        //Binding Activity with WebSocketService
         startService(new Intent(this, WebsocketService.class));
         Intent intent = new Intent(this, WebsocketService.class);
-        //lance le binding du service
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        //launch binding of WebSocketService
+        bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
 
         //Binding Activity with ModelService
         startService(new Intent(this, ModelService.class));
         intent = new Intent(this, ModelService.class);
-        //lance le binding du websocketService
+        //launch binding of ModelService
         bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
+    /**
+     * Method used to display list in interface,
+     * In this method we instanciate {@link InterventionListAdapter} and initialize correct ClickListener on Intervention Clicked.
+     * @param interventionList list to display
+     */
     private void displayListView(List<Intervention> interventionList){
 
         //create an ArrayAdapter from the String Array
@@ -112,28 +134,25 @@ public class InterventionsListActivity extends AppCompatActivity {
         // Assign adapter to ListView
         listView.setAdapter(dataAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // When clicked, show a toast with the TextView text
-                Intervention intervention = (Intervention) parent.getItemAtPosition(position);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            // When clicked, show a toast with the TextView text
+            Intervention intervention = (Intervention) parent.getItemAtPosition(position);
 
-                Toasty.info(getApplicationContext(),
-                        "Intervention with id:"+intervention.getId()+" has been sent to wss",
-                        Toast.LENGTH_SHORT, true)
+            Toasty.info(getApplicationContext(),
+                    "Intervention with id:" + intervention.getId() + " has been sent to wss",
+                    Toast.LENGTH_SHORT, true)
                     .show();
 
-                // Send Intervention choice to WSS
-               service.chooseIntervention(intervention.getId());
-               Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
-               startActivity(mapIntent);
-            }
+            // Send Intervention choice to WSS
+            webSocketService.chooseIntervention(intervention.getId());
+            Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
+            startActivity(mapIntent);
         });
     }
 
     /**
-     * Add new item , and notify to the adapter that item has been added
-     * @param intervention : the new item
+     * Add new {@link Intervention}, and notify to the adapter that intervention has been added
+     * @param intervention : the new intervention
      */
     private void addElement(Intervention intervention) {
         // on insère l'intervention dans la liste des interventions liée à l'adapter
@@ -144,8 +163,8 @@ public class InterventionsListActivity extends AppCompatActivity {
 
 
     /**
-     * Delete item , and notify to the adapter that item has been added
-     * @param position : the position of the item to delete
+     * Delete {@link Intervention} , and notify to the adapter that Intervention has been deleted
+     * @param position : the position of the Intervention to delete
      */
     public void deleteElement(int position) {
         // on supprime l'intervention
@@ -154,22 +173,29 @@ public class InterventionsListActivity extends AppCompatActivity {
         dataAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Subscribe to Intents that will be used to update this Activity Model.
+     */
     @Override
     public void onResume(){
         super.onResume();
         IntentFilter interventionListIntentFilter = new IntentFilter();
-        interventionListIntentFilter.addAction(ModelConstants.ACTION_ADD_INTERVENTION);
+        interventionListIntentFilter.addAction(ModelConstants.ADD_INTERVENTION);
         interventionListIntentFilter.addAction(ModelConstants.ACTION_DELETE_INTERVENTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, interventionListIntentFilter);
     }
 
+    /**
+     * TODO: To mutualize equally with BindToService method
+     * Define BroadcoastReceiver Instance to get aware when an Intent is send to this activity among other
+     */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             int id = (int) intent.getExtras().get("id");
             Intervention intervention = modelService.getInterventions().get(id);
             switch (intent.getAction()){
-                case ModelConstants.ACTION_ADD_INTERVENTION:
+                case ModelConstants.ADD_INTERVENTION:
                     addElement(intervention);
                     break;
                 case ModelConstants.ACTION_DELETE_INTERVENTION:
@@ -182,6 +208,9 @@ public class InterventionsListActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * Unsubscribe from Broadcoast Receiver instance
+     */
     @Override
     protected void onPause() {
         // Unregister since the activity is not visible
@@ -189,12 +218,16 @@ public class InterventionsListActivity extends AppCompatActivity {
         super.onPause();
     }
 
+
+    /**
+     * We Unbind from binded service here to avoid memory leak
+     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
         //on supprimer le binding entre l'activité et le websocketService.
-        if(serviceConnection != null)
-            unbindService(serviceConnection);
+        if(webSocketServiceConnection != null)
+            unbindService(webSocketServiceConnection);
 
         if(modelServiceConnection != null)
             unbindService(modelServiceConnection);

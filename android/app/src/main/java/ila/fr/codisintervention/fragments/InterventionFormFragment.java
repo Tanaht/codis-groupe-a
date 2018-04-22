@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.Fragments;
+package ila.fr.codisintervention.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,9 +10,11 @@ import ila.fr.codisintervention.R;
 
 /**
  * Created by aminesoumiaa on 22/03/18.
+ * Fragment used to show a form for intervention creation.
+ * called from {@link ila.fr.codisintervention.activities.NewInterventionActivity}
+ * TODO: Why this fragment even exist ? without any logic inside it ?
  */
-
-public class FragmentInterventionForm extends Fragment {
+public class InterventionFormFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {

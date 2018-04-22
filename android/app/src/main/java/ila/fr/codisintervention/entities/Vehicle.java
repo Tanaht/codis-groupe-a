@@ -1,15 +1,19 @@
-package ila.fr.codisintervention.Entities;
+package ila.fr.codisintervention.entities;
 
 /**
+ * FIXME: Delete as soon as possible
  * Created by aminesoumiaa on 22/03/18.
+ * Stub waiting for a true model for this, represent a vehicle
+ *
+ * This class is not commented because it has to be removed.
  */
+public class Vehicle {
 
-public class Moyen {
     String code = null;
     String name = null;
     boolean selected = false;
 
-    public Moyen(String code, String name, boolean selected) {
+    public Vehicle(String code, String name, boolean selected) {
         super();
         this.code = code;
         this.name = name;

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ila.fr.codisintervention.codisintervention.MainMenuCodis">
+    tools:context="ila.fr.codisintervention.activities.UserMainMenu">
+
 
     <TextView
         android:id="@+id/Color"
@@ -22,58 +23,23 @@
         app:layout_constraintVertical_bias="0.494" />
 
     <Button
-        android:id="@+id/textView_ListeIntervention"
+        android:id="@+id/textView_ListeIntervention2"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="92dp"
         android:background="@android:color/black"
         android:shadowColor="@android:color/black"
         android:shadowDx="2"
         android:shadowDy="2"
-        android:text="@string/lbl_liste_des_interventions"
+        android:text="@string/label_interventions_list"
         android:textColor="@android:color/background_light"
         android:textSize="25dp"
+        android:onClick="showInterventionsList"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_ListeMoyen" />
-
-    <Button
-        android:id="@+id/textView_ListeMoyen"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="44dp"
-        android:background="@android:color/black"
-        android:shadowColor="@android:color/black"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:text="@string/lbl_liste_des_moyen"
-        android:textColor="@android:color/background_light"
-        android:textSize="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_CreerIntervention" />
-
-    <Button
-        android:id="@+id/textView_CreerIntervention"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:background="@android:color/black"
-        android:shadowColor="@android:color/black"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:text="@string/lbl_creer_intervention"
-        android:textColor="@android:color/background_light"
-        android:textSize="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/Color" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -87,6 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_ListeIntervention"
+        app:layout_constraintVertical_bias="0.762"
         app:srcCompat="@drawable/pompier" />
 
 

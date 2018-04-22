@@ -1,6 +1,5 @@
-package ila.fr.codisintervention.Activities;
+package ila.fr.codisintervention.activities;
 
-import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,38 +12,56 @@ import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import ila.fr.codisintervention.Entities.SymboleDispo;
-import ila.fr.codisintervention.Fragments.ListeSymbolesFragment;
-import ila.fr.codisintervention.Fragments.MapsFragment;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.entities.SymbolKind;
+import ila.fr.codisintervention.fragments.MapsFragment;
+import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
 
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_ADD_DEMANDE;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_UTIL;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_DELETE_UTIL;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_UPDATE_INTERVENTION_UPDATE_UTIL;
-import static ila.fr.codisintervention.services.constants.ModelConstants.ACTION_VALIDATION_MOYEN;
+import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_DELETE_UNIT;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT;
+import static ila.fr.codisintervention.services.constants.ModelConstants.VALIDATE_VEHICLE_REQUEST;
 
-public class MapActivity extends AppCompatActivity implements ListeSymbolesFragment.OnFragmentInteractionListener {
+/**
+ * This activity is used to show the map of an intervention chosen
+ * this activity intend to update the symbols and vehicles position on the map
+ *
+ * TODO: Please log more often
+ */
+@SuppressWarnings("squid:MaximumInheritanceDepth")
+public class MapActivity extends AppCompatActivity implements SymbolsListFragment.OnFragmentInteractionListener {
+    private static final String TAG = "MapActivity";
 
-    // ServiceConnection permet de gérer l'état du lien entre l'activité et le websocketService.
+    /**
+     * ServiceConnection instance with the ModelService
+     */
     private ServiceConnection modelServiceConnection;
 
-    //Model service
+    /**
+     * Interface delivered by ModelService to be used by other android Component, the purpose of this is to update the model.
+     */
     private ModelServiceBinder.IMyServiceMethod modelService;
 
-    private String couleur = "";
+    /**
+     * Fragment intended to display a list of tools to add symbols on the map
+     */
+    SymbolsListFragment symbolFragment;
 
-    ListeSymbolesFragment symbolFragment;
+    /**
+     * Fragment used to display the map
+     */
     MapsFragment mapFragment;
 
     @Override
@@ -54,54 +71,62 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
         setContentView(R.layout.activity_map);
 
         FragmentManager manager = getSupportFragmentManager();
-        symbolFragment = (ListeSymbolesFragment) manager.findFragmentById(R.id.listSymbolFragment);
+        symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
         mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
     }
 
+    /**
+     * This part can be refactored I guess, but it need a little studies about it, perhaps with an observer pattern that can be an abstraction of the complexity of Intent.
+     */
     @Override
     public void onResume() {
         super.onResume();
         IntentFilter mapIntentFilter = new IntentFilter();
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_UPDATE_UTIL);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_CREATE_UTIL);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_DELETE_UTIL);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL);
-        mapIntentFilter.addAction(ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL);
-        mapIntentFilter.addAction(ACTION_ADD_DEMANDE);
-        mapIntentFilter.addAction(ACTION_VALIDATION_MOYEN);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_CREATE_UNIT);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_UPDATE_UNIT);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_DELETE_UNIT);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_CREATE_SYMBOL);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_UPDATE_SYMBOL);
+        mapIntentFilter.addAction(UPDATE_INTERVENTION_DELETE_SYMBOL);
+        mapIntentFilter.addAction(ADD_VEHICLE_REQUEST);
+        mapIntentFilter.addAction(VALIDATE_VEHICLE_REQUEST);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, mapIntentFilter);
     }
 
+    /**
+     * TODO: To mutualize equally with BindToService method
+     * Define BroadcoastReceiver Instance to get aware when an Intent is send to this activity among other
+     */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             int id = (int) intent.getExtras().get("id");
             Symbol symbol;
             Unit unit;
+
             switch (intent.getAction()) {
-                case ACTION_UPDATE_INTERVENTION_UPDATE_UTIL:
+                case UPDATE_INTERVENTION_UPDATE_UNIT:
                     unit = modelService.getUnit(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_CREATE_UTIL:
+                case UPDATE_INTERVENTION_CREATE_UNIT:
                     unit = modelService.getUnit(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_DELETE_UTIL:
+                case UPDATE_INTERVENTION_DELETE_UNIT:
                     unit = modelService.getUnit(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_UPDATE_SYMBOL:
+                case UPDATE_INTERVENTION_UPDATE_SYMBOL:
                     symbol = modelService.getSymbol(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_DELETE_SYMBOL:
+                case UPDATE_INTERVENTION_DELETE_SYMBOL:
                     symbol = modelService.getSymbol(id);
                     break;
-                case ACTION_UPDATE_INTERVENTION_CREATE_SYMBOL:
+                case UPDATE_INTERVENTION_CREATE_SYMBOL:
                     symbol = modelService.getSymbol(id);
                     break;
-                case ACTION_ADD_DEMANDE:
+                case ADD_VEHICLE_REQUEST:
                     break;
-                case ACTION_VALIDATION_MOYEN:
+                case VALIDATE_VEHICLE_REQUEST:
                     unit = modelService.getUnit(id);
                     break;
                 default:
@@ -111,7 +136,10 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
     };
 
 
-    //Bind activity with services
+    /**
+     * TODO: It could be mutualized because almost all Activities has to bind to ModelService or WebSocketService -> A separated class that do that has to be created ! like an Interface ModelServiceAware and WebsocketServiceAware, or a superclass Activity aware of services
+     * Method used to bind MapActivity to WebsocketService and ModelService, with that, MainActivity is aware of ModelService and WebSocketService
+     */
     private void bindToService() {
         modelServiceConnection = new ServiceConnection() {
             @Override
@@ -122,6 +150,7 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
+                Log.w(TAG, "The Service " + name + " is disconnected");
             }
         };
 
@@ -140,8 +169,10 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
         super.onPause();
     }
 
-    /* Menu part */
-    @SuppressLint("ResourceType")
+    /**
+     * FIXME: Why not to place the menu_map_activity at a correct place ?
+     * @SuppressLint("ResourceType")
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -183,27 +214,31 @@ public class MapActivity extends AppCompatActivity implements ListeSymbolesFragm
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
+//        TODO: Not implemented ?
 //        double x = (double) event.getX();
 //        double y = (double) event.getY();
-//        SymboleDispo symbole = symbolFragment.getSelectedSymbol();
+//        SymbolKind symbole = symbolFragment.getSelectedSymbol();
 //        Bitmap marker = mapFragment.resizeBitmap(Integer.valueOf(symbole.getId()), 50, 50);
-//        mapFragment.addCustomMarker_Zoom(new LatLng(x,y), marker);
-        //Toast.makeText(this, "x" + x + "y" + y, Toast.LENGTH_SHORT).show();
+//        mapFragment.addCustomMarkerZoom(new LatLng(x,y), marker);
+//        Toast.makeText(this, "x" + x + "y" + y, Toast.LENGTH_SHORT).show();
         return true;
     }
 
-    public SymboleDispo getSelectedSymbol(){
+    /**
+     * getter to return an Instance of SelectedSymbol
+     * @return the tool being used to create Symbol on this map
+     */
+    public SymbolKind getSelectedSymbol(){
         return this.symbolFragment.getSelectedSymbol();
     }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
-
+//        No Interaction because unnecessary
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-
+//        No Interaction because unnecessary
     }
 }

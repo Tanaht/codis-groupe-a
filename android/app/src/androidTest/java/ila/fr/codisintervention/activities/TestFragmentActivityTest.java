@@ -1,6 +1,4 @@
-package ila.fr.codisintervention.Activities;
-
-import static org.junit.Assert.*;
+package ila.fr.codisintervention.activities;
 
 /**
  * Created by christophe on 26/03/18.
