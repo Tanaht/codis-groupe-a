@@ -219,7 +219,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 //        double y = (double) event.getY();
 //        SymbolKind symbole = symbolFragment.getSelectedSymbol();
 //        Bitmap marker = mapFragment.resizeBitmap(Integer.valueOf(symbole.getId()), 50, 50);
-//        mapFragment.addCustomMarker_Zoom(new LatLng(x,y), marker);
+//        mapFragment.addCustomMarkerZoom(new LatLng(x,y), marker);
 //        Toast.makeText(this, "x" + x + "y" + y, Toast.LENGTH_SHORT).show();
         return true;
     }
