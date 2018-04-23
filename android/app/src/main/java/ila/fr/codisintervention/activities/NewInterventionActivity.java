@@ -192,6 +192,7 @@ public class NewInterventionActivity extends AppCompatActivity {
             latlngAddress = getLocationFromAddress(intervention.getAddress());
             Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
 
+            latlngAddress = new LatLng(10,10);
             if(latlngAddress != null) {
                 intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
                 // Send Intervention Details to WSS
