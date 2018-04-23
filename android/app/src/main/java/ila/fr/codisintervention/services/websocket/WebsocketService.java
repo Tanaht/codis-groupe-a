@@ -311,6 +311,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     * `/topic/interventions/{id}/units/event`
     * `/topic/interventions/{id}/units/{idUnit}/denied`
     * `/topic/interventions/{id}/units/{idUnit}/accepted`
+    * `/topic/interventions/{id}/droneLocation/event`
     * */
     @Override
     public void chooseIntervention(int id){
@@ -328,6 +329,11 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
                 error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
         );
+
+        this.client.topic("/topic/interventions/" + id + "/droneLocation/event").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/droneLocation/event] Received message: " + message.getPayload());
+            deliverDroneLocationEventIntents(message);
+        });
 
     }
 
@@ -385,6 +391,43 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
 
+    }
+
+    /**
+     * Class triggered when receiving events of type "/topic/interventions/{id}/DroneLocation/event"
+     * It send the correct intent.
+     * @param message
+     */
+    private void deliverDroneLocationEventIntents(StompMessage message) {
+        String type = "";
+        Location droneLocation = null;
+
+        try {
+            JSONObject object = new JSONObject(message.getPayload());
+
+            if(!object.has("type"))
+                throw new JSONException("JSON Message must have a 'type' key");
+            type = object.getString("type");
+
+            if(!Arrays.asList("CREATE", "UPDATE", "DELETE").contains(type)) {
+                throw new JSONException("JSON Message 'type' key must be one of the following: 'CREATE|UPDATE|DELETE'");
+            }
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            droneLocation = gson.fromJson(message.getPayload(), Location.class);
+
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        Intent toBeBroadcoastedIntent = null;
+
+        if("UPDATE".equals(type)) {
+            toBeBroadcoastedIntent = new Intent(DRONE_PING);
+            toBeBroadcoastedIntent.putExtra(DRONE_PING, droneLocation);
+        }
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
     }
 
     @Override
