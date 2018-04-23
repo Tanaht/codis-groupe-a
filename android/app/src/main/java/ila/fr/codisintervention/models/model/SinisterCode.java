@@ -1,16 +1,12 @@
-package fr.istic.sit.codisgroupea.model.entity;
+package ila.fr.codisintervention.models.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Encapsulation of the sinister code of an intervention.
  */
-@Entity
-public class SinisterCode {
+public class SinisterCode implements Parcelable {
 
     /** The id of the sinister code */
     private Integer id;
@@ -39,8 +35,6 @@ public class SinisterCode {
      *
      * @return the ID
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -59,7 +53,6 @@ public class SinisterCode {
      *
      * @return the code
      */
-    @NotNull
     public String getCode() {
         return code;
     }
@@ -72,4 +65,39 @@ public class SinisterCode {
     public void setCode(String code) {
         this.code = code;
     }
+
+    protected SinisterCode(Parcel in) {
+        id = in.readInt();
+        code = in.readString();
+    }
+
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(code);
+    }
+
+    /**
+     * Usefull to Parcelize an instance of this class  {@link Parcelable}
+     * The constant CREATOR.
+     */
+    public static final Creator<SinisterCode> CREATOR = new Creator<SinisterCode>() {
+        @Override
+        public SinisterCode createFromParcel(Parcel in) {
+            return new SinisterCode(in);
+        }
+
+        @Override
+        public SinisterCode[] newArray(int size) {
+            return new SinisterCode[size];
+        }
+    };
 }
+
