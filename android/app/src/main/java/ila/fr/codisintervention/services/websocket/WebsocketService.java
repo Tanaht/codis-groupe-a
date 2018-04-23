@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -20,15 +19,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
-import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
-import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
+import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.services.model.ModelService;
@@ -154,7 +151,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      * instantiate the client Stomp object
      */
     public WebsocketService() {
-
+        //http://lapommevolante.istic.univ-rennes1.fr/stomp
         this.url = "http://{host}:{port}/{uri}"
                 .replace("{host}", Config.get().getHost())
                 .replace("{port}",Integer.toString(Config.get().getPort()))
@@ -217,19 +214,18 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                     break;
 
                 case ERROR:
-                    Log.d(TAG, "STOMP CONNECTION ERROR");
+                    Log.w(TAG, "STOMP CONNECTION ERROR");
 
                     // Notify Registered Activity from ERROR Connection
-                    Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
                     Intent errorIntent = new Intent(PROTOCOL_ERROR);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
 
                 case CLOSED:
-                    Log.d(TAG, "STOMP CONNECTION CLOSED");
+                    Log.w(TAG, "STOMP CONNECTION CLOSED");
                     // Notify Registered Activity from CLOSE Connection
 
-                    Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
+
                     Intent closeIntent  = new Intent(PROTOCOL_CLOSE);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(closeIntent);
                     break;
@@ -320,9 +316,9 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         });
 
 
-        this.client.topic("/topic/interventions/" + id + "/units/event").subscribe(message -> {
-            Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
-        });
+        this.client.topic("/topic/interventions/" + id + "/units/event").subscribe(message ->
+            Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload())
+        );
 
         this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
                 () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
@@ -423,8 +419,8 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
     /**
      * In this method we send to the server the symbol list we want to delete
-     * @param interventionId
-     * @param symbols
+     * @param interventionId the id of the intervention
+     * @param symbols the symbols to update on it
      */
     @Override
     public void deleteSymbols(int interventionId, List<Symbol> symbols) {
@@ -474,7 +470,10 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             }).create();
 
             interventionCreated.setAction(INTERVENTION_CREATED);
-            interventionCreated.putExtra(INTERVENTION_CREATED, gson.fromJson(message.getPayload(), Intervention.class));
+            Intervention intervention = gson.fromJson(message.getPayload(), Intervention.class);
+
+            Log.d(TAG, "Intervention just created and parsed, location equals: " + intervention.getLocation());
+            interventionCreated.putExtra(INTERVENTION_CREATED, intervention);
             getApplicationContext().startService(interventionCreated);
 
         });
@@ -518,9 +517,9 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
 
         if(user.isCodisUser()) {
-            this.client.topic("/topic/demandes/created").subscribe(message -> {
-                Log.i(TAG, "[/demandes/created] Received message: " + message.getPayload());
-            });
+            this.client.topic("/topic/demandes/created").subscribe(message ->
+                Log.i(TAG, "[/demandes/created] Received message: " + message.getPayload())
+            );
 
             performDemandeSubscriptionInitialization(initializeApplication.getDemandes());
 
@@ -534,12 +533,12 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     private void performDemandeSubscriptionInitialization(List<Request> requests) {
         for(Request request : requests) {
 
-            this.client.topic("/topic/requests/" + request.getId() + "/accepted").subscribe(message -> {
-                Log.i(TAG, "[/topic/requests/" + request.getId() + "/accepted] Received message: " + message.getPayload());
-            });
-            this.client.topic("/topic/requests/" + request.getId() + "/denied").subscribe(message -> {
-                Log.i(TAG, "[/topic/requests/" + request.getId() + "/denied] Received message: " + message.getPayload());
-            });
+            this.client.topic("/topic/requests/" + request.getId() + "/accepted").subscribe(message ->
+                Log.i(TAG, "[/topic/requests/" + request.getId() + "/accepted] Received message: " + message.getPayload())
+            );
+            this.client.topic("/topic/requests/" + request.getId() + "/denied").subscribe(message ->
+                Log.i(TAG, "[/topic/requests/" + request.getId() + "/denied] Received message: " + message.getPayload())
+            );
         }
     }
 

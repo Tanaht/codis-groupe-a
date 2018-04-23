@@ -106,4 +106,9 @@ public class Location implements Parcelable {
         dest.writeDouble(lat);
         dest.writeDouble(lng);
     }
+
+    @Override
+    public String toString() {
+        return "(Lat: " + lat + ", Lng" + lng + ");";
+    }
 }

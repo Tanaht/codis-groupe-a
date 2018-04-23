@@ -1,13 +1,10 @@
 package ila.fr.codisintervention.activities;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -31,7 +28,7 @@ import ila.fr.codisintervention.entities.Vehicle;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.InterventionService;
-import ila.fr.codisintervention.services.websocket.WebsocketService;
+import ila.fr.codisintervention.services.WebSocketServiceAware;
 import ila.fr.codisintervention.utils.AutocompleteAdapter;
 import ila.fr.codisintervention.utils.VehiclesListAdapter;
 
@@ -39,7 +36,7 @@ import ila.fr.codisintervention.utils.VehiclesListAdapter;
  * This activity manage the interface used by Codis User to create a new Intervention
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class NewInterventionActivity extends AppCompatActivity {
+public class NewInterventionActivity extends AppCompatActivity implements WebSocketServiceAware {
     private static final String TAG = "NewInterventionActivity";
 
     /**
@@ -94,7 +91,18 @@ public class NewInterventionActivity extends AppCompatActivity {
         ArrayList<Vehicle> vehiclesIntervention = interventionService.getMoyensDispo();
         displayListView(vehiclesIntervention);
 
-        bindToService();
+        bindWebSocketService();
+    }
+
+
+    @Override
+    public void onWebSocketServiceConnected() {
+        //TODO: call the initialize of the view For now we do nothing, Initialize the view with data from modelService
+    }
+
+    @Override
+    public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
+        this.webSocketService = webSocketService;
     }
 
     /**
@@ -108,28 +116,6 @@ public class NewInterventionActivity extends AppCompatActivity {
             inputtedAddress = (String) parent.getItemAtPosition(position);
             Log.d(TAG, "Set address to: " + inputtedAddress);
         });
-    }
-
-    /**
-     * TODO: It could be mutualized because almost all Activities has to bind to ModelService or WebSocketService -> A separated class that do that has to be created ! like an Interface ModelServiceAware and WebsocketServiceAware, or a superclass Activity aware of services
-     * Method used to bind NewInterventionActivity to WebsocketService, with that, NewInterventionActivity is aware of WebSocketService
-     */
-    private void bindToService() {
-        webSocketServiceConnection = new ServiceConnection() {
-            public void onServiceDisconnected(ComponentName name) {
-                Log.w(TAG, "The Service " + name + " is disconnected");
-            }
-            public void onServiceConnected(ComponentName arg0, IBinder binder) {
-
-                //on récupère l'instance du webSocketService dans l'activité
-                webSocketService = ((WebSocketServiceBinder)binder).getService();
-            }
-        };
-
-        startService(new Intent(getApplicationContext(), WebsocketService.class));
-        Intent intent = new Intent(getApplicationContext(), WebsocketService.class);
-        //lance le binding du webSocketService
-        bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     /**
@@ -254,7 +240,6 @@ public class NewInterventionActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(webSocketServiceConnection != null)
-            unbindService(webSocketServiceConnection);
+        unbindWebSocketService(webSocketServiceConnection);
     }
 }
