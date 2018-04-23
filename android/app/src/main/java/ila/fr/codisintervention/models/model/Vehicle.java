@@ -1,14 +1,9 @@
-package fr.istic.sit.codisgroupea.model.entity;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+package ila.fr.codisintervention.models.model;
 
 /**
  * This class is the vehicle entity. It represents an actual vehicle, not a tactical unit.
  *
- * @see Unit
  */
-@Entity
 public class Vehicle {
 
     /** The id of the vehicle */
@@ -47,8 +42,6 @@ public class Vehicle {
      *
      * @return the ID
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -67,7 +60,6 @@ public class Vehicle {
      *
      * @return the label
      */
-    @NotNull
     public String getLabel() {
         return label;
     }
@@ -81,8 +73,6 @@ public class Vehicle {
      *
      * @return the vehicle type
      */
-    @NotNull
-    @ManyToOne
     public VehicleType getType() {
         return type;
     }
@@ -101,8 +91,6 @@ public class Vehicle {
      *
      * @return the vehicle status
      */
-    @Enumerated
-    @NotNull
     public VehicleStatus getStatus() {
         return status;
     }

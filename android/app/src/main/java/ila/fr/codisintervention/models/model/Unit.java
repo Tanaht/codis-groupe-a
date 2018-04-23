@@ -1,4 +1,4 @@
-package fr.istic.sit.codisgroupea.model.entity;
+package ila.fr.codisintervention.models.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import java.sql.Timestamp;
  * Representation of a tactical unit. A unit is a vehicle within an intervention.
  *
  * @see Vehicle
- * @see Intervention
+ * @see InterventionModel
  */
 @Entity
 public class Unit {
@@ -16,8 +16,8 @@ public class Unit {
     /** The id of the unit */
     private Integer id;
 
-    /** Instance of {@link Intervention} for the intervention of the unit */
-    private Intervention intervention;
+    /** Instance of {@link InterventionModel} for the intervention of the unit */
+    private InterventionModel intervention;
 
     /** Instance of {@link Vehicle} for the vehicle of the unit */
     private Vehicle vehicle;
@@ -51,7 +51,7 @@ public class Unit {
      * @param acceptDate   the acceptation date
      * @param symbolSitac  the symbol
      */
-    public Unit(Intervention intervention,
+    public Unit(InterventionModel intervention,
                 Vehicle vehicle,
                 boolean moving,
                 Timestamp requestDate,
@@ -70,8 +70,6 @@ public class Unit {
      *
      * @return the ID
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -90,9 +88,7 @@ public class Unit {
      *
      * @return the intervention
      */
-    @ManyToOne
-    @NotNull
-    public Intervention getIntervention() {
+    public InterventionModel getIntervention() {
         return intervention;
     }
 
@@ -101,7 +97,7 @@ public class Unit {
      *
      * @param intervention the intervention
      */
-    public void setIntervention(Intervention intervention) {
+    public void setIntervention(InterventionModel intervention) {
         this.intervention = intervention;
     }
 
@@ -110,7 +106,6 @@ public class Unit {
      *
      * @return the vehicle
      */
-    @OneToOne
     public Vehicle getVehicle() {
         return vehicle;
     }
@@ -129,7 +124,6 @@ public class Unit {
      *
      * @return the boolean
      */
-    @NotNull
     public boolean isMoving() {
         return moving;
     }
@@ -148,7 +142,6 @@ public class Unit {
      *
      * @return the request date
      */
-    @NotNull
     public Timestamp getRequestDate() {
         return requestDate;
     }
@@ -167,7 +160,6 @@ public class Unit {
      *
      * @return the accept date
      */
-    @NotNull
     public Timestamp getAcceptDate() {
         return acceptDate;
     }
@@ -182,8 +174,6 @@ public class Unit {
     }
 
 
-    @OneToOne
-    @NotNull
     public SymbolSitac getSymbolSitac() {
         return symbolSitac;
     }

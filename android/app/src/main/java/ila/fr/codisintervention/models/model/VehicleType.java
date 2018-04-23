@@ -1,13 +1,8 @@
-package fr.istic.sit.codisgroupea.model.entity;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.List;
+package ila.fr.codisintervention.models.model;
 
 /**
  * Encapsulation of a vehicle type.
  */
-@Entity
 public class VehicleType {
 
     /** The id of the vehicle type */
@@ -36,8 +31,6 @@ public class VehicleType {
      *
      * @return the ID
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -56,7 +49,6 @@ public class VehicleType {
      *
      * @return the vehicle-type label
      */
-    @NotNull
     public String getName() {
         return name;
     }

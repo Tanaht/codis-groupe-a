@@ -1,13 +1,8 @@
-package fr.istic.sit.codisgroupea.model.entity;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.util.List;
+package ila.fr.codisintervention.models.model;
 
 /**
  * The type User.
  */
-@Entity
 public class User {
 
     /** The id of the user */
@@ -27,8 +22,6 @@ public class User {
      *
      * @return the id
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -47,7 +40,6 @@ public class User {
      *
      * @return the username
      */
-    @NotNull
     public String getUsername() {
         return username;
     }
@@ -66,7 +58,6 @@ public class User {
      *
      * @return the password
      */
-    @NotNull
     public String getPassword() {
         return password;
     }
@@ -85,7 +76,6 @@ public class User {
      *
      * @return the roles
      */
-    @OneToOne
     public Role getRoles() {
         return role;
     }

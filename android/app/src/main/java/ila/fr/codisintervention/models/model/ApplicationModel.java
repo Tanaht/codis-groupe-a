@@ -23,7 +23,7 @@ public class ApplicationModel {
     /**
      * FIXME: Why an Intervention currently selected has to be a different class of an intervention
      */
-    private InterventionChosen currentIntervention;
+    private InterventionModel currentIntervention;
 
     /**
      * Constructor
@@ -55,7 +55,7 @@ public class ApplicationModel {
      *
      * @return the current intervention
      */
-    public InterventionChosen getCurrentIntervention() {
+    public InterventionModel getCurrentIntervention() {
         return currentIntervention;
     }
 
@@ -64,7 +64,7 @@ public class ApplicationModel {
      *
      * @param currentIntervention the current intervention
      */
-    public void setCurrentIntervention(InterventionChosen currentIntervention) {
+    public void setCurrentIntervention(InterventionModel currentIntervention) {
         this.currentIntervention = currentIntervention;
     }
 

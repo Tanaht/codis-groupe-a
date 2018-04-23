@@ -1,4 +1,4 @@
-package fr.istic.sit.codisgroupea.model.entity;
+package ila.fr.codisintervention.models.model;
 
 /**
  * Status of a vehicle.

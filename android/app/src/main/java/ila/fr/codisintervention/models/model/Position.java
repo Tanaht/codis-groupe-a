@@ -3,15 +3,19 @@ package ila.fr.codisintervention.models.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Represents coordinates in terms of latitude, longitude and altitude.
  */
 public class Position implements Parcelable {
 
     /** The id of the position */
+    @Expose
     private Integer id;
 
     /** The latitude of the position */
+    @Expose
     private double latitude;
 
     /** The longitude of the position */
