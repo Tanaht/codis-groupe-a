@@ -2,6 +2,8 @@ package ila.fr.codisintervention.models.model;
 
 import android.util.Log;
 
+import java.util.List;
+
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.User;
 
@@ -25,6 +27,13 @@ public class ApplicationModel {
      */
     private InterventionModel currentIntervention;
 
+    private List<InterventionModel> listIntervention;
+
+    private List<Path> listPath;
+
+    private List<Unit> listUnit;
+
+    private boolean droneAvailable;
     /**
      * Constructor
      */

@@ -1,7 +1,5 @@
 package ila.fr.codisintervention.models.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
@@ -10,7 +8,6 @@ import java.sql.Timestamp;
  * @see Vehicle
  * @see InterventionModel
  */
-@Entity
 public class Unit {
 
     /** The id of the unit */

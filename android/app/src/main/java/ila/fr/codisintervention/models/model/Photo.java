@@ -35,13 +35,11 @@ public class Photo {
      * @param uri          the uri
      * @param coordinates  the coordinates
      * @param date         the date
-     * @param intervention the intervention
      */
-    public Photo(String uri, Position coordinates, Timestamp date, InterventionModel intervention) {
+    public Photo(String uri, Position coordinates, Timestamp date) {
         this.uri = uri;
         this.coordinates = coordinates;
         this.date = date;
-        this.intervention = intervention;
     }
 
     /**
@@ -116,21 +114,4 @@ public class Photo {
         this.date = date;
     }
 
-    /**
-     * Gets intervention.
-     *
-     * @return the intervention
-     */
-    public InterventionModel getIntervention() {
-        return intervention;
-    }
-
-    /**
-     * Sets intervention.
-     *
-     * @param intervention the intervention
-     */
-    public void setIntervention(InterventionModel intervention) {
-        this.intervention = intervention;
-    }
 }
