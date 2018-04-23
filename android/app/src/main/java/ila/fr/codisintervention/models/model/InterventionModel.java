@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 import ila.fr.codisintervention.models.messages.Photo;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
@@ -13,28 +15,25 @@ import ila.fr.codisintervention.models.messages.User;
 /**
  * Representation of an intervention.
  */
-public class InterventionModel implements Parcelable {
+public class InterventionModel {
 
     /** The id of the intervention */
-    @Expose
     private Integer id;
 
     /** The date of the intervention */
-    @Expose
     private long date;
 
     /** Instance of {@link Position} objet for the intervention */
-    @Expose
     private Position position;
 
     /** Address of the intervention */
-    @Expose
     private String address;
 
     /** Instance of {@link SinisterCode} for the intervention */
-    @Expose
     private SinisterCode sinisterCode;
     private boolean opened;
+
+    private List<Photo> listPhoto;
 
 
     /**
@@ -51,13 +50,15 @@ public class InterventionModel implements Parcelable {
      * @param address      the address of the intervention
      * @param sinisterCode the sinister code
      * @param opened       is the intervention opened
+     * @param listPhoto       is the list of photo
      */
-    public InterventionModel(Integer id, long date, Position position, String address, SinisterCode sinisterCode, boolean opened) {
+    public InterventionModel(Integer id, long date, Position position, String address, SinisterCode sinisterCode, boolean opened, List<Photo> listPhoto) {
         this.id = id;
         this.date = date;
         this.position = position;
         this.address = address;
         this.sinisterCode = sinisterCode;
+        this.listPhoto = listPhoto;
     }
 
     /**
@@ -167,44 +168,20 @@ public class InterventionModel implements Parcelable {
     public void setOpened(boolean opened) {
         this.opened = opened;
     }
-
-    protected InterventionModel(Parcel in) {
-        id = in.readInt();
-        date = in.readLong();
-        sinisterCode = in.readParcelable(SinisterCode.class.getClassLoader());
-        address = in.readString();
-        position = in.readParcelable(Position.class.getClassLoader());
-    }
-
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeLong(date);
-        dest.writeParcelable(sinisterCode, flags);
-        dest.writeString(address);
-        dest.writeParcelable(position, flags);
-    }
-
     /**
-     * Usefull to Parcelize an instance of this class  {@link Parcelable}
-     * The constant CREATOR.
+     * get the list of photo
+     *
+     * @return the list of photo
      */
-    public static final Creator<InterventionModel> CREATOR = new Creator<InterventionModel>() {
-        @Override
-        public InterventionModel createFromParcel(Parcel in) {
-            return new InterventionModel(in);
-        }
-
-        @Override
-        public InterventionModel[] newArray(int size) {
-            return new InterventionModel[size];
-        }
-    };
+    public List<Photo> getListPhoto() {
+        return listPhoto;
+    }
+    /**
+     * Sets list of photo
+     *
+     * @param listPhoto the list of photo
+     */
+    public void setListPhoto(List<Photo> listPhoto) {
+        this.listPhoto = listPhoto;
+    }
 }
