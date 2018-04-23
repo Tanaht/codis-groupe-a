@@ -24,6 +24,7 @@ import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
+import ila.fr.codisintervention.services.ModelServiceAware;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL;
@@ -41,7 +42,7 @@ import static ila.fr.codisintervention.services.constants.ModelConstants.VALIDAT
  * TODO: Please log more often
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class MapActivity extends AppCompatActivity implements SymbolsListFragment.OnFragmentInteractionListener {
+public class MapActivity extends AppCompatActivity implements SymbolsListFragment.OnFragmentInteractionListener, ModelServiceAware {
     private static final String TAG = "MapActivity";
 
     /**
@@ -73,6 +74,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         FragmentManager manager = getSupportFragmentManager();
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
         mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
+
+        bindModelService();
     }
 
     /**
@@ -135,33 +138,6 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         }
     };
 
-
-    /**
-     * TODO: It could be mutualized because almost all Activities has to bind to ModelService or WebSocketService -> A separated class that do that has to be created ! like an Interface ModelServiceAware and WebsocketServiceAware, or a superclass Activity aware of services
-     * Method used to bind MapActivity to WebsocketService and ModelService, with that, MainActivity is aware of ModelService and WebSocketService
-     */
-    private void bindToService() {
-        modelServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder binder) {
-                //on recupere l'instance du modelService dans l'activité
-                modelService = ((ModelServiceBinder) binder).getService();
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Log.w(TAG, "The Service " + name + " is disconnected");
-            }
-        };
-
-        //Binding Activity with ModelService
-        startService(new Intent(this, ila.fr.codisintervention.services.model.ModelService.class));
-        Intent intent = new Intent(this, ila.fr.codisintervention.services.model.ModelService.class);
-
-        //lance le binding du websocketService
-        bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
-    }
-
     @Override
     protected void onPause() {
         // Unregister since the activity is not visible
@@ -207,9 +183,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if (modelServiceConnection != null)
-            unbindService(modelServiceConnection);
+        unbindModelService(modelServiceConnection);
     }
 
     @Override
@@ -240,5 +214,16 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     public void onFragmentInteraction(Uri uri) {
 //        No Interaction because unnecessary
+    }
+
+    @Override
+    public void onModelServiceConnected() {
+        this.mapFragment.setModelService(this.modelService);
+        this.mapFragment.initializeView();
+    }
+
+    @Override
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+        this.modelService = modelService;
     }
 }

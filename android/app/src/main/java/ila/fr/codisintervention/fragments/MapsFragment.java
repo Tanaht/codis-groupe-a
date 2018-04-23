@@ -29,6 +29,7 @@ import java.util.TreeMap;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
 
 /**
@@ -94,51 +95,23 @@ public class MapsFragment extends Fragment {
     private GoogleMap googleMap;
 
     /**
-     * Refresh the map with the drone's course
-     * @param mMap the Google Map API
+     * ModelService instance
      */
-    public void updateUI(GoogleMap mMap) {
-        mMap.clear();
-        DronePoint previous = null;
-        java.util.Set<Integer> keyList = course.keySet();
-        for (Integer num : keyList) {
-            DronePoint point = course.get(num);
-            if (!num.equals(0)) {    // specific case of the drone, itself.
-                if (previous != null) {
-                    mMap.addPolyline(new PolylineOptions()
-                            .add(new LatLng(previous.lat, previous.lon), new LatLng(point.lat, point.lon))
-                            .width(5)
-                            .color(Color.RED));
-                }
-                previous = point;
-            }
-            addMarkerZoom(point);
-        }
+    private ModelServiceBinder.IMyServiceMethod modelService;
 
-
-        for(Map.Entry<String, MarkerOptions> entry: markers.entrySet()){
-            googleMap.addMarker(entry.getValue());
-        }
+    /**
+     * ModelService Setter called by parent activity
+     * @param modelService the modelService instance
+     */
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+        this.modelService = modelService;
     }
 
-
-//    TODO: To refactor SonarLint said it's to complex to read, and I'm agree with it perhaps we can place hook on layout like android:onClick, if not simply create class that instanciate the appropriate listeners.
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
-
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
-
-        mMapView.onCreate(savedInstanceState);
-
-        mMapView.onResume(); // needed to get the map to display immediately
-
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (NullPointerException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
-
+    /**
+     * method used to initialize the view
+     */
+    public void initializeView() {
+        //TODO: Here initialize the view with datas from modelService variable
         mMapView.getMapAsync(mMap -> {
             googleMap = mMap;
             CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(48.115204, -1.637871)).zoom(18).build();
@@ -206,8 +179,53 @@ public class MapsFragment extends Fragment {
                 }
             });
         });
+    }
+
+    /**
+     * Refresh the map with the drone's course
+     * @param mMap the Google Map API
+     */
+    public void updateUI(GoogleMap mMap) {
+        mMap.clear();
+        DronePoint previous = null;
+        java.util.Set<Integer> keyList = course.keySet();
+        for (Integer num : keyList) {
+            DronePoint point = course.get(num);
+            if (!num.equals(0)) {    // specific case of the drone, itself.
+                if (previous != null) {
+                    mMap.addPolyline(new PolylineOptions()
+                            .add(new LatLng(previous.lat, previous.lon), new LatLng(point.lat, point.lon))
+                            .width(5)
+                            .color(Color.RED));
+                }
+                previous = point;
+            }
+            addMarkerZoom(point);
+        }
 
 
+        for(Map.Entry<String, MarkerOptions> entry: markers.entrySet()){
+            googleMap.addMarker(entry.getValue());
+        }
+    }
+
+
+//    TODO: To refactor SonarLint said it's to complex to read, and I'm agree with it perhaps we can place hook on layout like android:onClick, if not simply create class that instanciate the appropriate listeners.
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
+
+        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+
+        mMapView.onCreate(savedInstanceState);
+
+        mMapView.onResume(); // needed to get the map to display immediately
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (NullPointerException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
         mMapView.setClickable(true);
         return rootView;
     }
