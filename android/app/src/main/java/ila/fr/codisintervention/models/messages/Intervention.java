@@ -8,7 +8,7 @@ import com.google.gson.annotations.Expose;
 
 import java.util.List;
 
-import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.model.Location;
 
 /**
  * Represent an intervention in terms of JSON Message

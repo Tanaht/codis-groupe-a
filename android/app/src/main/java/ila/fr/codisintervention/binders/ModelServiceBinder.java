@@ -4,7 +4,7 @@ import android.os.Binder;
 
 import java.util.List;
 
-import ila.fr.codisintervention.models.InterventionChosen;
+import ila.fr.codisintervention.models.model.InterventionChosen;
 import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Symbol;

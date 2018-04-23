@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.models;
+package ila.fr.codisintervention.models.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -195,15 +195,15 @@ public class InterventionChosen implements Parcelable {
      * Usefull to Parcelize an instance of this class  {@link Parcelable}
      * The constant CREATOR.
      */
-    public static final Creator<ila.fr.codisintervention.models.InterventionChosen> CREATOR = new Creator<ila.fr.codisintervention.models.InterventionChosen>() {
+    public static final Creator<InterventionChosen> CREATOR = new Creator<InterventionChosen>() {
         @Override
-        public ila.fr.codisintervention.models.InterventionChosen createFromParcel(Parcel in) {
-            return new ila.fr.codisintervention.models.InterventionChosen(in);
+        public InterventionChosen createFromParcel(Parcel in) {
+            return new InterventionChosen(in);
         }
 
         @Override
-        public ila.fr.codisintervention.models.InterventionChosen[] newArray(int size) {
-            return new ila.fr.codisintervention.models.InterventionChosen[size];
+        public InterventionChosen[] newArray(int size) {
+            return new InterventionChosen[size];
         }
     };
 

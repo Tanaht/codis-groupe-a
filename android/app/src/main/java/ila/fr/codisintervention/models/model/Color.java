@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.models;
+package ila.fr.codisintervention.models.model;
 
 /**
  * Created by tanaky on 30/03/18.

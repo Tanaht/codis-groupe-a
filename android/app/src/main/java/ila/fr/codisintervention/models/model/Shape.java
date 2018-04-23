@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.models;
+package ila.fr.codisintervention.models.model;
 
 /**
  * This enum list all  shapes used in this project
