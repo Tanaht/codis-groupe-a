@@ -46,7 +46,7 @@ public class Config {
      * For now the configuration parameters are initialized in it, if we have time it would be good to store them on a file, I think.
      */
     private Config() {
-        host = "192.168.43.226";
+        host = "lapommevolante.istic.univ-rennes1.fr";
         port = 8080;
         uri = "stomp";
 
