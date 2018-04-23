@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.models.model;
+package ila.fr.codisintervention.models.messages;
 
 import android.os.Parcel;
 import android.os.Parcelable;

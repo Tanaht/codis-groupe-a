@@ -23,7 +23,7 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
-import ila.fr.codisintervention.models.model.Location;
+import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;

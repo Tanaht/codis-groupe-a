@@ -28,7 +28,7 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.entities.Vehicle;
-import ila.fr.codisintervention.models.model.Location;
+import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.InterventionService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
