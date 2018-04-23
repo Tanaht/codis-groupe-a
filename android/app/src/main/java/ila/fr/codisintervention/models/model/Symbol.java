@@ -1,12 +1,8 @@
-package fr.istic.sit.codisgroupea.model.entity;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+package ila.fr.codisintervention.models.model;
 
 /**
  * Graphical symbol regardless of its position.
  */
-@Entity
 public class Symbol {
 
     /** The id of the symbol */
@@ -40,8 +36,6 @@ public class Symbol {
      *
      * @return the id
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -60,8 +54,6 @@ public class Symbol {
      *
      * @return the color
      */
-    @NotNull
-    @Enumerated
     public Color getColor() {
         return color;
     }
@@ -80,8 +72,6 @@ public class Symbol {
      *
      * @return the shape
      */
-    @NotNull
-    @Enumerated
     public Shape getShape() {
         return shape;
     }

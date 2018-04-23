@@ -1,21 +1,16 @@
-package fr.istic.sit.codisgroupea.model.entity;
+package ila.fr.codisintervention.models.model;
 
-import fr.istic.sit.codisgroupea.sig.SigEntry;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 /**
  * Graphical symbol placed on the SITAC, it features its location.
  */
-@Entity
-public class SymbolSitac implements SigEntry {
+public class SymbolSitac {
 
     /** The id of the symbol sitac */
     private Integer id;
 
-    /** Instance of {@link Intervention} for the intervention of the symbol sitac */
-    private Intervention intervention;
+    /** Instance of {@link InterventionModel} for the intervention of the symbol sitac */
+    private InterventionModel intervention;
 
     /** Instance of {@link Symbol} for the symbol of the symbol sitac */
     private Symbol symbol;
@@ -40,7 +35,7 @@ public class SymbolSitac implements SigEntry {
      * @param location     the location
      * @param payload  the payload
      */
-    public SymbolSitac(Intervention intervention, Symbol symbol, Position location, Payload payload) {
+    public SymbolSitac(InterventionModel intervention, Symbol symbol, Position location, Payload payload) {
         this.intervention = intervention;
         this.symbol = symbol;
         this.location = location;
@@ -52,8 +47,6 @@ public class SymbolSitac implements SigEntry {
      *
      * @return the id
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -72,8 +65,7 @@ public class SymbolSitac implements SigEntry {
      *
      * @return the intervention
      */
-    @ManyToOne
-    public Intervention getIntervention() {
+    public InterventionModel getIntervention() {
         return intervention;
     }
 
@@ -82,7 +74,7 @@ public class SymbolSitac implements SigEntry {
      *
      * @param intervention the intervention
      */
-    public void setIntervention(Intervention intervention) {
+    public void setIntervention(InterventionModel intervention) {
         this.intervention = intervention;
     }
 
@@ -91,8 +83,6 @@ public class SymbolSitac implements SigEntry {
      *
      * @return the symbol
      */
-    @ManyToOne
-    @NotNull
     public Symbol getSymbol() {
         return symbol;
     }
@@ -111,7 +101,6 @@ public class SymbolSitac implements SigEntry {
      *
      * @return the location
      */
-    @OneToOne
     public Position getLocation() {
         return location;
     }
@@ -130,8 +119,6 @@ public class SymbolSitac implements SigEntry {
      *
      * @return the payload
      */
-    @OneToOne
-    @NotNull
     public Payload getPayload() {
         return payload;
     }

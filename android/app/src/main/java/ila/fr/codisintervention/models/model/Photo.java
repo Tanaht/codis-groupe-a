@@ -1,13 +1,10 @@
-package fr.istic.sit.codisgroupea.model.entity;
+package ila.fr.codisintervention.models.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 /**
  * Photo informations stored in the database.
  */
-@Entity
 public class Photo {
 
     /** The id of the photo */
@@ -22,8 +19,8 @@ public class Photo {
     /** Instance of {@link Timestamp} for the date of the photo */
     private Timestamp date;
 
-    /** Instance of {@link Intervention} for the intervention of the photo */
-    private Intervention intervention;
+    /** Instance of {@link InterventionModel} for the intervention of the photo */
+    private InterventionModel intervention;
 
     /**
      * Instantiates a new Photo.
@@ -40,7 +37,7 @@ public class Photo {
      * @param date         the date
      * @param intervention the intervention
      */
-    public Photo(String uri, Position coordinates, Timestamp date, Intervention intervention) {
+    public Photo(String uri, Position coordinates, Timestamp date, InterventionModel intervention) {
         this.uri = uri;
         this.coordinates = coordinates;
         this.date = date;
@@ -52,8 +49,6 @@ public class Photo {
      *
      * @return the id
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -72,7 +67,6 @@ public class Photo {
      *
      * @return the uri
      */
-    @NotNull
     public String getUri() {
         return uri;
     }
@@ -91,8 +85,6 @@ public class Photo {
      *
      * @return the coordinates
      */
-    @NotNull
-    @OneToOne
     public Position getCoordinates() {
         return coordinates;
     }
@@ -111,7 +103,6 @@ public class Photo {
      *
      * @return the date
      */
-    @NotNull
     public Timestamp getDate() {
         return date;
     }
@@ -130,9 +121,7 @@ public class Photo {
      *
      * @return the intervention
      */
-    @NotNull
-    @ManyToOne
-    public Intervention getIntervention() {
+    public InterventionModel getIntervention() {
         return intervention;
     }
 
@@ -141,7 +130,7 @@ public class Photo {
      *
      * @param intervention the intervention
      */
-    public void setIntervention(Intervention intervention) {
+    public void setIntervention(InterventionModel intervention) {
         this.intervention = intervention;
     }
 }

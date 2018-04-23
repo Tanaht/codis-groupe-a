@@ -1,13 +1,10 @@
-package fr.istic.sit.codisgroupea.model.entity;
+package ila.fr.codisintervention.models.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
  * Representation of the drone's path.
  */
-@Entity
 public class Path {
 
     /** The id of the path */
@@ -47,8 +44,6 @@ public class Path {
      *
      * @return the id
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -67,7 +62,6 @@ public class Path {
      *
      * @return the altitude
      */
-    @NotNull
     public double getAltitude() {
         return altitude;
     }
@@ -86,7 +80,6 @@ public class Path {
      *
      * @return the points
      */
-    @OneToMany
     public List<Position> getPoints() {
         return points;
     }
@@ -105,8 +98,6 @@ public class Path {
      *
      * @return the type
      */
-    @Enumerated
-    @NotNull
     public PathType getType() {
         return type;
     }

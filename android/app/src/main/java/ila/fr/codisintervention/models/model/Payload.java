@@ -1,14 +1,9 @@
-package fr.istic.sit.codisgroupea.model.entity;
+package ila.fr.codisintervention.models.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 /**
  * The symbol payload.
  */
-@Entity
 public class Payload {
 
     /** The id of the payload */
@@ -42,8 +37,6 @@ public class Payload {
      *
      * @return the id
      */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }

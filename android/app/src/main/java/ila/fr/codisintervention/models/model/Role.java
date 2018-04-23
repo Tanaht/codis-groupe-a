@@ -1,15 +1,11 @@
-package fr.istic.sit.codisgroupea.model.entity;
+package ila.fr.codisintervention.models.model;
 
-import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 /**
  * The type Role.
  */
-@Entity
-public class Role implements GrantedAuthority {
+public class Role {
 
     /** The id of the role */
     private Long id;
@@ -22,8 +18,6 @@ public class Role implements GrantedAuthority {
      *
      * @return the id
      */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -42,7 +36,6 @@ public class Role implements GrantedAuthority {
      *
      * @return the label
      */
-    @NotNull
     public String getLabel() {
         return label;
     }
@@ -56,13 +49,4 @@ public class Role implements GrantedAuthority {
         this.label = label;
     }
 
-    /**
-     * Use with spring security, transient because it's the same data in label
-     * @return name of the role
-     */
-    @Transient
-    @Override
-    public String getAuthority() {
-        return label;
-    }
 }
