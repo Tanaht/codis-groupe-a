@@ -7,6 +7,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import static fr.istic.sit.codisgroupea.Constante.REGISTER_STOMP_END_POINTS;
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
@@ -19,7 +21,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
-        registry.addEndpoint("stomp").addInterceptors(new HttpHandshakeInterceptor());
+        registry.addEndpoint(REGISTER_STOMP_END_POINTS).addInterceptors(new HttpHandshakeInterceptor());
     }
 
 
