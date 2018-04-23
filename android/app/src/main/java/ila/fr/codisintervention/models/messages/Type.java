@@ -7,17 +7,29 @@ import com.google.gson.annotations.Expose;
 
 /**
  * Created by tanaky on 27/03/18.
+ * Represent a type of vehicle
  */
-
 public class Type implements Parcelable {
 
+    /**
+     * The string representation of the type
+     */
     @Expose
     private String label;
 
+    /**
+     * Instantiates a new Type.
+     *
+     * @param in the parcel that contain the details of this class
+     */
     public Type(Parcel in) {
         this.label = in.readString();
     }
 
+    /**
+     * The constant CREATOR.
+     * Usefull to Parcelize an instance of this class  {@link Parcelable}
+     */
     public static final Creator<Type> CREATOR = new Creator<Type>() {
         @Override
         public Type createFromParcel(Parcel in) {

@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/InterventionTitleLabel"
-        android:text="@string/InterventionTitleLabel"
+        android:text="@string/title_new_intervention"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -21,25 +21,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="@string/InterventionAddressLabel"
+        android:text="@string/label_intervention_address"
         android:textSize="16sp" />
 
-    <!--EditText
-        android:id="@+id/interventionAddress"
-        android:layout_width="match_parent"
-        android:layout_height="34dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="40dp"
-        android:textSize="12sp"
-        tools:text="ggggfffF" /-->
     <AutoCompleteTextView
-        android:id="@+id/autoCompleteTextView"
+        android:id="@+id/autocomplete_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="40dp"
         android:ems="10"
-        android:hint="@string/InterventionAddressHint" >
+        android:hint="@string/hint_intervention_address" >
 
         <requestFocus />
     </AutoCompleteTextView>
@@ -50,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        android:text="@string/InterventionCodeLabel"
+        android:text="@string/label_intervention_sinister_code"
         android:textSize="16sp" />
 
     <Spinner

@@ -16,87 +16,187 @@ import ila.fr.codisintervention.models.Location;
  */
 public class Intervention implements Parcelable {
 
+    /**
+     * uniq Identifier
+     */
     @Expose
     private int id;
 
+    /**
+     * Date of creation
+     */
     @Expose
     private long date;
 
+    /**
+     * Sinister Code
+     */
     @Expose
     private String code;
 
+    /**
+     * String address
+     */
     @Expose
     private String address;
 
+    /**
+     * Warning: Do not rename it must match the key of the json message
+     * boolean to know if the drone is available for this intervention
+     */
     @Expose
     private boolean drone_available;
 
+    /**
+     * Location of the intervention
+     */
     @Expose
     private Location location;
 
 
+    /**
+     * Photos related to this intervention
+     */
     @Expose
     private List<Photo> photos;
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Gets date.
+     *
+     * @return the date
+     */
     public long getDate() {
         return date;
     }
 
+    /**
+     * Gets code.
+     *
+     * @return the code
+     */
     public String getCode() {
         return code;
     }
 
+    /**
+     * Gets address.
+     *
+     * @return the address
+     */
     public String getAddress() {
         return address;
     }
 
+    /**
+     * Is drone available boolean.
+     *
+     * @return the boolean
+     */
     public boolean isDrone_available() {
         return drone_available;
     }
 
+    /**
+     * Gets location.
+     *
+     * @return the location
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Sets date.
+     *
+     * @param date the date
+     */
     public void setDate(long date) {
         this.date = date;
     }
 
+    /**
+     * Sets code.
+     *
+     * @param code the code
+     */
     public void setCode(String code) {
         this.code = code;
     }
 
+    /**
+     * Sets address.
+     *
+     * @param address the address
+     */
     public void setAddress(String address) {
         this.address = address;
     }
 
+    /**
+     * Sets drone available.
+     *
+     * @param drone_available the drone available
+     */
     public void setDrone_available(boolean drone_available) {
         this.drone_available = drone_available;
     }
 
+    /**
+     * Sets location.
+     *
+     * @param location the location
+     */
     public void setLocation(Location location) {
         this.location = location;
     }
 
+    /**
+     * Gets photos.
+     *
+     * @return the photos
+     */
     public List<Photo> getPhotos() {
         return photos;
     }
 
+    /**
+     * Sets photos.
+     *
+     * @param photos the photos
+     */
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
     }
 
+    /**
+     * Instantiates a new Intervention.
+     */
     public Intervention() {
     }
 
+    /**
+     * Instantiates a new Intervention.
+     *
+     * @param in the parcel that contain the details of this class
+     */
     protected Intervention(Parcel in) {
         id = in.readInt();
         date = in.readLong();
@@ -107,6 +207,10 @@ public class Intervention implements Parcelable {
         photos = in.createTypedArrayList(Photo.CREATOR);
     }
 
+    /**
+     * The constant CREATOR.
+     * Usefull to Parcelize an instance of this class  {@link Parcelable}
+     */
     public static final Creator<Intervention> CREATOR = new Creator<Intervention>() {
         @Override
         public Intervention createFromParcel(Parcel in) {

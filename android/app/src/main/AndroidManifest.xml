@@ -26,7 +26,7 @@
                 <action android:name="CONNECT_TO_APPLICATION"/>
             </intent-filter>
         </service>
-        <activity android:name=".Activities.MainActivity">
+        <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,12 +34,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Activities.MainMenuCodis" />
-        <activity android:name=".Activities.MainMenuIntervenant" />
-        <activity android:name=".Activities.InterventionsListActivity" />
-        <activity android:name=".Activities.NewInterventionActivity" />
+        <activity android:name=".activities.CodisMainMenu" />
+        <activity android:name=".activities.UserMainMenu" />
+        <activity android:name=".activities.InterventionsListActivity" />
+        <activity android:name=".activities.NewInterventionActivity" />
         <activity
-         android:name=".Activities.MapActivity"
+         android:name=".activities.MapActivity"
          android:label="@string/title_activity_map"
             android:screenOrientation="landscape"
             android:configChanges="keyboardHidden|orientation"

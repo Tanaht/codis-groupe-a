@@ -14,8 +14,8 @@ import ila.fr.codisintervention.models.messages.Unit;
 
 /**
  * Created by marzin on 29/03/18.
+ * TODO: To Refactor Ugly copy paste of the class {@link Intervention}, an Intervension choosed class is just an instance of an Intervention
  */
-
 public class InterventionChosen implements Parcelable {
 
     @Expose
@@ -31,7 +31,7 @@ public class InterventionChosen implements Parcelable {
     private String address;
 
     @Expose
-    private boolean drone_available;
+    private boolean droneAvailable;
 
     @Expose
     private List<Unit> units;
@@ -47,70 +47,154 @@ public class InterventionChosen implements Parcelable {
     private List<Photo> photos;
 
 
+    /**
+     * Gets id.
+     *
+     * @return the id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Gets date.
+     *
+     * @return the date
+     */
     public long getDate() {
         return date;
     }
 
+    /**
+     * Gets code.
+     *
+     * @return the code
+     */
     public String getCode() {
         return code;
     }
 
+    /**
+     * Gets address.
+     *
+     * @return the address
+     */
     public String getAddress() {
         return address;
     }
 
-    public boolean isDrone_available() {
-        return drone_available;
+    /**
+     * Is drone available boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isDroneAvailable() {
+        return droneAvailable;
     }
 
+    /**
+     * Gets location.
+     *
+     * @return the location
+     */
     public Location getLocation() {
         return location;
     }
 
+    /**
+     * Sets id.
+     *
+     * @param id the id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Sets date.
+     *
+     * @param date the date
+     */
     public void setDate(long date) {
         this.date = date;
     }
 
+    /**
+     * Sets code.
+     *
+     * @param code the code
+     */
     public void setCode(String code) {
         this.code = code;
     }
 
+    /**
+     * Sets address.
+     *
+     * @param address the address
+     */
     public void setAddress(String address) {
         this.address = address;
     }
 
-    public void setDrone_available(boolean drone_available) {
-        this.drone_available = drone_available;
+    /**
+     * Sets drone available.
+     *
+     * @param droneAvailable the drone available
+     */
+    public void setDroneAvailable(boolean droneAvailable) {
+        this.droneAvailable = droneAvailable;
     }
 
+    /**
+     * Gets units.
+     *
+     * @return the units
+     */
     public List<Unit> getUnits() {
         return units;
     }
 
+    /**
+     * Sets units.
+     *
+     * @param units the units
+     */
     public void setUnits(List<Unit> units) {
         this.units = units;
     }
 
+    /**
+     * Gets symbols.
+     *
+     * @return the symbols
+     */
     public List<Symbol> getSymbols() {
         return symbols;
     }
 
+    /**
+     * Sets symbols.
+     *
+     * @param symbols the symbols
+     */
     public void setSymbols(List<Symbol> symbols) {
         this.symbols = symbols;
     }
 
+    /**
+     * Sets location.
+     *
+     * @param location the location
+     */
     public void setLocation(Location location) {
         this.location = location;
     }
 
+    /**
+     * Usefull to Parcelize an instance of this class  {@link Parcelable}
+     * The constant CREATOR.
+     */
     public static final Creator<ila.fr.codisintervention.models.InterventionChosen> CREATOR = new Creator<ila.fr.codisintervention.models.InterventionChosen>() {
         @Override
         public ila.fr.codisintervention.models.InterventionChosen createFromParcel(Parcel in) {
@@ -123,24 +207,42 @@ public class InterventionChosen implements Parcelable {
         }
     };
 
+    /**
+     * Gets photos.
+     *
+     * @return the photos
+     */
     public List<Photo> getPhotos() {
         return photos;
     }
 
+    /**
+     * Sets photos.
+     *
+     * @param photos the photos
+     */
     public void setPhotos(List<Photo> photos) {
         this.photos = photos;
     }
 
+    /**
+     * Instantiates a new Intervention chosen.
+     */
     public InterventionChosen() {
     }
 
 
+    /**
+     * Instantiates a new Intervention chosen.
+     *
+     * @param in the in
+     */
     protected InterventionChosen(Parcel in) {
         id = in.readInt();
         date = in.readLong();
         code = in.readString();
         address = in.readString();
-        drone_available = in.readByte() != 0;
+        droneAvailable = in.readByte() != 0;
         photos = in.createTypedArrayList(Photo.CREATOR);
         symbols = in.createTypedArrayList(Symbol.CREATOR);
         units = in.createTypedArrayList(Unit.CREATOR);
@@ -159,12 +261,21 @@ public class InterventionChosen implements Parcelable {
         dest.writeLong(date);
         dest.writeString(code);
         dest.writeString(address);
-        dest.writeInt(drone_available ? 1 : 0);
+        dest.writeInt(droneAvailable ? 1 : 0);
         dest.writeParcelable(location, flags);
         dest.writeList(photos);
         dest.writeList(units);
         dest.writeList(symbols);
     }
+
+    /**
+     * Create by intervention with all intervention chosen.
+     *
+     * @param intervention the intervention
+     * @param symbols      the symbols
+     * @param units        the units
+     * @return the intervention chosen
+     */
     public static InterventionChosen createByInterventionWithAll (Intervention intervention, List<Symbol> symbols, List<Unit> units){
         InterventionChosen interventionChosen = createByIntervention(intervention);
         interventionChosen.setUnits(units);
@@ -173,13 +284,19 @@ public class InterventionChosen implements Parcelable {
         return interventionChosen;
     }
 
+    /**
+     * Create by intervention intervention chosen.
+     *
+     * @param intervention the intervention
+     * @return the intervention chosen
+     */
     public static InterventionChosen createByIntervention (Intervention intervention){
         InterventionChosen interventionChosen = new InterventionChosen();
 
         interventionChosen.setAddress(intervention.getAddress());
         interventionChosen.setCode(intervention.getCode());
         interventionChosen.setDate(intervention.getDate());
-        interventionChosen.setDrone_available(intervention.isDrone_available());
+        interventionChosen.setDroneAvailable(intervention.isDrone_available());
         interventionChosen.setId(intervention.getId());
         interventionChosen.setLocation(intervention.getLocation());
         interventionChosen.setPhotos(intervention.getPhotos());
@@ -187,6 +304,11 @@ public class InterventionChosen implements Parcelable {
         return interventionChosen;
     }
 
+    /**
+     * Change symbol.
+     *
+     * @param symbolChanged the symbol changed
+     */
     public void changeSymbol(Symbol symbolChanged){
         for(Symbol symbol : this.getSymbols()){
             if(symbol.getId().equals(symbolChanged.getId())){
@@ -195,6 +317,12 @@ public class InterventionChosen implements Parcelable {
         }
     }
 
+    /**
+     * Get symbol id symbol.
+     *
+     * @param id the id
+     * @return the symbol
+     */
     public Symbol getSymbolId(int id){
         for(Symbol symbol : this.getSymbols()){
             if(symbol.getId().equals(id)){
@@ -204,6 +332,11 @@ public class InterventionChosen implements Parcelable {
         return null;
     }
 
+    /**
+     * Delete symbol by id.
+     *
+     * @param id the id
+     */
     public void deleteSymbolById(int id){
         if(id!=-1) {
             for (Symbol symbol : this.getSymbols()) {
@@ -214,6 +347,11 @@ public class InterventionChosen implements Parcelable {
         }
     }
 
+    /**
+     * Change unit.
+     *
+     * @param unitChanged the unit changed
+     */
     public void changeUnit(Unit unitChanged){
         for(Unit unit : this.getUnits()){
             if(unit.getId()==(unitChanged.getId())){
@@ -222,6 +360,12 @@ public class InterventionChosen implements Parcelable {
         }
     }
 
+    /**
+     * Get unit by id unit.
+     *
+     * @param id the id
+     * @return the unit
+     */
     public Unit getUnitById(int id){
         for(Unit unit : this.getUnits()){
             if(unit.getId()==id){
