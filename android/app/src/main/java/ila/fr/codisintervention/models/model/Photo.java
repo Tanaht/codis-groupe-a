@@ -1,14 +1,17 @@
 package ila.fr.codisintervention.models.model;
 
 import java.sql.Timestamp;
+import java.util.Objects;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Photo informations stored in the database.
  */
+@Getter
+@Setter
 public class Photo {
-
-    /** The id of the photo */
-    private Integer id;
 
     /** The url of the photo */
     private String uri;
@@ -19,99 +22,17 @@ public class Photo {
     /** Instance of {@link Timestamp} for the date of the photo */
     private Timestamp date;
 
-    /** Instance of {@link InterventionModel} for the intervention of the photo */
-    private InterventionModel intervention;
-
-    /**
-     * Instantiates a new Photo.
-     */
-    public Photo() {
-
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Photo photo = (Photo) o;
+        return Objects.equals(uri, photo.uri);
     }
 
-    /**
-     * Instantiates a new Photo.
-     *
-     * @param uri          the uri
-     * @param coordinates  the coordinates
-     * @param date         the date
-     */
-    public Photo(String uri, Position coordinates, Timestamp date) {
-        this.uri = uri;
-        this.coordinates = coordinates;
-        this.date = date;
-    }
+    @Override
+    public int hashCode() {
 
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public Integer getId() {
-        return id;
+        return Objects.hash(uri);
     }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets uri.
-     *
-     * @return the uri
-     */
-    public String getUri() {
-        return uri;
-    }
-
-    /**
-     * Sets uri.
-     *
-     * @param uri the uri
-     */
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    /**
-     * Gets coordinates.
-     *
-     * @return the coordinates
-     */
-    public Position getCoordinates() {
-        return coordinates;
-    }
-
-    /**
-     * Sets coordinates.
-     *
-     * @param coordinates the coordinates
-     */
-    public void setCoordinates(Position coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    /**
-     * Gets date.
-     *
-     * @return the date
-     */
-    public Timestamp getDate() {
-        return date;
-    }
-
-    /**
-     * Sets date.
-     *
-     * @param date the date
-     */
-    public void setDate(Timestamp date) {
-        this.date = date;
-    }
-
 }

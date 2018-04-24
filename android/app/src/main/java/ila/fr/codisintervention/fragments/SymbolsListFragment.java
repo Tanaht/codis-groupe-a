@@ -15,7 +15,7 @@ import java.util.List;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.factory.SymbolKindFactory;
-import ila.fr.codisintervention.models.model.Color;
+import ila.fr.codisintervention.models.model.mapIcon.Color;
 
 /**
  * A simple {@link Fragment} subclass.

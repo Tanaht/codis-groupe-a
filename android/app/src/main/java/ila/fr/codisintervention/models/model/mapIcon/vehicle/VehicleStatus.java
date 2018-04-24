@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.models.model;
+package ila.fr.codisintervention.models.model.mapIcon.vehicle;
 
 /**
  * Status of a vehicle.

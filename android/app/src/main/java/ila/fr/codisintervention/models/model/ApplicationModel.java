@@ -1,30 +1,24 @@
 package ila.fr.codisintervention.models.model;
 
-import android.util.Log;
-
 import java.util.List;
 
 import ila.fr.codisintervention.models.messages.InitializeApplication;
-import ila.fr.codisintervention.models.messages.User;
+import ila.fr.codisintervention.models.model.mapIcon.drone.Path;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Created by marzin on 28/03/18.
  * The ApplicationModel is work is to contain the Model of the Interventions and Vehicles Requests
  * and to keep the integrity of the datas contained
  * <p>
- * FIXME: To refactor, for now the Application model is just an ugly patchwork of severall Class used to represent JSON WebSocket Message
  */
+@Getter
+@Setter
 public class ApplicationModel {
-    private static final String TAG = "ApplicationModel";
 
-    /**
-     * FIXME: Why the ApplicationModel rely on the InitializeApplication message ?
-     */
     private InitializeApplication messageInitialize;
 
-    /**
-     * FIXME: Why an Intervention currently selected has to be a different class of an intervention
-     */
     private InterventionModel currentIntervention;
 
     private List<InterventionModel> listIntervention;
@@ -34,59 +28,5 @@ public class ApplicationModel {
     private List<Unit> listUnit;
 
     private boolean droneAvailable;
-    /**
-     * Constructor
-     */
-    public ApplicationModel() {
-        // NoOp
-    }
-
-    /**
-     * Gets message initialize.
-     *
-     * @return the message initialize
-     */
-    public InitializeApplication getMessageInitialize() {
-        return messageInitialize;
-    }
-
-    /**
-     * Sets message initialize.
-     *
-     * @param messageInitialize the message initialize
-     */
-    public void setMessageInitialize(InitializeApplication messageInitialize) {
-        this.messageInitialize = messageInitialize;
-    }
-
-    /**
-     * Gets current intervention.
-     *
-     * @return the current intervention
-     */
-    public InterventionModel getCurrentIntervention() {
-        return currentIntervention;
-    }
-
-    /**
-     * Sets current intervention.
-     *
-     * @param currentIntervention the current intervention
-     */
-    public void setCurrentIntervention(InterventionModel currentIntervention) {
-        this.currentIntervention = currentIntervention;
-    }
-
-    /**
-     * Gets user.
-     *
-     * @return the user
-     */
-    public User getUser() {
-        if(messageInitialize == null)
-            Log.d(TAG, "messageInitialize is null");
-        else Log.d(TAG, "messageInitialize.user: " + messageInitialize.getUser());
-        return messageInitialize.getUser();
-    }
 
 }
