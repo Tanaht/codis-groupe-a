@@ -16,6 +16,16 @@ public class Unit {
     /** The id of the unit */
     private Integer id;
 
+    /**
+     * Status of the vehicle requested
+     */
+    private VehicleStatus status;
+
+    /**
+     * type of the vehicle requested;
+     */
+    private VehicleType type;
+
     /** Instance of {@link Intervention} for the intervention of the unit */
     private Intervention intervention;
 
@@ -30,6 +40,12 @@ public class Unit {
 
     /** Date of the CODIS acceptation of the vehicle for the intervention */
     private Timestamp acceptDate;
+
+    /** Date of the first commitment of the vehicle for the intervention */
+    private Timestamp commitedDate;
+
+    /** Date of the release of the vehicle from the intervention */
+    private Timestamp releasedDate;
 
     /** Instance of {@link SymbolSitac} for the symbol sitac of the unit */
     private SymbolSitac symbolSitac;
@@ -181,6 +197,41 @@ public class Unit {
         this.acceptDate = acceptDate;
     }
 
+    /**
+     * Gets commited date.
+     *
+     * @return the commited date
+     */
+    public Timestamp getCommitedDate() {
+        return commitedDate;
+    }
+
+    /**
+     * Sets commited date.
+     *
+     * @param commitedDate the commited date
+     */
+    public void setCommitedDate(Timestamp commitedDate) {
+        this.commitedDate = commitedDate;
+    }
+
+    /**
+     * Gets released date.
+     *
+     * @return the released date
+     */
+    public Timestamp getReleasedDate() {
+        return releasedDate;
+    }
+
+    /**
+     * Sets released date.
+     *
+     * @param releasedDate the released date
+     */
+    public void setReleasedDate(Timestamp releasedDate) {
+        this.releasedDate = releasedDate;
+    }
 
     @OneToOne
     @NotNull
@@ -190,5 +241,46 @@ public class Unit {
 
     public void setSymbolSitac(SymbolSitac symbolSitac) {
         this.symbolSitac = symbolSitac;
+    }
+
+
+    /**
+     * Gets status.
+     *
+     * @return the status
+     */
+    @NotNull
+    @Enumerated
+    public VehicleStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * Sets status.
+     *
+     * @param status the status
+     */
+    public void setStatus(VehicleStatus status) {
+        this.status = status;
+    }
+
+    /**
+     * Gets type.
+     *
+     * @return the type
+     */
+    @NotNull
+    @ManyToOne
+    public VehicleType getType() {
+        return type;
+    }
+
+    /**
+     * Sets type.
+     *
+     * @param type the type
+     */
+    public void setType(VehicleType type) {
+        this.type = type;
     }
 }
