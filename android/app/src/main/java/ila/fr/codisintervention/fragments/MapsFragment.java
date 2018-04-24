@@ -121,6 +121,7 @@ public class MapsFragment extends Fragment {
         }
     }
 
+    public Map<Integer, DronePoint> send_dronePoints(){return course;}
 
 //    TODO: To refactor SonarLint said it's to complex to read, and I'm agree with it perhaps we can place hook on layout like android:onClick, if not simply create class that instanciate the appropriate listeners.
     @Override

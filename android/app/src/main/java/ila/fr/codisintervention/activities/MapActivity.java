@@ -16,6 +16,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+
+import java.util.Map;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
@@ -64,6 +68,11 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
      */
     MapsFragment mapFragment;
 
+    /**
+     *
+     */
+    Map<Integer, MapsFragment.DronePoint> dronePointsMap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +82,14 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         FragmentManager manager = getSupportFragmentManager();
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
         mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
+
+        /**
+         * Validate button in order to retrieve drone points created on the Map
+         */
+        final Button validate = findViewById(R.id.send_drone_points);
+        validate.setOnClickListener(v ->
+                dronePointsMap=mapFragment.send_dronePoints());
+
     }
 
     /**
