@@ -2,42 +2,40 @@ package fr.istic.sit.codisgroupea.model.message;
 
 public class LocationMessage {
 
-		private static final String LOCATION_MESSAGE_TYPE = "UPDATE";
-		
-	    /** The type */
-	    private String type;
-	    
-	    private double lat;
-	    
-	    private double lng;
+        private Location location;
 
-		public String getType() {
-			return type;
-		}
+        private double altitude;
 
-		public void setType(String type) {
-			this.type = type;
-		}
+        public LocationMessage(double lat, double lng, double alt){
+            this.altitude = alt;
+            this.location = new Location(lat, lng);
+        }
 
-		public double getLat() {
-			return lat;
-		}
+	    public static class Location{
 
-		public void setLat(double lat) {
-			this.lat = lat;
-		}
+            private double lat;
 
-		public double getLng() {
-			return lng;
-		}
+            private double lng;
 
-		public void setLng(double lng) {
-			this.lng = lng;
-		}
-		
-		public LocationMessage(double lat, double lng) {
-			this.type = LOCATION_MESSAGE_TYPE;
-			this.lat = lat;
-			this.lng = lng;
-		}
+            public double getLat () {
+                return lat;
+            }
+
+            public void setLat ( double lat){
+                this.lat = lat;
+            }
+
+            public double getLng () {
+                return lng;
+            }
+
+            public void setLng ( double lng){
+                this.lng = lng;
+            }
+
+            public Location( double lat, double lng){
+                this.lat = lat;
+                this.lng = lng;
+            }
+        }
 }

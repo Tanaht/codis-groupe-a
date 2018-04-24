@@ -46,5 +46,5 @@ public class RoutesConfig {
     public final static String UPDATE_SYMBOL_SERVER = "/topic/interventions/{id}/symbols/event";
     
     //Send drone position to android
-    public final static String SEND_DRONE_POSITION = "/topic/interventions/1/droneLocation/event";
+    public final static String SEND_DRONE_POSITION = "/topic/interventions/1/drone/ping";
 }

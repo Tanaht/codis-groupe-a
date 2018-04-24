@@ -1,5 +1,6 @@
 package fr.istic.sit.codisgroupea.controller;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.message.LocationMessage;
@@ -26,7 +27,7 @@ public class DronePositionController {
 
     public void sendDronePosition(Location location) {
         Gson gson = new Gson();
-        String toJson = gson.toJson(new LocationMessage(location.getLat(), location.getLng()),LocationMessage.class);
+        String toJson = gson.toJson(new LocationMessage(location.getLat(), location.getLng(), location.getAlt()),LocationMessage.class);
         simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION, toJson);
     }
 }

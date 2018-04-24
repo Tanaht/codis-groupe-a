@@ -132,7 +132,6 @@ public class SocketForDroneCommunication {
 				}
 				//Release lock
 		        sending = false;
-		        System.out.println("End send message");
 			}
 		};
 		//Start thread
