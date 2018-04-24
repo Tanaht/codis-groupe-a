@@ -47,7 +47,9 @@ public class InterventionModel {
         this.setPosition(new Position(intervention.getLocation().getLat(), intervention.getLocation().getLng()));
         this.setSinisterCode(intervention.getCode());
         this.setOpened(true);
-        this.setPhotos(setListPhotoFromMessage(intervention));
+        if(intervention.getPhotos() != null){
+            this.setPhotos(setListPhotoFromMessage(intervention));
+        }
         this.setPathDrones(null);
         this.setSymbols(null);
         this.setId(intervention.getId());

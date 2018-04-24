@@ -220,7 +220,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                     Log.d(TAG, "STOMP CONNECTION ERROR");
 
                     // Notify Registered Activity from ERROR Connection
-                    Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
+                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
                     Intent errorIntent = new Intent(PROTOCOL_ERROR);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
@@ -229,7 +229,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                     Log.d(TAG, "STOMP CONNECTION CLOSED");
                     // Notify Registered Activity from CLOSE Connection
 
-                    Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
+                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
                     Intent closeIntent  = new Intent(PROTOCOL_CLOSE);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(closeIntent);
                     break;

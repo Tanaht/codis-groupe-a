@@ -23,7 +23,7 @@ public class Vehicle {
     public Vehicle(ila.fr.codisintervention.models.messages.Vehicle vehicle) {
         label = vehicle.getLabel();
         type = vehicle.getType();
-        status = VehicleStatus.getStatusEnumFromString(vehicle.getType());
+        status = VehicleStatus.getStatusEnumFromString(vehicle.getStatus());
     }
 
     public void load(Vehicle vehicle){
