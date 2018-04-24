@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.springframework.context.ConfigurableApplicationContext;
+import fr.istic.sit.codisgroupea.controller.DronePositionController;
 
 /**
  * 
@@ -22,6 +23,8 @@ public class SocketForDroneCommunication {
 	
 	private boolean sending = false;
 	
+	private ConfigurableApplicationContext context;
+	
 	/**
 	 * 
 	 * The the server socket, then create 2 Thread to send and receive message
@@ -30,6 +33,7 @@ public class SocketForDroneCommunication {
 	 * @throws IOException
 	 */
 	public SocketForDroneCommunication(ConfigurableApplicationContext context) throws IOException {
+		this.context = context;
 		
 		this.start(context);
 		
@@ -89,6 +93,8 @@ public class SocketForDroneCommunication {
 								//Get current location
 								else if(messageType.equals(DroneServerConstants.MESSAGE_TYPES.SEND_SITUATION.getName())) {
 									Location loc = JsonForDroneCommunicationToolBox.getLocationFromMessage(receivedMessage);
+							        DronePositionController dpc = (DronePositionController) context.getBean("dronePositionController");
+							        dpc.sendDronePosition(loc);
 								}
 							}
 						}
@@ -126,6 +132,7 @@ public class SocketForDroneCommunication {
 				}
 				//Release lock
 		        sending = false;
+		        System.out.println("End send message");
 			}
 		};
 		//Start thread
