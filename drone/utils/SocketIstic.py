@@ -82,4 +82,4 @@ class SocketIstic:
     # send data to the server
     # \n in the end of data trame for the java server program (readline)
     def send(self, data):
-        pass#self.client.sendall((json.dumps(data) + "\n").encode())
+        self.client.sendall((json.dumps(data) + "\n").encode())
