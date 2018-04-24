@@ -94,8 +94,11 @@ public class DemandSocketController {
         );
 
         //Message for the codis
+        UnitVehicle unitVehicle = new UnitVehicle();
+        //TODO: UnitVehicle need to be filled with correct status and type at this moment
         Unit unit = new Unit(
                 intervention,
+                unitVehicle,
                 null,
                 true,
                 now,

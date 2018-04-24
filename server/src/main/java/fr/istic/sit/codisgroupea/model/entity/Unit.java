@@ -26,9 +26,6 @@ public class Unit {
     /** Instance of {@link Intervention} for the intervention of the unit */
     private Intervention intervention;
 
-    /** Instance of {@link Vehicle} for the vehicle of the unit */
-    private Vehicle vehicle;
-
     /** Boolean which tells if the unit is moving or not */
     private boolean moving;
 
@@ -58,6 +55,7 @@ public class Unit {
      * Constructor by value.
      *
      * @param intervention the intervention
+     * @param unitVehicle  the unitVehicle
      * @param vehicle      the vehicle
      * @param moving       is the unit on the way to its target
      * @param requestDate  the request date
@@ -65,13 +63,15 @@ public class Unit {
      * @param symbolSitac  the symbol
      */
     public Unit(Intervention intervention,
+                UnitVehicle unitVehicle,
                 Vehicle vehicle,
                 boolean moving,
                 Timestamp requestDate,
                 Timestamp acceptDate,
                 SymbolSitac symbolSitac) {
         this.intervention = intervention;
-        this.vehicle = vehicle;
+        this.unitVehicle = unitVehicle;
+        this.unitVehicle.setAssignedVehicle(vehicle);
         this.moving = moving;
         this.requestDate = requestDate;
         this.acceptDate = acceptDate;
@@ -123,9 +123,9 @@ public class Unit {
      *
      * @return the vehicle
      */
-    @OneToOne
+    @Transient
     public Vehicle getVehicle() {
-        return vehicle;
+        return this.unitVehicle.getAssignedVehicle();
     }
 
     /**
@@ -133,8 +133,9 @@ public class Unit {
      *
      * @param vehicle the vehicle
      */
+    @Transient
     public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
+        this.unitVehicle.setAssignedVehicle(vehicle);
     }
 
     /**
