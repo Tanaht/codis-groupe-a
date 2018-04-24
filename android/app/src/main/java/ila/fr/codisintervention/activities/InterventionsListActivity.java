@@ -22,7 +22,7 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
-import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
@@ -124,7 +124,7 @@ public class InterventionsListActivity extends AppCompatActivity {
      * In this method we instanciate {@link InterventionListAdapter} and initialize correct ClickListener on Intervention Clicked.
      * @param interventionList list to display
      */
-    private void displayListView(List<Intervention> interventionList){
+    private void displayListView(List<InterventionModel> interventionList){
 
         //create an ArrayAdapter from the String Array
         dataAdapter = new InterventionListAdapter(this,
@@ -136,7 +136,7 @@ public class InterventionsListActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             // When clicked, show a toast with the TextView text
-            Intervention intervention = (Intervention) parent.getItemAtPosition(position);
+            InterventionModel intervention = (InterventionModel) parent.getItemAtPosition(position);
 
             Toasty.info(getApplicationContext(),
                     "Intervention with id:" + intervention.getId() + " has been sent to wss",
@@ -151,10 +151,10 @@ public class InterventionsListActivity extends AppCompatActivity {
     }
 
     /**
-     * Add new {@link Intervention}, and notify to the adapter that intervention has been added
+     * Add new {@link InterventionModel}, and notify to the adapter that intervention has been added
      * @param intervention : the new intervention
      */
-    private void addElement(Intervention intervention) {
+    private void addElement(InterventionModel intervention) {
         // on insère l'intervention dans la liste des interventions liée à l'adapter
         dataAdapter.add(intervention);
         // on notifie à l'adapter ce changement
@@ -163,7 +163,7 @@ public class InterventionsListActivity extends AppCompatActivity {
 
 
     /**
-     * Delete {@link Intervention} , and notify to the adapter that Intervention has been deleted
+     * Delete {@link InterventionModel} , and notify to the adapter that Intervention has been deleted
      * @param position : the position of the Intervention to delete
      */
     public void deleteElement(int position) {
@@ -193,7 +193,7 @@ public class InterventionsListActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int id = (int) intent.getExtras().get("id");
-            Intervention intervention = modelService.getInterventions().get(id);
+            InterventionModel intervention = modelService.getInterventions().get(id);
             switch (intent.getAction()){
                 case ModelConstants.ADD_INTERVENTION:
                     addElement(intervention);

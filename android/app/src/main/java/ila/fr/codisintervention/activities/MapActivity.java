@@ -19,7 +19,6 @@ import android.view.MotionEvent;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
-import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.messages.Symbol;
