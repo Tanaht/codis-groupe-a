@@ -1,4 +1,4 @@
-package fr.istic.sit.codisgroupea.model.message.Receive;
+package fr.istic.sit.codisgroupea.model.message.receive;
 
 import fr.istic.sit.codisgroupea.model.entity.Color;
 import fr.istic.sit.codisgroupea.model.entity.Shape;

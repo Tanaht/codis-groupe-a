@@ -17,11 +17,15 @@ public class Vehicle {
     /** The label of the vehicle */
     private String label;
 
+    /**
+     * Attribute that associate a vehicle with a Unit
+     * In this class we can gain the current status of the vehicle in the context of the unit
+     */
+    private UnitVehicle unitVehicle;
+
+
     /** Instance of the {@link VehicleType} for the type of the vehicle */
     private VehicleType type;
-
-    /** Instance of {@link VehicleStatus} for the status of the vehicle */
-    private VehicleStatus status;
 
     /**
      * Default constructor.
@@ -34,12 +38,10 @@ public class Vehicle {
      *
      * @param label the vehicle unique label
      * @param type the vehicle type
-     * @param status the vehicle status
      */
-    public Vehicle(String label, VehicleType type, VehicleStatus status) {
+    public Vehicle(String label, VehicleType type) {
         this.label = label;
         this.type = type;
-        this.status = status;
     }
 
     /**
@@ -98,21 +100,23 @@ public class Vehicle {
 
     /**
      * Getter of the vehicle status.
-     *
+     * A vehicle not linked to a Unit has always the state AVAILABLE
      * @return the vehicle status
      */
-    @Enumerated
-    @NotNull
+    @Transient
     public VehicleStatus getStatus() {
-        return status;
+        return unitVehicle == null ? VehicleStatus.AVAILABLE : unitVehicle.getStatus();
     }
 
     /**
-     * Setter of the status.
-     *
-     * @param status the status
+     * @return the unit vehicle if present
      */
-    public void setStatus(VehicleStatus status) {
-        this.status = status;
+    @OneToOne
+    public UnitVehicle getUnitVehicle() {
+        return unitVehicle;
+    }
+
+    public void setUnitVehicle(UnitVehicle unitVehicle) {
+        this.unitVehicle = unitVehicle;
     }
 }

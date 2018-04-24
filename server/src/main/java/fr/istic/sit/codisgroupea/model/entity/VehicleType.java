@@ -2,7 +2,6 @@ package fr.istic.sit.codisgroupea.model.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * Encapsulation of a vehicle type.
@@ -15,12 +14,6 @@ public class VehicleType {
 
     /** The name of the vehicle type */
     private String name;
-
-    /**
-     * Default constructor.
-     */
-    public VehicleType() {
-    }
 
     /**
      * Constructor by value.
