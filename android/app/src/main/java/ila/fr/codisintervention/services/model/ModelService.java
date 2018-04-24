@@ -13,14 +13,11 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.models.model.ApplicationModel;
-import ila.fr.codisintervention.models.messages.Code;
-import ila.fr.codisintervention.models.messages.InitializeApplication;
-import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.models.messages.Symbol;
-import ila.fr.codisintervention.models.messages.Unit;
-import ila.fr.codisintervention.models.messages.User;
-import ila.fr.codisintervention.models.messages.Vehicle;
+import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
+import ila.fr.codisintervention.models.model.user.User;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 
@@ -163,53 +160,6 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
         }
     }
 
-    /**
-     * getter for the Model
-     * @return the instance of the {@link ApplicationModel}
-     */
-    public ApplicationModel getModel() {
-        return model;
-    }
-
-    @Override
-    public InterventionChosen getSelectedIntervention() {
-        return model.getCurrentIntervention();
-    }
-
-    @Override
-    public List<Intervention> getInterventions() {
-        return model.getMessageInitialize().getInterventions();
-    }
-
-    @Override
-    public Intervention getIntervention(int id) {
-        return model.getMessageInitialize().getInterventionById(id);
-    }
-
-    @Override
-    public List<Code> getCodes() {
-        return model.getMessageInitialize().getCodes();
-    }
-
-    @Override
-    public List<Vehicle> getAvailableVehicle() {
-        return model.getMessageInitialize().getVehicles();
-    }
-
-    @Override
-    public User getUser() {
-        return model.getUser();
-    }
-
-    @Override
-    public Symbol getSymbol(int id) {
-        return model.getCurrentIntervention().getSymbolId(id);
-    }
-
-    @Override
-    public Unit getUnit(int id) {
-        return model.getCurrentIntervention().getUnitById(id);
-    }
 
     /**
      * FIXME: Every intent doesn't have the same extra signature, si it has to be removed -> it would be exported equally when we will refactor this class
@@ -225,5 +175,40 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
         }
         Log.d(TAG, "Broadcoast Intent: " + intent.getAction());
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    @Override
+    public List<InterventionModel> getInterventions() {
+        return model.getListIntervention();
+    }
+
+    @Override
+    public void setCurrentIntervention(int id) throws InterventionNotFoundException {
+        model.setCurrentIntervention(id);
+    }
+
+    @Override
+    public InterventionModel getCurrentIntervention() {
+        return model.getCurrentIntervention();
+    }
+
+    @Override
+    public List<String> getSinisterCodes() {
+        return model.getSinisterCodes();
+    }
+
+    @Override
+    public List<String> getVehicleTypes() {
+        return model.getVehicleTypes();
+    }
+
+    @Override
+    public List<Vehicle> getAvailableVehicle() {
+        return model.getVehicleAvailables();
+    }
+
+    @Override
+    public User getUser() {
+        return model.getUser();
     }
 }

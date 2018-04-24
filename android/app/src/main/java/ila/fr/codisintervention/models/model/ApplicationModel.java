@@ -2,8 +2,9 @@ package ila.fr.codisintervention.models.model;
 
 import java.util.List;
 
-import ila.fr.codisintervention.models.messages.InitializeApplication;
-import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
+import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
+import ila.fr.codisintervention.models.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,16 +18,29 @@ import lombok.Setter;
 @Setter
 public class ApplicationModel {
 
-    private InitializeApplication messageInitialize;
 
-    private InterventionModel currentIntervention;
+    private List<Vehicle> vehicleAvailables;
+
+    private boolean droneAvailable = true;
+
+    private User user;
 
     private List<InterventionModel> listIntervention;
+    private InterventionModel currentIntervention;
 
-    private List<PathDrone> listPathDrone;
+    private List<String> sinisterCodes;
+    private List<String> vehicleTypes;
 
-    private List<Unit> listUnit;
 
-    private boolean droneAvailable;
+    public void setCurrentIntervention(int idIntervention) throws InterventionNotFoundException {
+        for (InterventionModel interv : listIntervention){
+            if (interv.getId().equals(idIntervention)){
+                currentIntervention = interv;
+                return;
+            }
+        }
+
+        throw new InterventionNotFoundException(idIntervention);
+    }
 
 }

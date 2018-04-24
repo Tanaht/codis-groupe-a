@@ -5,13 +5,13 @@ import android.os.Binder;
 
 import java.util.List;
 
-import ila.fr.codisintervention.models.messages.Code;
-import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.models.messages.Symbol;
-import ila.fr.codisintervention.models.messages.Unit;
-import ila.fr.codisintervention.models.messages.User;
-import ila.fr.codisintervention.models.messages.Vehicle;
+import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Unit;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
+import ila.fr.codisintervention.models.model.user.User;
 
 /**
  * Created by tanaky on 29/03/18.
@@ -59,13 +59,20 @@ public class ModelServiceBinder extends Binder {
          * @param id identity of the intervention it refers to the value of {@see Intervention.id }
          * @return an instance of the intervention
          */
-        InterventionModel getIntervention(int id) throws NotF;
+        void setCurrentIntervention(int id) throws InterventionNotFoundException;
+
+        /**
+         * get intervention selected from user
+         * @return Current intervention selected by the user
+         */
+        InterventionModel getCurrentIntervention();
 
         /**
          *
          * @return the list of Sinister Codes
          */
-        List<Code> getCodes();
+        List<String> getSinisterCodes();
+        List<String> getVehicleTypes();
 
         /**
          *
@@ -79,20 +86,5 @@ public class ModelServiceBinder extends Binder {
          */
         User getUser();
 
-        /**
-         * TODO: NotFoundException
-         * A symbol in an intervention
-         * @param id the id of the symbol
-         * @return an instance of the symbol
-         */
-        Symbol getSymbol(int id);
-
-        /**
-         * TODO: NotFoundException
-         * A unit in an intervention
-         * @param id the id of the unit
-         * @return an instance of the unit
-         */
-        Unit getUnit(int id);
     }
 }
