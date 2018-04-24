@@ -17,6 +17,8 @@ import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.model.ApplicationModel;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Unit;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.user.User;
 import ila.fr.codisintervention.services.constants.ModelConstants;
@@ -97,23 +99,24 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 Log.d(TAG, "Connect to application with: " + initializeApplication.getInterventions().size() + " interventions");
                 Gson gson = new GsonBuilder().create();
                 Log.d(TAG, "RetrievedInitializeApplication: " + gson.toJson(initializeApplication));
-                model.setMessageInitialize(initializeApplication);
+                model = new ApplicationModel(initializeApplication);
                 sendToEveryone(-1, ModelConstants.INITIALIZE_APPLICATION);
                 break;
             case WebsocketService.INTERVENTION_CHOSEN:
-                model.setCurrentIntervention(InterventionChosen.createByIntervention(intent.getParcelableExtra("INTERVENTION_CHOSEN")));
+                model.setCurrentIntervention(model.getInterventionById(intent.getParcelableExtra("INTERVENTION_CHOSEN")));
                 break;
             case WebsocketService.DISCONNECT_TO_APPLICATION:
                 model = new ApplicationModel();
                 break;
             case WebsocketService.INTERVENTION_CREATED:
-                Intervention intervention = intent.getParcelableExtra("INTERVENTION_CREATED");
-                model.getMessageInitialize().getInterventions().add(intervention);
+                InterventionModel intervention = intent.getParcelableExtra("INTERVENTION_CREATED");
+                intervention.setOpened(true);
+                model.getInterventions().add(intervention);
                 sendToEveryone(intervention.getId(), ModelConstants.ADD_INTERVENTION);
                 break;
             case WebsocketService.INTERVENTION_CLOSED:
                 int id = intent.getIntExtra(WebsocketService.INTERVENTION_CLOSED, -1);
-                model.getMessageInitialize().setInterventionClosedById(intent.getIntExtra("INTERVENTION_CLOSED", -1));
+                model.setInterventionClosedById(intent.getIntExtra("INTERVENTION_CLOSED", -1));
                 sendToEveryone(id, ModelConstants.ACTION_DELETE_INTERVENTION);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_CREATED:

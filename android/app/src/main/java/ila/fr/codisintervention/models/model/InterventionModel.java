@@ -39,17 +39,19 @@ public class InterventionModel {
     private List<Unit> units;
     private List<PathDrone> pathDrones;
 
-    public InterventionModel(Intervention intervention){
-        symbols = new ArrayList<>();
-        units = new ArrayList<>();
-        pathDrones = new ArrayList<>();
-
-        this.setPosition(new Position(intervention.getLocation().getLat(), intervention.getLocation().getLng()));
+    public InterventionModel (Intervention intervention){
         this.setAddress(intervention.getAddress());
         this.setDate(intervention.getDate());
+        this.setPosition(new Position(intervention.getLocation().getLat(), intervention.getLocation().getLng()));
         this.setSinisterCode(intervention.getCode());
-        this.setOpened(true);
+        this.setOpened(false);
+        this.setPhotos(setListPhotoFromMessage(intervention));
+        this.setPathDrones(null);
+        this.setSymbols(null);
+        this.setId(intervention.getId());
+    }
 
+public List<Photo> setListPhotoFromMessage (Intervention intervention){
         photos = new ArrayList<>();
         for(ila.fr.codisintervention.models.messages.Photo photo : intervention.getPhotos()){
             Photo photoModel = new Photo();
@@ -58,6 +60,7 @@ public class InterventionModel {
             photoModel.setCoordinates(new Position(photo.getLocation().getLat(), photo.getLocation().getLng()));
             photos.add(photoModel);
         }
+        return photos;
     }
 
 

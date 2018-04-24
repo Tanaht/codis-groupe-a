@@ -71,4 +71,13 @@ public class ApplicationModel {
         throw new InterventionNotFoundException(idIntervention);
     }
 
+    public InterventionModel getInterventionById(int id){
+        for(InterventionModel intervention : interventions){
+            if(intervention.getId().equals(id)){
+                return intervention;
+            }
+        }
+        return null;
+    }
+
 }

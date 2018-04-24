@@ -16,9 +16,16 @@ public class User {
     private String role;
 
 
+<<<<<<< Updated upstream
     public User(ila.fr.codisintervention.models.messages.User user){
         username = user.getUsername();
         role = user.getRole();
     }
 
+=======
+    public User(ila.fr.codisintervention.models.messages.User userMessage){
+        this.username = userMessage.getUsername();
+        this.role = userMessage.getRole();
+    }
+>>>>>>> Stashed changes
 }
