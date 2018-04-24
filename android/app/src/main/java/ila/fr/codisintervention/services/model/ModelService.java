@@ -14,6 +14,7 @@ import java.util.List;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.model.ApplicationModel;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
@@ -179,7 +180,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
     @Override
     public List<InterventionModel> getInterventions() {
-        return model.getListIntervention();
+        return model.getInterventions();
     }
 
     @Override

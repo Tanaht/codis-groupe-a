@@ -11,8 +11,6 @@ import lombok.Setter;
 @Setter
 public class Vehicle {
 
-    /** The id of the vehicle */
-    private Integer id;
 
     /** The label of the vehicle */
     private String label;
@@ -21,4 +19,10 @@ public class Vehicle {
 
     /** Instance of {@link VehicleStatus} for the status of the vehicle */
     private VehicleStatus status;
+
+    public Vehicle(ila.fr.codisintervention.models.messages.Vehicle vehicle) {
+        label = vehicle.getLabel();
+        type = vehicle.getType();
+        status = VehicleStatus.getStatusEnumFromString(vehicle.getType());
+    }
 }

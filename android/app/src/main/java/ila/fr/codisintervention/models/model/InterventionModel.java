@@ -1,12 +1,13 @@
 package ila.fr.codisintervention.models.model;
 
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import lombok.Setter;
 import lombok.Getter;
 
@@ -38,37 +39,25 @@ public class InterventionModel {
     private List<Unit> units;
     private List<PathDrone> pathDrones;
 
-    private InterventionModel setInterventionFromMessage (Intervention intervention){
-        Position position = new Position();
-        InterventionModel interventionModel = new InterventionModel();
-        interventionModel.setAddress(intervention.getAddress());
-        interventionModel.setDate(intervention.getDate());
-        position.setLatitude(intervention.getLocation().getLat());
-        position.setLongitude(intervention.getLocation().getLng());
-        interventionModel.setPosition(position);
-        interventionModel.setSinisterCode(intervention.getCode());
-        interventionModel.setOpened(false);
-        interventionModel.setListPhotoFromMessage(intervention.getPhotos());
+    public InterventionModel(Intervention intervention){
+        symbols = new ArrayList<>();
+        units = new ArrayList<>();
+        pathDrones = new ArrayList<>();
 
-        return interventionModel;
-    }
+        this.setPosition(new Position(intervention.getLocation().getLat(), intervention.getLocation().getLng()));
+        this.setAddress(intervention.getAddress());
+        this.setDate(intervention.getDate());
+        this.setSinisterCode(intervention.getCode());
+        this.setOpened(true);
 
-    private List<Photo> setListPhotoFromMessage (List<ila.fr.codisintervention.models.messages.Photo> photoList){
-        List<Photo> photos = new ArrayList<>();
-        Photo photoModel = new Photo();
-        Position position = new Position();
-        for(ila.fr.codisintervention.models.messages.Photo photo : photoList){
+        photos = new ArrayList<>();
+        for(ila.fr.codisintervention.models.messages.Photo photo : intervention.getPhotos()){
+            Photo photoModel = new Photo();
             photoModel.setUri(photo.getUrl());
             photoModel.setDate(new Timestamp(photo.getDate()));
-            position.setLongitude(photo.getLocation().getLng());
-            position.setLatitude(photo.getLocation().getLng());
-            photoModel.setCoordinates(position);
+            photoModel.setCoordinates(new Position(photo.getLocation().getLat(), photo.getLocation().getLng()));
             photos.add(photoModel);
-            photoModel= new Photo();
-            position = new Position();
         }
-
-        return photos;
     }
 
 
