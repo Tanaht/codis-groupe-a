@@ -35,7 +35,7 @@ public class SymbolsListFragment extends Fragment {
     /**
      * The selectedColor currently selected to create new Symbols
      */
-    private String selectedColor = "rouge";
+    private String selectedColor = "red";
 
     /**
      * Field used to store the SymbolKind currently used to forge new Symbols
@@ -131,149 +131,149 @@ public class SymbolsListFragment extends Fragment {
              */
             if(symbol.isSelected()){
                 switch(symbol.getId()){
-                    case "ressource_eau":
+                    case "water_resource":
                         break;
-                    case "sinistre":
+                    case "sinister":
                         switch(selectedColor){
-                            case "rouge":
-                                symbol.setIdDrawable(R.drawable.sinistrerouge);
+                            case "red":
+                                symbol.setIdDrawable(R.drawable.redsinister);
                                 break;
                             case "orange":
-                                symbol.setIdDrawable(R.drawable.sinistreorange);
+                                symbol.setIdDrawable(R.drawable.orangesinister);
                                 break;
-                            case "violet":
+                            case "purple":
                                 break;
-                            case "vert":
-                                symbol.setIdDrawable(R.drawable.sinistrevert);
+                            case "green":
+                                symbol.setIdDrawable(R.drawable.greensinister);
                                 break;
-                            case "bleu":
-                                symbol.setIdDrawable(R.drawable.sinistrebleu);
+                            case "blue":
+                                symbol.setIdDrawable(R.drawable.bluesinister);
                                 break;
                         }
                         break;
-                    case "triangle_bas":
+                    case "triangle_down":
                         switch(selectedColor){
-                            case "rouge":
-                                symbol.setIdDrawable(R.drawable.dangerrougebas);
+                            case "red":
+                                symbol.setIdDrawable(R.drawable.reddangerdown);
                                 break;
                             case "orange":
-                                symbol.setIdDrawable(R.drawable.dangerorangebas);
+                                symbol.setIdDrawable(R.drawable.orangedangerdown);
                                 break;
-                            case "violet":
+                            case "purple":
                                 break;
-                            case "vert":
-                                symbol.setIdDrawable(R.drawable.dangervertbas);
+                            case "green":
+                                symbol.setIdDrawable(R.drawable.greendangerdown);
                                 break;
-                            case "bleu":
-                                symbol.setIdDrawable(R.drawable.dangerbleubas);
+                            case "blue":
+                                symbol.setIdDrawable(R.drawable.bluedangerdown);
                                 break;
                         }
                         break;
-                    case "triangle_haut":
+                    case "triangle_up":
                         switch(selectedColor){
-                            case "rouge":
-                                symbol.setIdDrawable(R.drawable.dangerrougehaut);
+                            case "red":
+                                symbol.setIdDrawable(R.drawable.reddangerup);
                                 break;
                             case "orange":
-                                symbol.setIdDrawable(R.drawable.dangerorangehaut);
+                                symbol.setIdDrawable(R.drawable.orangedangerup);
                                 break;
-                            case "violet":
+                            case "purple":
                                 break;
-                            case "vert":
-                                symbol.setIdDrawable(R.drawable.dangerverthaut);
+                            case "green":
+                                symbol.setIdDrawable(R.drawable.greendangerup);
                                 break;
-                            case "bleu":
-                                symbol.setIdDrawable(R.drawable.dangerbleuhaut);
+                            case "blue":
+                                symbol.setIdDrawable(R.drawable.bluedangerup);
                                 break;
                         }
                         break;
-                    case "vehicule":
+                    case "vehicle":
                         switch(selectedColor){
-                            case "rouge":
-                                symbol.setIdDrawable(R.drawable.vehiculerouge);
+                            case "red":
+                                symbol.setIdDrawable(R.drawable.redvehicle);
                                 break;
                             case "orange":
-                                symbol.setIdDrawable(R.drawable.vehiculeorange);
+                                symbol.setIdDrawable(R.drawable.orangevehicle);
                                 break;
-                            case "violet":
-                                symbol.setIdDrawable(R.drawable.vehiculeviolet);
+                            case "purple":
+                                symbol.setIdDrawable(R.drawable.purplevehicle);
                                 break;
-                            case "vert":
-                                symbol.setIdDrawable(R.drawable.vehiculevert);
+                            case "green":
+                                symbol.setIdDrawable(R.drawable.greenvehicle);
                                 break;
-                            case "bleu":
-                                symbol.setIdDrawable(R.drawable.vehiculebleu);
+                            case "blue":
+                                symbol.setIdDrawable(R.drawable.bluevehicle);
                                 break;
                         }
                         break;
-                    case "vehicule_non_valide":
+                    case "not_effective_vehicle":
                         switch(selectedColor){
-                            case "rouge":
-                                symbol.setIdDrawable(R.drawable.vehiculerougenonvalide);
+                            case "red":
+                                symbol.setIdDrawable(R.drawable.rednoteffectivevehicle);
                                 break;
                             case "orange":
-                                symbol.setIdDrawable(R.drawable.vehiculeorangenonvalide);
+                                symbol.setIdDrawable(R.drawable.orangenoteffectivevehicle);
                                 break;
-                            case "violet":
-                                symbol.setIdDrawable(R.drawable.vehiculevioletnonvalide);
+                            case "purple":
+                                symbol.setIdDrawable(R.drawable.purplenoteffectivevehicle);
                                 break;
-                            case "vert":
-                                symbol.setIdDrawable(R.drawable.vehiculevertnonvalide);
+                            case "green":
+                                symbol.setIdDrawable(R.drawable.greennoteffectivevehicle);
                                 break;
-                            case "bleu":
-                                symbol.setIdDrawable(R.drawable.vehiculebleunonvalide);
+                            case "blue":
+                                symbol.setIdDrawable(R.drawable.bluenoteffectivevehicle);
                                 break;
                         }
                         break;
-                    case "vehicule_pompier":
+                    case "fire_vehicle":
                         switch(selectedColor){
-                            case "rouge":
-                                symbol.setIdDrawable(R.drawable.vehiculepompierrouge);
+                            case "red":
+                                symbol.setIdDrawable(R.drawable.redfirevehicle);
                                 break;
                             case "orange":
                                 break;
-                            case "violet":
-                                symbol.setIdDrawable(R.drawable.vehiculepompierviolet);
+                            case "purple":
+                                symbol.setIdDrawable(R.drawable.purplefirevehicle);
                                 break;
-                            case "vert":
-                                symbol.setIdDrawable(R.drawable.vehiculepompiervert);
+                            case "green":
+                                symbol.setIdDrawable(R.drawable.greenfirevehicle);
                                 break;
-                            case "bleu":
+                            case "blue":
                                 break;
                         }
                         break;
-                    case "vehicule_pompier_non_valide":
+                    case "not_effective_fire_vehicle":
                         switch(selectedColor){
-                            case "rouge":
-                                symbol.setIdDrawable(R.drawable.vehiculepompierrougenonvalide);
+                            case "red":
+                                symbol.setIdDrawable(R.drawable.rednoteffectivefirevehicle);
                                 break;
                             case "orange":
                                 break;
-                            case "violet":
-                                symbol.setIdDrawable(R.drawable.vehiculepompiervioletnonvalide);
+                            case "purple":
+                                symbol.setIdDrawable(R.drawable.purplenoteffectivefirevehicle);
                                 break;
-                            case "vert":
-                                symbol.setIdDrawable(R.drawable.vehiculepompiervertnonvalide);
+                            case "green":
+                                symbol.setIdDrawable(R.drawable.greennoteffectivefirevehicle);
                                 break;
-                            case "bleu":
+                            case "blue":
                                 break;
                         }
                         break;
-                    case "zone":
+                    case "area":
                         switch(selectedColor){
-                            case "rouge":
-                                symbol.setIdDrawable(R.drawable.zoneactionrouge);
+                            case "red":
+                                symbol.setIdDrawable(R.drawable.redarea);
                                 break;
                             case "orange":
-                                symbol.setIdDrawable(R.drawable.zoneactionorange);
+                                symbol.setIdDrawable(R.drawable.orangearea);
                                 break;
-                            case "violet":
+                            case "purple":
                                 break;
-                            case "vert":
-                                symbol.setIdDrawable(R.drawable.zoneactionverte);
+                            case "green":
+                                symbol.setIdDrawable(R.drawable.greenarea);
                                 break;
-                            case "bleu":
-                                symbol.setIdDrawable(R.drawable.zoneactionbleu);
+                            case "blue":
+                                symbol.setIdDrawable(R.drawable.bluearea);
                                 break;
                         }
                         break;
@@ -312,20 +312,20 @@ public class SymbolsListFragment extends Fragment {
      * @param view the view
      */
     public void addRadioButtonListeners(View view) {
-        RadioButton rbRouge = (RadioButton) view.findViewById(R.id.radioButtonrouge);
-        rbRouge.setOnClickListener(v -> setSelectedColor("rouge"));
+        RadioButton rbRouge = (RadioButton) view.findViewById(R.id.redradioButton);
+        rbRouge.setOnClickListener(v -> setSelectedColor("red"));
 
-        RadioButton rbVert = (RadioButton) view.findViewById(R.id.radioButtonvert);
-        rbVert.setOnClickListener(v -> setSelectedColor("vert"));
+        RadioButton rbVert = (RadioButton) view.findViewById(R.id.greenradioButton);
+        rbVert.setOnClickListener(v -> setSelectedColor("green"));
 
-        RadioButton rbBleu = (RadioButton) view.findViewById(R.id.radioButtonbleu);
-        rbBleu.setOnClickListener(v -> setSelectedColor("bleu"));
+        RadioButton rbBleu = (RadioButton) view.findViewById(R.id.blueradioButton);
+        rbBleu.setOnClickListener(v -> setSelectedColor("blue"));
 
-        RadioButton rbOrange = (RadioButton) view.findViewById(R.id.radioButtonorange);
+        RadioButton rbOrange = (RadioButton) view.findViewById(R.id.orangeradioButton);
         rbOrange.setOnClickListener(v -> setSelectedColor("orange"));
 
-        RadioButton rbViolet = (RadioButton) view.findViewById(R.id.radioButtonviolet);
-        rbViolet.setOnClickListener(v -> setSelectedColor("violet"));
+        RadioButton rbViolet = (RadioButton) view.findViewById(R.id.purpleradioButton);
+        rbViolet.setOnClickListener(v -> setSelectedColor("purple"));
 
     }
 

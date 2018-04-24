@@ -32,6 +32,10 @@ public class SecondMainActivity extends AppCompatActivity implements WebSocketSe
      */
     private ServiceConnection modelServiceConnection;
 
+    /**
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +46,7 @@ public class SecondMainActivity extends AppCompatActivity implements WebSocketSe
         modelServiceConnection = bindModelService();
         webSocketServiceConnection = bindWebSocketService();
     }
+
 
     @Override
     public void onModelServiceConnected() {
