@@ -1,6 +1,6 @@
-package fr.istic.sit.codisgroupea.model.message.Send;
+package fr.istic.sit.codisgroupea.model.message.send;
 
-import fr.istic.sit.codisgroupea.model.message.Receive.SymbolMessage;
+import fr.istic.sit.codisgroupea.model.message.receive.SymbolMessage;
 
 import java.util.List;
 
