@@ -1,2 +1,2 @@
 #!/bin/sh
-ps a | grep codis-groupe-a-0.0.1-SNAPSHOT.jar | cut -d ' ' -f 1 | head -1 | xargs kill -9
+ps ax | grep "[c]odis-groupe-a-0.0.1-SNAPSHOT.jar" | cut -d ' ' -f 2 | head -1 | xargs kill -9
