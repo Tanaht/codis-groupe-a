@@ -16,11 +16,15 @@ public class Unit {
     /** The id of the unit */
     private Integer id;
 
+    /**
+     * Association of the vehicle is done here
+     * From this class we can gain the instance of the vehicle
+     * @see Vehicle
+     */
+    private UnitVehicle unitVehicle;
+
     /** Instance of {@link Intervention} for the intervention of the unit */
     private Intervention intervention;
-
-    /** Instance of {@link Vehicle} for the vehicle of the unit */
-    private Vehicle vehicle;
 
     /** Boolean which tells if the unit is moving or not */
     private boolean moving;
@@ -30,6 +34,12 @@ public class Unit {
 
     /** Date of the CODIS acceptation of the vehicle for the intervention */
     private Timestamp acceptDate;
+
+    /** Date of the first commitment of the vehicle for the intervention */
+    private Timestamp commitedDate;
+
+    /** Date of the release of the vehicle from the intervention */
+    private Timestamp releasedDate;
 
     /** Instance of {@link SymbolSitac} for the symbol sitac of the unit */
     private SymbolSitac symbolSitac;
@@ -45,6 +55,7 @@ public class Unit {
      * Constructor by value.
      *
      * @param intervention the intervention
+     * @param unitVehicle  the unitVehicle
      * @param vehicle      the vehicle
      * @param moving       is the unit on the way to its target
      * @param requestDate  the request date
@@ -52,13 +63,15 @@ public class Unit {
      * @param symbolSitac  the symbol
      */
     public Unit(Intervention intervention,
+                UnitVehicle unitVehicle,
                 Vehicle vehicle,
                 boolean moving,
                 Timestamp requestDate,
                 Timestamp acceptDate,
                 SymbolSitac symbolSitac) {
         this.intervention = intervention;
-        this.vehicle = vehicle;
+        this.unitVehicle = unitVehicle;
+        this.unitVehicle.setAssignedVehicle(vehicle);
         this.moving = moving;
         this.requestDate = requestDate;
         this.acceptDate = acceptDate;
@@ -110,9 +123,9 @@ public class Unit {
      *
      * @return the vehicle
      */
-    @OneToOne
+    @Transient
     public Vehicle getVehicle() {
-        return vehicle;
+        return this.unitVehicle.getAssignedVehicle();
     }
 
     /**
@@ -120,8 +133,9 @@ public class Unit {
      *
      * @param vehicle the vehicle
      */
+    @Transient
     public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
+        this.unitVehicle.setAssignedVehicle(vehicle);
     }
 
     /**
@@ -181,14 +195,80 @@ public class Unit {
         this.acceptDate = acceptDate;
     }
 
+    /**
+     * Gets commited date.
+     *
+     * @return the commited date
+     */
+    public Timestamp getCommitedDate() {
+        return commitedDate;
+    }
 
+    /**
+     * Sets commited date.
+     *
+     * @param commitedDate the commited date
+     */
+    public void setCommitedDate(Timestamp commitedDate) {
+        this.commitedDate = commitedDate;
+    }
+
+    /**
+     * Gets released date.
+     *
+     * @return the released date
+     */
+    public Timestamp getReleasedDate() {
+        return releasedDate;
+    }
+
+    /**
+     * Sets est
+     * e =released date.
+     *
+     * @param releasedDate the released date
+     */
+    public void setReleasedDate(Timestamp releasedDate) {
+        this.releasedDate = releasedDate;
+    }
+
+    /**
+     * Gets symbol sitac.
+     *
+     * @return the symbol sitac
+     */
     @OneToOne
     @NotNull
     public SymbolSitac getSymbolSitac() {
         return symbolSitac;
     }
 
+    /**
+     * Sets symbol sitac.
+     *
+     * @param symbolSitac the symbol sitac
+     */
     public void setSymbolSitac(SymbolSitac symbolSitac) {
         this.symbolSitac = symbolSitac;
+    }
+
+    /**
+     * Gets unit vehicle.
+     *
+     * @return the unit vehicle
+     */
+    @OneToOne
+    @NotNull
+    public UnitVehicle getUnitVehicle() {
+        return unitVehicle;
+    }
+
+    /**
+     * Sets unit vehicle.
+     *
+     * @param unitVehicle the unit vehicle
+     */
+    public void setUnitVehicle(UnitVehicle unitVehicle) {
+        this.unitVehicle = unitVehicle;
     }
 }
