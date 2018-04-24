@@ -193,7 +193,13 @@ public class InterventionsListActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int id = (int) intent.getExtras().get("id");
-            Intervention intervention = modelService.getInterventions().get(id);
+            Intervention intervention = null;
+            for (Intervention interTmp : modelService.getInterventions()){
+                if (interTmp.getId() == id){
+                    intervention = interTmp;
+                }
+            }
+
             switch (intent.getAction()){
                 case ModelConstants.ADD_INTERVENTION:
                     addElement(intervention);
