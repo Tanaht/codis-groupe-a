@@ -1,10 +1,12 @@
-package ila.fr.codisintervention.models.model.map_icon;
+package ila.fr.codisintervention.models.model;
 
 import java.sql.Timestamp;
 
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Representation of a tactical unit. A unit is a vehicle within an intervention.
@@ -12,6 +14,8 @@ import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
  * @see Vehicle
  * @see InterventionModel
  */
+@Getter
+@Setter
 public class Unit {
 
     /** The id of the unit */
@@ -30,6 +34,6 @@ public class Unit {
     private Timestamp acceptDate;
 
     /** Instance of {@link Symbol} for the symbol sitac of the unit */
-    private Symbol symbolSitac;
+    private Symbol symbol;
 
 }

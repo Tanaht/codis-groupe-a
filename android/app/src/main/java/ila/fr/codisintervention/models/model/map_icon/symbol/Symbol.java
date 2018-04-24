@@ -5,17 +5,18 @@ import ila.fr.codisintervention.models.model.map_icon.Color;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.Position;
 import ila.fr.codisintervention.models.model.map_icon.Shape;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Graphical symbol placed on the SITAC, it features its location.
  */
+@Getter
+@Setter
 public class Symbol {
 
     /** The id of the symbol sitac */
     private Integer id;
-
-    /** Instance of {@link InterventionModel} for the intervention of the symbol sitac */
-    private InterventionModel intervention;
 
     /** Instance of {@link Position} for the location of the symbol sitac */
     private Position location;

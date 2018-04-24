@@ -1,5 +1,6 @@
 package ila.fr.codisintervention.binders;
 
+import android.content.res.Resources;
 import android.os.Binder;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.models.messages.Vehicle;
+import ila.fr.codisintervention.models.model.InterventionModel;
 
 /**
  * Created by tanaky on 29/03/18.
@@ -45,24 +47,19 @@ public class ModelServiceBinder extends Binder {
      * TODO: Interfaces that define the API has to be made in order to have a robust model
      */
     public interface IMyServiceMethod {
-        /**
-         * getter to have access to an intervention to the intervention actually chosen.
-         * @return the selected intervention
-         */
-        InterventionChosen getSelectedIntervention();
 
         /**
          * list of interventions in progress
          * @return
          */
-        List<Intervention> getInterventions();
+        List<InterventionModel> getInterventions();
 
         /**
          * TODO: is this method pertinent ? if yes, it has to throw a not found exception.
          * @param id identity of the intervention it refers to the value of {@see Intervention.id }
          * @return an instance of the intervention
          */
-        Intervention getIntervention(int id);
+        InterventionModel getIntervention(int id) throws NotF;
 
         /**
          *

@@ -1,9 +1,14 @@
 package ila.fr.codisintervention.models.model.map_icon.symbol;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The symbol payload.
  */
+@Getter
+@Setter
 public class Payload {
 
 

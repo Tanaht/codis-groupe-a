@@ -3,7 +3,6 @@ package ila.fr.codisintervention.models.model;
 
 import java.util.List;
 
-import ila.fr.codisintervention.models.model.map_icon.Unit;
 import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import lombok.Getter;
