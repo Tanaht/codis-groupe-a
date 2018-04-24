@@ -40,34 +40,24 @@ public class InterventionModel {
     private List<PathDrone> pathDrones;
 
     public InterventionModel(Intervention intervention){
-        Position position = new Position();
+        symbols = new ArrayList<>();
+        units = new ArrayList<>();
+        pathDrones = new ArrayList<>();
+
+        this.setPosition(new Position(intervention.getLocation().getLat(), intervention.getLocation().getLng()));
         this.setAddress(intervention.getAddress());
         this.setDate(intervention.getDate());
-        position.setLatitude(intervention.getLocation().getLat());
-        position.setLongitude(intervention.getLocation().getLng());
-        this.setPosition(position);
         this.setSinisterCode(intervention.getCode());
         this.setOpened(true);
-        this.setListPhotoFromMessage(intervention.getPhotos());
 
-    }
-
-    private List<Photo> setListPhotoFromMessage (List<ila.fr.codisintervention.models.messages.Photo> photoList){
-        List<Photo> photos = new ArrayList<>();
-        Photo photoModel = new Photo();
-        Position position = new Position();
-        for(ila.fr.codisintervention.models.messages.Photo photo : photoList){
+        photos = new ArrayList<>();
+        for(ila.fr.codisintervention.models.messages.Photo photo : intervention.getPhotos()){
+            Photo photoModel = new Photo();
             photoModel.setUri(photo.getUrl());
             photoModel.setDate(new Timestamp(photo.getDate()));
-            position.setLongitude(photo.getLocation().getLng());
-            position.setLatitude(photo.getLocation().getLng());
-            photoModel.setCoordinates(position);
+            photoModel.setCoordinates(new Position(photo.getLocation().getLat(), photo.getLocation().getLng()));
             photos.add(photoModel);
-            photoModel= new Photo();
-            position = new Position();
         }
-
-        return photos;
     }
 
 
