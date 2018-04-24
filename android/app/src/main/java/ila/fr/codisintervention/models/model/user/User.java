@@ -19,12 +19,4 @@ public class User {
         this.username = userMessage.getUsername();
         this.role = userMessage.getRole();
     }
-
-    public boolean isCodisUser() {
-        return role.equals("ROLE_CODIS_USER");
-    }
-
-    public boolean isSimpleUser() {
-        return role.equals("ROLE_SIMPLE_USER");
-    }
 }
