@@ -22,10 +22,12 @@ import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
+import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL;
@@ -90,6 +92,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         mapIntentFilter.addAction(UPDATE_INTERVENTION_DELETE_SYMBOL);
         mapIntentFilter.addAction(ADD_VEHICLE_REQUEST);
         mapIntentFilter.addAction(VALIDATE_VEHICLE_REQUEST);
+        mapIntentFilter.addAction(UPDATE_DRONE_POSITION);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, mapIntentFilter);
     }
@@ -104,8 +107,13 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
             int id = (int) intent.getExtras().get("id");
             Symbol symbol;
             Unit unit;
+            DronePing dronePing;
 
             switch (intent.getAction()) {
+                case UPDATE_DRONE_POSITION:
+                    dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
+                    Log.w(TAG, "[MapActivity] : Drone new Position(altitude)"+dronePing.getAltitude());
+                    break;
                 case UPDATE_INTERVENTION_UPDATE_UNIT:
                     unit = modelService.getUnit(id);
                     break;

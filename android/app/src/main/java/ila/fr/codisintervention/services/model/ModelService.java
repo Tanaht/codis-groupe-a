@@ -15,6 +15,7 @@ import java.util.List;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.models.ApplicationModel;
 import ila.fr.codisintervention.models.InterventionChosen;
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;

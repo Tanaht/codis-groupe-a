@@ -24,6 +24,7 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -37,6 +38,8 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
 import ua.naiksoftware.stomp.client.StompMessage;
+
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 
 /**
  * Service used to manage websocket api
@@ -220,7 +223,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                     Log.d(TAG, "STOMP CONNECTION ERROR");
 
                     // Notify Registered Activity from ERROR Connection
-                    Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
+                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
                     Intent errorIntent = new Intent(PROTOCOL_ERROR);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
@@ -229,7 +232,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                     Log.d(TAG, "STOMP CONNECTION CLOSED");
                     // Notify Registered Activity from CLOSE Connection
 
-                    Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
+                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
                     Intent closeIntent  = new Intent(PROTOCOL_CLOSE);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(closeIntent);
                     break;
@@ -330,9 +333,9 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
         );
 
-        this.client.topic("/topic/interventions/" + id + "/droneLocation/event").subscribe(message -> {
-            Log.i(TAG, "[/topic/interventions/" + id + "/droneLocation/event] Received message: " + message.getPayload());
-            deliverDroneLocationEventIntents(message);
+        this.client.topic("/topic/interventions/" + id + "/drone/ping").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/drone/ping] Received message: " + message.getPayload());
+            deliverDroneLocation(message);
         });
 
     }
@@ -394,39 +397,22 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
     /**
-     * Class triggered when receiving events of type "/topic/interventions/{id}/DroneLocation/event"
-     * It send the correct intent.
+     * Deliver Received Drone Real-Location
+     * url : "/topic/interventions/{id}/drone/ping"
      * @param message
      */
-    private void deliverDroneLocationEventIntents(StompMessage message) {
-        String type = "";
-        Location droneLocation = null;
-
+    private void deliverDroneLocation(StompMessage message) {
+        DronePing dronePing = null;
         try {
             JSONObject object = new JSONObject(message.getPayload());
-
-            if(!object.has("type"))
-                throw new JSONException("JSON Message must have a 'type' key");
-            type = object.getString("type");
-
-            if(!Arrays.asList("CREATE", "UPDATE", "DELETE").contains(type)) {
-                throw new JSONException("JSON Message 'type' key must be one of the following: 'CREATE|UPDATE|DELETE'");
-            }
-
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            droneLocation = gson.fromJson(message.getPayload(), Location.class);
-
+            dronePing = gson.fromJson(message.getPayload(), DronePing.class);
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage(), e);
         }
 
-        Intent toBeBroadcoastedIntent = null;
-
-        if("UPDATE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(DRONE_PING);
-            toBeBroadcoastedIntent.putExtra(DRONE_PING, droneLocation);
-        }
-
+        Intent toBeBroadcoastedIntent = new Intent(UPDATE_DRONE_POSITION);
+        toBeBroadcoastedIntent.putExtra(UPDATE_DRONE_POSITION, dronePing);
         LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
     }
 
