@@ -103,13 +103,18 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(-1, ModelConstants.INITIALIZE_APPLICATION);
                 break;
             case WebsocketService.INTERVENTION_CHOSEN:
-                model.setCurrentIntervention(model.getInterventionById(intent.getParcelableExtra("INTERVENTION_CHOSEN")));
+                InterventionModel intervention = intent.getParcelableExtra("INTERVENTION_CHOSEN");
+                try {
+                    model.setCurrentIntervention(intervention.getId());
+                } catch (InterventionNotFoundException e) {
+                    e.printStackTrace();
+                }
                 break;
             case WebsocketService.DISCONNECT_TO_APPLICATION:
                 model = new ApplicationModel();
                 break;
             case WebsocketService.INTERVENTION_CREATED:
-                InterventionModel intervention = intent.getParcelableExtra("INTERVENTION_CREATED");
+                intervention = intent.getParcelableExtra("INTERVENTION_CREATED");
                 intervention.setOpened(true);
                 model.getInterventions().add(intervention);
                 sendToEveryone(intervention.getId(), ModelConstants.ADD_INTERVENTION);

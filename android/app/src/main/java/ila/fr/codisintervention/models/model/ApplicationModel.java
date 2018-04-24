@@ -60,6 +60,10 @@ public class ApplicationModel {
 
     }
 
+    public ApplicationModel() {
+
+    }
+
     public void setCurrentIntervention(int idIntervention) throws InterventionNotFoundException {
         for (InterventionModel interv : interventions){
             if (interv.getId().equals(idIntervention)){
@@ -80,4 +84,11 @@ public class ApplicationModel {
         return null;
     }
 
+    public void setInterventionClosedById(int id) {
+        for(InterventionModel intervention : interventions){
+            if(intervention.getId().equals(id)){
+                intervention.setOpened(false);
+            }
+        }
+    }
 }

@@ -64,4 +64,29 @@ public List<Photo> setListPhotoFromMessage (Intervention intervention){
     }
 
 
+    public void changeSymbol(Symbol symbolUpdated) {
+        for(Symbol symbol : symbols){
+            if(symbol.getId().equals(symbolUpdated.getId())){
+                symbols.remove(symbol);
+                symbols.add(symbolUpdated);
+            }
+        }
+    }
+
+    public void deleteSymbolById(int idSymbol) {
+        for(Symbol symbol : symbols){
+            if(symbol.getId().equals(idSymbol)){
+                symbols.remove(symbol);
+            }
+        }
+    }
+
+    public void changeUnit(Unit unitUpdated) {
+        for(Unit unit : units){
+            if(unit.getId().equals(unitUpdated.getId())){
+                units.remove(unit);
+                units.add(unitUpdated);
+            }
+        }
+    }
 }
