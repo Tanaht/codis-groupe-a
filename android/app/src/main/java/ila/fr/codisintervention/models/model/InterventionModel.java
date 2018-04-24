@@ -1,12 +1,13 @@
 package ila.fr.codisintervention.models.model;
 
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import lombok.Setter;
 import lombok.Getter;
 
@@ -38,19 +39,17 @@ public class InterventionModel {
     private List<Unit> units;
     private List<PathDrone> pathDrones;
 
-    private InterventionModel setInterventionFromMessage (Intervention intervention){
+    public InterventionModel(Intervention intervention){
         Position position = new Position();
-        InterventionModel interventionModel = new InterventionModel();
-        interventionModel.setAddress(intervention.getAddress());
-        interventionModel.setDate(intervention.getDate());
+        this.setAddress(intervention.getAddress());
+        this.setDate(intervention.getDate());
         position.setLatitude(intervention.getLocation().getLat());
         position.setLongitude(intervention.getLocation().getLng());
-        interventionModel.setPosition(position);
-        interventionModel.setSinisterCode(intervention.getCode());
-        interventionModel.setOpened(false);
-        interventionModel.setListPhotoFromMessage(intervention.getPhotos());
+        this.setPosition(position);
+        this.setSinisterCode(intervention.getCode());
+        this.setOpened(true);
+        this.setListPhotoFromMessage(intervention.getPhotos());
 
-        return interventionModel;
     }
 
     private List<Photo> setListPhotoFromMessage (List<ila.fr.codisintervention.models.messages.Photo> photoList){

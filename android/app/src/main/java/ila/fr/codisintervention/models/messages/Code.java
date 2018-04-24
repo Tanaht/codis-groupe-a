@@ -5,11 +5,15 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by tanaky on 27/03/18.
  * Represent a SinisterCode in terms of JSON Message
  */
-
+@Getter
+@Setter
 public class Code implements Parcelable {
 
     /**

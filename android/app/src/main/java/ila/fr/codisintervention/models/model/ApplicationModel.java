@@ -1,8 +1,13 @@
 package ila.fr.codisintervention.models.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.models.messages.Code;
+import ila.fr.codisintervention.models.messages.InitializeApplication;
+import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.Type;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.user.User;
 import lombok.Getter;
@@ -25,15 +30,38 @@ public class ApplicationModel {
 
     private User user;
 
-    private List<InterventionModel> listIntervention;
+    private List<InterventionModel> interventions;
     private InterventionModel currentIntervention;
 
     private List<String> sinisterCodes;
     private List<String> vehicleTypes;
 
 
+    public ApplicationModel(InitializeApplication init){
+        sinisterCodes = new ArrayList<>();
+        vehicleTypes = new ArrayList<>();
+        interventions = new ArrayList<>();
+        vehicleAvailables = new ArrayList<>();
+        currentIntervention = null;
+
+        for (Code code : init.getCodes()){
+            sinisterCodes.add(code.getLabel());
+        }
+        for (Type vehicleType :  init.getTypes()){
+            vehicleTypes.add(vehicleType.getLabel());
+        }
+        for (Intervention interv : init.getInterventions()){
+            interventions.add(new InterventionModel(interv));
+        }
+        for (ila.fr.codisintervention.models.messages.Vehicle vehicle : init.getVehicles()){
+            vehicleAvailables.add(new Vehicle(vehicle));
+        }
+
+
+    }
+
     public void setCurrentIntervention(int idIntervention) throws InterventionNotFoundException {
-        for (InterventionModel interv : listIntervention){
+        for (InterventionModel interv : interventions){
             if (interv.getId().equals(idIntervention)){
                 currentIntervention = interv;
                 return;
