@@ -144,7 +144,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         modelServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder binder) {
-                //on recupere l'instance du modelService dans l'activité
+                // we retrieve the modelService instance in the activity
                 modelService = ((ModelServiceBinder) binder).getService();
             }
 
@@ -158,7 +158,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         startService(new Intent(this, ila.fr.codisintervention.services.model.ModelService.class));
         Intent intent = new Intent(this, ila.fr.codisintervention.services.model.ModelService.class);
 
-        //lance le binding du websocketService
+        // start the websocketService binding
         bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
     }
 

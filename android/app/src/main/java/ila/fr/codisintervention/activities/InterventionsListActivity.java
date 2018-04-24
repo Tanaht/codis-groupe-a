@@ -86,7 +86,7 @@ public class InterventionsListActivity extends AppCompatActivity {
         modelServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder binder) {
-                //on récupère l'instance du modelService dans l'activité
+                // we retrieve the modelService instance in the activity
                 modelService = ((ModelServiceBinder)binder).getService();
                 Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
                 if(modelService.getInterventions() == null || modelService.getInterventions().size() == 0){
@@ -155,9 +155,9 @@ public class InterventionsListActivity extends AppCompatActivity {
      * @param intervention : the new intervention
      */
     private void addElement(Intervention intervention) {
-        // on insère l'intervention dans la liste des interventions liée à l'adapter
+        // we insert the intervention into the interventions list linked to the adapter
         dataAdapter.add(intervention);
-        // on notifie à l'adapter ce changement
+        // we notify this change to the adapter
         dataAdapter.notifyDataSetChanged();
     }
 
@@ -167,9 +167,9 @@ public class InterventionsListActivity extends AppCompatActivity {
      * @param position : the position of the Intervention to delete
      */
     public void deleteElement(int position) {
-        // on supprime l'intervention
+        // we remove the intervention
         dataAdapter.remove(dataAdapter.getItem(position));
-        // on notifie à l'adapter ce changement
+        // we notify this change to the adapter
         dataAdapter.notifyDataSetChanged();
     }
 
@@ -231,7 +231,7 @@ public class InterventionsListActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //on supprimer le binding entre l'activité et le websocketService.
+        // we remove the binding between activity and websocketService.
         if(webSocketServiceConnection != null)
             unbindService(webSocketServiceConnection);
 
