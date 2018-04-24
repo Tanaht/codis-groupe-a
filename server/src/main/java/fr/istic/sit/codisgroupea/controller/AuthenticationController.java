@@ -7,8 +7,7 @@ import fr.istic.sit.codisgroupea.model.message.Send.InitializeApplicationMessage
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 import fr.istic.sit.codisgroupea.repository.*;
 import fr.istic.sit.codisgroupea.service.AuthenticationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -23,7 +22,7 @@ import java.util.Optional;
 public class AuthenticationController {
 
     /** The logger */
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /** {@link AuthenticationService} instance */
     private AuthenticationService authenticationService;
