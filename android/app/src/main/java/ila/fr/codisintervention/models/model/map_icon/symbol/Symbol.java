@@ -1,10 +1,10 @@
-package ila.fr.codisintervention.models.model.mapIcon.symbol;
+package ila.fr.codisintervention.models.model.map_icon.symbol;
 
 
-import ila.fr.codisintervention.models.model.mapIcon.Color;
+import ila.fr.codisintervention.models.model.map_icon.Color;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.Position;
-import ila.fr.codisintervention.models.model.mapIcon.Shape;
+import ila.fr.codisintervention.models.model.map_icon.Shape;
 
 /**
  * Graphical symbol placed on the SITAC, it features its location.

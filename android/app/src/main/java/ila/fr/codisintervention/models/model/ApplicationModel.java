@@ -3,7 +3,8 @@ package ila.fr.codisintervention.models.model;
 import java.util.List;
 
 import ila.fr.codisintervention.models.messages.InitializeApplication;
-import ila.fr.codisintervention.models.model.mapIcon.drone.Path;
+import ila.fr.codisintervention.models.model.map_icon.Unit;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +24,7 @@ public class ApplicationModel {
 
     private List<InterventionModel> listIntervention;
 
-    private List<Path> listPath;
+    private List<PathDrone> listPathDrone;
 
     private List<Unit> listUnit;
 

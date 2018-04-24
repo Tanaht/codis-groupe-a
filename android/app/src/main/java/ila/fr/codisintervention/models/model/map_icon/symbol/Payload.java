@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.models.model.mapIcon.symbol;
+package ila.fr.codisintervention.models.model.map_icon.symbol;
 
 
 /**

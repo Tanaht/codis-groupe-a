@@ -3,11 +3,17 @@ package ila.fr.codisintervention.models.model;
 
 import java.util.List;
 
-import ila.fr.codisintervention.models.messages.Photo;
+import ila.fr.codisintervention.models.model.map_icon.Unit;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Representation of an intervention.
  */
+@Getter
+@Setter
 public class InterventionModel {
 
     /** The id of the intervention */
@@ -25,6 +31,10 @@ public class InterventionModel {
     private String sinisterCode;
     private boolean opened;
 
-    private List<Photo> listPhoto;
+    private List<Photo> photos;
+    private List<Symbol> symbols;
+    private List<Unit> units;
+    private List<PathDrone> pathDrones;
+
 
 }

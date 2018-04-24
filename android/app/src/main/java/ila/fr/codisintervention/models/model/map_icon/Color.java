@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.models.model.mapIcon;
+package ila.fr.codisintervention.models.model.map_icon;
 
 /**
  * Created by tanaky on 30/03/18.

@@ -27,12 +27,11 @@ public class Photo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Photo photo = (Photo) o;
-        return Objects.equals(uri, photo.uri);
+        return uri.equals(photo.uri);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(uri);
+        return uri.hashCode();
     }
 }

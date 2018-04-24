@@ -1,9 +1,9 @@
-package ila.fr.codisintervention.models.model.mapIcon.drone;
+package ila.fr.codisintervention.models.model.map_icon.drone;
 
 /**
  * Type of path a drone may follow.
  */
-public enum PathType {
+public enum PathDroneType {
     /** Segment path type, the drone follows the segment and goes back endlessly */
     SEGMENT,
     /** Cycle path type, the drone travels around the zone */
