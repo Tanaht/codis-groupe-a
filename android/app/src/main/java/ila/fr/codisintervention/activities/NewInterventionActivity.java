@@ -251,6 +251,7 @@ public class NewInterventionActivity extends AppCompatActivity {
         return resLatLng;
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
