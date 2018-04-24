@@ -12,14 +12,14 @@ import java.util.Date;
 import java.util.List;
 
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.model.InterventionModel;
 
 /**
  * Created by aminesoumiaa on 23/03/18.
  * Adapter used to be able to convert Model Based Intervention into Intervention selectable in a ListView
  */
 
-public class InterventionListAdapter extends ArrayAdapter<Intervention> {
+public class InterventionListAdapter extends ArrayAdapter<InterventionModel> {
     private static final String TAG = "InterventionListAdapter";
     /**
      * Application Context
@@ -32,7 +32,7 @@ public class InterventionListAdapter extends ArrayAdapter<Intervention> {
      * @param listItemLayoutResourceId id of the list item layout used
      * @param interventionList List of the interventions to show them in the listview
      */
-    public InterventionListAdapter(Context context, int listItemLayoutResourceId, List<Intervention> interventionList) {
+    public InterventionListAdapter(Context context, int listItemLayoutResourceId, List<InterventionModel> interventionList) {
         super(context, listItemLayoutResourceId, interventionList);
         this.context = context;
     }
@@ -75,13 +75,13 @@ public class InterventionListAdapter extends ArrayAdapter<Intervention> {
         else {
             holder = (ViewHolder) convertView.getTag();
         }
-        Intervention intervention = this.getItem(position);
+        InterventionModel intervention = this.getItem(position);
 
         Date date = new Date(intervention.getDate());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String stringDate = df.format(date);
 
-        holder.id.setText(intervention.getCode());
+        holder.id.setText(intervention.getSinisterCode());
         holder.date.setText(stringDate);
         holder.address.setText(intervention.getAddress());
 
