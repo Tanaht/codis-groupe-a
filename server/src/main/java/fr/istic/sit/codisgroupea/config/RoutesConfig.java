@@ -44,4 +44,6 @@ public class RoutesConfig {
 
     public final static String UPDATE_SYMBOL_CLIENT = "/app/interventions/{id}/symbols/update";
     public final static String UPDATE_SYMBOL_SERVER = "/topic/interventions/{id}/symbols/event";
+
+    public final static String RECEIVE_DRONE_MISSION = "/app/interventions/{id}/drone/path";
 }
