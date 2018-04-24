@@ -11,11 +11,15 @@ import lombok.Setter;
 @Setter
 public class Payload {
 
-
     /** The identifier of the payload */
     private String identifier;
 
     /** The details of the payload */
     private String details;
+
+    public void load(Payload payload){
+        identifier = payload.getIdentifier();
+        details = payload.getDetails();
+    }
 
 }

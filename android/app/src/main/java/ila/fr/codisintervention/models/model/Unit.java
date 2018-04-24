@@ -2,7 +2,6 @@ package ila.fr.codisintervention.models.model;
 
 import java.sql.Timestamp;
 
-import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import lombok.Getter;
@@ -36,4 +35,14 @@ public class Unit {
     /** Instance of {@link Symbol} for the symbol sitac of the unit */
     private Symbol symbol;
 
+    public void load(Unit unitUpdated) {
+        moving = unitUpdated.isMoving();
+
+        requestDate = unitUpdated.getRequestDate();
+        acceptDate = unitUpdated.getAcceptDate();
+
+        vehicle.load(unitUpdated.getVehicle());
+        symbol.load(unitUpdated.getSymbol());
+
+    }
 }

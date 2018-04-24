@@ -30,5 +30,12 @@ public class Symbol {
     /** Instance of {@link Shape} for the shape of the symbol */
     private Shape shape;
 
+    public void load(Symbol symb){
+        color = symb.color;
+        shape = symb.shape;
+        payload.load(symb.getPayload());
+        location.load(symb.getLocation());
+
+    }
 
 }

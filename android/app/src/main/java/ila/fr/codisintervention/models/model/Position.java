@@ -21,4 +21,9 @@ public class Position {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+
+    public void load(Position pos){
+        latitude = pos.getLatitude();
+        longitude = pos.getLongitude();
+    }
 }

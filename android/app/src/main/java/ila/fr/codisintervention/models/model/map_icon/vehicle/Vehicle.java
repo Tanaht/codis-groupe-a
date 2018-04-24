@@ -25,4 +25,10 @@ public class Vehicle {
         type = vehicle.getType();
         status = VehicleStatus.getStatusEnumFromString(vehicle.getType());
     }
+
+    public void load(Vehicle vehicle){
+        label = vehicle.getLabel();
+        type = vehicle.getType();
+        status = vehicle.getStatus();
+    }
 }

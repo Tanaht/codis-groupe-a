@@ -1,5 +1,7 @@
 package ila.fr.codisintervention.models.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ import lombok.Setter;
 @Setter
 public class ApplicationModel {
 
+    private static final String TAG = "ApplicationModel";
 
     private List<Vehicle> vehicleAvailables;
 
@@ -37,6 +40,7 @@ public class ApplicationModel {
     private List<String> vehicleTypes;
 
 
+    public ApplicationModel(){}
     public ApplicationModel(InitializeApplication init){
         sinisterCodes = new ArrayList<>();
         vehicleTypes = new ArrayList<>();
@@ -57,10 +61,8 @@ public class ApplicationModel {
             vehicleAvailables.add(new Vehicle(vehicle));
         }
 
+        user = new User(init.getUser());
 
-    }
-
-    public ApplicationModel() {
 
     }
 
@@ -75,20 +77,34 @@ public class ApplicationModel {
         throw new InterventionNotFoundException(idIntervention);
     }
 
-    public InterventionModel getInterventionById(int id){
-        for(InterventionModel intervention : interventions){
-            if(intervention.getId().equals(id)){
-                return intervention;
+    public void deleteIntervention(int idIntervention) throws InterventionNotFoundException {
+
+        for (int i = 0; i < interventions.size(); i++) {
+            if (interventions.get(i).getId().equals(idIntervention)){
+                interventions.remove(i);
+                Log.i(TAG, "deleteIntervention: intervention with id" + idIntervention + " removed");
+
+                if (currentIntervention.getId().equals(idIntervention)){
+                    currentIntervention = null;
+                    Log.i(TAG, "deleteIntervention: current intervention is delete");
+                }
+                return;
             }
         }
-        return null;
+        throw new InterventionNotFoundException(idIntervention);
     }
 
-    public void setInterventionClosedById(int id) {
+    public void actualiseInterventionChoosen(Intervention intervention){
+        currentIntervention = new InterventionModel(intervention);
+    }
+    public void setInterventionClosedById(int id) throws InterventionNotFoundException {
         for(InterventionModel intervention : interventions){
             if(intervention.getId().equals(id)){
                 intervention.setOpened(false);
+                return;
             }
         }
+
+        throw new InterventionNotFoundException(id);
     }
 }
