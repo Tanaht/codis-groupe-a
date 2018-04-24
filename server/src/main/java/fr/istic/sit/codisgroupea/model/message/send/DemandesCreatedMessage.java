@@ -61,7 +61,7 @@ public class DemandesCreatedMessage {
          */
         public VehicleDemandesCreatedMessage(Unit unit){
             type = unit.getVehicle().getType().getName();
-            status = unit.getStatus().toString();
+            status = unit.getUnitVehicle().getStatus().toString();
         }
 
         public String getType() {

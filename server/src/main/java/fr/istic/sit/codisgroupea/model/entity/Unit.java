@@ -17,14 +17,11 @@ public class Unit {
     private Integer id;
 
     /**
-     * Status of the vehicle requested
+     * Association of the vehicle is done here
+     * From this class we can gain the instance of the vehicle
+     * @see Vehicle
      */
-    private VehicleStatus status;
-
-    /**
-     * type of the vehicle requested;
-     */
-    private VehicleType type;
+    private UnitVehicle unitVehicle;
 
     /** Instance of {@link Intervention} for the intervention of the unit */
     private Intervention intervention;
@@ -225,7 +222,8 @@ public class Unit {
     }
 
     /**
-     * Sets released date.
+     * Sets est
+     * e =released date.
      *
      * @param releasedDate the released date
      */
@@ -233,54 +231,43 @@ public class Unit {
         this.releasedDate = releasedDate;
     }
 
+    /**
+     * Gets symbol sitac.
+     *
+     * @return the symbol sitac
+     */
     @OneToOne
     @NotNull
     public SymbolSitac getSymbolSitac() {
         return symbolSitac;
     }
 
+    /**
+     * Sets symbol sitac.
+     *
+     * @param symbolSitac the symbol sitac
+     */
     public void setSymbolSitac(SymbolSitac symbolSitac) {
         this.symbolSitac = symbolSitac;
     }
 
-
     /**
-     * Gets status.
+     * Gets unit vehicle.
      *
-     * @return the status
+     * @return the unit vehicle
      */
+    @OneToOne
     @NotNull
-    @Enumerated
-    public VehicleStatus getStatus() {
-        return status;
+    public UnitVehicle getUnitVehicle() {
+        return unitVehicle;
     }
 
     /**
-     * Sets status.
+     * Sets unit vehicle.
      *
-     * @param status the status
+     * @param unitVehicle the unit vehicle
      */
-    public void setStatus(VehicleStatus status) {
-        this.status = status;
-    }
-
-    /**
-     * Gets type.
-     *
-     * @return the type
-     */
-    @NotNull
-    @ManyToOne
-    public VehicleType getType() {
-        return type;
-    }
-
-    /**
-     * Sets type.
-     *
-     * @param type the type
-     */
-    public void setType(VehicleType type) {
-        this.type = type;
+    public void setUnitVehicle(UnitVehicle unitVehicle) {
+        this.unitVehicle = unitVehicle;
     }
 }

@@ -172,7 +172,7 @@ public class DemandSocketController {
             unitInBdd.get().getSymbolSitac().setLocation(unitMessageFromCLient
                     .getSymbolUnitMessage().getLocation().toPositionEntity());
 
-            vehicle.get().setStatus(unitMessageFromCLient.getVehicule().getStatus());
+//TODO:            vehicle.get().setStatus(unitMessageFromCLient.getVehicule().getStatus());
 
             unitInBdd.get().setVehicle(vehicle.get());
             unitInBdd.get().setMoving(unitMessageFromCLient.isMoving());
