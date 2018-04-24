@@ -4,9 +4,9 @@
     <color name="colorPrimaryDark">#d23b3b</color>
     <color name="colorAccent">#FF4081</color>
     <!-- TODO: rename following colors but the class SymbolsListFragment potentially use it -->
-    <color name="rouge">#FF0000</color>
-    <color name="vert">#00FF00</color>
-    <color name="bleu">#0000FF</color>
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+    <color name="blue">#0000FF</color>
     <color name="orange">#ED7F10</color>
-    <color name="violet">#EE82EE</color>
+    <color name="purple">#EE82EE</color>
 </resources>
