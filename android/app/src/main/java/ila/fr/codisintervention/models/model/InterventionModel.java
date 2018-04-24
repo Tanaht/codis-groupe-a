@@ -65,6 +65,24 @@ public class InterventionModel {
         return photos;
     }
 
+    public Symbol getSymbol(int idSymb) throws SymbolNotFoundException {
+        for (Symbol symb : symbols){
+            if (symb.getId().equals(idSymb)){
+                return symb;
+            }
+        }
+        throw new SymbolNotFoundException(idSymb);
+    }
+
+
+    public Unit getUnit(int idUnit) throws UnitNotFoundException {
+        for (Unit unit: units){
+            if (unit.getId().equals(idUnit)){
+                return unit;
+            }
+        }
+        throw new UnitNotFoundException(idUnit);
+    }
 
     public void updateSymbol(Symbol symbol) throws SymbolNotFoundException {
         for (Symbol symb : symbols){

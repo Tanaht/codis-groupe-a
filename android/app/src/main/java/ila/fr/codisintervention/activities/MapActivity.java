@@ -19,10 +19,13 @@ import android.view.MotionEvent;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.entities.SymbolKind;
+import ila.fr.codisintervention.exception.SymbolNotFoundException;
+import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
-import ila.fr.codisintervention.models.messages.Symbol;
-import ila.fr.codisintervention.models.messages.Unit;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.Unit;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL;
@@ -97,6 +100,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
      * TODO: To mutualize equally with BindToService method
      * Define BroadcoastReceiver Instance to get aware when an Intent is send to this activity among other
      */
+    //TODO la fonction ne fais rien ??
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -104,32 +108,41 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
             Symbol symbol;
             Unit unit;
 
-            switch (intent.getAction()) {
-                case UPDATE_INTERVENTION_UPDATE_UNIT:
-                    unit = modelService.getUnit(id);
-                    break;
-                case UPDATE_INTERVENTION_CREATE_UNIT:
-                    unit = modelService.getUnit(id);
-                    break;
-                case UPDATE_INTERVENTION_DELETE_UNIT:
-                    unit = modelService.getUnit(id);
-                    break;
-                case UPDATE_INTERVENTION_UPDATE_SYMBOL:
-                    symbol = modelService.getSymbol(id);
-                    break;
-                case UPDATE_INTERVENTION_DELETE_SYMBOL:
-                    symbol = modelService.getSymbol(id);
-                    break;
-                case UPDATE_INTERVENTION_CREATE_SYMBOL:
-                    symbol = modelService.getSymbol(id);
-                    break;
-                case ADD_VEHICLE_REQUEST:
-                    break;
-                case VALIDATE_VEHICLE_REQUEST:
-                    unit = modelService.getUnit(id);
-                    break;
-                default:
-                    break;
+            try{
+
+                switch (intent.getAction()) {
+                    case UPDATE_INTERVENTION_UPDATE_UNIT:
+                        unit = modelService.getCurrentIntervention().getUnit(id);
+                        break;
+                    case UPDATE_INTERVENTION_CREATE_UNIT:
+                        unit = modelService.getCurrentIntervention().getUnit(id);
+                        break;
+                    case UPDATE_INTERVENTION_DELETE_UNIT:
+                        unit = modelService.getCurrentIntervention().getUnit(id);
+                        break;
+                    case UPDATE_INTERVENTION_UPDATE_SYMBOL:
+                        symbol = modelService.getCurrentIntervention().getSymbol(id);
+                        break;
+                    case UPDATE_INTERVENTION_DELETE_SYMBOL:
+                        symbol = modelService.getCurrentIntervention().getSymbol(id);
+                        break;
+                    case UPDATE_INTERVENTION_CREATE_SYMBOL:
+                        symbol = modelService.getCurrentIntervention().getSymbol(id);
+                        break;
+                    case ADD_VEHICLE_REQUEST:
+                        break;
+                    case VALIDATE_VEHICLE_REQUEST:
+                        unit = modelService.getCurrentIntervention().getUnit(id);
+                        break;
+                    default:
+                        break;
+                }
+            }catch (SymbolNotFoundException e){
+                Log.e(TAG, "onReceive: try to get symbol who doesn't exist on current intervention selected" );
+                e.printStackTrace();
+            }catch (UnitNotFoundException e){
+                Log.e(TAG, "onReceive: try to get unit who doesn't exist on current intervention selected" );
+                e.printStackTrace();
             }
         }
     };

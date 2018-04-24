@@ -62,8 +62,6 @@ public class ApplicationModel {
         }
 
         user = new User(init.getUser());
-
-
     }
 
     public void setCurrentIntervention(int idIntervention) throws InterventionNotFoundException {
@@ -93,7 +91,6 @@ public class ApplicationModel {
         }
         throw new InterventionNotFoundException(idIntervention);
     }
-
     public void actualiseInterventionChoosen(Intervention intervention){
         currentIntervention = new InterventionModel(intervention);
     }
@@ -104,7 +101,6 @@ public class ApplicationModel {
                 return;
             }
         }
-
         throw new InterventionNotFoundException(id);
     }
 }
