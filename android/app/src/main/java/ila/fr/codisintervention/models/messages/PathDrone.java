@@ -1,5 +1,8 @@
 package ila.fr.codisintervention.models.messages;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 
 import java.util.List;
@@ -13,7 +16,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class PathDrone {
+public class PathDrone implements Parcelable {
 	/**
      *The type of the drone path
 	*/
@@ -42,4 +45,25 @@ public class PathDrone {
         this.altitude = 30;
     }
 
+    /**
+     * Instantiates a new PathDrone.
+     *
+     * @param in the parcel that contain the details of this class
+     */
+    protected PathDrone(Parcel in) {
+        type = in.readString();
+        altitude = in.readDouble();
+        path = in.createTypedArrayList(Location.CREATOR);
+    }
+
+
+    @Override
+    public int describeContents() { return 0;}
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(type);
+        dest.writeDouble(altitude);
+        dest.writeTypedList(this.path);
+    }
 }
