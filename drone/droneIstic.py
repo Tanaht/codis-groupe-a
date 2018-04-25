@@ -9,9 +9,10 @@ from utils.SocketIstic import SocketIstic
 class NotreDrone():
 
     # Construtor with specific IP, targeted altitude
-    def __init__(self, sIP, simulation, altitude):
+    def __init__(self, sIP, simulation, altitude, interventionId):
         # START du drone
         self.connection_string = sIP
+        self.interventionId = interventionId
         self.sitl = None
         self.takeoffAltitude = altitude
         # Start SITL if no connection string specified
@@ -213,7 +214,7 @@ class NotreDrone():
             update_kml_file(location)
 
             # live update for drone position on the android map
-            SocketIstic.get_socket().send_position(location, self.vehicle.battery.level)
+            SocketIstic.get_socket().send_position(location, self.vehicle.battery.level, self.interventionId)
 
             # if we detect a command 19, we take a photo and send it to the server
             if self.vehicle.commands.next - 1 >= 0:

@@ -22,7 +22,7 @@ public class MissionOrderMessage {
 
     private List<Location> path;
 
-    private static class Location{
+    public static class Location{
 
         private double lat;
 

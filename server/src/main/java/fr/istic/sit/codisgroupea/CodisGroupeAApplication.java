@@ -22,8 +22,10 @@ public class CodisGroupeAApplication {
 		logger.warn("gros warning comme ton boule");
 		logger.error("grosse error comme ta naissance");
 
+		SpringApplication.run(CodisGroupeAApplication.class, args);
 
-		ConfigurableApplicationContext context = SpringApplication.run(CodisGroupeAApplication.class, args);
-		new SocketForDroneCommunication(context);
+		/* Socket need to be open in the main */
+		SocketForDroneCommunication.get();
+
 	}
 }

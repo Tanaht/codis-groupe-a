@@ -40,6 +40,7 @@ public class DroneServerConstants {
 	 * JSON values
 	 */
 	public static final String TYPE = "type";
+	public static final String INTERVENTION_ID = "interventionId";
 	public static final String LAT = "lat";
 	public static final String LNG = "lng";
 	public static final String DATAS = "datas";
