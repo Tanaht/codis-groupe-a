@@ -405,10 +405,6 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         DronePing dronePing = gson.fromJson(message.getPayload(), DronePing.class);
-        Log.d(TAG,"\n\n\n ********* Drone Ping *********** ");
-        Log.d(TAG,"\n\n\n **** Location lng"+dronePing.getLocation().getLng());
-        Log.d(TAG,"\n\n\n *** Location lat"+dronePing.getLocation().getLat());
-        Log.d(TAG,"\n\n\n *** Altitude"+dronePing.getLocation().getLat());
 
         Intent toBeBroadcoastedIntent = new Intent(UPDATE_DRONE_POSITION);
         toBeBroadcoastedIntent.putExtra(UPDATE_DRONE_POSITION, dronePing);
