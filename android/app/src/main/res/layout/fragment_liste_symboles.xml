@@ -12,97 +12,97 @@
         android:orientation="vertical">
 
     <RadioButton
-        android:id="@+id/radioButtonrouge"
+        android:id="@+id/redradioButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:background="@color/rouge" />
+        android:background="@color/red" />
 
     <RadioButton
-        android:id="@+id/radioButtonvert"
+        android:id="@+id/greenradioButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:background="@color/vert" />
+        android:background="@color/green" />
 
     <RadioButton
-        android:id="@+id/radioButtonbleu"
+        android:id="@+id/blueradioButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
-        android:background="@color/bleu" />
+        android:background="@color/blue" />
 
     <RadioButton
-        android:id="@+id/radioButtonorange"
+        android:id="@+id/orangeradioButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
         android:background="@color/orange" />
 
         <RadioButton
-            android:id="@+id/radioButtonviolet"
+            android:id="@+id/purpleradioButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
-            android:background="@color/violet" />
+            android:background="@color/purple" />
 
     </RadioGroup>
 
 
     <ImageView
-        android:id="@+id/ressource_eau"
+        android:id="@+id/water_resource"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/ressource_eau" />
+        android:src="@drawable/water_resource" />
 
 
     <ImageView
-        android:id="@+id/sinistre"
+        android:id="@+id/sinister"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/sinistre" />
+        android:src="@drawable/sinister" />
 
     <ImageView
-        android:id="@+id/triangle_bas"
+        android:id="@+id/triangle_down"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/triangle_bas" />
+        android:src="@drawable/triangle_down" />
 
     <ImageView
-        android:id="@+id/triangle_haut"
+        android:id="@+id/triangle_up"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/triangle_haut" />
+        android:src="@drawable/triangle_up" />
 
     <ImageView
-        android:id="@+id/vehicule"
+        android:id="@+id/vehicle"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/vehicule" />
+        android:src="@drawable/vehicle" />
 
     <ImageView
-        android:id="@+id/vehicule_non_valide"
+        android:id="@+id/not_effective_vehicle"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/vehicule_non_valide" />
+        android:src="@drawable/not_effective_vehicle" />
 
     <ImageView
-        android:id="@+id/vehicule_pompier"
+        android:id="@+id/fire_vehicle"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/vehicule_pompier" />
+        android:src="@drawable/fire_vehicle" />
 
     <ImageView
-        android:id="@+id/vehicule_pompier_non_valide"
+        android:id="@+id/not_effective_fire_vehicle"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/vehicule_pompier_non_valide" />
+        android:src="@drawable/not_effective_fire_vehicle" />
 
     <ImageView
-        android:id="@+id/zone"
+        android:id="@+id/area"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/zone" />
+        android:src="@drawable/area" />
 
     <ImageView
         android:id="@+id/drone"

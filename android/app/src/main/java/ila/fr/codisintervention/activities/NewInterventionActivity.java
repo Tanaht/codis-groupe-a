@@ -28,7 +28,7 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.entities.Vehicle;
-import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.services.InterventionService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
@@ -121,14 +121,14 @@ public class NewInterventionActivity extends AppCompatActivity {
             }
             public void onServiceConnected(ComponentName arg0, IBinder binder) {
 
-                //on récupère l'instance du webSocketService dans l'activité
+                // we retrieve the webSocketService instance in the activity
                 webSocketService = ((WebSocketServiceBinder)binder).getService();
             }
         };
 
         startService(new Intent(getApplicationContext(), WebsocketService.class));
         Intent intent = new Intent(getApplicationContext(), WebsocketService.class);
-        //lance le binding du webSocketService
+        // start the webSocketService binding
         bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -250,6 +250,7 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         return resLatLng;
     }
+
 
     @Override
     protected void onDestroy() {

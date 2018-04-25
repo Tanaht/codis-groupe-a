@@ -23,7 +23,7 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
-import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -218,7 +218,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                     Log.d(TAG, "STOMP CONNECTION ERROR");
 
                     // Notify Registered Activity from ERROR Connection
-                   // Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
+                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
                     Intent errorIntent = new Intent(PROTOCOL_ERROR);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
@@ -227,7 +227,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                     Log.d(TAG, "STOMP CONNECTION CLOSED");
                     // Notify Registered Activity from CLOSE Connection
 
-                   // Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
+                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
                     Intent closeIntent  = new Intent(PROTOCOL_CLOSE);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(closeIntent);
                     break;

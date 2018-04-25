@@ -22,7 +22,8 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
-import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
@@ -86,7 +87,7 @@ public class InterventionsListActivity extends AppCompatActivity {
         modelServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder binder) {
-                //on récupère l'instance du modelService dans l'activité
+                // we retrieve the modelService instance in the activity
                 modelService = ((ModelServiceBinder)binder).getService();
                 Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
                 if(modelService.getInterventions() == null || modelService.getInterventions().size() == 0){
@@ -124,7 +125,7 @@ public class InterventionsListActivity extends AppCompatActivity {
      * In this method we instanciate {@link InterventionListAdapter} and initialize correct ClickListener on Intervention Clicked.
      * @param interventionList list to display
      */
-    private void displayListView(List<Intervention> interventionList){
+    private void displayListView(List<InterventionModel> interventionList){
 
         //create an ArrayAdapter from the String Array
         dataAdapter = new InterventionListAdapter(this,
@@ -136,7 +137,7 @@ public class InterventionsListActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             // When clicked, show a toast with the TextView text
-            Intervention intervention = (Intervention) parent.getItemAtPosition(position);
+            InterventionModel intervention = (InterventionModel) parent.getItemAtPosition(position);
 
             Toasty.info(getApplicationContext(),
                     "Intervention with id:" + intervention.getId() + " has been sent to wss",
@@ -151,25 +152,25 @@ public class InterventionsListActivity extends AppCompatActivity {
     }
 
     /**
-     * Add new {@link Intervention}, and notify to the adapter that intervention has been added
+     * Add new {@link InterventionModel}, and notify to the adapter that intervention has been added
      * @param intervention : the new intervention
      */
-    private void addElement(Intervention intervention) {
-        // on insère l'intervention dans la liste des interventions liée à l'adapter
+    private void addElement(InterventionModel intervention) {
+        // we insert the intervention into the interventions list linked to the adapter
         dataAdapter.add(intervention);
-        // on notifie à l'adapter ce changement
+        // we notify this change to the adapter
         dataAdapter.notifyDataSetChanged();
     }
 
 
     /**
-     * Delete {@link Intervention} , and notify to the adapter that Intervention has been deleted
+     * Delete {@link InterventionModel} , and notify to the adapter that Intervention has been deleted
      * @param position : the position of the Intervention to delete
      */
     public void deleteElement(int position) {
-        // on supprime l'intervention
+        // we remove the intervention
         dataAdapter.remove(dataAdapter.getItem(position));
-        // on notifie à l'adapter ce changement
+        // we notify this change to the adapter
         dataAdapter.notifyDataSetChanged();
     }
 
@@ -193,13 +194,13 @@ public class InterventionsListActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int id = (int) intent.getExtras().get("id");
-            Intervention intervention = null;
-            for (Intervention interTmp : modelService.getInterventions()){
-                if (interTmp.getId() == id){
-                    intervention = interTmp;
-                }
+            InterventionModel intervention = null;
+            try {
+                intervention = modelService.getInterventionById(id);
+            } catch (InterventionNotFoundException e) {
+                Log.e(TAG, "onReceive: try to access to an intervention who doesn't exist");
+                e.printStackTrace();
             }
-
             switch (intent.getAction()){
                 case ModelConstants.ADD_INTERVENTION:
                     addElement(intervention);
@@ -231,7 +232,7 @@ public class InterventionsListActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //on supprimer le binding entre l'activité et le websocketService.
+        // we remove the binding between activity and websocketService.
         if(webSocketServiceConnection != null)
             unbindService(webSocketServiceConnection);
 

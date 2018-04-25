@@ -1,4 +1,4 @@
-package fr.istic.sit.codisgroupea.model.message.Send;
+package fr.istic.sit.codisgroupea.model.message.send;
 
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
@@ -342,7 +342,7 @@ public class InitializeApplicationMessage {
 
         /**
          *
-         * @param unit Unit who represent a demand. unit.vehicle. Status is necessary on requested
+         * @param unit Unit who represent a demand. unit.vehicle. Status is necessary equals to requested
          */
         public DemandMessage(Unit unit){
 

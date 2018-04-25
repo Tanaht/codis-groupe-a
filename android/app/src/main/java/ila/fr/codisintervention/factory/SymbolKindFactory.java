@@ -18,15 +18,15 @@ public class SymbolKindFactory {
 
     public static List<SymbolKind> getAvailableSymbols() {
         List<SymbolKind> liste = new ArrayList<>();
-        liste.add(new SymbolKind("ressource_eau", R.drawable.ressourceeneau, "ressource_eau_glow", "ressource_eau", false));
-        liste.add(new SymbolKind("sinistre",R.drawable.sinistrerouge,"sinistre_glow", "sinistre", false));
-        liste.add(new SymbolKind("triangle_bas",R.drawable.dangervertbas,"triangle_bas_glow", "triangle_bas", false));
-        liste.add(new SymbolKind("triangle_haut", R.drawable.dangerverthaut, "triangle_haut_glow", "triangle_haut", false));
-        liste.add(new SymbolKind("vehicule", R.drawable.vehiculepompiervert,"vehicule_glow", "vehicule", false));
-        liste.add(new SymbolKind("vehicule_non_valide", R.drawable.vehiculebleunonvalide, "vehicule_non_valide_glow", "vehicule_non_valide",false));
-        liste.add(new SymbolKind("vehicule_pompier", R.drawable.vehiculepompiervert, "vehicule_pompier_glow", "vehicule_pompier", false));
-        liste.add(new SymbolKind("vehicule_pompier_non_valide", R.drawable.vehiculebleunonvalide, "vehicule_pompier_non_valide_glow", "vehicule_pompier_non_valide", false));
-        liste.add(new SymbolKind("zone", R.drawable.zoneactionrouge,"zone_glow", "zone", false));
+        liste.add(new SymbolKind("water_resource", R.drawable.waterresource, "water_resource_glow", "water_resource", false));
+        liste.add(new SymbolKind("sinister",R.drawable.sinister,"sinister_glow", "sinister", false));
+        liste.add(new SymbolKind("triangle_down",R.drawable.greendangerdown,"triangle_down_glow", "triangle_down", false));
+        liste.add(new SymbolKind("triangle_up", R.drawable.greendangerup, "triangle_up_glow", "triangle_up", false));
+        liste.add(new SymbolKind("vehicle", R.drawable.greenvehicle,"vehicle_glow", "vehicle", false));
+        liste.add(new SymbolKind("not_effective_vehicle", R.drawable.bluenoteffectivevehicle, "not_effective_vehicle_glow", "not_effective_vehicle",false));
+        liste.add(new SymbolKind("fire_vehicle", R.drawable.redfirevehicle, "fire_vehicle_glow", "fire_vehicle", false));
+        liste.add(new SymbolKind("not_effective_fire_vehicle", R.drawable.rednoteffectivefirevehicle, "not_effective_fire_vehicle_glow", "not_effective_fire_vehicle", false));
+        liste.add(new SymbolKind("area", R.drawable.redarea,"area_glow", "area", false));
         liste.add(new SymbolKind("drone", R.drawable.drone_icon_map, "drone_glow", "drone", false));
         return liste;
     }

@@ -1,7 +1,6 @@
-package fr.istic.sit.codisgroupea.model.message.Send;
+package fr.istic.sit.codisgroupea.model.message.send;
 
 import fr.istic.sit.codisgroupea.model.entity.Unit;
-import fr.istic.sit.codisgroupea.model.entity.Vehicle;
 
 public class DemandesCreatedMessage {
 
@@ -23,7 +22,7 @@ public class DemandesCreatedMessage {
      */
     public DemandesCreatedMessage(Unit unit){
         id = unit.getId();
-        vehicle = new VehicleDemandesCreatedMessage(unit.getVehicle());
+        vehicle = new VehicleDemandesCreatedMessage(unit);
     }
 
     public int getId() {
@@ -58,11 +57,11 @@ public class DemandesCreatedMessage {
         /**
          * Constructor of the class {@link VehicleDemandesCreatedMessage}
          *
-         * @param vehicle The vehicle concerned
+         * @param unit The unit concerned
          */
-        public VehicleDemandesCreatedMessage(Vehicle vehicle){
-            type = vehicle.getType().getName();
-            status = vehicle.getStatus().toString();
+        public VehicleDemandesCreatedMessage(Unit unit){
+            type = unit.getVehicle().getType().getName();
+            status = unit.getUnitVehicle().getStatus().toString();
         }
 
         public String getType() {

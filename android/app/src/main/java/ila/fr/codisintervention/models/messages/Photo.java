@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
-import ila.fr.codisintervention.models.Location;
-
 /**
  * Created by tanaky on 28/03/18.
  * Represent a snapshot taken by the drone
