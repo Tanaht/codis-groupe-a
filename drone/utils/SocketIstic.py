@@ -27,7 +27,7 @@ class SocketIstic:
         self.client.connect((host, port))
 
     # message to the server : SEND SITUATION
-    def send_position(self, location, battery):
+    def send_position(self, location, battery, interventionId):
         json_data = {
             'type': 'SEND_SITUATION',
             'datas': {
@@ -36,7 +36,8 @@ class SocketIstic:
                     'lat': location.lat,
                     'lng': location.lon
                     },
-                'battery': battery
+                'battery': battery,
+                'interventionId': interventionId
             }
         }
         self.send(json_data)

@@ -8,48 +8,54 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.springframework.context.ConfigurableApplicationContext;
-
 /**
  * 
  * Communication with the drone using socket
  *
  */
 public class SocketForDroneCommunication {
-	
+
+	private static SocketForDroneCommunication instance;
+
 	private Socket socket;
 	private ServerSocket serverSocket;
 	
 	private boolean sending = false;
-	
+
+	public static SocketForDroneCommunication get() throws IOException {
+		if(instance == null){
+			instance = new SocketForDroneCommunication();
+		}
+		return instance;
+	}
+
 	/**
 	 * 
 	 * The the server socket, then create 2 Thread to send and receive message
-	 * 
-	 * @param context The application context
+	 *
 	 * @throws IOException
 	 */
-	public SocketForDroneCommunication(ConfigurableApplicationContext context) throws IOException {
+	private SocketForDroneCommunication() throws IOException {
 		
-		this.start(context);
+		this.start();
 		
 		//Read message from drone
 		this.receiveMessage();
 		
 		//Exemple of mission order sending
-		MissionOrder mission = new MissionOrder();
-		mission.setMissionType(DroneServerConstants.MISSION_TYPES.MISSION_CYCLE.getName());
-		mission.addLocation(new Location(48.1148383, -1.6388297));
-		mission.addLocation(new Location(48.1153379, -1.6391757));
-		this.sendMessage(mission);
+//		MissionOrder mission = new MissionOrder();
+//		mission.setMissionType(DroneServerConstants.MISSION_TYPES.MISSION_CYCLE.getName());
+//		mission.addLocation(new Location(48.1148383, -1.6388297));
+//		mission.addLocation(new Location(48.1153379, -1.6391757));
+//		mission.setInterventionId(1);
+//		this.sendMessage(mission);
 	}
-	
+
 	/**
 	 * Start socekt with drone
-	 * @param context
 	 * @throws IOException
 	 */
-	public void start(ConfigurableApplicationContext context) throws IOException {
+	public void start() throws IOException {
 		serverSocket = new ServerSocket(DroneServerConstants.SOCKET_PORT);
 		socket = serverSocket.accept();
 	}

@@ -31,6 +31,7 @@ public class JsonForDroneCommunicationToolBox {
 			//datas
 			JSONObject datas = new JSONObject();
 			datas.put(DroneServerConstants.TYPE, mission.getMissionType());
+			datas.put(DroneServerConstants.INTERVENTION_ID, mission.getInterventionId());
 			datas.put(DroneServerConstants.ALTITUDE, 30);
 			//Array of positions
 			JSONArray locations = new JSONArray();
