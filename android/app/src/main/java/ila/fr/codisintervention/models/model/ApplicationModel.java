@@ -39,7 +39,16 @@ public class ApplicationModel {
     private List<String> sinisterCodes;
     private List<String> vehicleTypes;
 
+    /**
+     * Instantiates a new Application model.
+     */
     public ApplicationModel(){}
+
+    /**
+     * Instantiates a new Application model from initialize application message.
+     *
+     * @param init the init
+     */
     public ApplicationModel(InitializeApplication init){
         sinisterCodes = new ArrayList<>();
         vehicleTypes = new ArrayList<>();
@@ -62,6 +71,13 @@ public class ApplicationModel {
 
         user = new User(init.getUser());
     }
+
+    /**
+     * Sets current intervention from an id intervention contained in the interventions list.
+     *
+     * @param idIntervention the id intervention
+     * @throws InterventionNotFoundException the intervention not found exception. Throw when the id doesn't exist in the list
+     */
     public void setCurrentIntervention(int idIntervention) throws InterventionNotFoundException {
         for (InterventionModel interv : interventions){
             if (interv.getId().equals(idIntervention)){
@@ -72,6 +88,13 @@ public class ApplicationModel {
 
         throw new InterventionNotFoundException(idIntervention);
     }
+
+    /**
+     * Delete intervention in the list intervention.
+     *
+     * @param idIntervention the id intervention
+     * @throws InterventionNotFoundException the intervention not found exception
+     */
     public void deleteIntervention(int idIntervention) throws InterventionNotFoundException {
 
         for (int i = 0; i < interventions.size(); i++) {
@@ -88,9 +111,22 @@ public class ApplicationModel {
         }
         throw new InterventionNotFoundException(idIntervention);
     }
+
+    /**
+     * Actualise intervention current from intervention detailed intervention.
+     *
+     * @param intervention the intervention
+     */
     public void actualiseInterventionChoosen(Intervention intervention){
         currentIntervention = new InterventionModel(intervention);
     }
+
+    /**
+     * Close an intervention.
+     *
+     * @param id the id
+     * @throws InterventionNotFoundException the intervention not found exception
+     */
     public void setInterventionClosedById(int id) throws InterventionNotFoundException {
         for(InterventionModel intervention : interventions){
             if(intervention.getId().equals(id)){
@@ -101,6 +137,13 @@ public class ApplicationModel {
         throw new InterventionNotFoundException(id);
     }
 
+    /**
+     * Gets intervention by id.
+     *
+     * @param id the id
+     * @return the intervention by id
+     * @throws InterventionNotFoundException the intervention not found exception
+     */
     public InterventionModel getInterventionById(int id) throws InterventionNotFoundException {
         for(InterventionModel intervention : interventions){
             if(intervention.getId().equals(id)){

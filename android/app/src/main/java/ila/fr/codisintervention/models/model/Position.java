@@ -1,5 +1,6 @@
 package ila.fr.codisintervention.models.model;
 
+import ila.fr.codisintervention.models.messages.Location;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +21,11 @@ public class Position {
     public Position(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public Position(Location loc) {
+        latitude = loc.getLat();
+        longitude = loc.getLng();
     }
 
     public void load(Position pos){

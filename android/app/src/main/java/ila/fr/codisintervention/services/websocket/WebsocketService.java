@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
-import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.Request;
@@ -31,6 +29,7 @@ import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.User;
+import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
 import ua.naiksoftware.stomp.Stomp;
@@ -293,7 +292,10 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
        }
      */
     @Override
-    public void createIntervention(Intervention intervention) {
+    public void createIntervention(InterventionModel interventionModel) {
+
+        Intervention intervention = new Intervention(interventionModel);
+
         Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {
@@ -408,7 +410,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
     @Override
-    public void updateSymbols(int interventionId, List<Symbol> symbols) {
+    public void updateSymbols(int interventionId, List<ila.fr.codisintervention.models.model.map_icon.symbol.Symbol> symbols) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
         String json = gson.toJson(symbols);
@@ -420,7 +422,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
     @Override
-    public void createSymbols(int interventionId, List<Symbol> symbols) {
+    public void createSymbols(int interventionId, List<ila.fr.codisintervention.models.model.map_icon.symbol.Symbol> symbols) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {
@@ -444,10 +446,15 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     /**
      * In this method we send to the server the symbol list we want to delete
      * @param interventionId
-     * @param symbols
+     * @param symbs
      */
     @Override
-    public void deleteSymbols(int interventionId, List<Symbol> symbols) {
+    public void deleteSymbols(int interventionId, List<ila.fr.codisintervention.models.model.map_icon.symbol.Symbol> symbs) {
+        List<Symbol> symbols = new ArrayList<>();
+        for (ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb : symbs){
+            symbols.add(new Symbol(symb));
+        }
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {

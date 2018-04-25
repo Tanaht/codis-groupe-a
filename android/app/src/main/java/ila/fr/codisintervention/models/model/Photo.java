@@ -22,6 +22,12 @@ public class Photo {
     /** Instance of {@link Timestamp} for the date of the photo */
     private Timestamp date;
 
+    public Photo(ila.fr.codisintervention.models.messages.Photo photo){
+        uri = photo.getUrl();
+        coordinates = new Position(photo.getLocation());
+        date = new Timestamp(photo.getDate());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

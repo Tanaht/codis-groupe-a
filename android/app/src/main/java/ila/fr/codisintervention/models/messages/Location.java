@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import ila.fr.codisintervention.models.model.Position;
+
 /**
  * Represent a Location in terms of gps coordinate
  * Created by tanaky on 27/03/18.
@@ -32,6 +34,11 @@ public class Location implements Parcelable {
     public Location(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
+    }
+
+    public Location(Position position) {
+        lat = position.getLatitude();
+        lng = position.getLongitude();
     }
 
     /**
