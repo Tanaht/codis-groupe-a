@@ -23,3 +23,11 @@ drone/droneIstic\.pyc
 drone/utils\.pyc
 
 Maps_Try/\.gradle/4\.1/fileChanges/
+
+drone/utils/Google_Earth/camera_tmp\.kml
+
+*.pyc
+
+drone/utils/photos/
+
+server/src/main/resources/imagesDrone/

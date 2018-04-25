@@ -22,6 +22,7 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.model.ModelService;
@@ -89,7 +90,7 @@ public class InterventionsListActivity extends AppCompatActivity {
                 // we retrieve the modelService instance in the activity
                 modelService = ((ModelServiceBinder)binder).getService();
                 Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
-                if(modelService.getInterventions() == null || modelService.getInterventions().size() == 0){
+                if(modelService.getInterventions() == null || modelService.getInterventions().isEmpty()){
                     TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
                     tv.setText(R.string.msg_no_intervention_in_progress);
                     Toasty.warning(getApplicationContext(),
@@ -193,7 +194,7 @@ public class InterventionsListActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int id = (int) intent.getExtras().get("id");
-            Intervention intervention = modelService.getInterventions().get(id);
+            InterventionModel intervention = modelService.getInterventions().get(id);
             switch (intent.getAction()){
                 case ModelConstants.ADD_INTERVENTION:
                     addElement(intervention);

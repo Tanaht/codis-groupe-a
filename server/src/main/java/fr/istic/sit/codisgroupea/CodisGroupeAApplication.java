@@ -1,9 +1,7 @@
 package fr.istic.sit.codisgroupea;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
 
-import fr.istic.sit.codisgroupea.controller.InterventionSocketController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +15,7 @@ public class CodisGroupeAApplication {
 
 	private static final Logger logger = LoggerFactory.getLogger(CodisGroupeAApplication.class);
 
-	public static void main(String[] args) throws UnknownHostException, IOException {
+	public static void main(String[] args) throws IOException {
 		logger.trace("grosse trace comme ta mère");
 		logger.info("grosse info comme ta mère");
 		logger.debug("gros debug comme ton père");
@@ -26,6 +24,6 @@ public class CodisGroupeAApplication {
 
 
 		ConfigurableApplicationContext context = SpringApplication.run(CodisGroupeAApplication.class, args);
-		SocketForDroneCommunication socket = new SocketForDroneCommunication(context);
+		new SocketForDroneCommunication(context);
 	}
 }
