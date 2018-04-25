@@ -61,13 +61,14 @@ public class InterventionModel {
         this.setId(intervention.getId());
     }
 
+    public InterventionModel() {
+
+    }
+
     private List<Photo> setListPhotoFromMessage (Intervention intervention){
         photos = new ArrayList<>();
         for(ila.fr.codisintervention.models.messages.Photo photo : intervention.getPhotos()){
-            Photo photoModel = new Photo();
-            photoModel.setUri(photo.getUrl());
-            photoModel.setDate(new Timestamp(photo.getDate()));
-            photoModel.setCoordinates(new Position(photo.getLocation().getLat(), photo.getLocation().getLng()));
+            Photo photoModel = new Photo(photo);
             photos.add(photoModel);
         }
         return photos;

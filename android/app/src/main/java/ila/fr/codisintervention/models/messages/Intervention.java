@@ -6,7 +6,11 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Position;
 
 /**
  * Represent an intervention in terms of JSON Message
@@ -203,6 +207,20 @@ public class Intervention implements Parcelable {
         drone_available = in.readByte() != 0;
         location = in.readParcelable(Location.class.getClassLoader());
         photos = in.createTypedArrayList(Photo.CREATOR);
+    }
+
+    public Intervention(InterventionModel interventionModel){
+        id = interventionModel.getId();
+        date = interventionModel.getDate();
+        code = interventionModel.getSinisterCode();
+        address = interventionModel.getAddress();
+        drone_available = true;
+
+        location = new Location(interventionModel.getPosition());
+        photos = new ArrayList<>();
+        for (ila.fr.codisintervention.models.model.Photo photo : interventionModel.getPhotos()){
+            photos.add(new Photo(photo));
+        }
     }
 
     /**

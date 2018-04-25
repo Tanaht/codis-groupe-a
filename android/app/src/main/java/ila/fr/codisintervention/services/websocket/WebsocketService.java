@@ -31,6 +31,7 @@ import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.User;
+import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
 import ua.naiksoftware.stomp.Stomp;
@@ -273,7 +274,10 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
        }
      */
     @Override
-    public void createIntervention(Intervention intervention) {
+    public void createIntervention(InterventionModel interventionModel) {
+
+        Intervention intervention = new Intervention(interventionModel);
+
         Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {

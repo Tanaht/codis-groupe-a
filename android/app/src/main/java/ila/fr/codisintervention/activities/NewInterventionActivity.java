@@ -84,17 +84,11 @@ public class NewInterventionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_new_intervention);
         setTitle(R.string.title_add_new_intervention);
 
-
         autocompleteTextViewInitialization();
-
-        List<String> codesSinistre = modelService.getSinisterCodes();
-        displaySpinner(codesSinistre);
-
-        List<Vehicle> vehiclesIntervention = modelService.getAvailableVehicle();
-        displayListView(vehiclesIntervention);
 
         bindToService();
     }
@@ -123,6 +117,13 @@ public class NewInterventionActivity extends AppCompatActivity {
             public void onServiceConnected(ComponentName name, IBinder binder) {
                 // we retrieve the modelService instance in the activity
                 modelService = ((ModelServiceBinder)binder).getService();
+                Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
+
+                List<String> codesSinistre = modelService.getSinisterCodes();
+                displaySpinner(codesSinistre);
+
+                List<Vehicle> vehiclesIntervention = modelService.getAvailableVehicle();
+                displayListView(vehiclesIntervention);
             }
             @Override
             public void onServiceDisconnected(ComponentName name) {
@@ -178,7 +179,7 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Vehicle vehicle = (Vehicle) parent.getItemAtPosition(position);
-            Log.d(TAG, "VEHICLES ListView: item being clicked: " + vehicle.getName());
+            Log.d(TAG, "VEHICLES ListView: item being clicked: " + vehicle.getLabel());
         });
 
     }
@@ -187,7 +188,7 @@ public class NewInterventionActivity extends AppCompatActivity {
     /**
      * Method triggered by the button R.id.submitNewIntervention
      * this method check validity of intervention form filled by the user and send it throug the WebSocketService
-     * @see WebSocketServiceBinder.IMyServiceMethod#createIntervention(Intervention)
+     * @see WebSocketServiceBinder.IMyServiceMethod#createIntervention(InterventionModel)
      * @param v the view
      */
     public void submitNewInterventionAction(View v) {
@@ -206,15 +207,15 @@ public class NewInterventionActivity extends AppCompatActivity {
             Toasty.error(getApplicationContext(), getString(R.string.error_address_field_empty), Toast.LENGTH_LONG).show();
         } else {
 
-            Intervention intervention = new Intervention();
+            InterventionModel intervention = new InterventionModel();
             intervention.setAddress(inputAddress);
-            intervention.setCode(sinisterCode);
+            intervention.setSinisterCode(sinisterCode);
 
             latlngAddress = getLocationFromAddress(intervention.getAddress());
             Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
 
             if(latlngAddress != null) {
-                intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
+                intervention.setPosition(new Position(latlngAddress.latitude, latlngAddress.longitude));
                 // Send Intervention Details to WSS
                 webSocketService.createIntervention(intervention);
 

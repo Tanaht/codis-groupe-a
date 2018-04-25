@@ -94,6 +94,12 @@ public class Photo implements Parcelable {
         location = in.readParcelable(Location.class.getClassLoader());
     }
 
+    public Photo(ila.fr.codisintervention.models.model.Photo photo){
+         url = photo.getUri();
+         date = photo.getDate().getTime();
+         location = new Location(photo.getCoordinates());
+    }
+
     /**
      * The constant CREATOR.
      * Usefull to Parcelize an instance of this class  {@link Parcelable}
