@@ -22,7 +22,7 @@ public class Intervention implements Parcelable {
      * uniq Identifier
      */
     @Expose
-    private int id;
+    private Integer id;
 
     /**
      * Date of creation
@@ -218,8 +218,10 @@ public class Intervention implements Parcelable {
 
         location = new Location(interventionModel.getPosition());
         photos = new ArrayList<>();
-        for (ila.fr.codisintervention.models.model.Photo photo : interventionModel.getPhotos()){
-            photos.add(new Photo(photo));
+        if (interventionModel.getPhotos() != null){
+            for (ila.fr.codisintervention.models.model.Photo photo : interventionModel.getPhotos()){
+                photos.add(new Photo(photo));
+            }
         }
     }
 

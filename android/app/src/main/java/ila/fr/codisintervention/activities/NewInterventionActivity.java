@@ -32,6 +32,8 @@ import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.Position;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.services.ModelServiceAware;
+import ila.fr.codisintervention.services.WebSocketServiceAware;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ila.fr.codisintervention.utils.AutocompleteAdapter;
@@ -41,7 +43,7 @@ import ila.fr.codisintervention.utils.VehiclesListAdapter;
  * This activity manage the interface used by Codis User to create a new Intervention
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class NewInterventionActivity extends AppCompatActivity {
+public class NewInterventionActivity extends AppCompatActivity implements ModelServiceAware, WebSocketServiceAware {
     private static final String TAG = "NewInterventionActivity";
 
     /**
@@ -90,7 +92,8 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         autocompleteTextViewInitialization();
 
-        bindToService();
+        webSocketServiceConnection = bindWebSocketService();
+        modelServiceConnection = bindModelService();
     }
 
     /**
@@ -106,53 +109,7 @@ public class NewInterventionActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * TODO: It could be mutualized because almost all Activities has to bind to ModelService or WebSocketService -> A separated class that do that has to be created ! like an Interface ModelServiceAware and WebsocketServiceAware, or a superclass Activity aware of services
-     * Method used to bind NewInterventionActivity to WebsocketService, with that, NewInterventionActivity is aware of WebSocketService
-     */
-    private void bindToService() {
 
-        modelServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder binder) {
-                // we retrieve the modelService instance in the activity
-                modelService = ((ModelServiceBinder)binder).getService();
-                Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
-
-                List<String> codesSinistre = modelService.getSinisterCodes();
-                displaySpinner(codesSinistre);
-
-                List<Vehicle> vehiclesIntervention = modelService.getAvailableVehicle();
-                displayListView(vehiclesIntervention);
-            }
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Log.w(TAG, "The Service " + name + " is disconnected");
-            }
-        };
-        //Binding Activity with ModelService
-        startService(new Intent(this, ModelService.class));
-        Intent intent = new Intent(this, ModelService.class);
-        //launch binding of ModelService
-        bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
-
-
-        webSocketServiceConnection = new ServiceConnection() {
-            public void onServiceDisconnected(ComponentName name) {
-                Log.w(TAG, "The Service " + name + " is disconnected");
-            }
-            public void onServiceConnected(ComponentName arg0, IBinder binder) {
-
-                // we retrieve the webSocketService instance in the activity
-                webSocketService = ((WebSocketServiceBinder)binder).getService();
-            }
-        };
-
-        startService(new Intent(getApplicationContext(), WebsocketService.class));
-        intent = new Intent(getApplicationContext(), WebsocketService.class);
-        // start the webSocketService binding
-        bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
-    }
 
     /**
      * Method used to filled a dropdown list of SinisterCode send in parameter
@@ -277,7 +234,34 @@ public class NewInterventionActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(webSocketServiceConnection != null)
-            unbindService(webSocketServiceConnection);
+
+        unbindWebSocketService(webSocketServiceConnection);
+        unbindModelService(modelServiceConnection);
+    }
+
+    @Override
+    public void onModelServiceConnected() {
+        Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
+
+        List<String> codesSinistre = modelService.getSinisterCodes();
+        displaySpinner(codesSinistre);
+
+        List<Vehicle> vehiclesIntervention = modelService.getAvailableVehicle();
+        displayListView(vehiclesIntervention);
+    }
+
+    @Override
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+        this.modelService = modelService;
+    }
+
+    @Override
+    public void onWebSocketServiceConnected() {
+
+    }
+
+    @Override
+    public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
+        this.webSocketService = webSocketService;
     }
 }
