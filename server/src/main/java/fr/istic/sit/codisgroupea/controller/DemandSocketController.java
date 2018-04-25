@@ -10,8 +10,7 @@ import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.UnitCreatedMessage;
 import fr.istic.sit.codisgroupea.repository.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -31,7 +30,7 @@ import java.util.Optional;
 @Controller
 public class DemandSocketController {
 
-    private static final Logger logger = LoggerFactory.getLogger(DemandSocketController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /** Template of the web socket */
     private SimpMessagingTemplate simpMessagingTemplate;

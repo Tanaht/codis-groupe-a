@@ -1,6 +1,5 @@
 package fr.istic.sit.codisgroupea.model.message;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.Position;
 

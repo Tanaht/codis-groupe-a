@@ -8,8 +8,7 @@ import fr.istic.sit.codisgroupea.model.message.receive.SymbolMessage;
 import fr.istic.sit.codisgroupea.model.message.send.SymbolsMessage;
 import fr.istic.sit.codisgroupea.model.message.intervention.IdMessage;
 import fr.istic.sit.codisgroupea.repository.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -26,7 +25,7 @@ import java.util.Optional;
 public class SymbolSocketController {
 
     /** The logger */
-    private static final Logger logger = LoggerFactory.getLogger(SymbolSocketController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     /** {@link InterventionRepository} instance */
     private InterventionRepository interventionRepository;

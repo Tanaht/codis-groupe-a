@@ -7,8 +7,7 @@ import fr.istic.sit.codisgroupea.model.message.intervention.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.Position;
 import fr.istic.sit.codisgroupea.repository.*;
 import fr.istic.sit.codisgroupea.sig.stub.ListSigService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -27,7 +26,7 @@ import java.util.List;
 public class InterventionSocketController {
 
     /** The logger */
-    private static final Logger logger = LoggerFactory.getLogger(InterventionSocketController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private SimpMessagingTemplate simpMessagingTemplate;
 
