@@ -175,12 +175,10 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
     @Override
     public  void connect(String username, String password) {
+
         Log.d(TAG, "Connect to Server with following credentials: " + username + ", " + password);
 
-        if(client.isConnected() || client.isConnecting()) {
-            client.disconnect();
-            this.client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
-        }
+        this.client = Stomp.over(Stomp.ConnectionProvider.OKHTTP, url);
 
         List<StompHeader> stompHeader = Arrays.asList(
                 new StompHeader(USERNAME_HEADER_KEY, username),
@@ -243,7 +241,29 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         }
     }
 
-
+    /**
+     *
+     * Connect a client to the websocket and return true if connected
+     * We use connect method and we manage bad credentials
+     * login : username and password
+     */
+    public boolean connectService(String username, String password){
+        connect(username, password);
+        // manage a bad credential
+            int i=0;
+            while(!isConnected() && i<10){
+                try {
+                    Thread.sleep(100);
+                } catch(Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+                i++;
+            }
+            if (!isConnected()) {
+                disconnect();
+            }
+        return isConnected();
+    }
 
     @Override
     public boolean isConnected() {
