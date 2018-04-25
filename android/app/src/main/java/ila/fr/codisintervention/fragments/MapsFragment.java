@@ -33,6 +33,7 @@ import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.models.DronePoint;
+import ila.fr.codisintervention.models.messages.Location;
 
 /**
  * Fragment that contain the Map to show
@@ -110,15 +111,15 @@ public class MapsFragment extends Fragment {
     }
 
 
-    public List<DronePoint> send_dronePoints() {
+    public List<Location> send_dronePoints() {
 
-        List <DronePoint> dronePointList= new ArrayList<>();
+        List <Location> dronePointList= new ArrayList<>();
 
         java.util.Set<Integer> keyList = course.keySet();
         for (Integer num : keyList) {
             DronePoint point = course.get(num);
             if (!num.equals(0)) {    // specific case of the drone, itself.
-               dronePointList.add(point);
+               dronePointList.add(new Location(point.getLat(), point.getLon()));
                 }
 
             }

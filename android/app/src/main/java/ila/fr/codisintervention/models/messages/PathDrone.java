@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 
 import java.util.List;
 
+import ila.fr.codisintervention.models.DronePoint;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +30,7 @@ public class PathDrone {
     /**
      * List of the gps coordinates representing the path.
      */
+    @Expose
     private List<Location> path;
 
     /**
@@ -41,5 +43,6 @@ public class PathDrone {
         this.path = path;
         this.altitude = 30;
     }
+
 
 }

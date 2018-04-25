@@ -212,6 +212,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                         initializeAppIntent.setAction(CONNECT_TO_APPLICATION);
                         initializeAppIntent.putExtra(CONNECT_TO_APPLICATION, initializeApplication);
                         getApplicationContext().startService(initializeAppIntent);
+
                     });
 
                     client.send("/users/" + username + "/subscribed", "PING").subscribe(
@@ -476,9 +477,10 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     @Override
     public void createPathDrone(int interventionId, PathDrone path) {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(path);
 
-        this.client.send("/app/interventions/" + interventionId + "/drone/path", gson.toJson(path)).subscribe(
-                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/drone/path] Sent data!"),
+        this.client.send("/app/interventions/" + interventionId + "/drone/path", json).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/drone/path] Sent data: "+json),
                 error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/drone/path] Error Encountered", error)
         );
 
@@ -550,6 +552,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             interventionChosen.setAction(INTERVENTION_CHOSEN);
             interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), Intervention.class));
             getApplicationContext().startService(interventionChosen);
+
         });
 
 

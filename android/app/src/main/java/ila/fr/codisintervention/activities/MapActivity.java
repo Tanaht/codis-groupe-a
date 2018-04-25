@@ -32,12 +32,14 @@ import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.messages.DronePing;
+import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
 
+import static ila.fr.codisintervention.models.model.map_icon.drone.PathDroneType.SEGMENT;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL;
@@ -82,7 +84,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     /**
      *
      */
-    List<DronePoint> dronePointsList;
+    List<Location> dronePointsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,9 +105,11 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
         final Button validate = findViewById(R.id.send_drone_points);
         validate.setOnClickListener(v ->
-                dronePointsList=mapFragment.send_dronePoints()
-                //this.webSocketService.createPathDrone(modelService.getCurrentIntervention().getId(),dronePointsList);
-        );
+        {
+            dronePointsList = mapFragment.send_dronePoints();
+            this.webSocketService.createPathDrone(modelService.getCurrentIntervention().getId(), new PathDrone ("SEGMENT", dronePointsList));
+
+        });
 
     }
 
