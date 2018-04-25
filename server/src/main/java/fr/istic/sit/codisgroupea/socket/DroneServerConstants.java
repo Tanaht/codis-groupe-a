@@ -2,6 +2,7 @@ package fr.istic.sit.codisgroupea.socket;
 
 public class DroneServerConstants {
 
+
 	/**
 	 * Types of message exchanged between the server and the drone
 	 *

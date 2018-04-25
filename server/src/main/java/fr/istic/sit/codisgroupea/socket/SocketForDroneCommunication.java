@@ -1,5 +1,8 @@
 package fr.istic.sit.codisgroupea.socket;
 
+import fr.istic.sit.codisgroupea.controller.DronePositionController;
+import org.springframework.context.ConfigurableApplicationContext;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -15,17 +18,25 @@ import java.net.Socket;
  */
 public class SocketForDroneCommunication {
 
+    private ConfigurableApplicationContext context;
+
 	private static SocketForDroneCommunication instance;
 
 	private Socket socket;
 	private ServerSocket serverSocket;
-	
+
 	private boolean sending = false;
 
+	public static void create(ConfigurableApplicationContext context) throws IOException {
+        if(instance == null && context != null){
+            instance = new SocketForDroneCommunication(context);
+        }
+    }
+
 	public static SocketForDroneCommunication get() throws IOException {
-		if(instance == null){
-			instance = new SocketForDroneCommunication();
-		}
+	    /*
+	    TODO: throw null pointer exception
+	     */
 		return instance;
 	}
 
@@ -35,8 +46,9 @@ public class SocketForDroneCommunication {
 	 *
 	 * @throws IOException
 	 */
-	private SocketForDroneCommunication() throws IOException {
-		
+	private SocketForDroneCommunication(ConfigurableApplicationContext context) throws IOException {
+		this.context = context;
+
 		this.start();
 		
 		//Read message from drone
@@ -95,6 +107,8 @@ public class SocketForDroneCommunication {
 								//Get current location
 								else if(messageType.equals(DroneServerConstants.MESSAGE_TYPES.SEND_SITUATION.getName())) {
 									Location loc = JsonForDroneCommunicationToolBox.getLocationFromMessage(receivedMessage);
+							        DronePositionController dpc = (DronePositionController) context.getBean("dronePositionController");
+							        dpc.sendDronePosition(loc);
 								}
 							}
 						}

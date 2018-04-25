@@ -23,6 +23,7 @@ import java.util.List;
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.messages.Request;
@@ -38,6 +39,8 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
 import ua.naiksoftware.stomp.client.StompMessage;
+
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 
 /**
  * Service used to manage websocket api
@@ -312,6 +315,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     * `/topic/interventions/{id}/units/event`
     * `/topic/interventions/{id}/units/{idUnit}/denied`
     * `/topic/interventions/{id}/units/{idUnit}/accepted`
+    * `/topic/interventions/{id}/drone/ping`
     * */
     @Override
     public void chooseIntervention(int id){
@@ -329,6 +333,11 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
                 error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
         );
+
+        this.client.topic("/topic/interventions/" + id + "/drone/ping").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/drone/ping] Received message: " + message.getPayload());
+            deliverDroneLocation(message);
+        });
 
     }
 
@@ -386,6 +395,21 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
 
+    }
+
+    /**
+     * Deliver Received Drone Real-Location
+     * url : "/topic/interventions/{id}/drone/ping"
+     * @param message
+     */
+    private void deliverDroneLocation(StompMessage message) {
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        DronePing dronePing = gson.fromJson(message.getPayload(), DronePing.class);
+
+        Intent toBeBroadcoastedIntent = new Intent(UPDATE_DRONE_POSITION);
+        toBeBroadcoastedIntent.putExtra(UPDATE_DRONE_POSITION, dronePing);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
@@ -28,10 +29,13 @@ import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
+import ila.fr.codisintervention.models.DronePoint;
+import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.Unit;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL;
@@ -73,7 +77,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     /**
      *
      */
-    Map<Integer, MapsFragment.DronePoint> dronePointsMap;
+    Map<Integer, DronePoint> dronePointsMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +115,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         mapIntentFilter.addAction(UPDATE_INTERVENTION_DELETE_SYMBOL);
         mapIntentFilter.addAction(ADD_VEHICLE_REQUEST);
         mapIntentFilter.addAction(VALIDATE_VEHICLE_REQUEST);
+        mapIntentFilter.addAction(UPDATE_DRONE_POSITION);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, mapIntentFilter);
     }
@@ -123,48 +128,66 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int id = (int) intent.getExtras().get("id");
-            Symbol symbol;
-            Unit unit;
+            
+            if(intent.getExtras().get("id") != null){
+                int id = (int) intent.getExtras().get("id");
+                Symbol symbol;
+                Unit unit;
 
-            try{
+                try{
 
-                switch (intent.getAction()) {
-                    case UPDATE_INTERVENTION_UPDATE_UNIT:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    case UPDATE_INTERVENTION_CREATE_UNIT:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    case UPDATE_INTERVENTION_DELETE_UNIT:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    case UPDATE_INTERVENTION_UPDATE_SYMBOL:
-                        symbol = modelService.getCurrentIntervention().getSymbol(id);
-                        break;
-                    case UPDATE_INTERVENTION_DELETE_SYMBOL:
-                        symbol = modelService.getCurrentIntervention().getSymbol(id);
-                        break;
-                    case UPDATE_INTERVENTION_CREATE_SYMBOL:
-                        symbol = modelService.getCurrentIntervention().getSymbol(id);
-                        break;
-                    case ADD_VEHICLE_REQUEST:
-                        break;
-                    case VALIDATE_VEHICLE_REQUEST:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    default:
-                        break;
+                  switch (intent.getAction()) {
+                      case UPDATE_INTERVENTION_UPDATE_UNIT:
+                          unit = modelService.getCurrentIntervention().getUnit(id);
+                          break;
+                      case UPDATE_INTERVENTION_CREATE_UNIT:
+                          unit = modelService.getCurrentIntervention().getUnit(id);
+                          break;
+                      case UPDATE_INTERVENTION_DELETE_UNIT:
+                          unit = modelService.getCurrentIntervention().getUnit(id);
+                          break;
+                      case UPDATE_INTERVENTION_UPDATE_SYMBOL:
+                          symbol = modelService.getCurrentIntervention().getSymbol(id);
+                          break;
+                      case UPDATE_INTERVENTION_DELETE_SYMBOL:
+                          symbol = modelService.getCurrentIntervention().getSymbol(id);
+                          break;
+                      case UPDATE_INTERVENTION_CREATE_SYMBOL:
+                          symbol = modelService.getCurrentIntervention().getSymbol(id);
+                          break;
+                      case ADD_VEHICLE_REQUEST:
+                          break;
+                      case VALIDATE_VEHICLE_REQUEST:
+                          unit = modelService.getCurrentIntervention().getUnit(id);
+                          break;
+                      default:
+                          break;
+                  }
+              }catch (SymbolNotFoundException e){
+                  Log.e(TAG, "onReceive: try to get symbol who doesn't exist on current intervention selected" );
+                  e.printStackTrace();
+              }catch (UnitNotFoundException e){
+                  Log.e(TAG, "onReceive: try to get unit who doesn't exist on current intervention selected" );
+                  e.printStackTrace();
+              }
+            }else {
+                if(UPDATE_DRONE_POSITION.equals(intent.getAction())){
+                    DronePing dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
+                    updateDronePosition(dronePing);
                 }
-            }catch (SymbolNotFoundException e){
-                Log.e(TAG, "onReceive: try to get symbol who doesn't exist on current intervention selected" );
-                e.printStackTrace();
-            }catch (UnitNotFoundException e){
-                Log.e(TAG, "onReceive: try to get unit who doesn't exist on current intervention selected" );
-                e.printStackTrace();
             }
         }
     };
+
+    /**
+     * Call the Map Fragment to update the drone position
+     * @param dronePing
+     */
+    private void updateDronePosition(DronePing dronePing) {
+        DronePoint dronePoint = new DronePoint(
+                0,dronePing.getLocation().getLat(),dronePing.getLocation().getLng());
+        mapFragment.modifyDronePosition(dronePoint);
+    }
 
 
     /**

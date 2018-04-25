@@ -122,6 +122,7 @@ public class JsonForDroneCommunicationToolBox {
 			JSONObject loc = datas.getJSONObject(DroneServerConstants.LOCATION);
 			location.setLat(loc.getDouble(DroneServerConstants.LAT));
 			location.setLng(loc.getDouble(DroneServerConstants.LNG));
+			location.setInterventionId(datas.getInt(DroneServerConstants.INTERVENTION_ID));
 			
 		} catch (JSONException e) {
 			e.printStackTrace();
