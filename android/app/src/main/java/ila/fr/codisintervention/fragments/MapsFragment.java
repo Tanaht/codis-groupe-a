@@ -30,6 +30,7 @@ import java.util.TreeMap;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.entities.SymbolKind;
+import ila.fr.codisintervention.models.DronePoint;
 
 /**
  * Fragment that contain the Map to show
@@ -43,22 +44,6 @@ public class MapsFragment extends Fragment {
      * TODO: Apparently it's a dead code, please make sure to remove it if possible
      */
     private static final int LOCATION_REQ_CODE = 456;
-
-    /**
-     * TODO: inner class for test
-     * FIXME: It would be a good idea to define an interface in the models package that represent a DronePoint, with that we can avoid to rework this part in the future ?
-     */
-    public class DronePoint {
-        int id = 0;
-        double lat;
-        double lon;
-
-        public DronePoint(int num, double lat, double lon) {
-            this.id = num;
-            this.lat = lat;
-            this.lon = lon;
-        }
-    }
 
     /**
      * TODO: temporary instance of a Stub object, is job is to simulate the drone position normally returned by the server
@@ -106,7 +91,8 @@ public class MapsFragment extends Fragment {
             if (!num.equals(0)) {    // specific case of the drone, itself.
                 if (previous != null) {
                     mMap.addPolyline(new PolylineOptions()
-                            .add(new LatLng(previous.lat, previous.lon), new LatLng(point.lat, point.lon))
+                            .add(new LatLng(previous.getLat(), previous.getLon()),
+                                    new LatLng(point.getLat(), point.getLon()))
                             .width(5)
                             .color(Color.RED));
                 }
@@ -184,8 +170,8 @@ public class MapsFragment extends Fragment {
                 @Override
                 public void onMarkerDrag(Marker marker) {
                     if (num != null) {                        // update marker for drone
-                        course.get(num).lat = marker.getPosition().latitude;
-                        course.get(num).lon = marker.getPosition().longitude;
+                        course.get(num).setLat(marker.getPosition().latitude);
+                        course.get(num).setLon(marker.getPosition().longitude);
                     }
                 }
 
@@ -277,8 +263,10 @@ public class MapsFragment extends Fragment {
      * @return the LatLng coordinate of the marker added
      */
     public LatLng addMarkerZoom(DronePoint point) {
-        LatLng coord = new LatLng(point.lat, point.lon);
-        Marker mark = googleMap.addMarker(new MarkerOptions().position(coord).draggable(true).title("" + point.id).snippet("").icon(BitmapDescriptorFactory.fromBitmap(resizeBitmap(R.drawable.drone_icon_map, 50, 50))));
+        LatLng coord = new LatLng(point.getLat(), point.getLon());
+        Marker mark = googleMap.addMarker(new MarkerOptions().position(coord).draggable(true)
+                .title("" + point.getId()).snippet("").icon(BitmapDescriptorFactory
+                        .fromBitmap(resizeBitmap(R.drawable.drone_icon_map, 50, 50))));
         mark.showInfoWindow();
         return coord;
     }
@@ -292,10 +280,10 @@ public class MapsFragment extends Fragment {
     public void modifyDronePosition(DronePoint newDrone) {
         if (course.containsKey(0)) {                // Modify
             DronePoint drone = course.get(0);
-            drone.lat = newDrone.lat;
-            drone.lon = newDrone.lon;
+            drone.setLat(newDrone.getLat());
+            drone.setLon(newDrone.getLon());
         } else {                                        // Create
-            DronePoint drone = new DronePoint(0, newDrone.lat, newDrone.lon);
+            DronePoint drone = new DronePoint(0, newDrone.getLat(), newDrone.getLon());
             course.put(0, drone);
         }
         updateUI(googleMap);

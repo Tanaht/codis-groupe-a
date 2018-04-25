@@ -22,6 +22,7 @@ import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
+import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
@@ -112,7 +113,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
             switch (intent.getAction()) {
                 case UPDATE_DRONE_POSITION:
                     dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
-                    Log.w(TAG, "[MapActivity] : Drone new Position(altitude)"+dronePing.getAltitude());
+                    Log.i(TAG, "\n\n\n****[MapActivity] : Drone new Position(altitude)"+dronePing.getAltitude());
+                    updateDronePosition(dronePing);
                     break;
                 case UPDATE_INTERVENTION_UPDATE_UNIT:
                     unit = modelService.getUnit(id);
@@ -142,6 +144,17 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
             }
         }
     };
+
+    /**
+     * Call the Map Fragment to update the drone position
+     * @param dronePing
+     */
+    private void updateDronePosition(DronePing dronePing) {
+        DronePoint dronePoint = new DronePoint(
+                0,dronePing.getLocation().getLat(),dronePing.getLocation().getLng());
+        MapsFragment mapsFragment = new MapsFragment();
+        mapsFragment.modifyDronePosition(dronePoint);
+    }
 
 
     /**
