@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -26,11 +27,12 @@ import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
-import ila.fr.codisintervention.entities.Vehicle;
-import ila.fr.codisintervention.models.messages.Location;
-import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.services.InterventionService;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
+import ila.fr.codisintervention.models.model.Position;
+import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ila.fr.codisintervention.utils.AutocompleteAdapter;
 import ila.fr.codisintervention.utils.VehiclesListAdapter;
@@ -43,12 +45,6 @@ public class NewInterventionActivity extends AppCompatActivity {
     private static final String TAG = "NewInterventionActivity";
 
     /**
-     * TODO: To Remove and use the ModelService that provide all we need instead.
-     * Stub to get access to static datas about interventions like SinisterCodes or Vehicles
-     */
-    InterventionService interventionService;
-
-    /**
      * An Adapter used to adapt the Model of a Vehicle with it's representation in the interface.
      */
     VehiclesListAdapter dataAdapter;
@@ -56,11 +52,11 @@ public class NewInterventionActivity extends AppCompatActivity {
     /**
      * String that represent the address of the intervention filled by the user.
      */
-    String inputtedAddress;
+    String inputAddress;
 
     /**
-     * Tuple of Lat and Lng coordinate that reflect the address from inputtedAddress.
-     * @see #getLocationFromAddress(String inputtedAddress)
+     * Tuple of Lat and Lng coordinate that reflect the address from inputAddress.
+     * @see #getLocationFromAddress(String inputAddress)
      */
     LatLng latlngAddress;
 
@@ -75,6 +71,13 @@ public class NewInterventionActivity extends AppCompatActivity {
     private WebSocketServiceBinder.IMyServiceMethod webSocketService;
 
     /**
+     * ServiceConnection instance with the ModelService
+     */
+    private ServiceConnection modelServiceConnection;
+
+    private ModelServiceBinder.IMyServiceMethod modelService;
+
+    /**
      * FIXME: Bad Idea to initialize view in on create, it will be far better to do it onModelServiceConnected (because it's only when model is available that you have access to the datas)
      * @param savedInstanceState
      */
@@ -87,11 +90,10 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         autocompleteTextViewInitialization();
 
-        interventionService = new InterventionService();
-        ArrayList<String> codesSinistre = interventionService.getCodesSinistre();
+        List<String> codesSinistre = modelService.getSinisterCodes();
         displaySpinner(codesSinistre);
 
-        ArrayList<Vehicle> vehiclesIntervention = interventionService.getMoyensDispo();
+        List<Vehicle> vehiclesIntervention = modelService.getAvailableVehicle();
         displayListView(vehiclesIntervention);
 
         bindToService();
@@ -105,8 +107,8 @@ public class NewInterventionActivity extends AppCompatActivity {
         autoCompView.setAdapter(new AutocompleteAdapter(this, R.layout.list_item));
 
         autoCompView.setOnItemClickListener((parent, view, position, id) -> {
-            inputtedAddress = (String) parent.getItemAtPosition(position);
-            Log.d(TAG, "Set address to: " + inputtedAddress);
+            inputAddress = (String) parent.getItemAtPosition(position);
+            Log.d(TAG, "Set address to: " + inputAddress);
         });
     }
 
@@ -115,6 +117,25 @@ public class NewInterventionActivity extends AppCompatActivity {
      * Method used to bind NewInterventionActivity to WebsocketService, with that, NewInterventionActivity is aware of WebSocketService
      */
     private void bindToService() {
+
+        modelServiceConnection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder binder) {
+                // we retrieve the modelService instance in the activity
+                modelService = ((ModelServiceBinder)binder).getService();
+            }
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                Log.w(TAG, "The Service " + name + " is disconnected");
+            }
+        };
+        //Binding Activity with ModelService
+        startService(new Intent(this, ModelService.class));
+        Intent intent = new Intent(this, ModelService.class);
+        //launch binding of ModelService
+        bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
+
+
         webSocketServiceConnection = new ServiceConnection() {
             public void onServiceDisconnected(ComponentName name) {
                 Log.w(TAG, "The Service " + name + " is disconnected");
@@ -127,7 +148,7 @@ public class NewInterventionActivity extends AppCompatActivity {
         };
 
         startService(new Intent(getApplicationContext(), WebsocketService.class));
-        Intent intent = new Intent(getApplicationContext(), WebsocketService.class);
+        intent = new Intent(getApplicationContext(), WebsocketService.class);
         // start the webSocketService binding
         bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -181,12 +202,12 @@ public class NewInterventionActivity extends AppCompatActivity {
         String sinisterCode = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();
 
         // Check if address is set
-        if(inputtedAddress.equals("")){
+        if(inputAddress.equals("")){
             Toasty.error(getApplicationContext(), getString(R.string.error_address_field_empty), Toast.LENGTH_LONG).show();
         } else {
 
             Intervention intervention = new Intervention();
-            intervention.setAddress(inputtedAddress);
+            intervention.setAddress(inputAddress);
             intervention.setCode(sinisterCode);
 
             latlngAddress = getLocationFromAddress(intervention.getAddress());

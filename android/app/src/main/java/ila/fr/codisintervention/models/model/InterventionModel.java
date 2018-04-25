@@ -41,6 +41,12 @@ public class InterventionModel {
     private List<Unit> units;
     private List<PathDrone> pathDrones;
 
+
+    /**
+     * Instantiates a new Intervention model from intervention message.
+     *
+     * @param intervention the intervention
+     */
     public InterventionModel (Intervention intervention){
         this.setAddress(intervention.getAddress());
         this.setDate(intervention.getDate());
@@ -67,6 +73,13 @@ public class InterventionModel {
         return photos;
     }
 
+    /**
+     * Gets symbol.
+     *
+     * @param idSymb the id symb
+     * @return the symbol
+     * @throws SymbolNotFoundException the symbol not found exception
+     */
     public Symbol getSymbol(int idSymb) throws SymbolNotFoundException {
         for (Symbol symb : symbols){
             if (symb.getId().equals(idSymb)){
@@ -76,7 +89,13 @@ public class InterventionModel {
         throw new SymbolNotFoundException(idSymb);
     }
 
-
+    /**
+     * Gets unit.
+     *
+     * @param idUnit the id unit
+     * @return the unit
+     * @throws UnitNotFoundException the unit not found exception
+     */
     public Unit getUnit(int idUnit) throws UnitNotFoundException {
         for (Unit unit: units){
             if (unit.getId().equals(idUnit)){
@@ -86,6 +105,12 @@ public class InterventionModel {
         throw new UnitNotFoundException(idUnit);
     }
 
+    /**
+     * Update symbol.
+     *
+     * @param symbol the symbol
+     * @throws SymbolNotFoundException the symbol not found exception
+     */
     public void updateSymbol(Symbol symbol) throws SymbolNotFoundException {
         for (Symbol symb : symbols){
             if (symb.getId().equals(symbol.getId())){
@@ -96,6 +121,12 @@ public class InterventionModel {
         throw new SymbolNotFoundException(symbol.getId());
     }
 
+    /**
+     * Delete symbol by id.
+     *
+     * @param idSymbol the id symbol
+     * @throws SymbolNotFoundException the symbol not found exception
+     */
     public void deleteSymbolById(int idSymbol) throws SymbolNotFoundException {
         for (int i=0; i < symbols.size();i++){
             if (symbols.get(i).getId().equals(idSymbol)){
@@ -106,7 +137,12 @@ public class InterventionModel {
         throw new SymbolNotFoundException(idSymbol);
     }
 
-
+    /**
+     * Change unit.
+     *
+     * @param unitUpdated the unit updated
+     * @throws UnitNotFoundException the unit not found exception
+     */
     public void changeUnit(Unit unitUpdated) throws UnitNotFoundException {
         for(Unit unit : units){
             if(unit.getId().equals(unitUpdated.getId())){

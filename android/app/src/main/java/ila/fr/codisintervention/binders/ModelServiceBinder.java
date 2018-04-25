@@ -57,13 +57,6 @@ public class ModelServiceBinder extends Binder {
         InterventionModel getInterventionById(int id) throws InterventionNotFoundException;
 
         /**
-         * TODO: is this method pertinent ? if yes, it has to throw a not found exception.
-         * @param id identity of the intervention it refers to the value of {@see Intervention.id }
-         * @return an instance of the intervention
-         */
-        void setCurrentIntervention(int id) throws InterventionNotFoundException;
-
-        /**
          * get intervention selected from user
          * @return Current intervention selected by the user
          */
@@ -74,6 +67,11 @@ public class ModelServiceBinder extends Binder {
          * @return the list of Sinister Codes
          */
         List<String> getSinisterCodes();
+
+        /**
+         *
+         * @return the list of vehicle types
+         */
         List<String> getVehicleTypes();
 
         /**
