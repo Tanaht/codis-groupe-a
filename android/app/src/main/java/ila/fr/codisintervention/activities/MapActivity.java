@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
@@ -105,7 +106,12 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int id = (int) intent.getExtras().get("id");
+            int id = 0;
+            if(intent.getExtras().get("id") == null){
+                Log.e(TAG,"\n\n\n Intent get Extras Id null");
+            }else {
+                id = (int) intent.getExtras().get("id");
+            }
             Symbol symbol;
             Unit unit;
             DronePing dronePing;
@@ -113,7 +119,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
             switch (intent.getAction()) {
                 case UPDATE_DRONE_POSITION:
                     dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
-                    Log.i(TAG, "\n\n\n****[MapActivity] : Drone new Position(altitude)"+dronePing.getAltitude());
+                    Log.i(TAG, "\n\n\n********************[MapActivity] : Drone new Position(altitude)");
                     updateDronePosition(dronePing);
                     break;
                 case UPDATE_INTERVENTION_UPDATE_UNIT:
@@ -152,8 +158,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     private void updateDronePosition(DronePing dronePing) {
         DronePoint dronePoint = new DronePoint(
                 0,dronePing.getLocation().getLat(),dronePing.getLocation().getLng());
-        MapsFragment mapsFragment = new MapsFragment();
-        mapsFragment.modifyDronePosition(dronePoint);
+        mapFragment.modifyDronePosition(dronePoint);
     }
 
 

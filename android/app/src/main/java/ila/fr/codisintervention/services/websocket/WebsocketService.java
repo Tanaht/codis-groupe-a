@@ -402,18 +402,13 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      * @param message
      */
     private void deliverDroneLocation(StompMessage message) {
-        DronePing dronePing = null;
-        try {
-            JSONObject object = new JSONObject(message.getPayload());
-            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-            dronePing = gson.fromJson(message.getPayload(), DronePing.class);
-            Log.i(TAG,"\n\n\n ********* Drone Ping *********** ");
-            Log.i(TAG,"\n\n\n Location lng"+dronePing.getLocation().getLng());
-            Log.i(TAG,"\n\n\n Location lat"+dronePing.getLocation().getLat());
-            Log.i(TAG,"\n\n\n Altitude"+dronePing.getLocation().getLat());
-        } catch (JSONException e) {
-            Log.e(TAG, e.getMessage(), e);
-        }
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        DronePing dronePing = gson.fromJson(message.getPayload(), DronePing.class);
+        Log.d(TAG,"\n\n\n ********* Drone Ping *********** ");
+        Log.d(TAG,"\n\n\n **** Location lng"+dronePing.getLocation().getLng());
+        Log.d(TAG,"\n\n\n *** Location lat"+dronePing.getLocation().getLat());
+        Log.d(TAG,"\n\n\n *** Altitude"+dronePing.getLocation().getLat());
 
         Intent toBeBroadcoastedIntent = new Intent(UPDATE_DRONE_POSITION);
         toBeBroadcoastedIntent.putExtra(UPDATE_DRONE_POSITION, dronePing);
