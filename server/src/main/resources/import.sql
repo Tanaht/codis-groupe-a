@@ -19,22 +19,22 @@ INSERT INTO user values(10,'simple3','simple3',2);
 INSERT INTO sinister_code VALUES (1,'INC');
 INSERT INTO sinister_code VALUES (2,'SAP');
 
---Insert Vehicule_Type
+-- Insert Vehicule_Type
 INSERT INTO vehicle_type VALUES (1, 'VSAV');
 INSERT INTO vehicle_type VALUES (2, 'FPT');
 INSERT INTO vehicle_type VALUES (3, 'VLCG');
 
 
 
---Insert Vehicle
-INSERT INTO vehicle VALUES (1, 'vehicule 1', 2, 1);
-INSERT INTO vehicle VALUES (2, 'vehicule 2', 2, 1);
+-- Insert Vehicle
+INSERT INTO vehicle VALUES (1, 'vehicule 1', 2, null);
+INSERT INTO vehicle VALUES (2, 'vehicule 2', 2, null);
 
-INSERT INTO vehicle VALUES (3, 'vehicule 3', 2, 2);
-INSERT INTO vehicle VALUES (4, 'vehicule 4', 2, 2);
+INSERT INTO vehicle VALUES (3, 'vehicule 3', 2, null);
+INSERT INTO vehicle VALUES (4, 'vehicule 4', 2, null);
 
-INSERT INTO vehicle VALUES (5, 'vehicule 5', 2, 3);
-INSERT INTO vehicle VALUES (6, 'vehicule 6', 2, 3);
+INSERT INTO vehicle VALUES (5, 'vehicule 5', 2, null);
+INSERT INTO vehicle VALUES (6, 'vehicule 6', 2, null);
 
 -- Insert Position
 INSERT INTO position VALUES (1, 48.116487, -1.647416);

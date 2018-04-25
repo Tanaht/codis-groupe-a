@@ -13,15 +13,17 @@ import com.google.gson.GsonBuilder;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
-import ila.fr.codisintervention.models.ApplicationModel;
-import ila.fr.codisintervention.models.InterventionChosen;
-import ila.fr.codisintervention.models.messages.Code;
+import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.exception.SymbolNotFoundException;
+import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.models.messages.Symbol;
-import ila.fr.codisintervention.models.messages.Unit;
-import ila.fr.codisintervention.models.messages.User;
-import ila.fr.codisintervention.models.messages.Vehicle;
+import ila.fr.codisintervention.models.model.ApplicationModel;
+import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Unit;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
+import ila.fr.codisintervention.models.model.user.User;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
 
@@ -100,23 +102,28 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 Log.d(TAG, "Connect to application with: " + initializeApplication.getInterventions().size() + " interventions");
                 Gson gson = new GsonBuilder().create();
                 Log.d(TAG, "RetrievedInitializeApplication: " + gson.toJson(initializeApplication));
-                model.setMessageInitialize(initializeApplication);
+                model = new ApplicationModel(initializeApplication);
                 sendToEveryone(-1, ModelConstants.INITIALIZE_APPLICATION);
                 break;
             case WebsocketService.INTERVENTION_CHOSEN:
-                model.setCurrentIntervention(InterventionChosen.createByIntervention(intent.getParcelableExtra("INTERVENTION_CHOSEN")));
+                model.actualiseInterventionChoosen(intent.getParcelableExtra(WebsocketService.INTERVENTION_CHOSEN));
                 break;
             case WebsocketService.DISCONNECT_TO_APPLICATION:
                 model = new ApplicationModel();
                 break;
             case WebsocketService.INTERVENTION_CREATED:
-                Intervention intervention = intent.getParcelableExtra("INTERVENTION_CREATED");
-                model.getMessageInitialize().getInterventions().add(intervention);
+                Intervention intervention = intent.getParcelableExtra(WebsocketService.INTERVENTION_CREATED);
+                model.getInterventions().add(new InterventionModel(intervention));
                 sendToEveryone(intervention.getId(), ModelConstants.ADD_INTERVENTION);
                 break;
             case WebsocketService.INTERVENTION_CLOSED:
                 int id = intent.getIntExtra(WebsocketService.INTERVENTION_CLOSED, -1);
-                model.getMessageInitialize().setInterventionClosedById(intent.getIntExtra("INTERVENTION_CLOSED", -1));
+                try {
+                    model.setInterventionClosedById(intent.getIntExtra(WebsocketService.INTERVENTION_CLOSED, -1));
+                } catch (InterventionNotFoundException e) {
+                    Log.e(TAG, "updateTheModel: try to closed a intervention who doesn't exist");
+                    e.printStackTrace();
+                }
                 sendToEveryone(id, ModelConstants.ACTION_DELETE_INTERVENTION);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_CREATED:
@@ -127,13 +134,23 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
             case WebsocketService.INTERVENTION_SYMBOL_UPDATED:
                 Symbol symbolUpdated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_SYMBOL_UPDATED);
-                model.getCurrentIntervention()
-                        .changeSymbol(symbolUpdated);
+                try {
+                    model.getCurrentIntervention()
+                            .updateSymbol(symbolUpdated);
+                } catch (SymbolNotFoundException e) {
+                    Log.e(TAG, "updateTheModel: try to update symbol who doesn't exist");
+                    e.printStackTrace();
+                }
                 sendToEveryone(symbolUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_DELETED:
                 int idSymbol = intent.getIntExtra(WebsocketService.INTERVENTION_SYMBOL_DELETED, -1);
-                model.getCurrentIntervention().deleteSymbolById(idSymbol);
+                try {
+                    model.getCurrentIntervention().deleteSymbolById(idSymbol);
+                } catch (SymbolNotFoundException e) {
+                    Log.e(TAG, "updateTheModel: try to remove a symbol who doesn't exist");
+                    e.printStackTrace();
+                }
                 sendToEveryone(idSymbol, ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_UNIT_CREATED:
@@ -145,7 +162,12 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
             case WebsocketService.INTERVENTION_UNIT_UPDATED:
                 Unit unitUpdated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_UPDATED);
-                model.getCurrentIntervention().changeUnit(unitUpdated);
+                try {
+                    model.getCurrentIntervention().changeUnit(unitUpdated);
+                } catch (UnitNotFoundException e) {
+                    Log.e(TAG, "updateTheModel: try to update a unit who doesn't exist ");
+                    e.printStackTrace();
+                }
                 sendToEveryone(unitUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT);
                 break;
             case WebsocketService.DEMANDE_ACCEPTED:
@@ -164,53 +186,6 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
         }
     }
 
-    /**
-     * getter for the Model
-     * @return the instance of the {@link ApplicationModel}
-     */
-    public ApplicationModel getModel() {
-        return model;
-    }
-
-    @Override
-    public InterventionChosen getSelectedIntervention() {
-        return model.getCurrentIntervention();
-    }
-
-    @Override
-    public List<Intervention> getInterventions() {
-        return model.getMessageInitialize().getInterventions();
-    }
-
-    @Override
-    public Intervention getIntervention(int id) {
-        return model.getMessageInitialize().getInterventionById(id);
-    }
-
-    @Override
-    public List<Code> getCodes() {
-        return model.getMessageInitialize().getCodes();
-    }
-
-    @Override
-    public List<Vehicle> getAvailableVehicle() {
-        return model.getMessageInitialize().getVehicles();
-    }
-
-    @Override
-    public User getUser() {
-        return model.getUser();
-    }
-
-    @Override
-    public Symbol getSymbol(int id) {
-        return model.getCurrentIntervention().getSymbolId(id);
-    }
-
-    @Override
-    public Unit getUnit(int id) {
-        return model.getCurrentIntervention().getUnitById(id);
-    }
 
     /**
      * FIXME: Every intent doesn't have the same extra signature, si it has to be removed -> it would be exported equally when we will refactor this class
@@ -226,5 +201,40 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
         }
         Log.d(TAG, "Broadcoast Intent: " + intent.getAction());
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    @Override
+    public List<InterventionModel> getInterventions() {
+        return model.getInterventions();
+    }
+
+    @Override
+    public void setCurrentIntervention(int id) throws InterventionNotFoundException {
+        model.setCurrentIntervention(id);
+    }
+
+    @Override
+    public InterventionModel getCurrentIntervention() {
+        return model.getCurrentIntervention();
+    }
+
+    @Override
+    public List<String> getSinisterCodes() {
+        return model.getSinisterCodes();
+    }
+
+    @Override
+    public List<String> getVehicleTypes() {
+        return model.getVehicleTypes();
+    }
+
+    @Override
+    public List<Vehicle> getAvailableVehicle() {
+        return model.getVehicleAvailables();
+    }
+
+    @Override
+    public User getUser() {
+        return model.getUser();
     }
 }

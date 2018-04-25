@@ -15,6 +15,7 @@ import java.util.List;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.factory.SymbolKindFactory;
+import ila.fr.codisintervention.models.model.map_icon.Color;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -306,7 +307,7 @@ public class SymbolsListFragment extends Fragment {
 
     /**
      * Add all radio button listeners. to know the selectedColor chosen by end user
-     * TODO: Here we can also use an enum for the selectedColor {@link ila.fr.codisintervention.models.Color}
+     * TODO: Here we can also use an enum for the selectedColor {@link Color}
      * TODO: you can update the layout for all radio buttons with the XML attribute android:onClick
      *
      * @param view the view

@@ -5,10 +5,15 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by tanaky on 27/03/18.
  * A vehicle with it's status
  */
+@Getter
+@Setter
 public class Vehicle implements Parcelable {
 
     /**
