@@ -39,7 +39,6 @@ public class ApplicationModel {
     private List<String> sinisterCodes;
     private List<String> vehicleTypes;
 
-
     public ApplicationModel(){}
     public ApplicationModel(InitializeApplication init){
         sinisterCodes = new ArrayList<>();
@@ -63,7 +62,6 @@ public class ApplicationModel {
 
         user = new User(init.getUser());
     }
-
     public void setCurrentIntervention(int idIntervention) throws InterventionNotFoundException {
         for (InterventionModel interv : interventions){
             if (interv.getId().equals(idIntervention)){
@@ -74,7 +72,6 @@ public class ApplicationModel {
 
         throw new InterventionNotFoundException(idIntervention);
     }
-
     public void deleteIntervention(int idIntervention) throws InterventionNotFoundException {
 
         for (int i = 0; i < interventions.size(); i++) {
@@ -103,4 +100,14 @@ public class ApplicationModel {
         }
         throw new InterventionNotFoundException(id);
     }
+
+    public InterventionModel getInterventionById(int id) throws InterventionNotFoundException {
+        for(InterventionModel intervention : interventions){
+            if(intervention.getId().equals(id)){
+                return intervention;
+            }
+        }
+        throw new InterventionNotFoundException(id);
+    }
+
 }

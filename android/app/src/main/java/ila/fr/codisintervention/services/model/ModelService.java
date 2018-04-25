@@ -209,6 +209,11 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     }
 
     @Override
+    public InterventionModel getInterventionById(int id) throws InterventionNotFoundException {
+        return model.getInterventionById(id);
+    }
+
+    @Override
     public void setCurrentIntervention(int id) throws InterventionNotFoundException {
         model.setCurrentIntervention(id);
     }

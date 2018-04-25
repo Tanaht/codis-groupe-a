@@ -54,6 +54,8 @@ public class ModelServiceBinder extends Binder {
          */
         List<InterventionModel> getInterventions();
 
+        InterventionModel getInterventionById(int id) throws InterventionNotFoundException;
+
         /**
          * TODO: is this method pertinent ? if yes, it has to throw a not found exception.
          * @param id identity of the intervention it refers to the value of {@see Intervention.id }

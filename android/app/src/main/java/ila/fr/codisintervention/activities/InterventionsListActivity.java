@@ -22,6 +22,7 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.services.model.ModelService;
@@ -193,7 +194,13 @@ public class InterventionsListActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int id = (int) intent.getExtras().get("id");
-            Intervention intervention = modelService.getInterventions().get(id);
+            InterventionModel intervention = null;
+            try {
+                intervention = modelService.getInterventionById(id);
+            } catch (InterventionNotFoundException e) {
+                Log.e(TAG, "onReceive: try to access to an intervention who doesn't exist");
+                e.printStackTrace();
+            }
             switch (intent.getAction()){
                 case ModelConstants.ADD_INTERVENTION:
                     addElement(intervention);
