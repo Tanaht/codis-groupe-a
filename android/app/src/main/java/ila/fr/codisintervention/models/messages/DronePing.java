@@ -17,13 +17,13 @@ public class DronePing implements Parcelable{
      * Represent a Location in terms of gps coordinate
      */
     @Expose
-    Location location;
+    private Location location;
 
     /**
      * The altitude of the gps coordinate
      */
     @Expose
-    double altitude;
+    private double altitude;
 
     /**
      * Instantiates a new DronePing.

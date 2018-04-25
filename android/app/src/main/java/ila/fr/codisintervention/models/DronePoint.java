@@ -1,6 +1,7 @@
 package ila.fr.codisintervention.models;
 
 /**
+ * Represent drone gps position on the map
  * Created by aminesoumiaa on 25/04/18.
  */
 

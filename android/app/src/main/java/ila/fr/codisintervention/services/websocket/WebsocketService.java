@@ -314,7 +314,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     * `/topic/interventions/{id}/units/event`
     * `/topic/interventions/{id}/units/{idUnit}/denied`
     * `/topic/interventions/{id}/units/{idUnit}/accepted`
-    * `/topic/interventions/{id}/droneLocation/event`
+    * `/topic/interventions/{id}/drone/ping`
     * */
     @Override
     public void chooseIntervention(int id){
