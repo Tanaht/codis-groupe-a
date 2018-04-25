@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -20,17 +19,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
-import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.messages.DronePing;
-import ila.fr.codisintervention.models.messages.Location;
-import ila.fr.codisintervention.models.messages.PathDrone;
-import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.Location;
+import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
+import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.services.model.ModelService;
@@ -140,6 +137,12 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      * Define the Intent action send in case of CLOSE Websocket
      */
     public static final String PROTOCOL_CLOSE = "PROTOCOL_CLOSE";
+
+
+    /**
+     * The constant DRONE_PATH_RECEIVED
+     */
+    public static final String DRONE_PATH_RECEIVED = "DRONE_PATH_RECEIVED";
 
     private static final String USERNAME_HEADER_KEY = "userlogin";
 
@@ -338,6 +341,18 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         this.client.topic("/topic/interventions/" + id + "/drone/ping").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/drone/ping] Received message: " + message.getPayload());
             deliverDroneLocation(message);
+        });
+
+        this.client.topic("/topic/interventions/" + id + "/drone/path").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/drone/path] Received message: " + message.getPayload());
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+            
+            Intent dronePathReceived = new Intent();
+            dronePathReceived.setAction(DRONE_PATH_RECEIVED);
+            dronePathReceived.putExtra(DRONE_PATH_RECEIVED, gson.fromJson(message.getPayload(), PathDrone.class));
+            getApplicationContext().startService(dronePathReceived);
         });
 
     }

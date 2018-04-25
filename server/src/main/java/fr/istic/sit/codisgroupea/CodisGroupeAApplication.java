@@ -5,9 +5,12 @@ import java.io.IOException;
 import fr.istic.sit.codisgroupea.socket.SocketForDroneCommunication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class CodisGroupeAApplication {
@@ -24,8 +27,6 @@ public class CodisGroupeAApplication {
 
 		ConfigurableApplicationContext context = SpringApplication.run(CodisGroupeAApplication.class, args);
 
-		/* Socket need to be open in the main */
-		SocketForDroneCommunication.create(context);
-
 	}
+
 }
