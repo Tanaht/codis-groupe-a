@@ -24,22 +24,22 @@ public class PathDrone {
      * The altitude of th drone, is set to 30 per default
      */
     @Expose
-    private double alt;
+    private double altitude;
 
     /**
      * List of the gps coordinates representing the path.
      */
-    private List<Location> locations;
+    private List<Location> path;
 
     /**
      * Instantiates a new Path drone.
      * @param type      the type of the drone path
-     * @param locations the list of the drone coordinates
+     * @param path the list of the drone coordinates
      */
-    public PathDrone(String type, List<Location> locations) {
+    public PathDrone(String type, List<Location> path) {
         this.type = type;
-        this.locations = locations;
-        this.alt = 30;
+        this.path = path;
+        this.altitude = 30;
     }
 
 }
