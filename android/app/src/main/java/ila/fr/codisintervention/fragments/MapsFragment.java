@@ -23,9 +23,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.List;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
@@ -108,7 +110,21 @@ public class MapsFragment extends Fragment {
     }
 
 
-    public Map<Integer, DronePoint> send_dronePoints() {return course;}
+    public List<DronePoint> send_dronePoints() {
+
+        List <DronePoint> dronePointList= new ArrayList<>();
+
+        java.util.Set<Integer> keyList = course.keySet();
+        for (Integer num : keyList) {
+            DronePoint point = course.get(num);
+            if (!num.equals(0)) {    // specific case of the drone, itself.
+               dronePointList.add(point);
+                }
+
+            }
+        return dronePointList;
+
+        }
 
 
 //    TODO: To refactor SonarLint said it's to complex to read, and I'm agree with it perhaps we can place hook on layout like android:onClick, if not simply create class that instanciate the appropriate listeners.

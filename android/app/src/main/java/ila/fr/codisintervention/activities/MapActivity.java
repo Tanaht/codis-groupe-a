@@ -20,10 +20,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
-import java.util.Map;
+import java.util.List;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
@@ -31,8 +32,11 @@ import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.messages.DronePing;
+import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.Unit;
+import ila.fr.codisintervention.services.ModelServiceAware;
+import ila.fr.codisintervention.services.WebSocketServiceAware;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
@@ -51,18 +55,19 @@ import static ila.fr.codisintervention.services.constants.ModelConstants.VALIDAT
  * TODO: Please log more often
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class MapActivity extends AppCompatActivity implements SymbolsListFragment.OnFragmentInteractionListener {
+public class MapActivity extends AppCompatActivity implements SymbolsListFragment.OnFragmentInteractionListener, WebSocketServiceAware, ModelServiceAware {
     private static final String TAG = "MapActivity";
-
     /**
-     * ServiceConnection instance with the ModelService
+     * Service connection of the service subscribed
      */
+    private ServiceConnection webSocketServiceConnection;
+
     private ServiceConnection modelServiceConnection;
 
-    /**
-     * Interface delivered by ModelService to be used by other android Component, the purpose of this is to update the model.
-     */
     private ModelServiceBinder.IMyServiceMethod modelService;
+
+
+    private WebSocketServiceBinder.IMyServiceMethod webSocketService;
 
     /**
      * Fragment intended to display a list of tools to add symbols on the map
@@ -77,7 +82,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     /**
      *
      */
-    Map<Integer, DronePoint> dronePointsMap;
+    List<DronePoint> dronePointsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +94,18 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
         mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
 
-        /**
+        webSocketServiceConnection = bindWebSocketService();
+        modelServiceConnection = bindModelService();
+
+        /*
          * Validate button in order to retrieve drone points created on the Map
          */
 
         final Button validate = findViewById(R.id.send_drone_points);
         validate.setOnClickListener(v ->
-                dronePointsMap=mapFragment.send_dronePoints());
-
+                dronePointsList=mapFragment.send_dronePoints()
+                //this.webSocketService.createPathDrone(modelService.getCurrentIntervention().getId(),dronePointsList);
+        );
 
     }
 
@@ -262,8 +271,9 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     protected void onDestroy() {
         super.onDestroy();
 
-        if (modelServiceConnection != null)
-            unbindService(modelServiceConnection);
+        unbindWebSocketService(webSocketServiceConnection);
+        unbindModelService(modelServiceConnection);
+
     }
 
     @Override
@@ -294,5 +304,27 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     public void onFragmentInteraction(Uri uri) {
 //        No Interaction because unnecessary
+    }
+
+    @Override
+    public void onWebSocketServiceConnected() {
+        Log.d(TAG, "onWebSocketServiceConnected");
+    }
+
+    @Override
+    public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
+       this.webSocketService = webSocketService;
+    }
+
+    @Override
+    public void onModelServiceConnected() {
+        Log.d(TAG, "OnModelServiceConnected");
+
+
+    }
+
+    @Override
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+        this.modelService = modelService;
     }
 }
