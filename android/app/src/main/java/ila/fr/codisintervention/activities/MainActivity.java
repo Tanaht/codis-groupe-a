@@ -127,7 +127,8 @@ public class MainActivity extends AppCompatActivity {
         if(username.length() == 0 || password.length() == 0) {
             Toasty.error(getApplicationContext(), getString(R.string.error_incomplete_credentials), Toast.LENGTH_SHORT, true).show();
         } else {
-            webSocketService.connect(username, password);
+            if(!((WebsocketService)webSocketService).connectService(username, password))
+                Toasty.error(getApplicationContext(), getString(R.string.error_invalid_credentials), Toast.LENGTH_SHORT, true).show();
         }
     }
 
@@ -137,6 +138,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        //Close the websocketService
+        if(webSocketService!=null && webSocketService.isConnected()){
+            webSocketService.disconnect();
+        }
+
         // This registers mMessageReceiver to receive messages.
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter(ModelConstants.INITIALIZE_APPLICATION));
     }
@@ -155,17 +161,18 @@ public class MainActivity extends AppCompatActivity {
             if(ModelConstants.INITIALIZE_APPLICATION.equals(intent.getAction())) {
                 User user = modelService.getUser();
 
-                if(user.isCodisUser()) {
+                if (user.isCodisUser()) {
 
-                    Intent gotoMainMenuCodis = new Intent( MainActivity.this, CodisMainMenu.class);
+                    Intent gotoMainMenuCodis = new Intent(MainActivity.this, CodisMainMenu.class);
                     startActivity(gotoMainMenuCodis);
                 }
-                if(user.isSimpleUser()) {
+                if (user.isSimpleUser()) {
 
-                    Intent gotoMainMenuIntervenant = new Intent( MainActivity.this, UserMainMenu.class);
+                    Intent gotoMainMenuIntervenant = new Intent(MainActivity.this, UserMainMenu.class);
                     startActivity(gotoMainMenuIntervenant);
                 }
             }
+
         }
     };
 
@@ -175,10 +182,10 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onPause() {
+        super.onPause();
         // Unregister since the activity is not visible
         LocalBroadcastManager.getInstance(this)
                 .unregisterReceiver(mMessageReceiver);
-        super.onPause();
     }
 
     /**
