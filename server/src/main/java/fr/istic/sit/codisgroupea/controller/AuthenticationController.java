@@ -3,7 +3,7 @@ package fr.istic.sit.codisgroupea.controller;
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
-import fr.istic.sit.codisgroupea.model.message.Send.InitializeApplicationMessage;
+import fr.istic.sit.codisgroupea.model.message.send.InitializeApplicationMessage;
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 import fr.istic.sit.codisgroupea.repository.*;
 import fr.istic.sit.codisgroupea.service.AuthenticationService;

@@ -4,10 +4,9 @@ import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.ListUnitMessage;
-import fr.istic.sit.codisgroupea.model.message.Receive.ConfirmDemandVehicleMessage;
-import fr.istic.sit.codisgroupea.model.message.Send.DemandesCreatedMessage;
+import fr.istic.sit.codisgroupea.model.message.receive.ConfirmDemandVehicleMessage;
+import fr.istic.sit.codisgroupea.model.message.send.DemandesCreatedMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
-import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.UnitCreatedMessage;
 import fr.istic.sit.codisgroupea.repository.*;
@@ -18,7 +17,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import javax.swing.text.html.Option;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -95,8 +93,11 @@ public class DemandSocketController {
         );
 
         //Message for the codis
+        UnitVehicle unitVehicle = new UnitVehicle();
+        //TODO: UnitVehicle need to be filled with correct status and type at this moment
         Unit unit = new Unit(
                 intervention,
+                unitVehicle,
                 null,
                 true,
                 now,
@@ -173,7 +174,7 @@ public class DemandSocketController {
             unitInBdd.get().getSymbolSitac().setLocation(unitMessageFromCLient
                     .getSymbolUnitMessage().getLocation().toPositionEntity());
 
-            vehicle.get().setStatus(unitMessageFromCLient.getVehicule().getStatus());
+//TODO:            vehicle.get().setStatus(unitMessageFromCLient.getVehicule().getStatus());
 
             unitInBdd.get().setVehicle(vehicle.get());
             unitInBdd.get().setMoving(unitMessageFromCLient.isMoving());

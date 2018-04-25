@@ -5,8 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
-import ila.fr.codisintervention.models.Location;
-
 /**
  * Java Object representation of a Symbol in term of JSON message send to and from the server.
  * Created by tanaky on 28/03/18.
