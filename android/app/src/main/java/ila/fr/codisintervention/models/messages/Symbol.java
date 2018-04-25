@@ -154,6 +154,14 @@ public class Symbol implements Parcelable {
         payload = in.readParcelable(Payload.class.getClassLoader());
     }
 
+    public Symbol(ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb){
+        id = symb.getId();
+        shape = symb.getShape().name();
+        color = symb.getColor().name();
+        location = new Location(symb.getLocation());
+        payload = new Payload(symb.getPayload());
+    }
+
     /**
      * The constant CREATOR. used for Intent based communication
      */

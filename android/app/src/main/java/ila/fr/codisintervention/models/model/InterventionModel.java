@@ -50,7 +50,10 @@ public class InterventionModel {
     public InterventionModel (Intervention intervention){
         this.setAddress(intervention.getAddress());
         this.setDate(intervention.getDate());
-        this.setPosition(new Position(intervention.getLocation().getLat(), intervention.getLocation().getLng()));
+
+        if (intervention.getLocation() != null){
+            this.setPosition(new Position(intervention.getLocation().getLat(), intervention.getLocation().getLng()));
+        }
         this.setSinisterCode(intervention.getCode());
         this.setOpened(true);
         if(intervention.getPhotos() != null){

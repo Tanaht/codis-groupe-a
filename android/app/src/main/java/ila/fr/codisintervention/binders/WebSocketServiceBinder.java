@@ -4,8 +4,7 @@ import android.os.Binder;
 
 import java.util.List;
 
-import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.models.messages.Symbol;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.InterventionModel;
 
 /**
