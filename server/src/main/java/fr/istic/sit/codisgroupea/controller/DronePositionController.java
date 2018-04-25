@@ -1,8 +1,6 @@
 package fr.istic.sit.codisgroupea.controller;
 
-import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
-import fr.istic.sit.codisgroupea.model.message.LocationMessage;
 import fr.istic.sit.codisgroupea.model.message.receive.MissionOrderMessage;
 import fr.istic.sit.codisgroupea.socket.Location;
 import fr.istic.sit.codisgroupea.socket.MissionOrder;
@@ -11,10 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,40 +20,25 @@ public class DronePositionController {
     /** The logger */
     private static final Logger logger = LoggerFactory.getLogger(DronePositionController.class);
 
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private SocketForDroneCommunication socketForDroneCommunication;
 
     /**
      * Constructor of the class {@link DronePositionController}
      *
-     * @param simpMessagingTemplate Template of the web socket
+     * @param socketForDroneCommunication
      */
-    public DronePositionController(SimpMessagingTemplate simpMessagingTemplate) {
-        this.simpMessagingTemplate = simpMessagingTemplate;
+    public DronePositionController(SocketForDroneCommunication socketForDroneCommunication) {
+        this.socketForDroneCommunication = socketForDroneCommunication;
     }
 
     @MessageMapping(RoutesConfig.RECEIVE_DRONE_MISSION)
     public void getMission(@DestinationVariable("id") final int id, MissionOrderMessage missionOrder) {
         System.out.println("Mission order received !");
         System.out.println("For intervention "+missionOrder.getType()+" !");
-        SocketForDroneCommunication socket = null;
-        try {
-            socket = SocketForDroneCommunication.get();
-            List<Location> path = new ArrayList<>();
-            for(MissionOrderMessage.Location loc : missionOrder.getPath()){
-                path.add(new Location(loc.getLat(), loc.getLng()));
-            }
-            socket.sendMessage(new MissionOrder("ASSIGN_MISSION", id, missionOrder.getType(), path));
-        } catch (IOException e) {
-            logger.error("Socket between server and drone cannot be instanciated. Please enabled debug mode for more details");
-            if(logger.isDebugEnabled()) {
-                e.printStackTrace();
-            }
+        List<Location> path = new ArrayList<>();
+        for(MissionOrderMessage.Location loc : missionOrder.getPath()){
+            path.add(new Location(loc.getLat(), loc.getLng()));
         }
-    }
-    
-    public void sendDronePosition(Location location) {
-        Gson gson = new Gson();
-        String toJson = gson.toJson(new LocationMessage(location.getLat(), location.getLng(), location.getAlt()),LocationMessage.class);
-        simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1+location.getInterventionId()+RoutesConfig.SEND_DRONE_POSITION_PART2, toJson);
+        socketForDroneCommunication.sendMessage(new MissionOrder("ASSIGN_MISSION", id, missionOrder.getType(), path));
     }
 }

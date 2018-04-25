@@ -1,7 +1,10 @@
 package fr.istic.sit.codisgroupea.socket;
 
-import fr.istic.sit.codisgroupea.controller.DronePositionController;
-import org.springframework.context.ConfigurableApplicationContext;
+import com.google.gson.Gson;
+import fr.istic.sit.codisgroupea.config.RoutesConfig;
+import fr.istic.sit.codisgroupea.model.message.LocationMessage;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -16,29 +19,15 @@ import java.net.Socket;
  * Communication with the drone using socket
  *
  */
+@Service
 public class SocketForDroneCommunication {
 
-    private ConfigurableApplicationContext context;
-
-	private static SocketForDroneCommunication instance;
+    private SimpMessagingTemplate simpMessagingTemplate;
 
 	private Socket socket;
 	private ServerSocket serverSocket;
 
 	private boolean sending = false;
-
-	public static void create(ConfigurableApplicationContext context) throws IOException {
-        if(instance == null && context != null){
-            instance = new SocketForDroneCommunication(context);
-        }
-    }
-
-	public static SocketForDroneCommunication get() throws IOException {
-	    /*
-	    TODO: throw null pointer exception
-	     */
-		return instance;
-	}
 
 	/**
 	 * 
@@ -46,10 +35,10 @@ public class SocketForDroneCommunication {
 	 *
 	 * @throws IOException
 	 */
-	private SocketForDroneCommunication(ConfigurableApplicationContext context) throws IOException {
-		this.context = context;
+	public SocketForDroneCommunication(SimpMessagingTemplate simpMessagingTemplate) throws IOException {
+        this.simpMessagingTemplate = simpMessagingTemplate;
 
-		this.start();
+        this.start();
 		
 		//Read message from drone
 		this.receiveMessage();
@@ -92,7 +81,7 @@ public class SocketForDroneCommunication {
 				BufferedReader br;
 				try {
 					br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					while(true) {
+					while(!socket.isClosed()) {
 						//No receive during sending
 						if(!sending) {
 							//Get new message (terminated by '\n')
@@ -107,8 +96,7 @@ public class SocketForDroneCommunication {
 								//Get current location
 								else if(messageType.equals(DroneServerConstants.MESSAGE_TYPES.SEND_SITUATION.getName())) {
 									Location loc = JsonForDroneCommunicationToolBox.getLocationFromMessage(receivedMessage);
-							        DronePositionController dpc = (DronePositionController) context.getBean("dronePositionController");
-							        dpc.sendDronePosition(loc);
+							        sendDronePosition(loc);
 								}
 							}
 						}
@@ -136,6 +124,7 @@ public class SocketForDroneCommunication {
 				//Convert mission to json
 				String message = JsonForDroneCommunicationToolBox.getJsonFromMissionOrder(mission);
 				try {
+				    System.out.println("send message");
 					//Send message
 					OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
 				    BufferedWriter writer = new BufferedWriter(out);
@@ -152,4 +141,10 @@ public class SocketForDroneCommunication {
 		Thread sendThread = new Thread(sendTask);
 		sendThread.start();
 	}
+
+    public void sendDronePosition(Location location) {
+        Gson gson = new Gson();
+        String toJson = gson.toJson(new LocationMessage(location.getLat(), location.getLng(), location.getAlt()),LocationMessage.class);
+        simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1+location.getInterventionId()+RoutesConfig.SEND_DRONE_POSITION_PART2, toJson);
+    }
 }
