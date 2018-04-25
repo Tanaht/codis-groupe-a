@@ -24,6 +24,7 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.messages.Location;
+import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -443,9 +444,20 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         String gsonData = gson.toJson(symbols);
 
         this.client.send("/app/interventions/" + interventionId + "/symbols/delete", gsonData).subscribe(
-                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "//symbols/delete] Sent data!"),
-                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "//symbols/delete] Error Encountered", error)
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/delete] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/symbols/delete] Error Encountered", error)
         );
+    }
+
+    @Override
+    public void createPathDrone(int interventionId, PathDrone path) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        this.client.send("/app/interventions/" + interventionId + "/drone/path", gson.toJson(path)).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/drone/path] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/drone/path] Error Encountered", error)
+        );
+
     }
 
     /**
