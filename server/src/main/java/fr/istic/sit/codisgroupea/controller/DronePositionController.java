@@ -28,6 +28,6 @@ public class DronePositionController {
     public void sendDronePosition(Location location) {
         Gson gson = new Gson();
         String toJson = gson.toJson(new LocationMessage(location.getLat(), location.getLng(), location.getAlt()),LocationMessage.class);
-        simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION, toJson);
+        simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1+location.getInterventionId()+RoutesConfig.SEND_DRONE_POSITION_PART2, toJson);
     }
 }
