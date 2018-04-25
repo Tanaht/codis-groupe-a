@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
         tools:layout_editor_absoluteX="0dp" />
-
+<!--
     <fragment
         android:id="@+id/mapFragment"
         android:name="ila.fr.codisintervention.fragments.MapsFragment"
@@ -32,4 +32,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_marginLeft="55dp" />
+-->
+    <fragment
+        android:id="@+id/tabFragment"
+        android:name="ila.fr.codisintervention.fragments.MeansTableFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!--
+            <fragment
+                android:id="@+id/tabFragment"
+                android:name="ila.fr.codisintervention.fragments.MeansTableFragment"
+                android:layout_width="1062dp"
+                android:layout_height="671dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.957"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_marginLeft="55dp" />
+    -->
 </android.support.constraint.ConstraintLayout>

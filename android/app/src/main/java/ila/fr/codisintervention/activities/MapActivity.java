@@ -21,6 +21,7 @@ import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.fragments.MapsFragment;
+import ila.fr.codisintervention.fragments.MeansTableFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.Unit;
@@ -62,7 +63,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     /**
      * Fragment used to display the map
      */
-    MapsFragment mapFragment;
+    //MapsFragment mapFragment;
+    MeansTableFragment tabFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
         FragmentManager manager = getSupportFragmentManager();
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
-        mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
+        //mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
+        tabFragment = (MeansTableFragment) manager.findFragmentById(R.id.tabFragment);
     }
 
     /**
@@ -176,7 +179,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.layout.menu_map_activity, menu);
+        //getMenuInflater().inflate(R.layout.menu_map_activity, menu);
         return true;
     }
 

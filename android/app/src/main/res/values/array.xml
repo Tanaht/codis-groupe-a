@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="titles">
+        <item>Label/Type</item>
+        <item>Statut</item>
+        <item>Heure demande</item>
+        <item>Heure validation</item>
+        <item>Heure engagement</item>
+        <item>Heure libération</item>
+    </string-array>
+
+</resources>

@@ -55,4 +55,7 @@
     <string name="action_demande_moyen">Demande Moyen</string>
     <string name="action_deconnexion">Deconnexion</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
