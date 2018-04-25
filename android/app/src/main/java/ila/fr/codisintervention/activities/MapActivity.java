@@ -106,47 +106,46 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int id = 0;
-            if(intent.getExtras().get("id") == null){
-                Log.e(TAG,"\n\n\n Intent get Extras Id null");
-            }else {
-                id = (int) intent.getExtras().get("id");
-            }
-            Symbol symbol;
-            Unit unit;
-            DronePing dronePing;
+            
+            if(intent.getExtras().get("id") != null){
+                int id = (int) intent.getExtras().get("id");
+                Symbol symbol;
+                Unit unit;
 
-            switch (intent.getAction()) {
-                case UPDATE_DRONE_POSITION:
-                    dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
+                switch (intent.getAction()) {
+                    case UPDATE_INTERVENTION_UPDATE_UNIT:
+                        unit = modelService.getUnit(id);
+                        break;
+                    case UPDATE_INTERVENTION_CREATE_UNIT:
+                        unit = modelService.getUnit(id);
+                        break;
+                    case UPDATE_INTERVENTION_DELETE_UNIT:
+                        unit = modelService.getUnit(id);
+                        break;
+                    case UPDATE_INTERVENTION_UPDATE_SYMBOL:
+                        symbol = modelService.getSymbol(id);
+                        break;
+                    case UPDATE_INTERVENTION_DELETE_SYMBOL:
+                        symbol = modelService.getSymbol(id);
+                        break;
+                    case UPDATE_INTERVENTION_CREATE_SYMBOL:
+                        symbol = modelService.getSymbol(id);
+                        break;
+                    case ADD_VEHICLE_REQUEST:
+                        break;
+                    case VALIDATE_VEHICLE_REQUEST:
+                        unit = modelService.getUnit(id);
+                        break;
+                    default:
+                        break;
+                }
+            }else {
+                Log.e(TAG,"\n\n\n Intent get Extras Id null");
+                if(intent.getAction().equals(UPDATE_DRONE_POSITION)){
+                    DronePing dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
                     Log.i(TAG, "\n\n\n********************[MapActivity] : Drone new Position(altitude)");
                     updateDronePosition(dronePing);
-                    break;
-                case UPDATE_INTERVENTION_UPDATE_UNIT:
-                    unit = modelService.getUnit(id);
-                    break;
-                case UPDATE_INTERVENTION_CREATE_UNIT:
-                    unit = modelService.getUnit(id);
-                    break;
-                case UPDATE_INTERVENTION_DELETE_UNIT:
-                    unit = modelService.getUnit(id);
-                    break;
-                case UPDATE_INTERVENTION_UPDATE_SYMBOL:
-                    symbol = modelService.getSymbol(id);
-                    break;
-                case UPDATE_INTERVENTION_DELETE_SYMBOL:
-                    symbol = modelService.getSymbol(id);
-                    break;
-                case UPDATE_INTERVENTION_CREATE_SYMBOL:
-                    symbol = modelService.getSymbol(id);
-                    break;
-                case ADD_VEHICLE_REQUEST:
-                    break;
-                case VALIDATE_VEHICLE_REQUEST:
-                    unit = modelService.getUnit(id);
-                    break;
-                default:
-                    break;
+                }
             }
         }
     };
