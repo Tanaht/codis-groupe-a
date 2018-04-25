@@ -79,7 +79,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Retrieve the content view that renders the map.
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_map_content);
 
         FragmentManager manager = getSupportFragmentManager();
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
@@ -88,9 +88,11 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         /**
          * Validate button in order to retrieve drone points created on the Map
          */
+
         final Button validate = findViewById(R.id.send_drone_points);
         validate.setOnClickListener(v ->
                 dronePointsMap=mapFragment.send_dronePoints());
+
 
     }
 
