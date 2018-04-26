@@ -18,6 +18,15 @@
     <string name="title_user_menu">Menu Intervenant</string>
     <string name="title_codis_menu">Menu Codis</string>
     <string name="title_add_new_intervention">Ajouter une nouvelle intervention</string>
+    <string name="title_means_table">Tableau des Moyens</string>
+
+    <!-- Headers for the Means Table -->
+    <string name="header_1">Label/Type</string>
+    <string name="header_2">Statut</string>
+    <string name="header_3">Heure demande</string>
+    <string name="header_4">Heure validation</string>
+    <string name="header_5">Heure engagement</string>
+    <string name="header_6">Heure libération</string>
 
     <!-- All strings related to ihm are here, no special convention -->
     <string name="label_vehicles_list">Liste des moyens :</string>
