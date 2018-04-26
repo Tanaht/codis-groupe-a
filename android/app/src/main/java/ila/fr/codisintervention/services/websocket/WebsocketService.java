@@ -563,5 +563,38 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         }
     }
 
+    /**
+     * Accept vehicle request
+     * @param request
+     */
+    public void acceptVehicleRequest(Request request){
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return Arrays.asList("id", "type", "status").contains(f.getName());
+            }
 
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        }).create();
+        String json = gson.toJson(request);
+
+        this.client.send("/app/demandes/" + request.getId() + "/accept", json).subscribe(
+                () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/accept] Sent data!"),
+                error -> Log.e(TAG, "[/app/demandes/" + request.getId() + "/accept] Error Encountered", error)
+        );
+    }
+
+    /**
+     * Deny vehicle request
+     * @param request
+     */
+    public void denyVehicleRequest(Request request){
+        this.client.send("/app/demandes/" + request.getId() + "/deny", "PING").subscribe(
+                () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/deny] Sent data!"),
+                error -> Log.e(TAG, "[/app/demandes/" + request.getId() + "/deny] Error Encountered", error)
+        );
+    }
 }
