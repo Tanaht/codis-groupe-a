@@ -145,8 +145,7 @@ public class InterventionsListActivity extends AppCompatActivity {
                     .show();
 
             // Send Intervention choice to WSS
-            // TODO : Replace 1 by intervention.getId()
-            webSocketService.chooseIntervention(1);
+            webSocketService.chooseIntervention(intervention.getId());
             Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
             startActivity(mapIntent);
         });
