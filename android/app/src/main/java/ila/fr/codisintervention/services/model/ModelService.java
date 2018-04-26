@@ -94,6 +94,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
      * @param intent the explicit intent received from {@link WebsocketService}
      */
     public void updateTheModel(Intent intent) {
+        Log.d(TAG, "Received intent : " + intent.getAction());
         if (intent.getAction() == null)
             return;
 
@@ -196,8 +197,12 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
         if(this.model.getCurrentIntervention() != null) {
             this.model.getCurrentIntervention().setPathDrone(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
             Intent intent = new Intent(ModelConstants.DRONE_PATH_ASSIGNED);
+            intent.putExtra("pathDrone",pathDrone);
             deliverIntent(intent);
+        } else {
+            Log.e(TAG,"There is no curent intervention");
         }
+
     }
 
     /**

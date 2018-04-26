@@ -143,6 +143,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.d(TAG,"Intent received : " + intent.getAction());
             if(intent.getExtras().get("id") != null){
                 int id = (int) intent.getExtras().get("id");
                 Symbol symbol;
@@ -189,7 +190,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
                     DronePing dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
                     updateDronePosition(dronePing);
                 } else if(DRONE_PATH_ASSIGNED.equals(intent.getAction())){
-                    mapFragment.updateDronePath(modelService.getCurrentIntervention().getPathDrone());
+                    PathDrone pathDrone = (PathDrone) intent.getExtras().get("pathDrone");
+                    mapFragment.updateDronePath(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
                 }
             }
         }

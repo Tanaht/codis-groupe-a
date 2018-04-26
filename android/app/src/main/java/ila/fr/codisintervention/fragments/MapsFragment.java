@@ -342,7 +342,7 @@ public class MapsFragment extends Fragment {
             DronePoint pt = new DronePoint(dpId, dronePoint.getLat(), dronePoint.getLng());
             course.put(new Integer(dpId), pt);   // add points in the course
             dpId += 1;
-            updateUI(googleMap);
         }
+        updateUI(googleMap);
     }
 }
