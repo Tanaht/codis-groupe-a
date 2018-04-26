@@ -42,14 +42,6 @@ public class SocketForDroneCommunication {
 		
 		//Read message from drone
 		this.receiveMessage();
-		
-		//Exemple of mission order sending
-//		MissionOrder mission = new MissionOrder();
-//		mission.setMissionType(DroneServerConstants.MISSION_TYPES.MISSION_CYCLE.getName());
-//		mission.addLocation(new Location(48.1148383, -1.6388297));
-//		mission.addLocation(new Location(48.1153379, -1.6391757));
-//		mission.setInterventionId(1);
-//		this.sendMessage(mission);
 	}
 
 	/**
@@ -124,7 +116,6 @@ public class SocketForDroneCommunication {
 				//Convert mission to json
 				String message = JsonForDroneCommunicationToolBox.getJsonFromMissionOrder(mission);
 				try {
-				    System.out.println("send message");
 					//Send message
 					OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
 				    BufferedWriter writer = new BufferedWriter(out);
@@ -146,5 +137,5 @@ public class SocketForDroneCommunication {
         Gson gson = new Gson();
         String toJson = gson.toJson(new LocationMessage(location.getLat(), location.getLng(), location.getAlt()),LocationMessage.class);
         simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1+location.getInterventionId()+RoutesConfig.SEND_DRONE_POSITION_PART2, toJson);
-    }
+	}
 }
