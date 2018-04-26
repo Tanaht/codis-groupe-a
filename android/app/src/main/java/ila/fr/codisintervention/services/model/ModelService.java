@@ -18,6 +18,7 @@ import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.ApplicationModel;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.Unit;
@@ -180,12 +181,33 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 break;
             case WebsocketService.DRONE_PHOTO:
                 break;
+            case WebsocketService.DRONE_PATH_RECEIVED:
+                PathDrone pathDrone = intent.getParcelableExtra(WebsocketService.DRONE_PATH_RECEIVED);
+                updateDronePathFromMessage(pathDrone);
+
+                break;
             //Si l'action est mal définit
             default:
                 Log.e(TAG, "Erreur d'action non reconnu pour la mise à jour du model");
         }
     }
 
+    private void updateDronePathFromMessage(PathDrone pathDrone) {
+        if(this.model.getCurrentIntervention() != null) {
+            this.model.getCurrentIntervention().setPathDrone(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
+            Intent intent = new Intent(ModelConstants.DRONE_PATH_ASSIGNED);
+            deliverIntent(intent);
+        }
+    }
+
+    /**
+     * Used to broadcoast an intent to everyone
+     * @param intent the intent to broadcoast
+     */
+    public void deliverIntent(Intent intent){
+        Log.d(TAG, "Broadcoasted Intent: " + intent.getAction());
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
 
     /**
      * FIXME: Every intent doesn't have the same extra signature, si it has to be removed -> it would be exported equally when we will refactor this class

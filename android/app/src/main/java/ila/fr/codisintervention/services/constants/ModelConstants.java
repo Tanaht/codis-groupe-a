@@ -79,4 +79,10 @@ public class ModelConstants {
      * Intent Name being broadcoasted by {@link ila.fr.codisintervention.services.model.ModelService} when the drone position is updated
      */
     public static final String UPDATE_DRONE_POSITION = "update-drone-position";
+
+
+    /**
+     * Intent Name being broadcoasted by {@link ila.fr.codisintervention.services.model.ModelService} when a drone path is created
+     */
+    public static final String DRONE_PATH_ASSIGNED = "drone-path-assigned";
 }
