@@ -99,7 +99,7 @@ public class Photo implements Parcelable {
     public Photo(ila.fr.codisintervention.models.model.Photo photo){
          url = photo.getUri();
          date = photo.getDate().getTime();
-         location = new Location(photo.getLocation());
+         location = photo.getLocation();
     }
 
     /**

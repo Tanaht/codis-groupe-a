@@ -118,7 +118,20 @@ public class ApplicationModel {
      * @param intervention the intervention
      */
     public void actualiseInterventionChoosen(Intervention intervention){
+        InterventionModel intervInList = null;
+        for (InterventionModel interv : interventions){
+            if (interv.getId().equals(intervention.getId())){
+                intervInList = interv;
+            }
+        }
         currentIntervention = new InterventionModel(intervention);
+        if (intervInList != null){
+            currentIntervention.setLocation(intervInList.getLocation());
+            currentIntervention.setSinisterCode(intervInList.getSinisterCode());
+            currentIntervention.setAddress(intervInList.getAddress());
+            currentIntervention.setDate(intervInList.getDate());
+            currentIntervention.setOpened(intervInList.isOpened());
+        }
     }
 
     /**

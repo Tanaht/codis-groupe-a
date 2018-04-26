@@ -59,6 +59,8 @@ public class InterventionModel {
         if(intervention.getPhotos() != null){
             this.setPhotos(setListPhotoFromMessage(intervention));
         }
+
+
         this.setPathDrones(null);
         this.setSymbols(null);
         this.setId(intervention.getId());
@@ -67,6 +69,8 @@ public class InterventionModel {
     public InterventionModel() {
 
     }
+
+
 
     private List<Photo> setListPhotoFromMessage (Intervention intervention){
         photos = new ArrayList<>();

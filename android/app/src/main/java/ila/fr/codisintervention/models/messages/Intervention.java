@@ -216,7 +216,7 @@ public class Intervention implements Parcelable {
         address = interventionModel.getAddress();
         drone_available = true;
 
-        location = new Location(interventionModel.getPosition());
+        location = interventionModel.getLocation();
         photos = new ArrayList<>();
         if (interventionModel.getPhotos() != null){
             for (ila.fr.codisintervention.models.model.Photo photo : interventionModel.getPhotos()){

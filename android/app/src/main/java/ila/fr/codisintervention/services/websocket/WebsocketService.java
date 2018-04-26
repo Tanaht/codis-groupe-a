@@ -538,6 +538,8 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
             interventionChosen.setAction(INTERVENTION_CHOSEN);
+
+
             interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), Intervention.class));
             getApplicationContext().startService(interventionChosen);
         });

@@ -151,6 +151,8 @@ public class MapsFragment extends Fragment {
                 /* add DronePoint */
                 SymbolKind symbole = getSymbolFragment();
                 if(symbole!=null) {
+                    Log.i(TAG, "onCreateView: symbol tap");
+                    
                     if (symbole.getIdDrawable() == R.drawable.drone_icon_map) {
                         DronePoint pt = new DronePoint(cptId, latLng.latitude, latLng.longitude);
                         course.put(new Integer(cptId), pt);   // add points in the course
@@ -163,6 +165,7 @@ public class MapsFragment extends Fragment {
                 }
 
             });
+
 
             /*
                 Drag and drop a marker with a long clic

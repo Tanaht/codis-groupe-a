@@ -160,7 +160,7 @@ public class Symbol implements Parcelable {
         id = symb.getId();
         shape = symb.getShape().name();
         color = symb.getColor().name();
-        location = new Location(symb.getLocation());
+        location = symb.getLocation();
         payload = new Payload(symb.getPayload());
     }
 
