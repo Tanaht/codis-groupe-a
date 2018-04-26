@@ -54,6 +54,6 @@
     <string name="action_drone">Envoyer Drone</string>
     <string name="action_demande_moyen">Demande Moyen</string>
     <string name="action_deconnexion">Deconnexion</string>
-    <string name="send_drone_points">Valider_Trajet</string>
+    <string name="send_drone_points">Valider</string>
 
 </resources>
