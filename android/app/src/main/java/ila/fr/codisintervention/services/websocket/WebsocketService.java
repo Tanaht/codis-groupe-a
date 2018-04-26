@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -21,12 +20,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
-import ila.fr.codisintervention.models.messages.Location;
-import ila.fr.codisintervention.models.messages.Request;
+import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.Location;
+import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
+import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.models.model.InterventionModel;
@@ -36,6 +37,8 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
 import ua.naiksoftware.stomp.client.StompMessage;
+
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 
 /**
  * Service used to manage websocket api
@@ -136,6 +139,12 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      */
     public static final String PROTOCOL_CLOSE = "PROTOCOL_CLOSE";
 
+
+    /**
+     * The constant DRONE_PATH_RECEIVED
+     */
+    public static final String DRONE_PATH_RECEIVED = "DRONE_PATH_RECEIVED";
+
     private static final String USERNAME_HEADER_KEY = "userlogin";
 
     @SuppressWarnings("squid:S2068")
@@ -205,6 +214,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                         initializeAppIntent.setAction(CONNECT_TO_APPLICATION);
                         initializeAppIntent.putExtra(CONNECT_TO_APPLICATION, initializeApplication);
                         getApplicationContext().startService(initializeAppIntent);
+
                     });
 
                     client.send("/users/" + username + "/subscribed", "PING").subscribe(
@@ -333,6 +343,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     * `/topic/interventions/{id}/units/event`
     * `/topic/interventions/{id}/units/{idUnit}/denied`
     * `/topic/interventions/{id}/units/{idUnit}/accepted`
+    * `/topic/interventions/{id}/drone/ping`
     * */
     @Override
     public void chooseIntervention(int id){
@@ -350,6 +361,23 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
                 error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
         );
+
+        this.client.topic("/topic/interventions/" + id + "/drone/ping").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/drone/ping] Received message: " + message.getPayload());
+            deliverDroneLocation(message);
+        });
+
+        this.client.topic("/topic/interventions/" + id + "/drone/path").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/drone/path] Received message: " + message.getPayload());
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+            
+            Intent dronePathReceived = new Intent(getApplicationContext(), ModelService.class);
+            dronePathReceived.setAction(DRONE_PATH_RECEIVED);
+            dronePathReceived.putExtra(DRONE_PATH_RECEIVED, gson.fromJson(message.getPayload(), PathDrone.class));
+            getApplicationContext().startService(dronePathReceived);
+        });
 
     }
 
@@ -407,6 +435,21 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
         LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
 
+    }
+
+    /**
+     * Deliver Received Drone Real-Location
+     * url : "/topic/interventions/{id}/drone/ping"
+     * @param message
+     */
+    private void deliverDroneLocation(StompMessage message) {
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        DronePing dronePing = gson.fromJson(message.getPayload(), DronePing.class);
+
+        Intent toBeBroadcoastedIntent = new Intent(UPDATE_DRONE_POSITION);
+        toBeBroadcoastedIntent.putExtra(UPDATE_DRONE_POSITION, dronePing);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
     }
 
     @Override
@@ -470,9 +513,21 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         String gsonData = gson.toJson(symbols);
 
         this.client.send("/app/interventions/" + interventionId + "/symbols/delete", gsonData).subscribe(
-                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "//symbols/delete] Sent data!"),
-                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "//symbols/delete] Error Encountered", error)
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/delete] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/symbols/delete] Error Encountered", error)
         );
+    }
+
+    @Override
+    public void createPathDrone(int interventionId, PathDrone path) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        String json = gson.toJson(path);
+
+        this.client.send("/app/interventions/" + interventionId + "/drone/path", json).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/drone/path] Sent data: "+json),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/drone/path] Error Encountered", error)
+        );
+
     }
 
     /**
@@ -541,6 +596,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             interventionChosen.setAction(INTERVENTION_CHOSEN);
             interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), Intervention.class));
             getApplicationContext().startService(interventionChosen);
+
         });
 
 

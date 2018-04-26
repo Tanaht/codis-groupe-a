@@ -31,6 +31,7 @@ public class JsonForDroneCommunicationToolBox {
 			//datas
 			JSONObject datas = new JSONObject();
 			datas.put(DroneServerConstants.TYPE, mission.getMissionType());
+			datas.put(DroneServerConstants.INTERVENTION_ID, mission.getInterventionId());
 			datas.put(DroneServerConstants.ALTITUDE, 30);
 			//Array of positions
 			JSONArray locations = new JSONArray();
@@ -121,6 +122,7 @@ public class JsonForDroneCommunicationToolBox {
 			JSONObject loc = datas.getJSONObject(DroneServerConstants.LOCATION);
 			location.setLat(loc.getDouble(DroneServerConstants.LAT));
 			location.setLng(loc.getDouble(DroneServerConstants.LNG));
+			location.setInterventionId(datas.getInt(DroneServerConstants.INTERVENTION_ID));
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

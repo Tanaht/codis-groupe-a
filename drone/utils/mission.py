@@ -4,6 +4,7 @@ from dronekit import LocationGlobal
 class Mission:
     def __init__(self, trame):
         self.type = ""              # type of message received
+        self.interventionId = 0     # id of the intervention
         self.liste = []             # goToZone positions
         self.patrol_liste = []      # patrol positions
         self.patrol = ""            # type of patrol, see Patrol class in module Utils
@@ -11,6 +12,7 @@ class Mission:
 
         # Read JSON
         self.type = trame['type']
+        self.interventionId = trame['datas']['interventionId']
         patrol = trame['datas']['type']
         self.altitude = trame['datas']['altitude']
 

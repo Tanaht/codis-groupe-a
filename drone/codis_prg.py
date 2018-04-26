@@ -16,7 +16,7 @@ while True:
     # wait something from the server socket
     ma_mission = client.wait_a_mission()
 
-    codisDrone = droneIstic.NotreDrone("udpin:{}:{}" .format(config.drone_host, config.drone_port), False, ma_mission.altitude)
+    codisDrone = droneIstic.NotreDrone("udpin:{}:{}" .format(config.drone_host, config.drone_port), False, ma_mission.altitude, ma_mission.interventionId)
 
     codisDrone.change_patrol_mission(ma_mission.patrol_liste, ma_mission.patrol)
     codisDrone.change_mission(ma_mission.liste)

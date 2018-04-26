@@ -10,6 +10,7 @@ import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Type;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.user.User;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class ApplicationModel {
 
     private User user;
 
+    private PathDrone pathDrone;
     private List<InterventionModel> interventions;
     private InterventionModel currentIntervention;
 
