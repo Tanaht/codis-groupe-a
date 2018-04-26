@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.exception.InvalidMessageException;
-import fr.istic.sit.codisgroupea.factory.UnitFactory;
+import fr.istic.sit.codisgroupea.service.UnitFactory;
 import fr.istic.sit.codisgroupea.model.entity.Intervention;
 import fr.istic.sit.codisgroupea.model.entity.Unit;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
@@ -23,7 +23,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.security.Principal;
 import java.util.Optional;
 
 import static fr.istic.sit.codisgroupea.config.RoutesConfig.DENY_DEMAND_SERVER_CLIENT;
@@ -52,7 +51,7 @@ public class DemandSocketController {
     /** {@link SymbolRepository} instance */
     private SymbolRepository symbolRepository;
 
-    /** {@link fr.istic.sit.codisgroupea.factory.UnitFactory} the unit factory from the DI */
+    /** {@link UnitFactory} the unit factory from the DI */
     private UnitFactory unitFactory;
 
     /**
@@ -81,7 +80,7 @@ public class DemandSocketController {
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.CREATE_UNIT_CLIENT)
-    public void createUnit(@DestinationVariable("id") final int id, Principal principal, CreateUnitMessage dataSendByClient) {
+    public void createUnit(@DestinationVariable("id") final int id, CreateUnitMessage dataSendByClient) {
         logger.trace("{} --> data receive {}", RoutesConfig.CREATE_UNIT_CLIENT, dataSendByClient);
         Intervention intervention = interventionRepository.getOne(id);
 
@@ -120,14 +119,14 @@ public class DemandSocketController {
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.CONFIRM_DEMAND_CLIENT)
-    public void confirmDemand(@DestinationVariable("idUnit") final int idUnit, Principal principal, ConfirmDemandVehicleMessage dataSendByClient) {
+    public void confirmDemand(@DestinationVariable("idUnit") final int idUnit, ConfirmDemandVehicleMessage dataSendByClient) {
         Gson jason = new Gson();
-        logger.trace(RoutesConfig.CONFIRM_DEMAND_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
+        logger.trace("{} --> data receive {}", RoutesConfig.CONFIRM_DEMAND_CLIENT, jason.toJson(dataSendByClient));
 
-        String userLogin = principal.getName();
         Optional<Unit> unit = unitRepository.findById(idUnit);
+
         if (!unit.isPresent()){
-            logger.error("Unit with id "+idUnit+" doesn't exist in bdd");
+            logger.error("Unit with id {} doesn't exist in bdd", idUnit);
         }
 
 
@@ -155,7 +154,7 @@ public class DemandSocketController {
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.DENY_DEMAND_CLIENT)
-    public void denyDemand(@DestinationVariable("idUnit") final int idUnit, Principal principal, String dataSendByClient) {
+    public void denyDemand(@DestinationVariable("idUnit") final int idUnit, String dataSendByClient) {
         logger.trace("{} --> data receive {}", RoutesConfig.DENY_DEMAND_CLIENT, dataSendByClient);
         Gson jason = new GsonBuilder().create();
         Optional<Unit> optionalUnit = unitRepository.findById(idUnit);

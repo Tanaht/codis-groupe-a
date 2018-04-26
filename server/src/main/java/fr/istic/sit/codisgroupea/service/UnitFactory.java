@@ -1,8 +1,9 @@
-package fr.istic.sit.codisgroupea.factory;
+package fr.istic.sit.codisgroupea.service;
 
 import fr.istic.sit.codisgroupea.exception.InvalidMessageException;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
+import fr.istic.sit.codisgroupea.model.message.receive.ConfirmDemandVehicleMessage;
 import fr.istic.sit.codisgroupea.repository.DefaultVehicleSymbolRepository;
 import fr.istic.sit.codisgroupea.repository.SymbolRepository;
 import org.slf4j.Logger;
@@ -69,6 +70,16 @@ public class UnitFactory {
         }
 
         return unit;
+    }
+
+    /**
+     * Update a Unit from a {@link ConfirmDemandVehicleMessage } instance
+     * @param unit the unit actually in bdd
+     * @param message
+     * @return
+     */
+    public Unit updateUnit(Unit unit, ConfirmDemandVehicleMessage message) {
+
     }
 
     /**
