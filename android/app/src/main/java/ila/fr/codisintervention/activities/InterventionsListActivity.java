@@ -201,17 +201,9 @@ public class InterventionsListActivity extends AppCompatActivity {
                 Log.e(TAG, "onReceive: try to access to an intervention who doesn't exist");
                 e.printStackTrace();
             }
-            switch (intent.getAction()){
-                case ModelConstants.ADD_INTERVENTION:
-                    addElement(intervention);
-                    break;
-                case ModelConstants.ACTION_DELETE_INTERVENTION:
-                    int position = dataAdapter.getPosition(intervention);
-                    deleteElement(position);
-                    break;
-                default:
-                    break;
-            }
+
+            dataAdapter.notifyDataSetChanged();
+
         }
     };
 
