@@ -1,17 +1,20 @@
 package fr.istic.sit.codisgroupea.model.message.receive;
 
-import fr.istic.sit.codisgroupea.model.message.intervention.IdMessage;
+import fr.istic.sit.codisgroupea.model.message.utils.LabelMessage;
+
+import javax.validation.Valid;
 
 public class ConfirmDemandVehicleMessage {
 
     /** Instance of {@link fr.istic.sit.codisgroupea.model.message.intervention.IdMessage} for the id of the vehicle */
-    private IdMessage vehicle;
+    @Valid
+    private LabelMessage vehicle;
 
     /**
      * Getter of the vehicle
      * @return the vehicle
      */
-    public IdMessage getVehicle() {
+    public LabelMessage getVehicle() {
         return vehicle;
     }
 
@@ -19,7 +22,7 @@ public class ConfirmDemandVehicleMessage {
      * Setter of the vehicle
      * @param vehicle the new id of the vehicle
      */
-    public void setVehicle(IdMessage vehicle) {
+    public void setVehicle(LabelMessage vehicle) {
         this.vehicle = vehicle;
     }
 

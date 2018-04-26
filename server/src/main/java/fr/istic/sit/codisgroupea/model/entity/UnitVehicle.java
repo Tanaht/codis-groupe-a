@@ -94,6 +94,7 @@ public class UnitVehicle {
      */
     public void setAssignedVehicle(Vehicle assignedVehicle) {
         this.assignedVehicle = assignedVehicle;
+        this.assignedVehicle.setUnitVehicle(this);
     }
 
     /**

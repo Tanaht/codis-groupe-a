@@ -76,7 +76,6 @@ public class DemandSocketController {
      * Method to create a unit demand.
      *
      * @param id               the id
-     * @param principal        the principal
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.CREATE_UNIT_CLIENT)
@@ -115,7 +114,6 @@ public class DemandSocketController {
      * Method to validate a client demand.
      *
      * @param idUnit               the id
-     * @param principal        the principal
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.CONFIRM_DEMAND_CLIENT)
@@ -123,20 +121,35 @@ public class DemandSocketController {
         Gson jason = new Gson();
         logger.trace("{} --> data receive {}", RoutesConfig.CONFIRM_DEMAND_CLIENT, jason.toJson(dataSendByClient));
 
-        Optional<Unit> unit = unitRepository.findById(idUnit);
+        Optional<Unit> optionalUnit = unitRepository.findById(idUnit);
 
-        if (!unit.isPresent()){
+        if (!optionalUnit.isPresent()){
             logger.error("Unit with id {} doesn't exist in bdd", idUnit);
+            return;
+        }
+
+        Unit unit = optionalUnit.get();
+
+        try {
+            unitFactory.updateUnit(unit, dataSendByClient);
+            unitRepository.save(unit);
+            vehicleRepository.save(unit.getUnitVehicle().getAssignedVehicle());
+
+        } catch (InvalidMessageException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+            return;
         }
 
 
-        UnitMessage unitToSend = new UnitMessage(unit.get());
+
+        UnitMessage unitToSend = new UnitMessage(optionalUnit.get());
         //Message for the codis
         simpMessagingTemplate.convertAndSend(RoutesConfig.CONFIRM_DEMAND_SERVER_CODIS,"ping");
 
         Gson gson = new Gson();
 
-        String routeToSend = "/topic/interventions/" +unit.get().getIntervention().getId()+
+        String routeToSend = "/topic/interventions/" +optionalUnit.get().getIntervention().getId()+
                 "/units/"+idUnit+"/accepted";
 
         String toJson = gson.toJson(unitToSend,UnitMessage.class);
@@ -150,7 +163,6 @@ public class DemandSocketController {
      * Method to deny a client demand.
      *
      * @param idUnit               the id
-     * @param principal        the principal
      * @param dataSendByClient the data sent by client
      */
     @MessageMapping(RoutesConfig.DENY_DEMAND_CLIENT)

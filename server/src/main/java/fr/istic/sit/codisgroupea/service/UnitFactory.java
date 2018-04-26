@@ -6,6 +6,7 @@ import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.receive.ConfirmDemandVehicleMessage;
 import fr.istic.sit.codisgroupea.repository.DefaultVehicleSymbolRepository;
 import fr.istic.sit.codisgroupea.repository.SymbolRepository;
+import fr.istic.sit.codisgroupea.repository.VehicleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class UnitFactory {
 
     private SymbolRepository symbolRepository;
     private DefaultVehicleSymbolRepository defaultVehicleSymbolRepository;
+    private VehicleRepository vehicleRepository;
     private Validator validator;
 
     /**
@@ -37,9 +39,13 @@ public class UnitFactory {
      * @param defaultVehicleSymbolRepository the default vehicle symbol repository
      * @param validator                      the validator
      */
-    public UnitFactory(SymbolRepository symbolRepository, DefaultVehicleSymbolRepository defaultVehicleSymbolRepository, Validator validator) {
+    public UnitFactory(SymbolRepository symbolRepository,
+                       DefaultVehicleSymbolRepository defaultVehicleSymbolRepository,
+                       VehicleRepository vehicleRepository,
+                       Validator validator) {
         this.defaultVehicleSymbolRepository = defaultVehicleSymbolRepository;
         this.symbolRepository =symbolRepository;
+        this.vehicleRepository = vehicleRepository;
         this.validator = validator;
     }
 
@@ -60,6 +66,7 @@ public class UnitFactory {
 
         Unit unit = new Unit(intervention);
         unit.getUnitVehicle().setType(new VehicleType(message.vehicle.type));
+        unit.getUnitVehicle().setStatus(VehicleStatus.REQUESTED);
 
         //If Symbol is set
         if(validator.validate(message.symbol).isEmpty()) {
@@ -75,11 +82,41 @@ public class UnitFactory {
     /**
      * Update a Unit from a {@link ConfirmDemandVehicleMessage } instance
      * @param unit the unit actually in bdd
-     * @param message
-     * @return
+     * @param message the message that associate a unit to a Vehicule
      */
-    public Unit updateUnit(Unit unit, ConfirmDemandVehicleMessage message) {
+    public void updateUnit(Unit unit, ConfirmDemandVehicleMessage message) throws InvalidMessageException {
+        Set<ConstraintViolation<ConfirmDemandVehicleMessage>> violations = validator.validate(message, ConfirmDemandVehicleMessage.class);
 
+        if(!violations.isEmpty()) {
+            throw new InvalidMessageException(ConfirmDemandVehicleMessage.class, violations.toString());
+        }
+
+        String vehicleLabel = message.getVehicle().getLabel();
+
+        Optional<Vehicle> optionalVehicle = vehicleRepository.findVehicleByLabel(vehicleLabel);
+
+        if(!optionalVehicle.isPresent()) {
+            log.error("Unable to assign a vehicle to a unit, reason: Vehicle idenfitied by {} not found in database", vehicleLabel);
+            return;
+        }
+
+        unit.getUnitVehicle().setAssignedVehicle(optionalVehicle.get());
+
+        hydrateUnitWithVehicleStatus(unit);
+    }
+
+    /**
+     * Choose according to some parameter the status of the unit
+     * @param unit the unit
+     */
+    private void hydrateUnitWithVehicleStatus(Unit unit) {
+
+        //FIXME: for now to assign the correct status we depend on the present of location persisted on database, it's not good enough
+        if( unit.getSymbolSitac().getLocation() != null) {
+            unit.getUnitVehicle().setStatus(VehicleStatus.USED);
+        } else {
+            unit.getUnitVehicle().setStatus(VehicleStatus.CRM);
+        }
     }
 
     /**
