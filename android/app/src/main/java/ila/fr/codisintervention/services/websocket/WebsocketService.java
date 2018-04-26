@@ -349,7 +349,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
             
-            Intent dronePathReceived = new Intent();
+            Intent dronePathReceived = new Intent(getApplicationContext(), ModelService.class);
             dronePathReceived.setAction(DRONE_PATH_RECEIVED);
             dronePathReceived.putExtra(DRONE_PATH_RECEIVED, gson.fromJson(message.getPayload(), PathDrone.class));
             getApplicationContext().startService(dronePathReceived);

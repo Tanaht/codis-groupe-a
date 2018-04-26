@@ -59,6 +59,18 @@ public class PathDrone implements Parcelable {
     }
 
 
+    public static final Creator<PathDrone> CREATOR = new Creator<PathDrone>() {
+        @Override
+        public PathDrone createFromParcel(Parcel in) {
+            return new PathDrone(in);
+        }
+
+        @Override
+        public PathDrone[] newArray(int size) {
+            return new PathDrone[size];
+        }
+    };
+
     @Override
     public int describeContents() { return 0;}
 

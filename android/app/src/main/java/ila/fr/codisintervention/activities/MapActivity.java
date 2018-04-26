@@ -188,7 +188,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
                 if(UPDATE_DRONE_POSITION.equals(intent.getAction())){
                     DronePing dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
                     updateDronePosition(dronePing);
-                } else if(DRONE_PATH_ASSIGNED.equals(intent.getAction()){
+                } else if(DRONE_PATH_ASSIGNED.equals(intent.getAction())){
                     mapFragment.updateDronePath(modelService.getCurrentIntervention().getPathDrone());
                 }
             }
