@@ -65,6 +65,12 @@ public class Vehicle implements Parcelable {
         }
     };
 
+    public Vehicle(ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle vehicle) {
+        label = vehicle.getLabel();
+        type = vehicle.getType();
+        status = vehicle.getStatus().name();
+    }
+
     @Override
     public int describeContents() {
         return 0;

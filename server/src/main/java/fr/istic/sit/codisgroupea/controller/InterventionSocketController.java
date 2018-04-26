@@ -129,7 +129,7 @@ public class InterventionSocketController {
                     unit.isMoving(),
                     new InterventionChosenMessage.Unit.Vehicle(
                             vehicle.getLabel(),
-                            vehicle.getType().toString(),
+                            vehicle.getType().getName(),
                             vehicle.getStatus().toString()
                     ),
                     new InterventionChosenMessage.Unit.Symbol(
@@ -186,12 +186,14 @@ public class InterventionSocketController {
 
         Gson gson = new Gson();
 
-        String toJson = gson.toJson(new InterventionChosenMessage(
+        InterventionChosenMessage interv = new InterventionChosenMessage(
                 id,
                 populateSymbolList(intervention),
                 populateUnitList(intervention),
                 populatePhotoList(intervention)
-        ));
+        );
+
+        String toJson = gson.toJson(interv);
 
         String urlToSend = "/topic/users/"+username+"/intervention-chosen";
         logger.trace(urlToSend+" --> data send "+toJson);

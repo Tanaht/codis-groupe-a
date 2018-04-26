@@ -21,7 +21,6 @@ import java.util.List;
 
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
-import ila.fr.codisintervention.models.messages.InterventionChosenMessage;
 import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -533,15 +532,11 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         this.client.topic("/topic/users/" + user.getUsername() + "/intervention-chosen").subscribe(message -> {
             Log.i(TAG, "[/users/" + user.getUsername() + "/intervention-chosen] Received message: " + message.getPayload());
 
-
             Intent interventionChosen  = new Intent(getApplicationContext(), ModelService.class);
-
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
             interventionChosen.setAction(INTERVENTION_CHOSEN);
-
-
-            interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), InterventionChosenMessage.class));
+            interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), Intervention.class));
             getApplicationContext().startService(interventionChosen);
         });
 

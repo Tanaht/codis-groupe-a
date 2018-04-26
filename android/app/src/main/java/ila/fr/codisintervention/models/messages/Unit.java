@@ -5,10 +5,15 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by tanaky on 28/03/18.
  * A Unit is a Vehicle inside of an Intervention
  */
+@Getter
+@Setter
 public class Unit implements Parcelable {
 
     /**
@@ -49,7 +54,14 @@ public class Unit implements Parcelable {
     @Expose
     private Symbol symbol;
 
-
+    public Unit(ila.fr.codisintervention.models.model.Unit unit) {
+        id = unit.getId();
+        date_granted = unit.getAcceptDate().getTime();
+        date_reserved = unit.getRequestDate().getTime();
+        moving = unit.isMoving();
+        vehicle = new Vehicle(unit.getVehicle());
+        symbol = new Symbol(unit.getSymbol());
+    }
     /**
      * Instantiates a new Unit.
      *
@@ -61,6 +73,7 @@ public class Unit implements Parcelable {
         date_reserved = in.readLong();
         moving = in.readByte() != 0;
         vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+        symbol = in.readParcelable(Symbol.class.getClassLoader());
     }
 
     /**
@@ -79,6 +92,8 @@ public class Unit implements Parcelable {
         }
     };
 
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -91,24 +106,7 @@ public class Unit implements Parcelable {
         dest.writeLong(date_reserved);
         dest.writeInt(moving ? 1 : 0);
         dest.writeParcelable(vehicle, flags);
-//        dest.writeParcelable(symbol, flags);
+        dest.writeParcelable(symbol, flags);
     }
 
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
 }

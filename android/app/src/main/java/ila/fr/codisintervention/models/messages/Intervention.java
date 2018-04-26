@@ -11,11 +11,15 @@ import java.util.List;
 
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represent an intervention in terms of JSON Message
  * Created by tanaky on 27/03/18.
  */
+@Getter
+@Setter
 public class Intervention implements Parcelable {
 
     /**
@@ -62,131 +66,14 @@ public class Intervention implements Parcelable {
     @Expose
     private List<Photo> photos;
 
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
 
+    @Expose
+    public List<Symbol> symbols;
     /**
-     * Gets date.
-     *
-     * @return the date
+     * The Units.
      */
-    public long getDate() {
-        return date;
-    }
-
-    /**
-     * Gets code.
-     *
-     * @return the code
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * Gets address.
-     *
-     * @return the address
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * Is drone available boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isDrone_available() {
-        return drone_available;
-    }
-
-    /**
-     * Gets location.
-     *
-     * @return the location
-     */
-    public Location getLocation() {
-        return location;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * Sets date.
-     *
-     * @param date the date
-     */
-    public void setDate(long date) {
-        this.date = date;
-    }
-
-    /**
-     * Sets code.
-     *
-     * @param code the code
-     */
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    /**
-     * Sets address.
-     *
-     * @param address the address
-     */
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    /**
-     * Sets drone available.
-     *
-     * @param drone_available the drone available
-     */
-    public void setDrone_available(boolean drone_available) {
-        this.drone_available = drone_available;
-    }
-
-    /**
-     * Sets location.
-     *
-     * @param location the location
-     */
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    /**
-     * Gets photos.
-     *
-     * @return the photos
-     */
-    public List<Photo> getPhotos() {
-        return photos;
-    }
-
-    /**
-     * Sets photos.
-     *
-     * @param photos the photos
-     */
-    public void setPhotos(List<Photo> photos) {
-        this.photos = photos;
-    }
+    @Expose
+    public List<Unit> units;
 
     /**
      * Instantiates a new Intervention.
@@ -207,6 +94,10 @@ public class Intervention implements Parcelable {
         drone_available = in.readByte() != 0;
         location = in.readParcelable(Location.class.getClassLoader());
         photos = in.createTypedArrayList(Photo.CREATOR);
+        symbols = in.createTypedArrayList(Symbol.CREATOR);
+        units = in.createTypedArrayList(Unit.CREATOR);
+
+
     }
 
     public Intervention(InterventionModel interventionModel){
@@ -223,6 +114,20 @@ public class Intervention implements Parcelable {
                 photos.add(new Photo(photo));
             }
         }
+        symbols = new ArrayList<>();
+        if (interventionModel.getSymbols() != null){
+            for (ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb : interventionModel.getSymbols()){
+                symbols.add(new Symbol(symb));
+            }
+        }
+
+        units = new ArrayList<>();
+        if (interventionModel.getUnits() != null){
+            for (ila.fr.codisintervention.models.model.Unit unit : interventionModel.getUnits()){
+                units.add(new Unit(unit));
+            }
+        }
+
     }
 
     /**
@@ -255,6 +160,9 @@ public class Intervention implements Parcelable {
         dest.writeInt(drone_available ? 1 : 0);
         dest.writeParcelable(location, flags);
         dest.writeList(photos);
+
+        dest.writeList(symbols);
+        dest.writeList(units);
     }
 
 

@@ -35,6 +35,15 @@ public class Unit {
     /** Instance of {@link Symbol} for the symbol sitac of the unit */
     private Symbol symbol;
 
+    public Unit(ila.fr.codisintervention.models.messages.Unit uni) {
+        id = uni.getId();
+        vehicle = new Vehicle(uni.getVehicle());
+        moving = uni.isMoving();
+        requestDate = new Timestamp(uni.getDate_reserved());
+        acceptDate = new Timestamp(uni.getDate_granted());
+        symbol = new Symbol(uni.getSymbol());
+    }
+
     public void load(Unit unitUpdated) {
         moving = unitUpdated.isMoving();
 

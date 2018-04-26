@@ -9,8 +9,8 @@ import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.models.messages.InterventionChosenMessage;
 import ila.fr.codisintervention.models.messages.Type;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.user.User;
 import lombok.Getter;
@@ -118,7 +118,7 @@ public class ApplicationModel {
      *
      * @param intervention the intervention
      */
-    public void actualiseInterventionChoosen(InterventionChosenMessage intervention){
+    public void actualiseInterventionChoosen(Intervention intervention){
         InterventionModel intervInList = null;
         for (InterventionModel interv : interventions){
             if (interv.getId().equals(intervention.getId())){
@@ -128,12 +128,23 @@ public class ApplicationModel {
         if (intervInList != null){
             currentIntervention = intervInList;
 
-            Photo
+            List<Photo> photos = new ArrayList<>();
+            for (ila.fr.codisintervention.models.messages.Photo photo : intervention.getPhotos()){
+                photos.add(new Photo(photo));
+            }
+            currentIntervention.setPhotos(photos);
 
-            currentIntervention.setPhotos(intervention.getPhotos());
-            currentIntervention.setSymbols(intervInList.);
-            currentIntervention.setUnits();
+            List<Symbol> symbs  = new ArrayList<>();
+            for (ila.fr.codisintervention.models.messages.Symbol symb : intervention.getSymbols()){
+                symbs.add(new Symbol(symb));
+            }
+            currentIntervention.setSymbols(symbs);
 
+            List<Unit> units = new ArrayList<>();
+            for (ila.fr.codisintervention.models.messages.Unit uni : intervention.getUnits()){
+                units.add(new Unit(uni));
+            }
+            currentIntervention.setUnits(units);
 
             currentIntervention.setLocation(intervInList.getLocation());
             currentIntervention.setSinisterCode(intervInList.getSinisterCode());
