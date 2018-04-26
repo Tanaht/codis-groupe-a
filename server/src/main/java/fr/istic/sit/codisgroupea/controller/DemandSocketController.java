@@ -1,6 +1,7 @@
 package fr.istic.sit.codisgroupea.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.exception.InvalidMessageException;
 import fr.istic.sit.codisgroupea.factory.UnitFactory;
@@ -24,6 +25,8 @@ import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
 import java.util.Optional;
+
+import static fr.istic.sit.codisgroupea.config.RoutesConfig.DENY_DEMAND_SERVER_CLIENT;
 
 /**
  * Controller for demand routes.
@@ -153,27 +156,35 @@ public class DemandSocketController {
      */
     @MessageMapping(RoutesConfig.DENY_DEMAND_CLIENT)
     public void denyDemand(@DestinationVariable("idUnit") final int idUnit, Principal principal, String dataSendByClient) {
-        Gson jason = new Gson();
-        logger.trace(RoutesConfig.DENY_DEMAND_CLIENT +" --> data receive "+dataSendByClient);
+        logger.trace("{} --> data receive {}", RoutesConfig.DENY_DEMAND_CLIENT, dataSendByClient);
+        Gson jason = new GsonBuilder().create();
+        Optional<Unit> optionalUnit = unitRepository.findById(idUnit);
 
-        String userLogin = principal.getName();
-        Optional<Unit> unit = unitRepository.findById(idUnit);
-
-        if (!unit.isPresent()){
-            logger.error("Unit with id "+idUnit+" doesn't exist in bdd");
+        if (!optionalUnit.isPresent()){
+            logger.error("Unit with id {} doesn't exist in bdd", idUnit);
+            return;
         }
 
+        Unit unit = optionalUnit.get();
 
-        String toSend = "denied";
+
+        String toSend = "PING";
+
         logger.trace("{} --> data send {}", RoutesConfig.DENY_DEMAND_SERVER_CODIS, toSend);
+
+
+        String urlToSend = DENY_DEMAND_SERVER_CLIENT
+                .replace("{id}", String.valueOf(unit.getIntervention().getId()))
+                .replace("{idUnit}", String.valueOf(idUnit));
+
+        logger.trace("{} --> data send {}", urlToSend, toSend);
+
+
         //Message for the codis
         simpMessagingTemplate.convertAndSend(RoutesConfig.DENY_DEMAND_SERVER_CODIS,toSend);
 
-        toSend = "denied";
-        String urlToSend = "/topic/interventions/"+
-                unit.get().getIntervention().getId()+"/units/"+idUnit+"/denied";
-        logger.trace("{} --> data send {}", urlToSend, toSend);
         //Message for the client
         simpMessagingTemplate.convertAndSend(urlToSend,toSend);
+        unitRepository.delete(unit);
     }
 }

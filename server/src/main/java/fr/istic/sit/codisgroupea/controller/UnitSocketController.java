@@ -9,6 +9,7 @@ import fr.istic.sit.codisgroupea.model.entity.Vehicle;
 import fr.istic.sit.codisgroupea.model.message.ListUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.repository.InterventionRepository;
+import fr.istic.sit.codisgroupea.repository.SymbolRepository;
 import fr.istic.sit.codisgroupea.repository.UnitRepository;
 import fr.istic.sit.codisgroupea.repository.VehicleRepository;
 import org.slf4j.Logger;
@@ -43,16 +44,23 @@ public class UnitSocketController {
     /** {@link VehicleRepository} instance from the DI */
     private VehicleRepository vehicleRepository;
 
+    /** {@link SymbolRepository} instance */
+    private SymbolRepository symbolRepository;
+
     /**
      * Instantiates a new Unit socket controller.
      *
      * @param interventionRepository the intervention repository
      * @param unitRepository         the unit repository
      */
-    public UnitSocketController(InterventionRepository interventionRepository, UnitRepository unitRepository, VehicleRepository vehicleRepository) {
+    public UnitSocketController(InterventionRepository interventionRepository,
+                                UnitRepository unitRepository,
+                                VehicleRepository vehicleRepository,
+                                SymbolRepository symbolRepository) {
         this.interventionRepository = interventionRepository;
         this.unitRepository = unitRepository;
         this.vehicleRepository = vehicleRepository;
+        this.symbolRepository = symbolRepository;
     }
 
     /**
