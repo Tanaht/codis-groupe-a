@@ -1,5 +1,7 @@
 package fr.istic.sit.codisgroupea.model.message.demand;
 
+import fr.istic.sit.codisgroupea.model.message.utils.Location;
+
 /**
  * The create-unit message.
  */
@@ -38,10 +40,24 @@ public class CreateUnitMessage {
         }
     }
 
+
+    public static class Symbol {
+        /**
+         * The location of the symbol
+         */
+        public Location location;
+
+    }
+
     /**
      * The Vehicle.
      */
     public Vehicle vehicle;
+
+    /**
+     * The symbol that locate the vehicle on the map
+     */
+    public Symbol symbol;
 
     /**
      * Gets vehicle.

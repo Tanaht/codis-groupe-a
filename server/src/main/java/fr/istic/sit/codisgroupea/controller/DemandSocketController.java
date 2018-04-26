@@ -117,7 +117,7 @@ public class DemandSocketController {
 
         //Message for the client
         String toJson = jason.toJson(unitCreated);
-        String urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CLIENT;
+        String urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CLIENT.replace("{id}", String.valueOf(id));
         logger.trace(urlToSend+" --> data send "+toJson);
         simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CLIENT,toJson);
 
