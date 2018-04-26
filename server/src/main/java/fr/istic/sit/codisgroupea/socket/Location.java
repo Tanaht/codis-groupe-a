@@ -6,7 +6,7 @@ public class Location {
 	private double lng;
 	private double alt;
 
-	private double interventionId;
+	private int interventionId;
 	
 	public Location() {
 	}
@@ -48,11 +48,11 @@ public class Location {
 		this.alt = alt;
 	}
 
-	public double getInterventionId() {
+	public int getInterventionId() {
 		return interventionId;
 	}
 
-	public void setInterventionId(double interventionId) {
+	public void setInterventionId(int interventionId) {
 		this.interventionId = interventionId;
 	}
 }
