@@ -1,7 +1,9 @@
 package ila.fr.codisintervention.activities;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -84,8 +86,8 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
         listView.setOnItemClickListener((parent, view, position, id) -> {
             // When clicked, show a toast with the TextView text
             Request request = (Request) parent.getItemAtPosition(position);
-
-            // TODO Toast avec ( 2 buttons valider/refuser + radiobutton list des véhicules à affecter)
+            // show popUp to accept or deny the request
+            showPopUpToValidateRequest(request);
         });
     }
 
@@ -186,6 +188,41 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
         dataAdapter.remove(dataAdapter.getItem(position));
         // we notify this change to the adapter
         dataAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Accept or deny the request
+     * @param request
+     */
+    private void showPopUpToValidateRequest(Request request) {
+        // TODO Remplacer par model.getVehicles.getLabel
+        final CharSequence[] items = {"FTP-1", "FPT-2", "VLCG-1", "VLCG-2"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        builder.setTitle("Choose the vehicle : ");
+        builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+                // TODO Store chosen vehicle
+            }
+        });
+
+        builder.setPositiveButton("Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toasty.success(getApplicationContext(), "Request Accepted", Toast.LENGTH_SHORT).show();
+                        // TODO intent to model (accepted)
+                    }
+                });
+        builder.setNegativeButton("No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toasty.warning(getApplicationContext(), "Request Denied", Toast.LENGTH_SHORT).show();
+                        // TODO intent to model (denied)
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     /**
