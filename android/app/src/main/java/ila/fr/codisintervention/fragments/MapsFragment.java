@@ -336,10 +336,8 @@ public class MapsFragment extends Fragment {
     }
 
     public void updateDronePath(PathDrone pathDrone) {
-        Log.w(TAG, "Update path");
         int dpId = 1;
         for(Location dronePoint : pathDrone.getPoints()){
-            Log.w(TAG, "new point");
             int idDrawable = R.drawable.drone_icon_map;
             DronePoint pt = new DronePoint(dpId, dronePoint.getLat(), dronePoint.getLng());
             course.put(new Integer(dpId), pt);   // add points in the course

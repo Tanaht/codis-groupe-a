@@ -143,7 +143,6 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            
             if(intent.getExtras().get("id") != null){
                 int id = (int) intent.getExtras().get("id");
                 Symbol symbol;
@@ -175,10 +174,6 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
                       case VALIDATE_VEHICLE_REQUEST:
                           unit = modelService.getCurrentIntervention().getUnit(id);
                           break;
-                      case DRONE_PATH_ASSIGNED:
-                          mapFragment.updateDronePath(modelService.getCurrentIntervention().getPathDrone());
-                          Log.w(TAG, "nbPoint : "+modelService.getCurrentIntervention().getPathDrone().getPoints().size());
-                          break;
                       default:
                           break;
                   }
@@ -193,6 +188,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
                 if(UPDATE_DRONE_POSITION.equals(intent.getAction())){
                     DronePing dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
                     updateDronePosition(dronePing);
+                } else if(DRONE_PATH_ASSIGNED.equals(intent.getAction()){
+                    mapFragment.updateDronePath(modelService.getCurrentIntervention().getPathDrone());
                 }
             }
         }
