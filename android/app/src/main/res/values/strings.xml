@@ -38,6 +38,7 @@
     <!-- Message must be prefixed by msg-->
     <string name="msg_authentication_success">Connexion effectué avec succès !</string>
     <string name="msg_no_intervention_in_progress">    - Il n\'y a pas d\'interventions en cours !</string>
+    <string name="msg_no_request_in_progress">    - Il n\'y a pas de demandes de moyen en cours !</string>
 
     <!-- Error Message must be prefixed by error -->
     <string name="error_connection_error">Une erreur à eu lieu durant la connexion avec le serveur !</string>

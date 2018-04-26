@@ -20,6 +20,7 @@ import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.model.ApplicationModel;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
@@ -236,6 +237,14 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     @Override
     public List<Vehicle> getAvailableVehicle() {
         return model.getVehicleAvailables();
+    }
+
+    /**
+     * @return the list of vehicle requests
+     */
+    @Override
+    public List<Request> getRequests() {
+        return model.getRequests();
     }
 
     @Override

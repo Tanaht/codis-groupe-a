@@ -8,6 +8,7 @@ import java.util.List;
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
@@ -81,6 +82,12 @@ public class ModelServiceBinder extends Binder {
          * @return the list of vehicles available.
          */
         List<Vehicle> getAvailableVehicle();
+
+        /**
+         *
+         * @return the list of vehicle requests
+         */
+        List<Request> getRequests();
 
         /**
          *
