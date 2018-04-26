@@ -2,19 +2,19 @@ package fr.istic.sit.codisgroupea.model.message.receive;
 
 import java.util.List;
 
+/**
+ * A mission order message
+ * message form :
+ *      * {
+ *      *   path :: [{
+ *      *     lat :: double,
+ *      *     lng :: double
+ *      *   }],
+ *      *   altitude :: double,
+ *      *   type :: PathType
+ *      * }
+ */
 public class MissionOrderMessage {
-
-    /**
-     * Message form
-     * {
-     *   path :: [{
-     *     lat :: double,
-     *     lng :: double
-     *   }],
-     *   altitude :: double,
-     *   type :: PathType
-     * }
-     */
 
     private double altitude;
 

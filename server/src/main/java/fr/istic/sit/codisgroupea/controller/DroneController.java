@@ -14,31 +14,42 @@ import org.springframework.stereotype.Controller;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controller for drone actions
+ */
 @Controller
-public class DronePositionController {
+public class DroneController {
 
     /** The logger */
-    private static final Logger logger = LoggerFactory.getLogger(DronePositionController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DroneController.class);
 
+    /**
+     * The socket between server and drone {@link SocketForDroneCommunication}
+     */
     private SocketForDroneCommunication socketForDroneCommunication;
 
     /**
-     * Constructor of the class {@link DronePositionController}
+     * Constructor of the class {@link DroneController}
      *
      * @param socketForDroneCommunication
      */
-    public DronePositionController(SocketForDroneCommunication socketForDroneCommunication) {
+    public DroneController(SocketForDroneCommunication socketForDroneCommunication) {
         this.socketForDroneCommunication = socketForDroneCommunication;
     }
 
+    /**
+     * Catch a new mission order from the drone
+     * @param id
+     * @param missionOrder
+     */
     @MessageMapping(RoutesConfig.RECEIVE_DRONE_MISSION)
     public void getMission(@DestinationVariable("id") final int id, MissionOrderMessage missionOrder) {
-        System.out.println("Mission order received !");
-        System.out.println("For intervention "+missionOrder.getType()+" !");
+        logger.info("Mission order received from drone");
         List<Location> path = new ArrayList<>();
         for(MissionOrderMessage.Location loc : missionOrder.getPath()){
             path.add(new Location(loc.getLat(), loc.getLng()));
         }
+        logger.info("Link mission to drone using SocketForDroneCommunication");
         socketForDroneCommunication.sendMessage(new MissionOrder("ASSIGN_MISSION", id, missionOrder.getType(), path));
     }
 }
