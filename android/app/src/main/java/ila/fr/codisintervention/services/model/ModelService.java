@@ -14,13 +14,14 @@ import java.util.List;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.exception.RequestNotFoundException;
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.ApplicationModel;
 import ila.fr.codisintervention.models.model.InterventionModel;
-import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
@@ -172,10 +173,20 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(unitUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT);
                 break;
             case WebsocketService.DEMANDE_ACCEPTED:
+                Request request = intent.getParcelableExtra(WebsocketService.DEMANDE_ACCEPTED);
+                model.getRequests().remove(request);
+                sendToEveryone(request.getId(), ModelConstants.VALIDATE_VEHICLE_REQUEST);
                 break;
             case WebsocketService.DEMANDE_DENIED:
+                Request req = intent.getParcelableExtra(WebsocketService.DEMANDE_DENIED);
+                model.getRequests().remove(req);
+                sendToEveryone(req.getId(), ModelConstants.REJECT_VEHICLE_REQUEST);
                 break;
             case WebsocketService.DEMANDE_CREATED:
+                ila.fr.codisintervention.models.messages.Request requset =
+                        intent.getParcelableExtra(WebsocketService.DEMANDE_CREATED);
+                model.getRequests().add(new Request(requset));
+                sendToEveryone(requset.getId(), ModelConstants.ADD_VEHICLE_REQUEST);
                 break;
             case WebsocketService.DRONE_PING:
                 break;
@@ -239,12 +250,14 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
         return model.getVehicleAvailables();
     }
 
-    /**
-     * @return the list of vehicle requests
-     */
     @Override
     public List<Request> getRequests() {
         return model.getRequests();
+    }
+
+    @Override
+    public Request getRequestById(int id) throws RequestNotFoundException {
+        return model.getRequestById(id);
     }
 
     @Override

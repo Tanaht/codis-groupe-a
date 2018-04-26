@@ -55,5 +55,6 @@
     <string name="action_drone">Envoyer Drone</string>
     <string name="action_demande_moyen">Demande Moyen</string>
     <string name="action_deconnexion">Deconnexion</string>
+    <string name="title_requests_in_progress_list">Liste des demandes de moyen en cours</string>
 
 </resources>

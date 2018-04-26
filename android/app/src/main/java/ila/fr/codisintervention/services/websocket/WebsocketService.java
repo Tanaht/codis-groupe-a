@@ -6,7 +6,6 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import es.dmoral.toasty.Toasty;
-import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.Request;
@@ -526,9 +523,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         this.client.topic("/topic/users/" + user.getUsername() + "/intervention-chosen").subscribe(message -> {
             Log.i(TAG, "[/users/" + user.getUsername() + "/intervention-chosen] Received message: " + message.getPayload());
 
-
             Intent interventionChosen  = new Intent(getApplicationContext(), ModelService.class);
-
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
             interventionChosen.setAction(INTERVENTION_CHOSEN);
@@ -540,6 +535,14 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         if(user.isCodisUser()) {
             this.client.topic("/topic/demandes/created").subscribe(message -> {
                 Log.i(TAG, "[/demandes/created] Received message: " + message.getPayload());
+
+                Intent requestCreated  = new Intent(getApplicationContext(), ModelService.class);
+
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+                requestCreated.setAction(DEMANDE_CREATED);
+                requestCreated.putExtra(DEMANDE_CREATED, gson.fromJson(message.getPayload(), Request.class));
+                getApplicationContext().startService(requestCreated);
             });
 
             performDemandeSubscriptionInitialization(initializeApplication.getDemandes());
@@ -556,15 +559,39 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
             this.client.topic("/topic/requests/" + request.getId() + "/accepted").subscribe(message -> {
                 Log.i(TAG, "[/topic/requests/" + request.getId() + "/accepted] Received message: " + message.getPayload());
+                notifyRequestAccepted(request);
             });
             this.client.topic("/topic/requests/" + request.getId() + "/denied").subscribe(message -> {
                 Log.i(TAG, "[/topic/requests/" + request.getId() + "/denied] Received message: " + message.getPayload());
+                notifyRequestDenied(request);
             });
         }
     }
 
     /**
-     * Accept vehicle request
+     * notify that the request is accepted
+     * @param request the request
+     */
+    private void notifyRequestAccepted(Request request) {
+        Intent acceptedRequest  = new Intent(getApplicationContext(), ModelService.class);
+        acceptedRequest.setAction(DEMANDE_ACCEPTED);
+        acceptedRequest.putExtra(DEMANDE_ACCEPTED, request);
+        getApplicationContext().startService(acceptedRequest);
+    }
+
+    /**
+     * notify that the request is denied
+     * @param request the request
+     */
+    private void notifyRequestDenied(Request request) {
+        Intent acceptedRequest  = new Intent(getApplicationContext(), ModelService.class);
+        acceptedRequest.setAction(DEMANDE_DENIED);
+        acceptedRequest.putExtra(DEMANDE_DENIED, request);
+        getApplicationContext().startService(acceptedRequest);
+    }
+
+    /**
+     * Accept vehicle request (Codis)
      * @param request
      */
     public void acceptVehicleRequest(Request request){
@@ -588,7 +615,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
     /**
-     * Deny vehicle request
+     * Deny vehicle request (Codis)
      * @param request
      */
     public void denyVehicleRequest(Request request){

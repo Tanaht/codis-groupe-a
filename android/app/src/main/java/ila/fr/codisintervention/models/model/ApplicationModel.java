@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.exception.RequestNotFoundException;
 import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -114,6 +115,15 @@ public class ApplicationModel {
             }
         }
         throw new InterventionNotFoundException(id);
+    }
+
+    public Request getRequestById(int id) throws RequestNotFoundException {
+        for(Request request: requests){
+            if(request.getId().equals(id)){
+                return request;
+            }
+        }
+        throw new RequestNotFoundException(id);
     }
 
 }

@@ -6,6 +6,7 @@ import android.os.Binder;
 import java.util.List;
 
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.exception.RequestNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.Request;
@@ -88,6 +89,13 @@ public class ModelServiceBinder extends Binder {
          * @return the list of vehicle requests
          */
         List<Request> getRequests();
+
+        /**
+         * @param id the id of the request
+         * @return the request
+         * @throws RequestNotFoundException
+         */
+        Request getRequestById(int id) throws RequestNotFoundException;
 
         /**
          *

@@ -13,7 +13,7 @@ import lombok.Setter;
 public class Request {
 
     /** Id of the object Unit */
-    private int id;
+    private Integer id;
 
     /** Represent a vehicle */
     private Vehicle vehicle;
