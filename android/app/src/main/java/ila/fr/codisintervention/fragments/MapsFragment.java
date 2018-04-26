@@ -287,7 +287,7 @@ public class MapsFragment extends Fragment {
         LatLng coord = new LatLng(point.getLat(), point.getLon());
         Marker mark = googleMap.addMarker(new MarkerOptions().position(coord).draggable(true)
                 .title("" + point.getId()).snippet("").icon(BitmapDescriptorFactory
-                        .fromBitmap(resizeBitmap(point.isMoving()?R.drawable.drone_glow:R.drawable.drone_marker, 50, 50))));
+                        .fromBitmap(resizeBitmap(point.isMoving()?R.drawable.drone_icon_map:R.drawable.drone_marker, 50, 50))));
         mark.showInfoWindow();
         return coord;
     }

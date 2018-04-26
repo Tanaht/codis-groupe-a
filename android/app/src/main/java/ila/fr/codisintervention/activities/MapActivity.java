@@ -130,6 +130,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         mapIntentFilter.addAction(ADD_VEHICLE_REQUEST);
         mapIntentFilter.addAction(VALIDATE_VEHICLE_REQUEST);
         mapIntentFilter.addAction(UPDATE_DRONE_POSITION);
+        mapIntentFilter.addAction(DRONE_PATH_ASSIGNED);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, mapIntentFilter);
     }
