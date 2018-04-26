@@ -65,7 +65,6 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
      * Fragment used to display the map
      */
     MapsFragment mapFragment;
-    //MeansTableFragment tabFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +75,6 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         FragmentManager manager = getSupportFragmentManager();
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
         mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
-        //tabFragment = (MeansTableFragment) manager.findFragmentById(R.id.tabFragment);
     }
 
     /**

@@ -28,6 +28,11 @@
     <string name="header_5">Heure engagement</string>
     <string name="header_6">Heure libération</string>
 
+    <!-- Additional means types -->
+    <string name="mean_1">VSAV</string>
+    <string name="mean_2">FPT</string>
+    <string name="mean_3">VLCG</string>
+
     <!-- All strings related to ihm are here, no special convention -->
     <string name="label_vehicles_list">Liste des moyens :</string>
     <string name="label_username">Identifiant</string>
@@ -43,6 +48,7 @@
     <string name="label_intervention_address_postal_code">Code postale :</string>
     <string name="label_intervention_address_city">Ville :</string>
     <string name="label_intervention_sinister_code">Code sinistre :</string>
+    <string name="label_additional_mean">Demander Moyen Supplémentaire</string>
 
     <!-- Message must be prefixed by msg-->
     <string name="msg_authentication_success">Connexion effectué avec succès !</string>

@@ -1,29 +1,26 @@
 package ila.fr.codisintervention.activities;
 
-import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.fragments.AdditionalMeanFragment;
 
-public class MeansTableActivity extends AppCompatActivity {
+public class MeansTableActivity extends AppCompatActivity implements AdditionalMeanFragment.OnFragmentInteractionListener{
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.title_means_table);
         setContentView(R.layout.activity_means_table);
+
     }
 
-    /**
-     * Show map activity.
-     *
-     * Technically this method send an explicit intent to {@link MapActivity }
-     *
-     * @param v the view
-     */
-    public void showMapTable(View v) {
-        Intent intent = new Intent( MeansTableActivity.this, MapActivity.class);
-        startActivity(intent);
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        //not used
     }
 }
