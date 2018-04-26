@@ -11,20 +11,20 @@
     <fragment
         android:id="@+id/listSymbolFragment"
         android:name="ila.fr.codisintervention.fragments.SymbolsListFragment"
-        android:layout_width="55dp"
-        android:layout_height="match_parent"
+        android:layout_width="94dp"
+        android:layout_height="669dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="37dp" />
 
     <fragment
         android:id="@+id/mapFragment"
         android:name="ila.fr.codisintervention.fragments.MapsFragment"
-        android:layout_width="1062dp"
+        android:layout_width="1124dp"
         android:layout_height="671dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,4 +32,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_marginLeft="55dp" />
+
+    <Button
+        android:id="@+id/send_drone_points"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/send_drone_points"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/mapFragment"
+        app:layout_constraintHorizontal_bias="0.604"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listSymbolFragment"
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

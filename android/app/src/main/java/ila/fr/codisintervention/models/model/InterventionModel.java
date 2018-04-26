@@ -39,7 +39,7 @@ public class InterventionModel {
     private List<Photo> photos;
     private List<Symbol> symbols;
     private List<Unit> units;
-    private List<PathDrone> pathDrones;
+    private PathDrone pathDrone;
 
 
     /**
@@ -59,7 +59,7 @@ public class InterventionModel {
         if(intervention.getPhotos() != null){
             this.setPhotos(setListPhotoFromMessage(intervention));
         }
-        this.setPathDrones(null);
+        this.setPathDrone(null);
         this.setSymbols(null);
         this.setId(intervention.getId());
     }

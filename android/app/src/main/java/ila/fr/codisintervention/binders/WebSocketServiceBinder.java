@@ -4,6 +4,9 @@ import android.os.Binder;
 
 import java.util.List;
 
+import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.PathDrone;
+import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.InterventionModel;
 
@@ -95,6 +98,9 @@ public class WebSocketServiceBinder extends Binder {
          * @param symbols the symbols to delete
          */
         void deleteSymbols(int interventionId, List<Symbol> symbols);
+
+
+        void createPathDrone(int interventionId, PathDrone path);
     }
 
 
