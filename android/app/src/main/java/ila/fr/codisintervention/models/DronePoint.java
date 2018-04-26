@@ -19,6 +19,8 @@ public class DronePoint {
      */
     private double lon;
 
+    private boolean moving = false;
+
     /**
      * Instantiate new DronePoint
      * @param num
@@ -77,5 +79,13 @@ public class DronePoint {
      */
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
     }
 }

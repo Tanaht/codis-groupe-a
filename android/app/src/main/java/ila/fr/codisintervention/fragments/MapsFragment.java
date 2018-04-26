@@ -34,6 +34,7 @@ import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.messages.Location;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 
 /**
  * Fragment that contain the Map to show
@@ -97,7 +98,7 @@ public class MapsFragment extends Fragment {
                             .add(new LatLng(previous.getLat(), previous.getLon()),
                                     new LatLng(point.getLat(), point.getLon()))
                             .width(5)
-                            .color(Color.RED));
+                            .color(Color.DKGRAY));
                 }
                 previous = point;
             }
@@ -286,7 +287,7 @@ public class MapsFragment extends Fragment {
         LatLng coord = new LatLng(point.getLat(), point.getLon());
         Marker mark = googleMap.addMarker(new MarkerOptions().position(coord).draggable(true)
                 .title("" + point.getId()).snippet("").icon(BitmapDescriptorFactory
-                        .fromBitmap(resizeBitmap(R.drawable.drone_icon_map, 50, 50))));
+                        .fromBitmap(resizeBitmap(point.isMoving()?R.drawable.drone_glow:R.drawable.drone_marker, 50, 50))));
         mark.showInfoWindow();
         return coord;
     }
@@ -304,6 +305,7 @@ public class MapsFragment extends Fragment {
             drone.setLon(newDrone.getLon());
         } else {                                        // Create
             DronePoint drone = new DronePoint(0, newDrone.getLat(), newDrone.getLon());
+            drone.setMoving(true);
             course.put(0, drone);
         }
         updateUI(googleMap);
@@ -333,4 +335,16 @@ public class MapsFragment extends Fragment {
         mMapView.onLowMemory();
     }
 
+    public void updateDronePath(PathDrone pathDrone) {
+        Log.w(TAG, "Update path");
+        int dpId = 1;
+        for(Location dronePoint : pathDrone.getPoints()){
+            Log.w(TAG, "new point");
+            int idDrawable = R.drawable.drone_icon_map;
+            DronePoint pt = new DronePoint(dpId, dronePoint.getLat(), dronePoint.getLng());
+            course.put(new Integer(dpId), pt);   // add points in the course
+            dpId += 1;
+            updateUI(googleMap);
+        }
+    }
 }

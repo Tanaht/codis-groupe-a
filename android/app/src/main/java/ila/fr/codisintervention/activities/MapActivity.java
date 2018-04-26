@@ -41,6 +41,7 @@ import ila.fr.codisintervention.services.WebSocketServiceAware;
 
 import static ila.fr.codisintervention.models.model.map_icon.drone.PathDroneType.SEGMENT;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
+import static ila.fr.codisintervention.services.constants.ModelConstants.DRONE_PATH_ASSIGNED;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT;
@@ -172,6 +173,10 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
                           break;
                       case VALIDATE_VEHICLE_REQUEST:
                           unit = modelService.getCurrentIntervention().getUnit(id);
+                          break;
+                      case DRONE_PATH_ASSIGNED:
+                          mapFragment.updateDronePath(modelService.getCurrentIntervention().getPathDrone());
+                          Log.w(TAG, "nbPoint : "+modelService.getCurrentIntervention().getPathDrone().getPoints().size());
                           break;
                       default:
                           break;
