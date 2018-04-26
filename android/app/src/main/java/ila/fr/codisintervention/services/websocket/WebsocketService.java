@@ -21,6 +21,7 @@ import java.util.List;
 
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.InterventionChosenMessage;
 import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -540,7 +541,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             interventionChosen.setAction(INTERVENTION_CHOSEN);
 
 
-            interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), Intervention.class));
+            interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), InterventionChosenMessage.class));
             getApplicationContext().startService(interventionChosen);
         });
 

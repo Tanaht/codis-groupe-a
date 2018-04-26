@@ -9,6 +9,7 @@ import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.InterventionChosenMessage;
 import ila.fr.codisintervention.models.messages.Type;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.user.User;
@@ -117,15 +118,23 @@ public class ApplicationModel {
      *
      * @param intervention the intervention
      */
-    public void actualiseInterventionChoosen(Intervention intervention){
+    public void actualiseInterventionChoosen(InterventionChosenMessage intervention){
         InterventionModel intervInList = null;
         for (InterventionModel interv : interventions){
             if (interv.getId().equals(intervention.getId())){
                 intervInList = interv;
             }
         }
-        currentIntervention = new InterventionModel(intervention);
         if (intervInList != null){
+            currentIntervention = intervInList;
+
+            Photo
+
+            currentIntervention.setPhotos(intervention.getPhotos());
+            currentIntervention.setSymbols(intervInList.);
+            currentIntervention.setUnits();
+
+
             currentIntervention.setLocation(intervInList.getLocation());
             currentIntervention.setSinisterCode(intervInList.getSinisterCode());
             currentIntervention.setAddress(intervInList.getAddress());
