@@ -24,8 +24,6 @@ INSERT INTO vehicle_type VALUES (1, 'VSAV');
 INSERT INTO vehicle_type VALUES (2, 'FPT');
 INSERT INTO vehicle_type VALUES (3, 'VLCG');
 
-
-
 -- Insert Vehicle
 INSERT INTO vehicle VALUES (1, 'vehicule 1', 2, null);
 INSERT INTO vehicle VALUES (2, 'vehicule 2', 2, null);
@@ -47,3 +45,19 @@ INSERT INTO intervention VALUES (2, 'Cours des Alliés, 35024 Rennes', 152215927
 -- Insert symbol
 Insert INTO symbol VALUES (1,0,2);
 Insert INTO symbol VALUES (2,2,2);
+
+-- Insert payload
+Insert INTO payload VALUES (1, 'detail test 1', 'identifier test 1');
+Insert INTO payload VALUES (2, 'detail test 2', 'identifier test 2');
+
+-- Insert symbol_sitac
+Insert INTO symbol_sitac VALUES (1, 1, 1, 1, 1);
+Insert INTO symbol_sitac VALUES (2, 2, 2, 2, 2);
+
+-- Insert unit_vehicle
+Insert INTO unit_vehicle VALUES (1, 1, 1, 1, 1);
+Insert INTO unit_vehicle VALUES (2, 2, 2, 2, 2);
+
+-- Insert unit
+Insert INTO unit VALUES ( 1, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 1, 1, 1);
+Insert INTO unit VALUES ( 2, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 2, 2, 2);
