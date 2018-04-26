@@ -2,6 +2,9 @@ package fr.istic.sit.codisgroupea.model.message.demand;
 
 import fr.istic.sit.codisgroupea.model.message.utils.Location;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * The create-unit message.
  */
@@ -21,7 +24,13 @@ public class CreateUnitMessage {
         /**
          * The Type.
          */
+        @NotNull
+        @NotEmpty
         public String type;
+
+        @NotNull
+        @NotEmpty
+        public String status;
 
         /**
          * Instantiates a new Vehicle.
@@ -45,13 +54,21 @@ public class CreateUnitMessage {
         /**
          * The location of the symbol
          */
+        @NotNull
         public Location location;
+
+        /**
+         * The shape of the symbol
+         */
+        @NotEmpty
+        public String color;
 
     }
 
     /**
      * The Vehicle.
      */
+    @NotNull
     public Vehicle vehicle;
 
     /**

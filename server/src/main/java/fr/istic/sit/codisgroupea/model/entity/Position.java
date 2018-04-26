@@ -1,5 +1,7 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
+import fr.istic.sit.codisgroupea.model.message.utils.Location;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,6 +38,15 @@ public class Position {
     public Position(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    /**
+     * Position Constructor from a Location Message
+     * @param location
+     */
+    public Position(@NotNull Location location) {
+        this.setLatitude(location.getLat());
+        this.setLongitude(location.getLng());
     }
 
     /**

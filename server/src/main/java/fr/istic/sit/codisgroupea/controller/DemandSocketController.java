@@ -2,13 +2,18 @@ package fr.istic.sit.codisgroupea.controller;
 
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
-import fr.istic.sit.codisgroupea.model.entity.*;
+import fr.istic.sit.codisgroupea.exception.InvalidMessageException;
+import fr.istic.sit.codisgroupea.factory.UnitFactory;
+import fr.istic.sit.codisgroupea.model.entity.Intervention;
+import fr.istic.sit.codisgroupea.model.entity.Symbol;
+import fr.istic.sit.codisgroupea.model.entity.Unit;
+import fr.istic.sit.codisgroupea.model.entity.Vehicle;
 import fr.istic.sit.codisgroupea.model.message.ListUnitMessage;
-import fr.istic.sit.codisgroupea.model.message.receive.ConfirmDemandVehicleMessage;
-import fr.istic.sit.codisgroupea.model.message.send.DemandesCreatedMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.UnitCreatedMessage;
+import fr.istic.sit.codisgroupea.model.message.receive.ConfirmDemandVehicleMessage;
+import fr.istic.sit.codisgroupea.model.message.send.DemandesCreatedMessage;
 import fr.istic.sit.codisgroupea.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +26,6 @@ import org.springframework.stereotype.Controller;
 import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +33,7 @@ import java.util.Optional;
  * Controller for demand routes.
  */
 @Controller
+@SuppressWarnings({"squid:S1192", "squid:S2629"})
 public class DemandSocketController {
 
     private static final Logger logger = LoggerFactory.getLogger(DemandSocketController.class);
@@ -48,8 +53,8 @@ public class DemandSocketController {
     /** {@link SymbolRepository} instance */
     private SymbolRepository symbolRepository;
 
-    /** {@link DefaultVehicleSymbolRepository} instance */
-    private DefaultVehicleSymbolRepository defaultVehicleSymbolRepository;
+    /** {@link fr.istic.sit.codisgroupea.factory.UnitFactory} the unit factory from the DI */
+    private UnitFactory unitFactory;
 
     /**
      * Constructor of the class {@link DemandSocketController}
@@ -58,13 +63,15 @@ public class DemandSocketController {
      * @param interventionRepository {@link InterventionRepository} instance
      * @param vehicleRepository {@link VehicleRepository} instance
      * @param symbolRepository {@link SymbolRepository} instance
+     * @Param unitFactory {@link UnitFactory} instance
      */
-    public DemandSocketController(SimpMessagingTemplate simpMessagingTemplate, UnitRepository unitRepository, InterventionRepository interventionRepository, VehicleRepository vehicleRepository, SymbolRepository symbolRepository) {
+    public DemandSocketController(SimpMessagingTemplate simpMessagingTemplate, UnitRepository unitRepository, InterventionRepository interventionRepository, VehicleRepository vehicleRepository, SymbolRepository symbolRepository, UnitFactory unitFactory) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.unitRepository = unitRepository;
         this.interventionRepository = interventionRepository;
         this.vehicleRepository = vehicleRepository;
         this.symbolRepository = symbolRepository;
+        this.unitFactory = unitFactory;
     }
 
     /**
@@ -76,55 +83,34 @@ public class DemandSocketController {
      */
     @MessageMapping(RoutesConfig.CREATE_UNIT_CLIENT)
     public void createUnit(@DestinationVariable("id") final int id, Principal principal, CreateUnitMessage dataSendByClient) {
-        logger.trace(RoutesConfig.CREATE_UNIT_CLIENT+" --> data receive "+dataSendByClient);
-
+        logger.trace("{} --> data receive {}", RoutesConfig.CREATE_UNIT_CLIENT, dataSendByClient);
         Intervention intervention = interventionRepository.getOne(id);
-        String userLogin = principal.getName();
-        Timestamp now = new Timestamp(new Date().getTime());
 
-        Symbol symbol = defaultVehicleSymbolRepository
-                .findByType(new VehicleType(dataSendByClient.vehicle.type))
-                .getSymbol();
 
-        SymbolSitac symbolSitac = new SymbolSitac(
-                intervention,
-                symbol,
-                null,
-                new Payload(null, null)
-        );
+        try {
+            Unit unit = unitFactory.createUnit(intervention, dataSendByClient);
+            unit = unitRepository.save(unit);
 
-        //Message for the codis
-        UnitVehicle unitVehicle = new UnitVehicle();
-        //TODO: UnitVehicle need to be filled with correct status and type at this moment
-        Unit unit = new Unit(
-                intervention,
-                unitVehicle,
-                null,
-                true,
-                now,
-                new Timestamp(0),
-                symbolSitac
-        );
+            UnitCreatedMessage unitCreated = new UnitCreatedMessage(
+                    unit.getId(),
+                    new UnitCreatedMessage.Vehicle(dataSendByClient.vehicle.type)
+            );
 
-        unit = unitRepository.save(unit);
+            Gson jason = new Gson();
 
-        UnitCreatedMessage unitCreated = new UnitCreatedMessage(
-                unit.getId(),
-                new UnitCreatedMessage.Vehicle(dataSendByClient.vehicle.type)
-        );
+            String toJson = jason.toJson(unitCreated);
+            String urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CLIENT.replace("{id}", String.valueOf(id));
+            logger.trace("{} --> data send {}", urlToSend, toJson);
+            simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CLIENT,toJson);
 
-        Gson jason = new Gson();
-
-        //Message for the client
-        String toJson = jason.toJson(unitCreated);
-        String urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CLIENT.replace("{id}", String.valueOf(id));
-        logger.trace(urlToSend+" --> data send "+toJson);
-        simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CLIENT,toJson);
-
-        toJson = jason.toJson(new DemandesCreatedMessage(unit));
-        urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CODIS;
-        logger.trace(urlToSend+" --> data send "+toJson);
-        simpMessagingTemplate.convertAndSend(urlToSend,toJson);
+            toJson = jason.toJson(new DemandesCreatedMessage(unit));
+            urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CODIS;
+            logger.trace("{} --> data send {}", urlToSend, toJson);
+            simpMessagingTemplate.convertAndSend(urlToSend,toJson);
+        } catch(InvalidMessageException e) {
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -139,12 +125,12 @@ public class DemandSocketController {
     @SendTo({RoutesConfig.UPDATE_UNIT_SERVER})
     public ListUnitMessage updateUnit(@DestinationVariable("id") final int idInterventions, Principal principal, List<UnitMessage> dataSendByClient) {
         Gson jason = new Gson();
-        logger.trace(RoutesConfig.UPDATE_UNIT_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
+        logger.trace("{} --> data receive {}", RoutesConfig.UPDATE_UNIT_CLIENT, jason.toJson(dataSendByClient));
 
         Optional<Intervention> intervention = interventionRepository.findById(idInterventions);
 
         if (!intervention.isPresent()){
-            logger.error("Intervention with id "+ idInterventions+" doesn't exist");
+            logger.error("Intervention with id {} doesn't exist", idInterventions);
         }
 
         List<UnitMessage> listUnitUpdated = new ArrayList<>();
@@ -157,7 +143,7 @@ public class DemandSocketController {
                             unitMessageFromCLient.getSymbolUnitMessage().getShape());
 
             if(!unitInBdd.isPresent()){
-                logger.error("Unit with id "+unitMessageFromCLient.getId()+" doesn't exist in bdd");
+                logger.error("Unit with id {} doesn't exist in bdd", unitMessageFromCLient.getId());
             }
 
             if(!vehicle.isPresent()){
@@ -189,8 +175,10 @@ public class DemandSocketController {
             listUnitUpdated.add(unitUpdated);
         }
 
+        //FIXME: Ask question to beaulieu: I have difficulty to understand the reason of the object return
         ListUnitMessage toReturn = new ListUnitMessage("UPDATE", listUnitUpdated);
-        logger.trace(RoutesConfig.UPDATE_UNIT_SERVER+" --> data send "+jason.toJson(toReturn));
+        String json = jason.toJson(toReturn);
+        logger.trace("{} --> data send {}", RoutesConfig.UPDATE_UNIT_SERVER, json);
         return toReturn;
     }
 
@@ -224,7 +212,7 @@ public class DemandSocketController {
 
         String toJson = gson.toJson(unitToSend,UnitMessage.class);
 
-        logger.trace(routeToSend+" --> data send "+toJson);
+        logger.trace("{} --> data send {}",routeToSend, toJson);
         //Message for the client
         simpMessagingTemplate.convertAndSend(routeToSend,toJson);
     }
@@ -250,14 +238,14 @@ public class DemandSocketController {
 
 
         String toSend = "denied";
-        logger.trace(RoutesConfig.DENY_DEMAND_SERVER_CODIS+" --> data send "+toSend);
+        logger.trace("{} --> data send {}", RoutesConfig.DENY_DEMAND_SERVER_CODIS, toSend);
         //Message for the codis
         simpMessagingTemplate.convertAndSend(RoutesConfig.DENY_DEMAND_SERVER_CODIS,toSend);
 
         toSend = "denied";
         String urlToSend = "/topic/interventions/"+
                 unit.get().getIntervention().getId()+"/units/"+idUnit+"/denied";
-        logger.trace(urlToSend+" --> data send "+toSend);
+        logger.trace("{} --> data send {}", urlToSend, toSend);
         //Message for the client
         simpMessagingTemplate.convertAndSend(urlToSend,toSend);
     }

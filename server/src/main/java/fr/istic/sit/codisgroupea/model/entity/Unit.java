@@ -3,6 +3,7 @@ package fr.istic.sit.codisgroupea.model.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Representation of a tactical unit. A unit is a vehicle within an intervention.
@@ -49,6 +50,18 @@ public class Unit {
      */
     public Unit() {
 
+    }
+
+
+    /**
+     * Constructor that instanciate a Unit in an Intervention context,
+     * it Will initialize the Request Date and the related UnitVehicle instance
+     * @param intervention
+     */
+    public Unit(Intervention intervention) {
+        this.intervention = intervention;
+        this.unitVehicle = new UnitVehicle();
+        this.requestDate = new Timestamp(new Date().getTime());
     }
 
     /**
@@ -237,7 +250,7 @@ public class Unit {
      *
      * @return the symbol sitac
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @NotNull
     public SymbolSitac getSymbolSitac() {
         return symbolSitac;
@@ -257,7 +270,7 @@ public class Unit {
      *
      * @return the unit vehicle
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @NotNull
     public UnitVehicle getUnitVehicle() {
         return unitVehicle;
