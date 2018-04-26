@@ -39,12 +39,15 @@ public class ApplicationModel {
     private List<String> sinisterCodes;
     private List<String> vehicleTypes;
 
+    private List<Request> requests;
+
     public ApplicationModel(){}
     public ApplicationModel(InitializeApplication init){
         sinisterCodes = new ArrayList<>();
         vehicleTypes = new ArrayList<>();
         interventions = new ArrayList<>();
         vehicleAvailables = new ArrayList<>();
+        requests = new ArrayList<>();
         currentIntervention = null;
 
         for (Code code : init.getCodes()){
@@ -58,6 +61,9 @@ public class ApplicationModel {
         }
         for (ila.fr.codisintervention.models.messages.Vehicle vehicle : init.getVehicles()){
             vehicleAvailables.add(new Vehicle(vehicle));
+        }
+        for(ila.fr.codisintervention.models.messages.Request req: init.getDemandes()){
+            requests.add(new Request(req));
         }
 
         user = new User(init.getUser());
