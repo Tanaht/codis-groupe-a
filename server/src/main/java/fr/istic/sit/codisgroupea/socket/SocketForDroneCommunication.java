@@ -2,7 +2,10 @@ package fr.istic.sit.codisgroupea.socket;
 
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
+import fr.istic.sit.codisgroupea.controller.AuthenticationController;
 import fr.istic.sit.codisgroupea.model.message.LocationMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +25,9 @@ import java.net.Socket;
 @Service
 public class SocketForDroneCommunication {
 
+	/** The logger */
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
     private SimpMessagingTemplate simpMessagingTemplate;
 
 	private Socket socket;
@@ -31,17 +37,29 @@ public class SocketForDroneCommunication {
 
 	/**
 	 * 
-	 * The the server socket, then create 2 Thread to send and receive message
+	 * Start the socket, then create 2 Thread to send and receive message
 	 *
 	 * @throws IOException
 	 */
 	public SocketForDroneCommunication(SimpMessagingTemplate simpMessagingTemplate) throws IOException {
-        this.simpMessagingTemplate = simpMessagingTemplate;
+		this.simpMessagingTemplate = simpMessagingTemplate;
+		Runnable startSocket = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					start();
+					//Read message from drone
+					receiveMessage();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
-        this.start();
-		
-		//Read message from drone
-		this.receiveMessage();
+			}
+		};
+		//Start thread
+		Thread startSocketThread = new Thread(startSocket);
+		startSocketThread.start();
+		logger.info("Socket for drone communication is started");
 	}
 
 	/**
@@ -93,6 +111,7 @@ public class SocketForDroneCommunication {
 							}
 						}
 					}
+					logger.info("Socket is closed");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -133,6 +152,10 @@ public class SocketForDroneCommunication {
 		sendThread.start();
 	}
 
+	/**
+	 * Send the drone position (received by socket) to android (by websocket)
+	 * @param location
+	 */
     public void sendDronePosition(Location location) {
         Gson gson = new Gson();
         String toJson = gson.toJson(new LocationMessage(location.getLat(), location.getLng(), location.getAlt()),LocationMessage.class);
