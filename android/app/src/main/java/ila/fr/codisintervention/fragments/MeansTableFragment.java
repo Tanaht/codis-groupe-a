@@ -19,10 +19,7 @@ import ila.fr.codisintervention.R;
  * The type Means table fragment.
  */
 public class MeansTableFragment extends Fragment {
-    /**
-     * The Title.
-     */
-    TextView title;
+
 
     @Nullable
     @Override
@@ -33,8 +30,6 @@ public class MeansTableFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        title = (TextView) view.findViewById(R.id.title);
-        title.setText(getString(R.string.title_means_table));
     }
 
     @Override

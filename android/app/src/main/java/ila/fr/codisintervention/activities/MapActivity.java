@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
@@ -63,8 +64,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     /**
      * Fragment used to display the map
      */
-    //MapsFragment mapFragment;
-    MeansTableFragment tabFragment;
+    MapsFragment mapFragment;
+    //MeansTableFragment tabFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +75,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
         FragmentManager manager = getSupportFragmentManager();
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
-        //mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
-        tabFragment = (MeansTableFragment) manager.findFragmentById(R.id.tabFragment);
+        mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
+        //tabFragment = (MeansTableFragment) manager.findFragmentById(R.id.tabFragment);
     }
 
     /**
@@ -179,7 +180,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.layout.menu_map_activity, menu);
+        getMenuInflater().inflate(R.layout.menu_map_activity, menu);
         return true;
     }
 
@@ -243,5 +244,17 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     public void onFragmentInteraction(Uri uri) {
 //        No Interaction because unnecessary
+    }
+
+    /**
+     * Show Means Table activity.
+     *
+     * Technically this method send an explicit intent to {@link MeansTableActivity }
+     *
+     * @param v the view
+     */
+    public void showMeansTable(View v) {
+        Intent intent = new Intent( MapActivity.this, MeansTableActivity.class);
+        startActivity(intent);
     }
 }
