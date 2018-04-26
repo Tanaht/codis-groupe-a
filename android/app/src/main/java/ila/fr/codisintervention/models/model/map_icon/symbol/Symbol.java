@@ -1,9 +1,8 @@
 package ila.fr.codisintervention.models.model.map_icon.symbol;
 
 
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.map_icon.Color;
-import ila.fr.codisintervention.models.model.InterventionModel;
-import ila.fr.codisintervention.models.model.Position;
 import ila.fr.codisintervention.models.model.map_icon.Shape;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +18,7 @@ public class Symbol {
     private Integer id;
 
     /** Instance of {@link Position} for the location of the symbol sitac */
-    private Position location;
+    private Location location;
 
     /** Instance of {@link Payload} for the payload of the symbol sitac */
     private Payload payload;

@@ -128,7 +128,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_CREATED:
                 Symbol symbolCreated = intent.getParcelableExtra(WebsocketService.INTERVENTION_SYMBOL_CREATED);
-                model.getCurrentIntervention().getSymbols().add(symbolCreated);
+                model.getCurrentIntervention().createSymbol(symbolCreated);
                 sendToEveryone(symbolCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_UPDATED:
@@ -156,14 +156,14 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
             case WebsocketService.INTERVENTION_UNIT_CREATED:
                 Unit unitCreated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_CREATED);
-                model.getCurrentIntervention().getUnits().add(unitCreated);
+                model.getCurrentIntervention().createUnit(unitCreated);
                 sendToEveryone(unitCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT);
                 break;
             case WebsocketService.INTERVENTION_UNIT_UPDATED:
                 Unit unitUpdated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_UPDATED);
                 try {
-                    model.getCurrentIntervention().changeUnit(unitUpdated);
+                    model.getCurrentIntervention().updateUnit(unitUpdated);
                 } catch (UnitNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to update a unit who doesn't exist ");
                     e.printStackTrace();
@@ -188,7 +188,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
 
     /**
-     * FIXME: Every intent doesn't have the same extra signature, si it has to be removed -> it would be exported equally when we will refactor this class
+     * FIXME: Every intent doesn't have the same extra signature, if it has to be removed -> it would be exported equally when we will refactor this class
      * Workaround to broadcoast an intent to everyone,
      * @param id the identifier to send in extra of the intent
      * @param intentAction the intent action name
@@ -212,7 +212,6 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     public InterventionModel getInterventionById(int id) throws InterventionNotFoundException {
         return model.getInterventionById(id);
     }
-
 
     @Override
     public InterventionModel getCurrentIntervention() {

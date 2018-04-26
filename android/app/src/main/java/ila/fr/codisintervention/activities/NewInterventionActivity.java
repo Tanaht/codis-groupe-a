@@ -1,13 +1,10 @@
 package ila.fr.codisintervention.activities;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,13 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,13 +24,11 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
-import ila.fr.codisintervention.models.model.Position;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
-import ila.fr.codisintervention.services.model.ModelService;
-import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ila.fr.codisintervention.utils.AutocompleteAdapter;
 import ila.fr.codisintervention.utils.VehiclesListAdapter;
 
@@ -172,7 +165,7 @@ public class NewInterventionActivity extends AppCompatActivity implements ModelS
             Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
 
             if(latlngAddress != null) {
-                intervention.setPosition(new Position(latlngAddress.latitude, latlngAddress.longitude));
+                intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
                 // Send Intervention Details to WSS
                 webSocketService.createIntervention(intervention);
 

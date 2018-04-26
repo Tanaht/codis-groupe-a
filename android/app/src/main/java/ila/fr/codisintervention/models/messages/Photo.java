@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import ila.fr.codisintervention.models.Location;
+
 /**
  * Created by tanaky on 28/03/18.
  * Represent a snapshot taken by the drone
@@ -97,7 +99,7 @@ public class Photo implements Parcelable {
     public Photo(ila.fr.codisintervention.models.model.Photo photo){
          url = photo.getUri();
          date = photo.getDate().getTime();
-         location = new Location(photo.getCoordinates());
+         location = new Location(photo.getLocation());
     }
 
     /**

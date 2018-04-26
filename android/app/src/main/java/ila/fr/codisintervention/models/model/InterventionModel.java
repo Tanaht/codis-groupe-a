@@ -1,12 +1,12 @@
 package ila.fr.codisintervention.models.model;
 
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
@@ -26,8 +26,8 @@ public class InterventionModel {
     /** The date of the intervention */
     private long date;
 
-    /** Instance of {@link Position} objet for the intervention */
-    private Position position;
+    /** Instance of {@link Location} objet for the intervention */
+    private Location location;
 
     /** Address of the intervention */
     private String address;
@@ -52,7 +52,7 @@ public class InterventionModel {
         this.setDate(intervention.getDate());
 
         if (intervention.getLocation() != null){
-            this.setPosition(new Position(intervention.getLocation().getLat(), intervention.getLocation().getLng()));
+            this.setLocation(intervention.getLocation());
         }
         this.setSinisterCode(intervention.getCode());
         this.setOpened(true);
@@ -78,6 +78,14 @@ public class InterventionModel {
     }
 
     /**
+     * Add symbol into the symbolList
+     * @param symb to add
+     */
+    public void createSymbol(Symbol symb){
+        symbols.add(symb);
+    }
+
+    /**
      * Gets symbol.
      *
      * @param idSymb the id symb
@@ -93,21 +101,6 @@ public class InterventionModel {
         throw new SymbolNotFoundException(idSymb);
     }
 
-    /**
-     * Gets unit.
-     *
-     * @param idUnit the id unit
-     * @return the unit
-     * @throws UnitNotFoundException the unit not found exception
-     */
-    public Unit getUnit(int idUnit) throws UnitNotFoundException {
-        for (Unit unit: units){
-            if (unit.getId().equals(idUnit)){
-                return unit;
-            }
-        }
-        throw new UnitNotFoundException(idUnit);
-    }
 
     /**
      * Update symbol.
@@ -142,19 +135,43 @@ public class InterventionModel {
     }
 
     /**
+     * add unit to unitList
+     * @param unit unit to add
+     */
+    public void createUnit(Unit unit){
+        units.add(unit);
+    }
+
+    /**
+     * Gets unit.
+     *
+     * @param idUnit the id unit
+     * @return the unit
+     * @throws UnitNotFoundException the unit not found exception
+     */
+    public Unit getUnit(int idUnit) throws UnitNotFoundException {
+        for (Unit unit: units){
+            if (unit.getId().equals(idUnit)){
+                return unit;
+            }
+        }
+        throw new UnitNotFoundException(idUnit);
+    }
+
+    /**
      * Change unit.
      *
      * @param unitUpdated the unit updated
      * @throws UnitNotFoundException the unit not found exception
      */
-    public void changeUnit(Unit unitUpdated) throws UnitNotFoundException {
+    public void updateUnit(Unit unitUpdated) throws UnitNotFoundException {
         for(Unit unit : units){
             if(unit.getId().equals(unitUpdated.getId())){
                 unit.load(unitUpdated);
                 return;
             }
         }
-
         throw new UnitNotFoundException(unitUpdated.getId());
     }
+
 }
