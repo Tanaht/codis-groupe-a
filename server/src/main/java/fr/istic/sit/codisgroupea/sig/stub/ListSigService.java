@@ -25,8 +25,8 @@ public class ListSigService implements SigRepository<SymbolSitac> {
     public ListSigService() {
         symbols = new ArrayList<>();
 
-        addToSig(Color.BLUE, Shape.CIRCLE, null, new Position(48.11540, -1.63813));
-        addToSig(Color.ORANGE, Shape.TRIANGLEDOWN, null, new Position(48.11520, -1.63999));
+        addToSig(Color.BLUE, Shape.WATERRESOURCE, null, new Position(48.11540, -1.63813));
+        addToSig(Color.ORANGE, Shape.DANGERDOWN, null, new Position(48.11520, -1.63999));
     }
 
     /**

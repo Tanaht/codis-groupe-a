@@ -422,6 +422,11 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
     @Override
     public void createSymbols(int interventionId, List<ila.fr.codisintervention.models.model.map_icon.symbol.Symbol> symbols) {
+        List<Symbol> listSymbols = new ArrayList<>();
+        for (ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb : symbols){
+            listSymbols.add(new Symbol(symb));
+        }
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {
@@ -434,7 +439,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             }
         }).create();
 
-        String json = gson.toJson(symbols);
+        String json = gson.toJson(listSymbols);
         Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/create] with message " + json);
         this.client.send("/app/interventions/" + interventionId + "/symbols/create", json).subscribe(
                 () -> Log.w(TAG, "[/app/interventions/" + interventionId + "/symbols/create] Sent data!"),

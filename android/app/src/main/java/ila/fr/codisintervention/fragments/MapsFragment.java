@@ -236,7 +236,7 @@ public class MapsFragment extends Fragment {
                             List<Symbol> maListe = new ArrayList<Symbol>();
                             maListe.add(mySymbol);
                             ((MapActivity) getActivity()).getWebSocketService().createSymbols(id, maListe);
-                            printSymbol(mySymbol); // draw it only for the test
+                            //printSymbol(mySymbol); // draw it only for the test
                         }else{
                             Toasty.error(getActivity().getApplicationContext(), getString(R.string.error_symbol_not_found), Toast.LENGTH_SHORT, true).show();
                         }

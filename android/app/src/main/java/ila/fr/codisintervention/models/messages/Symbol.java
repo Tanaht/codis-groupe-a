@@ -22,7 +22,7 @@ public class Symbol implements Parcelable {
      * Identifier of the symbol
      */
     @Expose
-    private int id;
+    private Integer id;
 
     /**
      * Shape of the Symbol it's a String that is one of the one define in enum Shape
@@ -58,6 +58,7 @@ public class Symbol implements Parcelable {
         shape = symbolUnit.getShape().name();
         color = symbolUnit.getColor().name();
         location = symbolUnit.getLocation();
+        payload = new Payload(symbolUnit.getPayload());
     }
 
     public Symbol(ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb){
@@ -65,7 +66,9 @@ public class Symbol implements Parcelable {
         shape = symb.getShape().name();
         color = symb.getColor().name();
         location = symb.getLocation();
-        payload = new Payload(symb.getPayload());
+        if (payload != null){
+            payload = new Payload(symb.getPayload());
+        }
     }
 
     /**
@@ -94,18 +97,18 @@ public class Symbol implements Parcelable {
      * @param in the in
      */
     protected Symbol(Parcel in) {
-        id = in.readInt();
         shape = in.readString();
         color = in.readString();
+        id = (Integer) in.readValue(Integer.class.getClassLoader());
         location = in.readParcelable(Location.class.getClassLoader());
         payload = in.readParcelable(Payload.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(shape);
         dest.writeString(color);
+        dest.writeValue(id);
         dest.writeParcelable(location, flags);
         dest.writeParcelable(payload, flags);
     }

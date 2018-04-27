@@ -16,16 +16,23 @@ public class SymbolUnit {
     private Color color;
     /** Instance of {@link Shape} for the shape of the symbol */
     private Shape shape;
+    /** Instance of {@link Payload} for the payload of the symbol sitac */
+    private Payload payload;
+
 
     public SymbolUnit(ila.fr.codisintervention.models.messages.Symbol symb){
         location = symb.getLocation();
         color = Color.valueOf(symb.getColor());
         shape = Shape.valueOf(symb.getShape());
+        if (payload != null){
+            payload = new Payload(symb.getPayload());
+        }
     }
 
     public void load(SymbolUnit symbolUnit) {
         location = symbolUnit.getLocation();
         color = symbolUnit.getColor();
         shape = symbolUnit.getShape();
+        payload = symbolUnit.getPayload();
     }
 }

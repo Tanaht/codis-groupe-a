@@ -45,9 +45,59 @@ INSERT INTO intervention VALUES (1, '11 Rue du Bois Perrin', 1522159274, 1, 1, 1
 INSERT INTO intervention VALUES (2, 'Cours des Alliés, 35024 Rennes', 1522159274, 1, 2, 2);
 
 -- Insert symbol
-Insert INTO symbol VALUES (1,0,2);
-Insert INTO symbol VALUES (2,2,2);
+insert into symbol VALUE  (1, 0, 0);
+insert into symbol VALUE  (2, 1, 0);
+insert into symbol VALUE  (3, 2, 0);
+insert into symbol VALUE  (4, 3, 0);
+insert into symbol VALUE  (5, 4, 0);
 
+insert into symbol VALUE  (6, 0, 1);
+insert into symbol VALUE  (7, 1, 1);
+insert into symbol VALUE  (8, 2, 1);
+insert into symbol VALUE  (9, 3, 1);
+insert into symbol VALUE  (10, 4, 1);
+
+insert into symbol VALUE  (11, 0, 2);
+insert into symbol VALUE  (12, 1, 2);
+insert into symbol VALUE  (13, 2, 2);
+insert into symbol VALUE  (14, 3, 2);
+insert into symbol VALUE  (15, 4, 2);
+
+insert into symbol VALUE  (16, 0, 3);
+insert into symbol VALUE  (17, 1, 3);
+insert into symbol VALUE  (18, 2, 3);
+insert into symbol VALUE  (19, 3, 3);
+insert into symbol VALUE  (20, 4, 3);
+
+insert into symbol VALUE  (21, 0, 4);
+insert into symbol VALUE  (22, 1, 4);
+insert into symbol VALUE  (23, 2, 4);
+insert into symbol VALUE  (24, 3, 4);
+insert into symbol VALUE  (25, 4, 4);
+
+insert into symbol VALUE  (26, 0, 5);
+insert into symbol VALUE  (27, 1, 5);
+insert into symbol VALUE  (28, 2, 5);
+insert into symbol VALUE  (29, 3, 5);
+insert into symbol VALUE  (30, 4, 5);
+
+insert into symbol VALUE  (31, 0, 6);
+insert into symbol VALUE  (32, 1, 6);
+insert into symbol VALUE  (33, 2, 6);
+insert into symbol VALUE  (34, 3, 6);
+insert into symbol VALUE  (35, 4, 6);
+
+insert into symbol VALUE  (36, 0, 7);
+insert into symbol VALUE  (37, 1, 7);
+insert into symbol VALUE  (38, 2, 7);
+insert into symbol VALUE  (39, 3, 7);
+insert into symbol VALUE  (40, 4, 7);
+
+insert into symbol VALUE  (41, 0, 8);
+insert into symbol VALUE  (42, 1, 8);
+insert into symbol VALUE  (43, 2, 8);
+insert into symbol VALUE  (44, 3, 8);
+insert into symbol VALUE  (45, 4, 8);
 -- Insert payload
 Insert INTO payload VALUES (1, 'detail test 1', 'identifier test 1');
 Insert INTO payload VALUES (2, 'detail test 2', 'identifier test 2');
