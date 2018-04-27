@@ -125,7 +125,6 @@ public class UnitSocketController {
             listUnitUpdated.add(unitUpdated);
         }
 
-        //FIXME: Ask question to beaulieu: I have difficulty to understand the reason of the object return
         ListUnitMessage toReturn = new ListUnitMessage("UPDATE", listUnitUpdated);
         String json = jason.toJson(toReturn);
         logger.trace("{} --> data send {}", RoutesConfig.UPDATE_UNIT_SERVER, json);

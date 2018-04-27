@@ -123,7 +123,7 @@ public class UnitFactory {
      */
     private void hydrateUnitWithVehicleStatus(Unit unit) {
 
-        //FIXME: for now to assign the correct status we depend on the present of location persisted on database, it's not good enough
+        //FIXME: for now to assign the correct status we depend on the presence of location persisted on database, it's not good enough
         if( unit.getSymbolSitac().getLocation() != null) {
             unit.getUnitVehicle().setStatus(VehicleStatus.USED);
         } else {
