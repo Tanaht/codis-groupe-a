@@ -335,4 +335,16 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
 
     }
+
+    /**
+     * Show Means Table activity.
+     *
+     * Technically this method send an explicit intent to {@link MeansTableActivity }
+     *
+     * @param v the view
+     */
+    public void showMeansTable(View v) {
+        Intent intent = new Intent( MapActivity.this, MeansTableActivity.class);
+        startActivity(intent);
+    }
 }
