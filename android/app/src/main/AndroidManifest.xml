@@ -19,13 +19,13 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <service android:name=".services.websocket.WebsocketService"/>
+        <service android:name=".services.websocket.WebsocketService" />
         <service android:name=".services.model.ModelService">
             <intent-filter>
-                <action android:name="CONNECT_TO_APPLICATION"/>
+                <action android:name="CONNECT_TO_APPLICATION" />
             </intent-filter>
         </service>
+
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,13 +41,12 @@
         <activity android:name=".activities.InterventionsListActivity" />
         <activity android:name=".activities.NewInterventionActivity" />
         <activity
-         android:name=".activities.MapActivity"
-         android:label="@string/title_activity_map"
-            android:screenOrientation="landscape"
+            android:name=".activities.MapActivity"
             android:configChanges="keyboardHidden|orientation"
-         android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_map"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar" />
 
-        
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -60,7 +59,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-
+        <activity android:name=".activities.MeansTableActivity"></activity>
     </application>
 
 </manifest>

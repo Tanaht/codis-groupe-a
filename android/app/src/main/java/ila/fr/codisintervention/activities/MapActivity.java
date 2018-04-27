@@ -29,6 +29,7 @@ import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.fragments.MapsFragment;
+import ila.fr.codisintervention.fragments.MeansTableFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.messages.DronePing;
@@ -313,27 +314,5 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     public void onFragmentInteraction(Uri uri) {
 //        No Interaction because unnecessary
-    }
-
-    @Override
-    public void onWebSocketServiceConnected() {
-        Log.d(TAG, "onWebSocketServiceConnected");
-    }
-
-    @Override
-    public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
-       this.webSocketService = webSocketService;
-    }
-
-    @Override
-    public void onModelServiceConnected() {
-        Log.d(TAG, "OnModelServiceConnected");
-
-
-    }
-
-    @Override
-    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
-        this.modelService = modelService;
     }
 }
