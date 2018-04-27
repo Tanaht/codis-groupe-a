@@ -1,10 +1,13 @@
 package ila.fr.codisintervention.fragments;
 
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,9 +34,11 @@ import java.util.List;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.messages.Location;
+import ila.fr.codisintervention.models.model.Position;
 import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 
 /**
@@ -146,9 +151,14 @@ public class MapsFragment extends Fragment {
             Log.e(TAG, e.getMessage(), e);
         }
 
+        mMapView.setClickable(true);
+        return rootView;
+    }
+
+    public void onModelServiceConnected(Position interventionPosition){
         mMapView.getMapAsync(mMap -> {
             googleMap = mMap;
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(48.115204, -1.637871)).zoom(18).build();
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(interventionPosition.getLatitude(), interventionPosition.getLongitude())).zoom(18).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
             /*
@@ -213,10 +223,6 @@ public class MapsFragment extends Fragment {
                 }
             });
         });
-
-
-        mMapView.setClickable(true);
-        return rootView;
     }
     /**
      * Get symbol from activity {@link MapActivity}

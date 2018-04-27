@@ -34,6 +34,7 @@
     <string name="label_intervention_address_postal_code">Code postale :</string>
     <string name="label_intervention_address_city">Ville :</string>
     <string name="label_intervention_sinister_code">Code sinistre :</string>
+    <string name="intervention_created">L\'intervention a été créée.</string>
 
     <!-- Message must be prefixed by msg-->
     <string name="msg_authentication_success">Connexion effectué avec succès !</string>
