@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,7 @@ public class SymbolsListFragment extends Fragment {
      */
     public void addImageView(List<SymbolKind> list, View view) {
         for (SymbolKind symbole : list) {
-            symbole.setImageView((ImageView) view.findViewById(getResources().getIdentifier(symbole.getId(), "id", getActivity().getPackageName())));
+            symbole.setImageView((ImageView) view.findViewById(getResources().getIdentifier(symbole.getDefaultIcon(), "id", getActivity().getPackageName())));
         }
     }
 
@@ -130,9 +131,11 @@ public class SymbolsListFragment extends Fragment {
              * TODO: It's not better to have a reference to the selected one instead of iterating over SymbolKind list ?
              * @see currentSymbol what is the purpose of this field if not to solve this issue ?
              */
+            symbol.setColor(selectedColor);
+
             if(symbol.isSelected()){
                 switch(symbol.getId()){
-                    case "water_resource":
+                    case "waterresource":
                         break;
                     case "sinister":
                         switch(selectedColor){
@@ -152,7 +155,7 @@ public class SymbolsListFragment extends Fragment {
                                 break;
                         }
                         break;
-                    case "triangle_down":
+                    case "dangerdown":
                         switch(selectedColor){
                             case "red":
                                 symbol.setIdDrawable(R.drawable.reddangerdown);
@@ -170,7 +173,7 @@ public class SymbolsListFragment extends Fragment {
                                 break;
                         }
                         break;
-                    case "triangle_up":
+                    case "dangerup":
                         switch(selectedColor){
                             case "red":
                                 symbol.setIdDrawable(R.drawable.reddangerup);
@@ -207,7 +210,7 @@ public class SymbolsListFragment extends Fragment {
                                 break;
                         }
                         break;
-                    case "not_effective_vehicle":
+                    case "noteffectivevehicle":
                         switch(selectedColor){
                             case "red":
                                 symbol.setIdDrawable(R.drawable.rednoteffectivevehicle);
@@ -226,7 +229,7 @@ public class SymbolsListFragment extends Fragment {
                                 break;
                         }
                         break;
-                    case "fire_vehicle":
+                    case "firevehicle":
                         switch(selectedColor){
                             case "red":
                                 symbol.setIdDrawable(R.drawable.redfirevehicle);
@@ -243,7 +246,7 @@ public class SymbolsListFragment extends Fragment {
                                 break;
                         }
                         break;
-                    case "not_effective_fire_vehicle":
+                    case "noteffectivefirevehicle":
                         switch(selectedColor){
                             case "red":
                                 symbol.setIdDrawable(R.drawable.rednoteffectivefirevehicle);

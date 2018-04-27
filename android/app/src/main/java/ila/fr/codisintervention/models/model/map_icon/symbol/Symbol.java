@@ -29,6 +29,12 @@ public class Symbol {
     /** Instance of {@link Shape} for the shape of the symbol */
     private Shape shape;
 
+    public Symbol( Location location, Color color, Shape shape ){
+        this.location = location;
+        this.color = color;
+        this.shape = shape;
+    }
+
     public Symbol(ila.fr.codisintervention.models.messages.Symbol symb){
         id = symb.getId();
         location = symb.getLocation();

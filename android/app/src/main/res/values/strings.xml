@@ -43,7 +43,7 @@
     <string name="error_connection_error">Une erreur à eu lieu durant la connexion avec le serveur !</string>
     <string name="error_connection_close">Pour certaines raisons, vous n\'êtes plus connecté au serveur</string>
     <string name="error_incomplete_credentials">Veuillez renseigner votre nom d\'utilisateur et votre mot de passe !</string>
-    <string name="error_invalid_credentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>
+    <string name="error_invalid_credentials">Les informations de connexions sont incorrectes, veuillez réessayer !</string>
     <string name="error_converting_address2geocode">Aucune coordonnée n\'a pu être récupéré pour cette adresse, veuillez choisir une autre adresse !</string>
     <string name="error_address_field_empty">Veuillez saisir l\'adresse de l\'intervention svp !</string>
 
@@ -54,5 +54,6 @@
     <string name="action_drone">Envoyer Drone</string>
     <string name="action_demande_moyen">Demande Moyen</string>
     <string name="action_deconnexion">Deconnexion</string>
+    <string name="error_symbol_not_found">Ce symbole n\'existe pas.</string>
 
 </resources>

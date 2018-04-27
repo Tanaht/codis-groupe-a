@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,13 +24,20 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.entities.SymbolKind;
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.model.Unit;
+import ila.fr.codisintervention.models.model.map_icon.Shape;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 
 /**
  * Fragment that contain the Map to show
@@ -119,8 +127,47 @@ public class MapsFragment extends Fragment {
         for(Map.Entry<String, MarkerOptions> entry: markers.entrySet()){
             googleMap.addMarker(entry.getValue());
         }
+
+        if (((MapActivity)getActivity()).getModelService().getCurrentIntervention() != null) {
+            if (((MapActivity)getActivity()).getModelService().getCurrentIntervention().getSymbols() != null) {
+                for (Symbol s : ((MapActivity) getActivity()).getModelService().getCurrentIntervention().getSymbols()) {
+                    printSymbol(s);
+                }
+            }
+            if (((MapActivity)getActivity()).getModelService().getCurrentIntervention().getUnits() != null) {
+                for (Unit u : ((MapActivity) getActivity()).getModelService().getCurrentIntervention().getUnits()) {
+                    printSymbol(u.getSymbol());
+                }
+            }
+        }
+
     }
 
+    /**
+     * Add on the googlemap a symbol or a unit from the model
+     * s : Symbol to draw
+     * @param s
+     */
+    public void printSymbol(Symbol s){
+        Integer drawablePath = getDrawablepathFromSymbol(s);
+        if (drawablePath > 0) { //the picture doesn't exist if =0
+            Bitmap marker = resizeBitmap(drawablePath, 50, 50);
+            addCustomMarkerZoom(new LatLng(s.getLocation().getLat(), s.getLocation().getLng()), marker);
+        }
+    }
+
+    /**
+     * Find the picture resource path of a symbol
+     * If >0 : found !
+     * s : Symbol to find
+     * return the resource's id.
+     * @param s
+     * @return
+     */
+    public Integer getDrawablepathFromSymbol(Symbol s){
+        String str = (ila.fr.codisintervention.models.model.map_icon.Color) s.getColor() + s.getShape().name();
+        return getResources().getIdentifier(str.toLowerCase(), "drawable", getActivity().getPackageName());
+    }
 
 //    TODO: To refactor SonarLint said it's to complex to read, and I'm agree with it perhaps we can place hook on layout like android:onClick, if not simply create class that instanciate the appropriate listeners.
     @Override
@@ -141,6 +188,7 @@ public class MapsFragment extends Fragment {
 
         mMapView.getMapAsync(mMap -> {
             googleMap = mMap;
+
             CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(48.115204, -1.637871)).zoom(18).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
@@ -159,8 +207,25 @@ public class MapsFragment extends Fragment {
                         cptId += 1;
                         updateUI(googleMap);                   // refresh the map
                     } else {
-                        Bitmap marker = resizeBitmap(symbole.getIdDrawable(), 50, 50);
-                        addCustomMarkerZoom(latLng, marker);
+
+                        //Bitmap marker = resizeBitmap(symbole.getIdDrawable(), 50, 50);
+                        //addCustomMarkerZoom(latLng, marker);
+
+                        // transform a SymbolKind to a Symbol and send it via websocket
+                        ila.fr.codisintervention.models.model.map_icon.Color color = ila.fr.codisintervention.models.model.map_icon.Color.valueOf(symbole.getColor().toUpperCase());
+                        int id = ((MapActivity)getActivity()).getModelService().getCurrentIntervention().getId();
+                        Shape shape = Shape.valueOf(symbole.getId().toUpperCase());
+                        Location location = new Location(latLng.latitude,latLng.longitude);
+                        Symbol mySymbol = new Symbol(location, color, shape);
+                        if (getDrawablepathFromSymbol(mySymbol) > 0) { // the symbol's picture exists
+                            List<Symbol> maListe = new ArrayList<Symbol>();
+                            maListe.add(mySymbol);
+                            ((MapActivity) getActivity()).getWebSocketService().createSymbols(id, maListe);
+                            printSymbol(mySymbol); // draw it only for the test
+                        }else{
+                            Toasty.error(getActivity().getApplicationContext(), getString(R.string.error_symbol_not_found), Toast.LENGTH_SHORT, true).show();
+                        }
+
                     }
                 }
 
@@ -271,7 +336,6 @@ public class MapsFragment extends Fragment {
     public void zoomOnMarker(LatLng coord) {
         CameraPosition cameraPosition = new CameraPosition.Builder().target(coord).zoom(17).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
     }
 
     /**
@@ -326,6 +390,13 @@ public class MapsFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    /**
+     * update the googleMap view from the mapActivity
+     */
+    public void updateView(){
+        updateUI(googleMap);
     }
 
 }
