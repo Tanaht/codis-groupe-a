@@ -118,6 +118,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            updateView();
+
             int id = (int) intent.getExtras().get("id");
             Symbol symbol;
             Unit unit;

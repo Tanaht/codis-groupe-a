@@ -38,6 +38,7 @@ import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.Shape;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
 
 /**
  * Fragment that contain the Map to show
@@ -136,7 +137,7 @@ public class MapsFragment extends Fragment {
             }
             if (((MapActivity)getActivity()).getModelService().getCurrentIntervention().getUnits() != null) {
                 for (Unit u : ((MapActivity) getActivity()).getModelService().getCurrentIntervention().getUnits()) {
-                    printSymbol(u.getSymbol());
+                    printSymbolUnit(u.getSymbolUnit());
                 }
             }
         }
@@ -156,6 +157,15 @@ public class MapsFragment extends Fragment {
         }
     }
 
+    public void printSymbolUnit(SymbolUnit s){
+        Integer drawablePath = getDrawablepathFromSymbolUnit(s);
+        if (drawablePath > 0) { //the picture doesn't exist if =0
+            Bitmap marker = resizeBitmap(drawablePath, 50, 50);
+            addCustomMarkerZoom(new LatLng(s.getLocation().getLat(), s.getLocation().getLng()), marker);
+        }
+    }
+
+
     /**
      * Find the picture resource path of a symbol
      * If >0 : found !
@@ -165,6 +175,10 @@ public class MapsFragment extends Fragment {
      * @return
      */
     public Integer getDrawablepathFromSymbol(Symbol s){
+        String str = (ila.fr.codisintervention.models.model.map_icon.Color) s.getColor() + s.getShape().name();
+        return getResources().getIdentifier(str.toLowerCase(), "drawable", getActivity().getPackageName());
+    }
+    public Integer getDrawablepathFromSymbolUnit(SymbolUnit s){
         String str = (ila.fr.codisintervention.models.model.map_icon.Color) s.getColor() + s.getShape().name();
         return getResources().getIdentifier(str.toLowerCase(), "drawable", getActivity().getPackageName());
     }
