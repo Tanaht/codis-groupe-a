@@ -63,20 +63,6 @@ public class Unit implements Parcelable {
         symbol = new Symbol(unit.getSymbol());
     }
     /**
-     * Instantiates a new Unit.
-     *
-     * @param in the parcel that contain the details of this class
-     */
-    protected Unit(Parcel in) {
-        id = in.readInt();
-        date_granted = in.readLong();
-        date_reserved = in.readLong();
-        moving = in.readByte() != 0;
-        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
-        symbol = in.readParcelable(Symbol.class.getClassLoader());
-    }
-
-    /**
      * Usefull to Parcelize an instance of this class  {@link Parcelable}
      * The constant CREATOR.
      */
@@ -97,6 +83,20 @@ public class Unit implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    /**
+     * Instantiates a new Unit.
+     *
+     * @param in the parcel that contain the details of this class
+     */
+    protected Unit(Parcel in) {
+        id = in.readInt();
+        date_granted = in.readLong();
+        date_reserved = in.readLong();
+        moving = in.readInt() != 0;
+        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+        symbol = in.readParcelable(Symbol.class.getClassLoader());
     }
 
     @Override

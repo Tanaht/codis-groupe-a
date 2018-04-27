@@ -79,26 +79,25 @@ public class Intervention implements Parcelable {
      * Instantiates a new Intervention.
      */
     public Intervention() {
+        photos = new ArrayList<>();
+        symbols = new ArrayList<>();
+        units = new ArrayList<>();
     }
-
     /**
-     * Instantiates a new Intervention.
-     *
-     * @param in the parcel that contain the details of this class
+     * The constant CREATOR.
+     * Usefull to Parcelize an instance of this class  {@link Parcelable}
      */
-    protected Intervention(Parcel in) {
-        id = in.readInt();
-        date = in.readLong();
-        code = in.readString();
-        address = in.readString();
-        drone_available = in.readByte() != 0;
-        location = in.readParcelable(Location.class.getClassLoader());
-        photos = in.createTypedArrayList(Photo.CREATOR);
-        symbols = in.createTypedArrayList(Symbol.CREATOR);
-        units = in.createTypedArrayList(Unit.CREATOR);
+    public static final Creator<Intervention> CREATOR = new Creator<Intervention>() {
+        @Override
+        public Intervention createFromParcel(Parcel in) {
+            return new Intervention(in);
+        }
 
-
-    }
+        @Override
+        public Intervention[] newArray(int size) {
+            return new Intervention[size];
+        }
+    };
 
     public Intervention(InterventionModel interventionModel){
         id = interventionModel.getId();
@@ -130,25 +129,27 @@ public class Intervention implements Parcelable {
 
     }
 
-    /**
-     * The constant CREATOR.
-     * Usefull to Parcelize an instance of this class  {@link Parcelable}
-     */
-    public static final Creator<Intervention> CREATOR = new Creator<Intervention>() {
-        @Override
-        public Intervention createFromParcel(Parcel in) {
-            return new Intervention(in);
-        }
-
-        @Override
-        public Intervention[] newArray(int size) {
-            return new Intervention[size];
-        }
-    };
-
     @Override
     public int describeContents() {
         return 0;
+    }
+    /**
+     * Instantiates a new Intervention.
+     *
+     * @param in the parcel that contain the details of this class
+     */
+    protected Intervention(Parcel in) {
+        id = in.readInt();
+        date = in.readLong();
+        code = in.readString();
+        address = in.readString();
+        drone_available = in.readByte() != 0;
+
+        location = in.readParcelable(Location.class.getClassLoader());
+
+        photos = in.createTypedArrayList(Photo.CREATOR);
+        symbols = in.createTypedArrayList(Symbol.CREATOR);
+        units = in.createTypedArrayList(Unit.CREATOR);
     }
 
     @Override
@@ -158,11 +159,12 @@ public class Intervention implements Parcelable {
         dest.writeString(code);
         dest.writeString(address);
         dest.writeInt(drone_available ? 1 : 0);
-        dest.writeParcelable(location, flags);
-        dest.writeList(photos);
 
-        dest.writeList(symbols);
-        dest.writeList(units);
+        dest.writeParcelable(location, flags);
+
+        dest.writeTypedList(photos);
+        dest.writeTypedList(symbols);
+        dest.writeTypedList(units);
     }
 
 

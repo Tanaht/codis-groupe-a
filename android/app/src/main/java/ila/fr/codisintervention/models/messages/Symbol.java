@@ -17,7 +17,7 @@ public class Symbol implements Parcelable {
      * Identifier of the symbol
      */
     @Expose
-    private Integer id;
+    private int id;
 
     /**
      * Shape of the Symbol it's a String that is one of the one define in enum Shape
@@ -145,11 +145,7 @@ public class Symbol implements Parcelable {
      * @param in the in
      */
     protected Symbol(Parcel in) {
-        if (in.readByte() == 0) {
-            id = null;
-        } else {
-            id = in.readInt();
-        }
+        id = in.readInt();
         shape = in.readString();
         color = in.readString();
         location = in.readParcelable(Location.class.getClassLoader());
