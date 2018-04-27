@@ -1,5 +1,7 @@
 package fr.istic.sit.codisgroupea.model.message.utils;
 
+import fr.istic.sit.codisgroupea.constraints.groups.Message;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -10,15 +12,39 @@ import javax.validation.constraints.NotNull;
 public class Location {
 
     /** Latitude of the location. */
-    @NotNull
-    @Min(-90)
-    @Max(90)
+    @NotNull(groups = {
+            Message.CreateUnitMessageReception.class,
+            Message.CreateUnitMessageWithSymbolReception.class,
+            Message.UnitMessageReception.class
+    })
+    @Min(value = -90, groups = {
+            Message.CreateUnitMessageReception.class,
+            Message.CreateUnitMessageWithSymbolReception.class,
+            Message.UnitMessageReception.class
+    })
+    @Max(value = 90, groups = {
+            Message.CreateUnitMessageReception.class,
+            Message.CreateUnitMessageWithSymbolReception.class,
+            Message.UnitMessageReception.class
+    })
     private double lat;
 
     /** Longitude of the location. */
-    @NotNull
-    @Min(-180)
-    @Max(180)
+    @NotNull(groups = {
+            Message.CreateUnitMessageReception.class,
+            Message.CreateUnitMessageWithSymbolReception.class,
+            Message.UnitMessageReception.class
+    })
+    @Min(value = -180, groups = {
+            Message.CreateUnitMessageReception.class,
+            Message.CreateUnitMessageWithSymbolReception.class,
+            Message.UnitMessageReception.class
+    })
+    @Max(value = 180, groups = {
+            Message.CreateUnitMessageReception.class,
+            Message.CreateUnitMessageWithSymbolReception.class,
+            Message.UnitMessageReception.class
+    })
     private double lng;
 
     public double getLat() {

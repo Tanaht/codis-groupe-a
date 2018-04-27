@@ -129,7 +129,7 @@ public class UnitSocketController {
                 }
             });
 
-//            unitRepository.saveAll(toBePersisted);
+            unitRepository.saveAll(toBePersisted);
         } catch (InvalidMessageException e) {
             logger.error(e.getMessage());
             e.printStackTrace();

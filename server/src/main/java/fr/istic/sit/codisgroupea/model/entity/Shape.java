@@ -27,5 +27,5 @@ public enum Shape {
     /**
      * Action-zone shape.
      */
-    ACTIONZONE
+    ACTIONZONE;
 }

@@ -68,7 +68,7 @@ public class UnitFactory {
      * @throws InvalidMessageException the invalid message exception
      */
     public Unit createUnit(Intervention intervention, CreateUnitMessage message) throws InvalidMessageException  {
-        Set<ConstraintViolation<CreateUnitMessage>> constraints =  validator.validate(message);
+        Set<ConstraintViolation<CreateUnitMessage>> constraints =  validator.validate(message, Message.CreateUnitMessageReception.class);
 
         if(!constraints.isEmpty()) {
             throw new InvalidMessageException(CreateUnitMessage.class, constraints.toString());
@@ -80,7 +80,11 @@ public class UnitFactory {
         unit.getUnitVehicle().setStatus(VehicleStatus.REQUESTED);
 
         //If Symbol is set
-        if(message.symbol != null && validator.validate(message.symbol).isEmpty()) {
+        if(message.symbol != null) {
+            Set<ConstraintViolation<fr.istic.sit.codisgroupea.model.message.utils.Symbol>> violations = validator.validate(message.symbol, Message.CreateUnitMessageWithSymbolReception.class);
+
+            if(!violations.isEmpty())
+                throw new InvalidMessageException(fr.istic.sit.codisgroupea.model.message.utils.Symbol.class, violations.toString());
             hydrateUnitWithSymbol(unit, message.symbol);
         }
         else { // if not
@@ -102,6 +106,21 @@ public class UnitFactory {
 
         if(!violations.isEmpty())
             throw new InvalidMessageException(UnitMessage.class, violations.toString());
+
+        if(message.getSymbol() != null) {
+            Set<ConstraintViolation<fr.istic.sit.codisgroupea.model.message.utils.Symbol>> symbolViolations = validator.validate(message.getSymbol());
+
+            if(symbolViolations.isEmpty())
+                hydrateUnitWithSymbol(unit, message.getSymbol());
+            else {
+                throw new InvalidMessageException(Symbol.class, symbolViolations.toString());
+            }
+        }
+
+
+        unit.setMoving(message.getMoving());
+        unit.getUnitVehicle().setStatus(VehicleStatus.valueOf(message.getVehicle().getStatus()));
+
     }
 
     /**
@@ -177,12 +196,30 @@ public class UnitFactory {
      * @param symbol the symbol
      */
     private void hydrateUnitWithSymbol(Unit unit, fr.istic.sit.codisgroupea.model.message.utils.Symbol symbol) {
-
         Optional<Symbol> requestedSymbol = symbolRepository.findSymbolByColorAndShape(Color.valueOf(symbol.color), Shape.VEHICLE);
 
+        // Just a little insurance
+        if(unit.getSymbolSitac() == null) {
+            unit.setSymbolSitac(new SymbolSitac());
+        }
+
+        SymbolSitac symbolSitac = unit.getSymbolSitac();
         if(requestedSymbol.isPresent()) {
-            SymbolSitac symbolSitac = new SymbolSitac(unit.getIntervention(), requestedSymbol.get());
-            symbolSitac.setLocation(new Position(symbol.location));
+            symbolSitac.setIntervention(unit.getIntervention());
+            symbolSitac.setSymbol(requestedSymbol.get());
+
+            if(symbolSitac.getLocation() == null)
+                symbolSitac.setLocation(new Position(symbol.location));
+            else {
+                symbolSitac.getLocation().setLongitude(symbol.location.getLng());
+                symbolSitac.getLocation().setLatitude(symbol.location.getLat());
+            }
+
+            if(symbol.getPayload() != null) {
+                symbolSitac.getPayload().setIdentifier(symbol.getPayload().getIdentifier());
+                symbolSitac.getPayload().setDetails(symbol.getPayload().getDetails());
+            }
+
             unit.setSymbolSitac(symbolSitac);
         }
         else {

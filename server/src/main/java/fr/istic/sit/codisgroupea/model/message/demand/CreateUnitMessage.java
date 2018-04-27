@@ -1,5 +1,6 @@
 package fr.istic.sit.codisgroupea.model.message.demand;
 
+import fr.istic.sit.codisgroupea.constraints.groups.Message;
 import fr.istic.sit.codisgroupea.model.message.utils.Symbol;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,12 +30,12 @@ public class CreateUnitMessage {
         /**
          * The Type.
          */
-        @NotNull
-        @NotEmpty
+        @NotNull(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
+        @NotEmpty(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
         public String type;
 
-        @NotNull
-        @NotEmpty
+        @NotNull(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
+        @NotEmpty(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
         public String status;
 
         /**
@@ -57,13 +58,14 @@ public class CreateUnitMessage {
     /**
      * The Vehicle.
      */
-    @NotNull
+    @NotNull(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
     @Valid
     public Vehicle vehicle;
 
     /**
      * The symbol that locate the vehicle on the map
      */
+
     public Symbol symbol;
 
     /**

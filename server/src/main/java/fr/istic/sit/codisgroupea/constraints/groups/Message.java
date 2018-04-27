@@ -14,4 +14,16 @@ public class Message {
      * Group that permit to the Constraint Validator to check if the {@link fr.istic.sit.codisgroupea.model.message.UnitMessage} instance is correctly filled
      */
     public interface UnitMessageReception {}
+
+
+    /**
+     * Group that permit to the Constraint Validator to check if the {@link fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage } instance is correctly filled
+     */
+    public interface CreateUnitMessageReception {}
+
+
+    /**
+     * Group that permit to the Constraint Validator to check if the {@link fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage } instance is correctly filled with a Symbol
+     */
+    public interface CreateUnitMessageWithSymbolReception {}
 }
