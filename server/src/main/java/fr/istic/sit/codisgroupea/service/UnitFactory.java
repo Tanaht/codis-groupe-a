@@ -17,6 +17,8 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
@@ -106,9 +108,10 @@ public class UnitFactory {
 
         if(!optionalVehicle.isPresent()) {
             log.error("Unable to assign a vehicle to a unit, reason: Vehicle idenfitied by {} not found in database", vehicleLabel);
-            return;
+            throw new PersistenceException("Unable to assign a vehicle to a unit, reason: Vehicle idenfitied by '" + vehicleLabel + "' not found in database");
         }
 
+        unit.setAcceptDate(new Timestamp(new Date().getTime()));
         unit.getUnitVehicle().setAssignedVehicle(optionalVehicle.get());
 
         hydrateUnitWithVehicleStatus(unit);
