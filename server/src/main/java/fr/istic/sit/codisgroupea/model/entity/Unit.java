@@ -60,7 +60,7 @@ public class Unit {
      */
     public Unit(Intervention intervention) {
         this.intervention = intervention;
-        this.unitVehicle = new UnitVehicle();
+        this.setUnitVehicle(new UnitVehicle());
         this.requestDate = new Timestamp(new Date().getTime());
     }
 
@@ -68,7 +68,6 @@ public class Unit {
      * Constructor by value.
      *
      * @param intervention the intervention
-     * @param unitVehicle  the unitVehicle
      * @param vehicle      the vehicle
      * @param moving       is the unit on the way to its target
      * @param requestDate  the request date
@@ -76,14 +75,12 @@ public class Unit {
      * @param symbolSitac  the symbol
      */
     public Unit(Intervention intervention,
-                UnitVehicle unitVehicle,
                 Vehicle vehicle,
                 boolean moving,
                 Timestamp requestDate,
                 Timestamp acceptDate,
                 SymbolSitac symbolSitac) {
         this.intervention = intervention;
-        this.unitVehicle = unitVehicle;
         this.unitVehicle.setAssignedVehicle(vehicle);
         this.moving = moving;
         this.requestDate = requestDate;
@@ -194,7 +191,6 @@ public class Unit {
      *
      * @return the accept date
      */
-    @NotNull
     public Timestamp getAcceptDate() {
         return acceptDate;
     }
@@ -270,7 +266,7 @@ public class Unit {
      *
      * @return the unit vehicle
      */
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "unit")
     @NotNull
     public UnitVehicle getUnitVehicle() {
         return unitVehicle;
@@ -283,5 +279,6 @@ public class Unit {
      */
     public void setUnitVehicle(UnitVehicle unitVehicle) {
         this.unitVehicle = unitVehicle;
+        this.unitVehicle.setUnit(this);
     }
 }

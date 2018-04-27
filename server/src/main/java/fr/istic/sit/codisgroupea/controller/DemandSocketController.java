@@ -1,10 +1,8 @@
 package fr.istic.sit.codisgroupea.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.exception.InvalidMessageException;
-import fr.istic.sit.codisgroupea.service.UnitFactory;
 import fr.istic.sit.codisgroupea.model.entity.Intervention;
 import fr.istic.sit.codisgroupea.model.entity.Unit;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
@@ -13,9 +11,9 @@ import fr.istic.sit.codisgroupea.model.message.demand.UnitCreatedMessage;
 import fr.istic.sit.codisgroupea.model.message.receive.ConfirmDemandVehicleMessage;
 import fr.istic.sit.codisgroupea.model.message.send.DemandesCreatedMessage;
 import fr.istic.sit.codisgroupea.repository.InterventionRepository;
-import fr.istic.sit.codisgroupea.repository.SymbolRepository;
 import fr.istic.sit.codisgroupea.repository.UnitRepository;
 import fr.istic.sit.codisgroupea.repository.VehicleRepository;
+import fr.istic.sit.codisgroupea.service.UnitFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -25,6 +23,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.Optional;
 
+import static fr.istic.sit.codisgroupea.config.RoutesConfig.CONFIRM_DEMAND_SERVER_CLIENT;
 import static fr.istic.sit.codisgroupea.config.RoutesConfig.DENY_DEMAND_SERVER_CLIENT;
 
 /**
@@ -48,9 +47,6 @@ public class DemandSocketController {
     /** {@link VehicleRepository} instance */
     private VehicleRepository vehicleRepository;
 
-    /** {@link SymbolRepository} instance */
-    private SymbolRepository symbolRepository;
-
     /** {@link UnitFactory} the unit factory from the DI */
     private UnitFactory unitFactory;
 
@@ -60,15 +56,13 @@ public class DemandSocketController {
      * @param unitRepository {@link UnitRepository} instance
      * @param interventionRepository {@link InterventionRepository} instance
      * @param vehicleRepository {@link VehicleRepository} instance
-     * @param symbolRepository {@link SymbolRepository} instance
      * @Param unitFactory {@link UnitFactory} instance
      */
-    public DemandSocketController(SimpMessagingTemplate simpMessagingTemplate, UnitRepository unitRepository, InterventionRepository interventionRepository, VehicleRepository vehicleRepository, SymbolRepository symbolRepository, UnitFactory unitFactory) {
+    public DemandSocketController(SimpMessagingTemplate simpMessagingTemplate, UnitRepository unitRepository, InterventionRepository interventionRepository, VehicleRepository vehicleRepository, UnitFactory unitFactory) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.unitRepository = unitRepository;
         this.interventionRepository = interventionRepository;
         this.vehicleRepository = vehicleRepository;
-        this.symbolRepository = symbolRepository;
         this.unitFactory = unitFactory;
     }
 
@@ -104,6 +98,7 @@ public class DemandSocketController {
             urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CODIS;
             logger.trace("{} --> data send {}", urlToSend, toJson);
             simpMessagingTemplate.convertAndSend(urlToSend,toJson);
+
         } catch(InvalidMessageException e) {
             logger.error(e.getMessage());
             e.printStackTrace();
@@ -135,28 +130,32 @@ public class DemandSocketController {
             unitRepository.save(unit);
             vehicleRepository.save(unit.getUnitVehicle().getAssignedVehicle());
 
+
+
+            UnitMessage unitToSend = new UnitMessage(optionalUnit.get());
+
+            String urlToSend = RoutesConfig.CONFIRM_DEMAND_SERVER_CODIS.replace("{id}", String.valueOf(unit.getId()));
+
+            //Message for the codis
+            simpMessagingTemplate.convertAndSend(urlToSend,"PING");
+
+            Gson gson = new Gson();
+
+            urlToSend = CONFIRM_DEMAND_SERVER_CLIENT
+                    .replace("{id}", String.valueOf(unit.getIntervention().getId()))
+                    .replace("{idUnit}", String.valueOf(unit.getId()));
+
+            String toJson = gson.toJson(unitToSend,UnitMessage.class);
+
+            logger.trace("{} --> data send {}",urlToSend, toJson);
+
+            //Message for the client
+            simpMessagingTemplate.convertAndSend(urlToSend,toJson);
+
         } catch (InvalidMessageException e) {
             logger.error(e.getMessage());
             e.printStackTrace();
-            return;
         }
-
-
-
-        UnitMessage unitToSend = new UnitMessage(optionalUnit.get());
-        //Message for the codis
-        simpMessagingTemplate.convertAndSend(RoutesConfig.CONFIRM_DEMAND_SERVER_CODIS,"ping");
-
-        Gson gson = new Gson();
-
-        String routeToSend = "/topic/interventions/" +optionalUnit.get().getIntervention().getId()+
-                "/units/"+idUnit+"/accepted";
-
-        String toJson = gson.toJson(unitToSend,UnitMessage.class);
-
-        logger.trace("{} --> data send {}",routeToSend, toJson);
-        //Message for the client
-        simpMessagingTemplate.convertAndSend(routeToSend,toJson);
     }
 
     /**
@@ -168,7 +167,6 @@ public class DemandSocketController {
     @MessageMapping(RoutesConfig.DENY_DEMAND_CLIENT)
     public void denyDemand(@DestinationVariable("idUnit") final int idUnit, String dataSendByClient) {
         logger.trace("{} --> data receive {}", RoutesConfig.DENY_DEMAND_CLIENT, dataSendByClient);
-        Gson jason = new GsonBuilder().create();
         Optional<Unit> optionalUnit = unitRepository.findById(idUnit);
 
         if (!optionalUnit.isPresent()){

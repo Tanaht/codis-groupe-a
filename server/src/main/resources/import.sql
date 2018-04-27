@@ -19,14 +19,14 @@ INSERT INTO user values(10,'simple3','simple3',2);
 INSERT INTO sinister_code VALUES (1,'INC');
 INSERT INTO sinister_code VALUES (2,'SAP');
 
---Insert Vehicule_Type
+-- Insert Vehicule_Type
 INSERT INTO vehicle_type VALUES (1, 'VSAV');
 INSERT INTO vehicle_type VALUES (2, 'FPT');
 INSERT INTO vehicle_type VALUES (3, 'VLCG');
 
 
 
---Insert Vehicle
+-- Insert Vehicle
 INSERT INTO vehicle VALUES (1, 'vehicule 1', 2, 1);
 INSERT INTO vehicle VALUES (2, 'vehicule 2', 2, 1);
 
@@ -47,3 +47,8 @@ INSERT INTO intervention VALUES (2, 'Cours des Alliés, 35024 Rennes', 152215927
 -- Insert symbol
 Insert INTO symbol VALUES (1,0,2);
 Insert INTO symbol VALUES (2,2,2);
+
+-- insert Default Vehicle Symbol (TODO: It's stub for instance, we need to implement the true Decision Table mentioned in specs
+insert into default_vehicle_symbol VALUE (1, 1, 1);
+insert into default_vehicle_symbol VALUE (2, 2, 2);
+insert into default_vehicle_symbol VALUE (3, 1, 3);

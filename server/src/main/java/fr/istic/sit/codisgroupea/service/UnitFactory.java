@@ -7,10 +7,12 @@ import fr.istic.sit.codisgroupea.model.message.receive.ConfirmDemandVehicleMessa
 import fr.istic.sit.codisgroupea.repository.DefaultVehicleSymbolRepository;
 import fr.istic.sit.codisgroupea.repository.SymbolRepository;
 import fr.istic.sit.codisgroupea.repository.VehicleRepository;
+import fr.istic.sit.codisgroupea.repository.VehicleTypeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.validation.constraints.NotEmpty;
@@ -30,6 +32,7 @@ public class UnitFactory {
     private SymbolRepository symbolRepository;
     private DefaultVehicleSymbolRepository defaultVehicleSymbolRepository;
     private VehicleRepository vehicleRepository;
+    private VehicleTypeRepository vehicleTypeRepository;
     private Validator validator;
 
     /**
@@ -37,15 +40,18 @@ public class UnitFactory {
      *
      * @param symbolRepository               the symbol repository
      * @param defaultVehicleSymbolRepository the default vehicle symbol repository
-     * @param validator                      the validator
+     * @param vehicleRepository              the vehicle repository
+     * @param vehicleTypeRepository          the vehicle type repository
      */
     public UnitFactory(SymbolRepository symbolRepository,
                        DefaultVehicleSymbolRepository defaultVehicleSymbolRepository,
                        VehicleRepository vehicleRepository,
+                       VehicleTypeRepository vehicleTypeRepository,
                        Validator validator) {
         this.defaultVehicleSymbolRepository = defaultVehicleSymbolRepository;
         this.symbolRepository =symbolRepository;
         this.vehicleRepository = vehicleRepository;
+        this.vehicleTypeRepository = vehicleTypeRepository;
         this.validator = validator;
     }
 
@@ -54,22 +60,23 @@ public class UnitFactory {
      *
      * @param intervention the intervention
      * @param message      the message
-     * @return unit
+     * @return unit unit
      * @throws InvalidMessageException the invalid message exception
      */
     public Unit createUnit(Intervention intervention, CreateUnitMessage message) throws InvalidMessageException  {
-        Set<ConstraintViolation<CreateUnitMessage>> constraints =  validator.validate(message, CreateUnitMessage.class);
+        Set<ConstraintViolation<CreateUnitMessage>> constraints =  validator.validate(message);
 
         if(!constraints.isEmpty()) {
             throw new InvalidMessageException(CreateUnitMessage.class, constraints.toString());
         }
 
         Unit unit = new Unit(intervention);
-        unit.getUnitVehicle().setType(new VehicleType(message.vehicle.type));
+
+        unit.getUnitVehicle().setType(vehicleTypeRepository.findOneByName(message.vehicle.type));
         unit.getUnitVehicle().setStatus(VehicleStatus.REQUESTED);
 
         //If Symbol is set
-        if(validator.validate(message.symbol).isEmpty()) {
+        if(message.symbol != null && validator.validate(message.symbol).isEmpty()) {
             hydrateUnitWithSymbol(unit, message.symbol);
         }
         else { // if not
@@ -81,11 +88,13 @@ public class UnitFactory {
 
     /**
      * Update a Unit from a {@link ConfirmDemandVehicleMessage } instance
-     * @param unit the unit actually in bdd
+     *
+     * @param unit    the unit actually in bdd
      * @param message the message that associate a unit to a Vehicule
+     * @throws InvalidMessageException the invalid message exception
      */
     public void updateUnit(Unit unit, ConfirmDemandVehicleMessage message) throws InvalidMessageException {
-        Set<ConstraintViolation<ConfirmDemandVehicleMessage>> violations = validator.validate(message, ConfirmDemandVehicleMessage.class);
+        Set<ConstraintViolation<ConfirmDemandVehicleMessage>> violations = validator.validate(message);
 
         if(!violations.isEmpty()) {
             throw new InvalidMessageException(ConfirmDemandVehicleMessage.class, violations.toString());
@@ -125,9 +134,20 @@ public class UnitFactory {
      * @param type the type of vehicle
      */
     private void hydrateUnitWithDefaultSymbol(Unit unit, @NotNull @NotEmpty String type) {
-        Symbol requestedSymbol = defaultVehicleSymbolRepository.findByType(new VehicleType(type)).getSymbol();
+        VehicleType vehicleType = vehicleTypeRepository.findOneByName(type);
 
-        SymbolSitac symbolSitac = new SymbolSitac(unit.getIntervention(), requestedSymbol);
+        if(vehicleType == null) {
+            log.error("Unable to find type '{}' in database", type);
+            throw new PersistenceException("Unable to find type '" + type + "' in database" + type);
+        }
+        DefaultVehicleSymbol defaultVehicleSymbol = defaultVehicleSymbolRepository.findByType(vehicleType);
+
+        if(defaultVehicleSymbol == null) {
+            log.error("Unable to find DefaultVehicleSymbol in database with type equals to '{}'", type);
+            throw new PersistenceException("Unable to find DefaultVehicleSymbol in database with type equals to " + type);
+        }
+
+        SymbolSitac symbolSitac = new SymbolSitac(unit.getIntervention(), defaultVehicleSymbol.getSymbol());
         unit.setSymbolSitac(symbolSitac);
     }
 

@@ -16,6 +16,12 @@ public class VehicleType {
     private String name;
 
     /**
+     * Default Constructor
+     */
+    public VehicleType() {
+    }
+
+    /**
      * Constructor by value.
      *
      * @param name the vehicle-type label
