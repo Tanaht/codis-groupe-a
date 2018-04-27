@@ -47,19 +47,8 @@ public enum Shape {
     WATERRESOURCE,
 
     /**
-     * Circle shape.
-     */
-    CIRCLE,
-    /**
      * Vehicle shape.
      */
     VEHICLE,
-    /**
-     * Star shape.
-     */
-    STAR,
-    /**
-     * Action-zone (correspond to explosion icon) shape.
-     */
-    ACTIONZONE
+
 }
