@@ -24,4 +24,9 @@ public class Payload {
      * The Details.
      */
     public String details;
+
+    public Payload(String identifier, String details) {
+        this.identifier = identifier;
+        this.details = details;
+    }
 }

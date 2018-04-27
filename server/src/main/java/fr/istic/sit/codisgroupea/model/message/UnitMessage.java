@@ -51,5 +51,7 @@ public class UnitMessage {
         moving = unit.isMoving();
         vehicle = new VehicleMessage(unit.getUnitVehicle());
 
+        symbol = new Symbol(unit.getSymbolSitac());
+
     }
 }

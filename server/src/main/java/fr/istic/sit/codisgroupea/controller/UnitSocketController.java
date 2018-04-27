@@ -24,10 +24,7 @@ import org.springframework.stereotype.Controller;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * WebSocket Controller intended to manage the states of the units
@@ -130,59 +127,19 @@ public class UnitSocketController {
             });
 
             unitRepository.saveAll(toBePersisted);
+
+            List<UnitMessage> unitMessages = new ArrayList<>();
+
+            toBePersisted.forEach(unit -> {
+                unitMessages.add(new UnitMessage(unit));
+            });
+
+
+            return new ListUnitMessage("UPDATE", unitMessages);
         } catch (InvalidMessageException e) {
             logger.error(e.getMessage());
             e.printStackTrace();
         }
-
-
-//        List<UnitMessage> listUnitUpdated = new ArrayList<>();
-
-
-//        for (UnitMessage unitMessageFromCLient : dataSendByClient){
-//            Optional<Unit> unitInBdd = unitRepository.findById(unitMessageFromCLient.getId());
-//            Optional<Vehicle> vehicle = vehicleRepository.findVehicleByLabel(unitMessageFromCLient.getVehicule().getLabel());
-//            Optional<Symbol> symb = symbolRepository
-//                    .findSymbolByColorAndShape(unitMessageFromCLient.getSymbolUnitMessage().getColor(),
-//                            unitMessageFromCLient.getSymbolUnitMessage().getShape());
-//
-//            if(!unitInBdd.isPresent()){
-//                logger.error("Unit with id {} doesn't exist in bdd", unitMessageFromCLient.getId());
-//            }
-//
-//            if(!vehicle.isPresent()){
-//                logger.error("Vehicle with label " + unitMessageFromCLient.getVehicule().getLabel() +
-//                        " doesn't exist in bdd");
-//            }
-//
-//            if(!symb.isPresent()){
-//                logger.error("sym with color " + unitMessageFromCLient.getSymbolUnitMessage().getColor() +
-//                        " and shape " + unitMessageFromCLient.getSymbolUnitMessage().getShape() + "doesn't exist");
-//            }
-//
-//
-//            unitInBdd.get().getSymbolSitac().setSymbol(symb.get());
-//            unitInBdd.get().getSymbolSitac().setLocation(unitMessageFromCLient
-//                    .getSymbolUnitMessage().getLocation().toPositionEntity());
-//
-////TODO:            vehicle.get().setStatus(unitMessageFromCLient.getVehicule().getStatus());
-//
-//            unitInBdd.get().setVehicle(vehicle.get());
-//            unitInBdd.get().setMoving(unitMessageFromCLient.isMoving());
-//
-//            unitInBdd.get().setAcceptDate(new Timestamp(unitMessageFromCLient.getDate_accepted()));
-//            unitInBdd.get().setRequestDate(new Timestamp(unitMessageFromCLient.getDate_granted()));
-//
-//            unitRepository.save(unitInBdd.get());
-//            UnitMessage unitUpdated = new UnitMessage(unitInBdd.get());
-//
-//            listUnitUpdated.add(unitUpdated);
-//        }
-//
-//        ListUnitMessage toReturn = new ListUnitMessage("UPDATE", listUnitUpdated);
-//        String json = jason.toJson(toReturn);
-//        logger.trace("{} --> data send {}", RoutesConfig.UPDATE_UNIT_SERVER, json);
-//        return toReturn;
-        return null;
+        return new ListUnitMessage("UPDATE", Collections.emptyList());
     }
 }
