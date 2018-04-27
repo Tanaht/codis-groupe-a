@@ -86,7 +86,7 @@ public class Path {
      *
      * @return the points
      */
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     public List<Position> getPoints() {
         return points;
     }

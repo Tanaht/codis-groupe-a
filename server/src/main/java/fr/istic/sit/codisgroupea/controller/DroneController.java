@@ -69,7 +69,7 @@ public class DroneController {
         }
 
         Path path = new Path(msg.getAltitude(), points, PathType.valueOf(msg.getType()));
-        pathRepository.save(path);
+        path = pathRepository.save(path);
 
         return path;
     }
