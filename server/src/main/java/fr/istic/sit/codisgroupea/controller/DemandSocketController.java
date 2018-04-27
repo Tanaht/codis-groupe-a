@@ -5,6 +5,7 @@ import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.exception.InvalidMessageException;
 import fr.istic.sit.codisgroupea.model.entity.Intervention;
 import fr.istic.sit.codisgroupea.model.entity.Unit;
+import fr.istic.sit.codisgroupea.model.message.ListUnitCreatedMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.UnitCreatedMessage;
@@ -21,6 +22,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static fr.istic.sit.codisgroupea.config.RoutesConfig.CONFIRM_DEMAND_SERVER_CLIENT;
@@ -87,9 +89,10 @@ public class DemandSocketController {
                     new UnitCreatedMessage.Vehicle(dataSendByClient.vehicle.type)
             );
 
+            ListUnitCreatedMessage listUnitCreatedMessage = new ListUnitCreatedMessage("CREATED", Arrays.asList(unitCreated));
             Gson jason = new Gson();
 
-            String toJson = jason.toJson(unitCreated);
+            String toJson = jason.toJson(listUnitCreatedMessage);
             String urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CLIENT.replace("{id}", String.valueOf(id));
             logger.trace("{} --> data send {}", urlToSend, toJson);
             simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CLIENT,toJson);
