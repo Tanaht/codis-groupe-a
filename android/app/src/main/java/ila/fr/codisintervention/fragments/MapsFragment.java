@@ -163,6 +163,7 @@ public class MapsFragment extends Fragment {
             Bitmap marker = resizeBitmap(drawablePath, 50, 50);
             addCustomMarkerZoom(new LatLng(s.getLocation().getLat(), s.getLocation().getLng()), marker);
         }
+        // need to print the payload.
     }
 
 
