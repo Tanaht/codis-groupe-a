@@ -1,6 +1,7 @@
 package fr.istic.sit.codisgroupea.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.Intervention;
 import fr.istic.sit.codisgroupea.model.entity.Symbol;
@@ -73,61 +74,62 @@ public class UnitSocketController {
      */
     @MessageMapping(RoutesConfig.UPDATE_UNIT_CLIENT)
     @SendTo({RoutesConfig.UPDATE_UNIT_SERVER})
-    public ListUnitMessage updateUnit(@DestinationVariable("id") final int idInterventions, Principal principal, List<UnitMessage> dataSendByClient) {
-        Gson jason = new Gson();
+    public ListUnitMessage updateUnit(@DestinationVariable("id") final int idIntervention, List<UnitMessage> dataSendByClient) {
+        Gson jason = new GsonBuilder().create();
         logger.trace("{} --> data receive {}", RoutesConfig.UPDATE_UNIT_CLIENT, jason.toJson(dataSendByClient));
 
+
         Optional<Intervention> intervention = interventionRepository.findById(idInterventions);
-
-        if (!intervention.isPresent()){
-            logger.error("Intervention with id {} doesn't exist", idInterventions);
-        }
-
-        List<UnitMessage> listUnitUpdated = new ArrayList<>();
-
-        for (UnitMessage unitMessageFromCLient : dataSendByClient){
-            Optional<Unit> unitInBdd = unitRepository.findById(unitMessageFromCLient.getId());
-            Optional<Vehicle> vehicle = vehicleRepository.findVehicleByLabel(unitMessageFromCLient.getVehicule().getLabel());
-            Optional<Symbol> symb = symbolRepository
-                    .findSymbolByColorAndShape(unitMessageFromCLient.getSymbolUnitMessage().getColor(),
-                            unitMessageFromCLient.getSymbolUnitMessage().getShape());
-
-            if(!unitInBdd.isPresent()){
-                logger.error("Unit with id {} doesn't exist in bdd", unitMessageFromCLient.getId());
-            }
-
-            if(!vehicle.isPresent()){
-                logger.error("Vehicle with label " + unitMessageFromCLient.getVehicule().getLabel() +
-                        " doesn't exist in bdd");
-            }
-
-            if(!symb.isPresent()){
-                logger.error("sym with color " + unitMessageFromCLient.getSymbolUnitMessage().getColor() +
-                        " and shape " + unitMessageFromCLient.getSymbolUnitMessage().getShape() + "doesn't exist");
-            }
-
-
-            unitInBdd.get().getSymbolSitac().setSymbol(symb.get());
-            unitInBdd.get().getSymbolSitac().setLocation(unitMessageFromCLient
-                    .getSymbolUnitMessage().getLocation().toPositionEntity());
-
-//TODO:            vehicle.get().setStatus(unitMessageFromCLient.getVehicule().getStatus());
-
-            unitInBdd.get().setVehicle(vehicle.get());
-            unitInBdd.get().setMoving(unitMessageFromCLient.isMoving());
-
-            unitInBdd.get().setAcceptDate(new Timestamp(unitMessageFromCLient.getDate_accepted()));
-            unitInBdd.get().setRequestDate(new Timestamp(unitMessageFromCLient.getDate_granted()));
-
-            unitRepository.save(unitInBdd.get());
-            UnitMessage unitUpdated = new UnitMessage(unitInBdd.get());
-
-            listUnitUpdated.add(unitUpdated);
-        }
-
-        ListUnitMessage toReturn = new ListUnitMessage("UPDATE", listUnitUpdated);
-        String json = jason.toJson(toReturn);
-        logger.trace("{} --> data send {}", RoutesConfig.UPDATE_UNIT_SERVER, json);
-        return toReturn;
+//
+//        if (!intervention.isPresent()){
+//            logger.error("Intervention with id {} doesn't exist", idInterventions);
+//        }
+//
+//        List<UnitMessage> listUnitUpdated = new ArrayList<>();
+//
+//        for (UnitMessage unitMessageFromCLient : dataSendByClient){
+//            Optional<Unit> unitInBdd = unitRepository.findById(unitMessageFromCLient.getId());
+//            Optional<Vehicle> vehicle = vehicleRepository.findVehicleByLabel(unitMessageFromCLient.getVehicule().getLabel());
+//            Optional<Symbol> symb = symbolRepository
+//                    .findSymbolByColorAndShape(unitMessageFromCLient.getSymbolUnitMessage().getColor(),
+//                            unitMessageFromCLient.getSymbolUnitMessage().getShape());
+//
+//            if(!unitInBdd.isPresent()){
+//                logger.error("Unit with id {} doesn't exist in bdd", unitMessageFromCLient.getId());
+//            }
+//
+//            if(!vehicle.isPresent()){
+//                logger.error("Vehicle with label " + unitMessageFromCLient.getVehicule().getLabel() +
+//                        " doesn't exist in bdd");
+//            }
+//
+//            if(!symb.isPresent()){
+//                logger.error("sym with color " + unitMessageFromCLient.getSymbolUnitMessage().getColor() +
+//                        " and shape " + unitMessageFromCLient.getSymbolUnitMessage().getShape() + "doesn't exist");
+//            }
+//
+//
+//            unitInBdd.get().getSymbolSitac().setSymbol(symb.get());
+//            unitInBdd.get().getSymbolSitac().setLocation(unitMessageFromCLient
+//                    .getSymbolUnitMessage().getLocation().toPositionEntity());
+//
+////TODO:            vehicle.get().setStatus(unitMessageFromCLient.getVehicule().getStatus());
+//
+//            unitInBdd.get().setVehicle(vehicle.get());
+//            unitInBdd.get().setMoving(unitMessageFromCLient.isMoving());
+//
+//            unitInBdd.get().setAcceptDate(new Timestamp(unitMessageFromCLient.getDate_accepted()));
+//            unitInBdd.get().setRequestDate(new Timestamp(unitMessageFromCLient.getDate_granted()));
+//
+//            unitRepository.save(unitInBdd.get());
+//            UnitMessage unitUpdated = new UnitMessage(unitInBdd.get());
+//
+//            listUnitUpdated.add(unitUpdated);
+//        }
+//
+//        ListUnitMessage toReturn = new ListUnitMessage("UPDATE", listUnitUpdated);
+//        String json = jason.toJson(toReturn);
+//        logger.trace("{} --> data send {}", RoutesConfig.UPDATE_UNIT_SERVER, json);
+//        return toReturn;
     }
 }
