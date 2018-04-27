@@ -1,7 +1,9 @@
 package fr.istic.sit.codisgroupea.service;
 
+import fr.istic.sit.codisgroupea.constraints.groups.Message;
 import fr.istic.sit.codisgroupea.exception.InvalidMessageException;
 import fr.istic.sit.codisgroupea.model.entity.*;
+import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.receive.ConfirmDemandVehicleMessage;
 import fr.istic.sit.codisgroupea.repository.DefaultVehicleSymbolRepository;
@@ -86,6 +88,20 @@ public class UnitFactory {
         }
 
         return unit;
+    }
+
+    /**
+     *
+     * @param unit
+     * @param message
+     */
+    public void updateUnit(Unit unit, UnitMessage message) throws InvalidMessageException {
+        log.info("Update unit {}", unit.getId());
+
+        Set<ConstraintViolation<UnitMessage>> violations = validator.validate(message, Message.UnitMessageReception.class);
+
+        if(!violations.isEmpty())
+            throw new InvalidMessageException(UnitMessage.class, violations.toString());
     }
 
     /**

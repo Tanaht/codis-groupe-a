@@ -9,7 +9,6 @@ import java.lang.annotation.*;
 /**
  * Constraint to check that a String is a IsVehicleStatus.
  */
-@Documented
 @Constraint(validatedBy = VehicleStatusValidator.class)
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)

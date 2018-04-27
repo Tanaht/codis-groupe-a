@@ -1,12 +1,13 @@
 package fr.istic.sit.codisgroupea.model.message;
 
+import fr.istic.sit.codisgroupea.constraints.groups.Message;
 import fr.istic.sit.codisgroupea.model.entity.Unit;
 import fr.istic.sit.codisgroupea.model.message.utils.Symbol;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -18,13 +19,12 @@ import javax.validation.constraints.NotNull;
 public class UnitMessage {
 
     /** The id */
-    @NotNull
-    @NotEmpty
+    @NotNull(groups = {Message.IdAware.class, Message.UnitMessageReception.class})
+    @Min(groups = {Message.IdAware.class, Message.UnitMessageReception.class}, value = 1)
     private Integer id;
 
     /** Boolean which tells if the unit is moving or not */
-    @NotNull
-    @NotEmpty
+    @NotNull(groups = Message.UnitMessageReception.class)
     private Boolean moving;
 
     /** Date of the first commitment of the vehicle for the intervention */
