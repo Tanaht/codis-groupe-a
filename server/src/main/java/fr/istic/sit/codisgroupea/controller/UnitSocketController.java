@@ -4,9 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.Intervention;
-import fr.istic.sit.codisgroupea.model.entity.Symbol;
-import fr.istic.sit.codisgroupea.model.entity.Unit;
-import fr.istic.sit.codisgroupea.model.entity.Vehicle;
 import fr.istic.sit.codisgroupea.model.message.ListUnitMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.repository.InterventionRepository;
@@ -20,9 +17,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
-import java.security.Principal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,8 +62,7 @@ public class UnitSocketController {
     /**
      * Method to update a unit.
      *
-     * @param idInterventions  the id
-     * @param principal        the principal
+     * @param idIntervention  the id
      * @param dataSendByClient the data sent by client
      * @return the string
      */
@@ -76,17 +70,18 @@ public class UnitSocketController {
     @SendTo({RoutesConfig.UPDATE_UNIT_SERVER})
     public ListUnitMessage updateUnit(@DestinationVariable("id") final int idIntervention, List<UnitMessage> dataSendByClient) {
         Gson jason = new GsonBuilder().create();
-        logger.trace("{} --> data receive {}", RoutesConfig.UPDATE_UNIT_CLIENT, jason.toJson(dataSendByClient));
+        logger.trace("{} --> data received {}", RoutesConfig.UPDATE_UNIT_CLIENT, jason.toJson(dataSendByClient));
 
+        Optional<Intervention> optionalIntervention = interventionRepository.findById(idIntervention);
 
-        Optional<Intervention> intervention = interventionRepository.findById(idInterventions);
-//
-//        if (!intervention.isPresent()){
-//            logger.error("Intervention with id {} doesn't exist", idInterventions);
-//        }
-//
+        if(!optionalIntervention.isPresent()) {
+            throw new PersistenceException("Unable to find intervention with ID " + idIntervention);
+        }
+
+        Intervention intervention = optionalIntervention.get();
 //        List<UnitMessage> listUnitUpdated = new ArrayList<>();
-//
+
+
 //        for (UnitMessage unitMessageFromCLient : dataSendByClient){
 //            Optional<Unit> unitInBdd = unitRepository.findById(unitMessageFromCLient.getId());
 //            Optional<Vehicle> vehicle = vehicleRepository.findVehicleByLabel(unitMessageFromCLient.getVehicule().getLabel());
@@ -131,5 +126,6 @@ public class UnitSocketController {
 //        String json = jason.toJson(toReturn);
 //        logger.trace("{} --> data send {}", RoutesConfig.UPDATE_UNIT_SERVER, json);
 //        return toReturn;
+        return null;
     }
 }

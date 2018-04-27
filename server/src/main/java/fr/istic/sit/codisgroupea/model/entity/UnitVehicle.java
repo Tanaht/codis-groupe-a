@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Entity used to perform the binding between a Unit and it's Vehicle
- * This class Manage to properties, the VehicleType and the VehicleStatus
+ * This class Manage to properties, the VehicleType and the IsVehicleStatus
  */
 @Entity
 public class UnitVehicle {

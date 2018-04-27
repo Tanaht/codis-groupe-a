@@ -1,6 +1,8 @@
 package fr.istic.sit.codisgroupea.model.message.demand;
 
-import fr.istic.sit.codisgroupea.model.message.utils.Location;
+import fr.istic.sit.codisgroupea.model.message.utils.Symbol;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -9,10 +11,12 @@ import javax.validation.constraints.NotNull;
 /**
  * The create-unit message.
  */
+@Getter
+@Setter
 public class CreateUnitMessage {
 
     /**
-     * Instantiates a new Create unit message.
+     * Default Constructor
      */
     public CreateUnitMessage(){
 
@@ -50,23 +54,6 @@ public class CreateUnitMessage {
         }
     }
 
-
-    public static class Symbol {
-        /**
-         * The location of the symbol
-         */
-        @NotNull
-        @Valid
-        public Location location;
-
-        /**
-         * The shape of the symbol
-         */
-        @NotEmpty
-        public String color;
-
-    }
-
     /**
      * The Vehicle.
      */
@@ -78,24 +65,6 @@ public class CreateUnitMessage {
      * The symbol that locate the vehicle on the map
      */
     public Symbol symbol;
-
-    /**
-     * Gets vehicle.
-     *
-     * @return the vehicle
-     */
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
-
-    /**
-     * Sets vehicle.
-     *
-     * @param vehicle the vehicle
-     */
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
 
     /**
      * Instantiates a new create-unit message.

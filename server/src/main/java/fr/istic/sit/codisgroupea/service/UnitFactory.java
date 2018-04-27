@@ -160,7 +160,7 @@ public class UnitFactory {
      * @param unit   the unit
      * @param symbol the symbol
      */
-    private void hydrateUnitWithSymbol(Unit unit, CreateUnitMessage.Symbol symbol) {
+    private void hydrateUnitWithSymbol(Unit unit, fr.istic.sit.codisgroupea.model.message.utils.Symbol symbol) {
 
         Optional<Symbol> requestedSymbol = symbolRepository.findSymbolByColorAndShape(Color.valueOf(symbol.color), Shape.VEHICLE);
 

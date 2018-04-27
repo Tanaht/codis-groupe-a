@@ -21,7 +21,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import javax.persistence.PersistenceException;
 import java.util.Optional;
 
 import static fr.istic.sit.codisgroupea.config.RoutesConfig.CONFIRM_DEMAND_SERVER_CLIENT;
@@ -131,8 +130,6 @@ public class DemandSocketController {
             unitRepository.save(unit);
             vehicleRepository.save(unit.getUnitVehicle().getAssignedVehicle());
 
-            if(!optionalUnit.isPresent())
-                throw new PersistenceException("Una");
             UnitMessage unitToSend = new UnitMessage(optionalUnit.get());
 
             String urlToSend = RoutesConfig.CONFIRM_DEMAND_SERVER_CODIS.replace("{id}", String.valueOf(unit.getId()));
