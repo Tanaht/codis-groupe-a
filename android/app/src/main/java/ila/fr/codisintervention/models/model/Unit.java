@@ -3,6 +3,7 @@ package ila.fr.codisintervention.models.model;
 import java.sql.Timestamp;
 
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,7 +34,7 @@ public class Unit {
     private Timestamp acceptDate;
 
     /** Instance of {@link Symbol} for the symbol sitac of the unit */
-    private Symbol symbol;
+    private SymbolUnit symbolUnit;
 
     public Unit(ila.fr.codisintervention.models.messages.Unit uni) {
         id = uni.getId();
@@ -41,7 +42,7 @@ public class Unit {
         moving = uni.isMoving();
         requestDate = new Timestamp(uni.getDate_reserved());
         acceptDate = new Timestamp(uni.getDate_granted());
-        symbol = new Symbol(uni.getSymbol());
+        symbolUnit = new SymbolUnit(uni.getSymbol());
     }
 
     public void load(Unit unitUpdated) {
@@ -51,7 +52,7 @@ public class Unit {
         acceptDate = unitUpdated.getAcceptDate();
 
         vehicle.load(unitUpdated.getVehicle());
-        symbol.load(unitUpdated.getSymbol());
+        symbolUnit.load(unitUpdated.getSymbolUnit());
 
     }
 }

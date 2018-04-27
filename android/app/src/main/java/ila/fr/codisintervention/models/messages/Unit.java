@@ -36,6 +36,11 @@ public class Unit implements Parcelable {
     @Expose
     private long date_reserved;
 
+    @Expose
+    private long date_commited;
+    @Expose
+    private long date_released;
+
     /**
      * Boolean to now if unit is in movement
      */
@@ -60,7 +65,7 @@ public class Unit implements Parcelable {
         date_reserved = unit.getRequestDate().getTime();
         moving = unit.isMoving();
         vehicle = new Vehicle(unit.getVehicle());
-        symbol = new Symbol(unit.getSymbol());
+        symbol = new Symbol(unit.getSymbolUnit());
     }
     /**
      * Usefull to Parcelize an instance of this class  {@link Parcelable}

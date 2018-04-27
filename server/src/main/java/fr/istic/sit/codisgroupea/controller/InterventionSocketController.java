@@ -133,8 +133,8 @@ public class InterventionSocketController {
                             vehicle.getStatus().toString()
                     ),
                     new InterventionChosenMessage.Unit.Symbol(
-                            symbol.getColor().toString(),
                             symbol.getShape().toString(),
+                            symbol.getColor().toString(),
                             new Position(unit.getSymbolSitac().getLocation())
                     )
             );
