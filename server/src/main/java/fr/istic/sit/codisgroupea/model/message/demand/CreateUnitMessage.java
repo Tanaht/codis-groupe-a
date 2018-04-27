@@ -1,12 +1,23 @@
 package fr.istic.sit.codisgroupea.model.message.demand;
 
+import fr.istic.sit.codisgroupea.constraints.groups.Message;
+import fr.istic.sit.codisgroupea.model.message.utils.Symbol;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * The create-unit message.
  */
+@Getter
+@Setter
 public class CreateUnitMessage {
 
     /**
-     * Instantiates a new Create unit message.
+     * Default Constructor
      */
     public CreateUnitMessage(){
 
@@ -19,7 +30,13 @@ public class CreateUnitMessage {
         /**
          * The Type.
          */
+        @NotNull(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
+        @NotEmpty(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
         public String type;
+
+        @NotNull(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
+        @NotEmpty(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
+        public String status;
 
         /**
          * Instantiates a new Vehicle.
@@ -41,25 +58,15 @@ public class CreateUnitMessage {
     /**
      * The Vehicle.
      */
+    @NotNull(groups = {Message.CreateUnitMessageReception.class, Message.CreateUnitMessageWithSymbolReception.class})
+    @Valid
     public Vehicle vehicle;
 
     /**
-     * Gets vehicle.
-     *
-     * @return the vehicle
+     * The symbol that locate the vehicle on the map
      */
-    public Vehicle getVehicle() {
-        return vehicle;
-    }
 
-    /**
-     * Sets vehicle.
-     *
-     * @param vehicle the vehicle
-     */
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
-    }
+    public Symbol symbol;
 
     /**
      * Instantiates a new create-unit message.

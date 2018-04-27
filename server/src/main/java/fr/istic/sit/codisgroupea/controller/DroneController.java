@@ -6,8 +6,8 @@ import fr.istic.sit.codisgroupea.model.message.receive.MissionOrderMessage;
 import fr.istic.sit.codisgroupea.socket.Location;
 import fr.istic.sit.codisgroupea.socket.MissionOrder;
 import fr.istic.sit.codisgroupea.socket.SocketForDroneCommunication;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -23,7 +23,7 @@ import java.util.List;
 public class DroneController {
 
     /** The logger */
-    private static final Logger logger = LoggerFactory.getLogger(DroneController.class);
+    private static final Logger logger = LogManager.getLogger();
 
     private SimpMessagingTemplate simpMessagingTemplate;
 

@@ -124,7 +124,8 @@ public class AuthenticationController {
 
         Gson gson = new Gson();
         String toJson = gson.toJson(iniAppli,InitializeApplicationMessage.class);
-        logger.trace(urlToSend+" --> data send "+toJson);
+
+        logger.trace("{} --> data send {}", urlToSend, toJson);
         simpMessagingTemplate.convertAndSend(urlToSend, toJson);
     }
 }
