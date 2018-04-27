@@ -116,7 +116,7 @@ public class SymbolSitac implements SigEntry {
      *
      * @return the location
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     public Position getLocation() {
         return location;
     }

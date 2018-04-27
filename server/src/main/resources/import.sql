@@ -44,9 +44,29 @@ INSERT INTO position VALUES (2, 48.105727, -1.674720);
 INSERT INTO intervention VALUES (1, '11 Rue du Bois Perrin', 1522159274, 1, 1, 1);
 INSERT INTO intervention VALUES (2, 'Cours des Alliés, 35024 Rennes', 1522159274, 1, 2, 2);
 
--- Insert symbol
-Insert INTO symbol VALUES (1,0,2);
-Insert INTO symbol VALUES (2,2,2);
+
+
+
+#   ID For Color:
+#     0: RED,
+#     1: GREEN,
+#     2: BLUE,
+#     3: ORANGE,
+#     4: PURPLE
+#
+#   ID For Shape:
+#   0: TRIANGLEUP,
+#   1: TRIANGLEDOWN,
+#   2: CIRCLE,
+#   3: VEHICLE,
+#   4: STAR,
+#   5: ACTIONZONE
+
+
+-- Insert symbol (ID, Color, Shape)
+insert into symbol VALUE  (1, 0, 3)
+insert into symbol VALUE  (2, 2, 3)
+insert into symbol VALUE  (3, 4, 3)
 
 -- insert Default Vehicle Symbol (TODO: It's stub for instance, we need to implement the true Decision Table mentioned in specs
 insert into default_vehicle_symbol VALUE (1, 1, 1);

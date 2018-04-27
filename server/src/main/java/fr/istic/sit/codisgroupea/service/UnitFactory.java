@@ -166,5 +166,8 @@ public class UnitFactory {
             symbolSitac.setLocation(new Position(symbol.location));
             unit.setSymbolSitac(symbolSitac);
         }
+        else {
+            throw new PersistenceException("Unable to find a Symbol instance for color = '" + symbol.color.toUpperCase() + "' and shape = '" + Shape.VEHICLE.name() + "'");
+        }
     }
 }
