@@ -36,6 +36,11 @@ public class Unit implements Parcelable {
     @Expose
     private long date_reserved;
 
+    @Expose
+    private long date_commited;
+    @Expose
+    private long date_released;
+
     /**
      * Boolean to now if unit is in movement
      */
@@ -60,22 +65,8 @@ public class Unit implements Parcelable {
         date_reserved = unit.getRequestDate().getTime();
         moving = unit.isMoving();
         vehicle = new Vehicle(unit.getVehicle());
-        symbol = new Symbol(unit.getSymbol());
+        symbol = new Symbol(unit.getSymbolUnit());
     }
-    /**
-     * Instantiates a new Unit.
-     *
-     * @param in the parcel that contain the details of this class
-     */
-    protected Unit(Parcel in) {
-        id = in.readInt();
-        date_granted = in.readLong();
-        date_reserved = in.readLong();
-        moving = in.readByte() != 0;
-        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
-        symbol = in.readParcelable(Symbol.class.getClassLoader());
-    }
-
     /**
      * Usefull to Parcelize an instance of this class  {@link Parcelable}
      * The constant CREATOR.
@@ -97,6 +88,20 @@ public class Unit implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    /**
+     * Instantiates a new Unit.
+     *
+     * @param in the parcel that contain the details of this class
+     */
+    protected Unit(Parcel in) {
+        id = in.readInt();
+        date_granted = in.readLong();
+        date_reserved = in.readLong();
+        moving = in.readInt() != 0;
+        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+        symbol = in.readParcelable(Symbol.class.getClassLoader());
     }
 
     @Override

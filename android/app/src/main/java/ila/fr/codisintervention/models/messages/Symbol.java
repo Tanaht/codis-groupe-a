@@ -6,18 +6,23 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 
 import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Java Object representation of a Symbol in term of JSON message send to and from the server.
  * Created by tanaky on 28/03/18.
  */
+@Getter
+@Setter
 public class Symbol implements Parcelable {
 
     /**
      * Identifier of the symbol
      */
     @Expose
-    private Integer id;
+    private int id;
 
     /**
      * Shape of the Symbol it's a String that is one of the one define in enum Shape
@@ -49,111 +54,10 @@ public class Symbol implements Parcelable {
     public Symbol() {
     }
 
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets shape.
-     *
-     * @return the shape
-     */
-    public String getShape() {
-        return shape;
-    }
-
-    /**
-     * Sets shape.
-     *
-     * @param shape the shape
-     */
-    public void setShape(String shape) {
-        this.shape = shape;
-    }
-
-    /**
-     * Gets color.
-     *
-     * @return the color
-     */
-    public String getColor() {
-        return color;
-    }
-
-    /**
-     * Sets color.
-     *
-     * @param color the color
-     */
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    /**
-     * Gets location.
-     *
-     * @return the location
-     */
-    public Location getLocation() {
-        return location;
-    }
-
-    /**
-     * Sets location.
-     *
-     * @param location the location
-     */
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    /**
-     * Gets payload.
-     *
-     * @return the payload
-     */
-    public Payload getPayload() {
-        return payload;
-    }
-
-    /**
-     * Sets payload.
-     *
-     * @param payload the payload
-     */
-    public void setPayload(Payload payload) {
-        this.payload = payload;
-    }
-
-    /**
-     * Instantiates a new Symbol from a Parcel (used for Intent based communication).
-     *
-     * @param in the in
-     */
-    protected Symbol(Parcel in) {
-        if (in.readByte() == 0) {
-            id = null;
-        } else {
-            id = in.readInt();
-        }
-        shape = in.readString();
-        color = in.readString();
-        location = in.readParcelable(Location.class.getClassLoader());
-        payload = in.readParcelable(Payload.class.getClassLoader());
+    public Symbol(SymbolUnit symbolUnit) {
+        shape = symbolUnit.getShape().name();
+        color = symbolUnit.getColor().name();
+        location = symbolUnit.getLocation();
     }
 
     public Symbol(ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb){
@@ -182,6 +86,19 @@ public class Symbol implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    /**
+     * Instantiates a new Symbol from a Parcel (used for Intent based communication).
+     *
+     * @param in the in
+     */
+    protected Symbol(Parcel in) {
+        id = in.readInt();
+        shape = in.readString();
+        color = in.readString();
+        location = in.readParcelable(Location.class.getClassLoader());
+        payload = in.readParcelable(Payload.class.getClassLoader());
     }
 
     @Override
