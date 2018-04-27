@@ -315,4 +315,24 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     public void onFragmentInteraction(Uri uri) {
 //        No Interaction because unnecessary
     }
+
+    @Override
+    public void onModelServiceConnected() {
+
+    }
+
+    @Override
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+
+    }
+
+    @Override
+    public void onWebSocketServiceConnected() {
+
+    }
+
+    @Override
+    public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
+
+    }
 }
