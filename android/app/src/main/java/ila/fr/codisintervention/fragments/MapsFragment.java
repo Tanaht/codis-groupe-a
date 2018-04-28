@@ -246,7 +246,13 @@ public class MapsFragment extends Fragment {
 
             });
 
+            googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback(){
 
+                @Override
+                public void onMapLoaded() {
+                    updateUI( googleMap );
+                }
+            });
             /*
                 Drag and drop a marker with a long clic
              */
@@ -293,7 +299,10 @@ public class MapsFragment extends Fragment {
 
         mMapView.setClickable(true);
         return rootView;
+
     }
+
+
     /**
      * Get symbol from activity {@link MapActivity}
      * @return
@@ -342,6 +351,7 @@ public class MapsFragment extends Fragment {
         MarkerOptions mo = new MarkerOptions().position(coord).draggable(true).title("").snippet("").icon(BitmapDescriptorFactory.fromBitmap(customizer));
         Marker mark = googleMap.addMarker(mo);
         markers.put(mark.getId(),mo);
+        Log.d(TAG,"FORM ON THE MAP : " );
     }
 
     /**
