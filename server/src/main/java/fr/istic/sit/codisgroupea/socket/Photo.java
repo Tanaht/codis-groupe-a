@@ -6,20 +6,8 @@ public class Photo {
 	private long date;
 	private Location location;
 	private int interventionId;
-
 	private int pointId;
-	
-	public Photo() {
-		this.photo = "";
-		this.date = 0;
-	}
-	
-	public Photo(String photo, long date, Location location) {
-		this.photo = photo;
-		this.date = date;
-		this.location = location;
-	}
-	
+
 	public String getPhoto() {
 		return photo;
 	}

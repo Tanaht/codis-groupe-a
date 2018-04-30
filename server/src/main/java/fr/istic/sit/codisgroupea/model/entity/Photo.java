@@ -25,6 +25,9 @@ public class Photo {
     /** Instance of {@link Intervention} for the intervention of the photo */
     private Intervention intervention;
 
+    /** The point where the photo was taken */
+    private Integer point;
+
     /**
      * Instantiates a new Photo.
      */
@@ -39,12 +42,14 @@ public class Photo {
      * @param coordinates  the coordinates
      * @param date         the date
      * @param intervention the intervention
+     * @param point        the point
      */
-    public Photo(String uri, Position coordinates, Timestamp date, Intervention intervention) {
+    public Photo(String uri, Position coordinates, Timestamp date, Intervention intervention, Integer point) {
         this.uri = uri;
         this.coordinates = coordinates;
         this.date = date;
         this.intervention = intervention;
+        this.point = point;
     }
 
     /**
@@ -143,5 +148,24 @@ public class Photo {
      */
     public void setIntervention(Intervention intervention) {
         this.intervention = intervention;
+    }
+
+    /**
+     * Gets point.
+     *
+     * @return the point
+     */
+    @NotNull
+    public Integer getPoint() {
+        return point;
+    }
+
+    /**
+     * Sets point.
+     *
+     * @param point the point
+     */
+    public void setPoint(Integer point) {
+        this.point = point;
     }
 }
