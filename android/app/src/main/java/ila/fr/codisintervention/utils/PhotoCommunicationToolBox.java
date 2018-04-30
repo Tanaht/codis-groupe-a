@@ -43,7 +43,7 @@ public class PhotoCommunicationToolBox {
 
 
         PhotoReception reception = gson.fromJson(requestResult.toString(), PhotoReception.class);
-        if (reception.isPhotoReceptionEmpty()) {
+        if (!reception.isPhotoReceptionEmpty()) {
             return reception;
         }
         return null;
