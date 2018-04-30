@@ -37,6 +37,7 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
 import ua.naiksoftware.stomp.client.StompMessage;
+import fr.istic.sit.codisgroupea.socket.PhotoReception;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 
@@ -335,6 +336,31 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 () -> Log.d(TAG, "[/app/interventions/create] Sent data!"),
                 error -> Log.e(TAG, "[/app/interventions/create] Error Encountered", error)
         );
+    }
+
+    /**
+     * Subscribe to photo receiving
+     * /topic/interventions/{id}/photo
+     */
+    @Override
+    public void getPhoto(int id){
+        this.client.topic("/topic/interventions/" + id + "/photo").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/photo] Received message: " + message.getPayload());
+            deliverPhotoEventIntents(message);
+        });
+    }
+
+    public void deliverPhotoEventIntents(StompMessage message){
+
+        Gson gson = new Gson();
+        PhotoReception photo = gson.fromJson(message.getPayload(), PhotoReception.class);
+
+        //TODO set intent name
+        Intent photoIntent = new Intent("PHOTO");
+        photoIntent.putExtra("photo", photo);
+
+        LocalBroadcastManager.getInstance(this).sendBroadcast(photoIntent);
+
     }
 
     /**
