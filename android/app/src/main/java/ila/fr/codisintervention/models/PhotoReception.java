@@ -1,4 +1,4 @@
-package fr.istic.sit.codisgroupea.socket;
+package ila.fr.codisintervention.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
