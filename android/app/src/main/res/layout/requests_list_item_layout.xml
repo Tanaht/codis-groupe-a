@@ -8,29 +8,11 @@
     app:useDefaultMargins="true">
 
     <TextView
-        android:id="@+id/RequestUnitId"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:text="Unit Id"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <TextView
         android:id="@+id/RequestVehicleType"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="Vehicle Type"
         android:textSize="18sp"
         app:layout_columnWeight="1"/>
-
-    <TextView
-        android:id="@+id/RequestStatus"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        app:layout_columnWeight="1"
-        android:text="Request Status"
-        android:textSize="18sp"
-        app:layout_gravity="right"/>
 
 </android.support.v7.widget.GridLayout>

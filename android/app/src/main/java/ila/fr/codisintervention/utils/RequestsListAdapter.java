@@ -42,19 +42,9 @@ public class RequestsListAdapter extends ArrayAdapter<Request> {
      */
     private class ViewHolder {
         /**
-         * The Id of the Unit
-         */
-        TextView unitId;
-
-        /**
          * The type of the requested vehicle (VLCG,FPT,..)
          */
         TextView vehicleType;
-
-        /**
-         * The status of the vehicle request
-         */
-        TextView requestStatus;
     }
 
     @Override
@@ -67,9 +57,7 @@ public class RequestsListAdapter extends ArrayAdapter<Request> {
             convertView = vi.inflate(R.layout.requests_list_item_layout, null);
 
             holder = new ViewHolder();
-            holder.unitId = (TextView) convertView.findViewById(R.id.RequestUnitId);
             holder.vehicleType = (TextView) convertView.findViewById(R.id.RequestVehicleType);
-            holder.requestStatus = (TextView) convertView.findViewById(R.id.RequestStatus);
             convertView.setTag(holder);
         }
         else {
@@ -77,9 +65,7 @@ public class RequestsListAdapter extends ArrayAdapter<Request> {
         }
         Request request = this.getItem(position);
 
-        holder.unitId.setText(request.getId());
         holder.vehicleType.setText(request.getVehicle().getType());
-        holder.requestStatus.setText(request.getVehicle().getStatus().toString());
 
         return convertView;
     }
