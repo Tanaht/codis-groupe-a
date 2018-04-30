@@ -57,9 +57,9 @@ INSERT INTO intervention VALUES (2, 'Cours des Alliés, 35024 Rennes', 152215927
 
 
 -- Insert symbol (ID, Color, Shape)
-insert into symbol VALUE  (1, 0, 3);
-insert into symbol VALUE  (2, 2, 3);
-insert into symbol VALUE  (3, 4, 3);
+insert into symbol VALUES  (1, 0, 3);
+insert into symbol VALUES  (2, 2, 3);
+insert into symbol VALUES  (3, 4, 3);
 Insert INTO symbol VALUES (4, 0, 2);
 Insert INTO symbol VALUES (5, 2, 2);
 
@@ -80,8 +80,15 @@ Insert INTO symbol_sitac VALUES (2, 2, 2, 2, 5);
 -- Insert unit (id, accept_date, commited_date, moving, released_date, request_date, intervention, symbol)
 Insert INTO unit VALUES ( 1, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 1, 1);
 Insert INTO unit VALUES ( 2, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 2, 2);
+Insert INTO unit VALUES ( 3, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 2, 4);
 
+# ID For Status
+#    0: REQUESTED,
+#    1: USED,
+#    2: AVAILABLE,
+#    3: CRM
 -- Insert unit_vehicle (ID, Status, Vehicle, Type, Unit)
 Insert INTO unit_vehicle VALUES (1, 1, 1, 1, 1);
 Insert INTO unit_vehicle VALUES (2, 2, 2, 2, 2);
+Insert INTO unit_vehicle VALUES (3, 0, null, 3, 3);
 
