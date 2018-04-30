@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.FragmentManager;
@@ -17,8 +16,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
@@ -34,12 +34,13 @@ import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.PathDrone;
+import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Position;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
 
-import static ila.fr.codisintervention.models.model.map_icon.drone.PathDroneType.SEGMENT;
 import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
 import static ila.fr.codisintervention.services.constants.ModelConstants.DRONE_PATH_ASSIGNED;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
@@ -90,15 +91,16 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        webSocketServiceConnection = bindWebSocketService();
+        modelServiceConnection = bindModelService();
+
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_map_content);
 
         FragmentManager manager = getSupportFragmentManager();
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
         mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
-
-        webSocketServiceConnection = bindWebSocketService();
-        modelServiceConnection = bindModelService();
 
         /*
          * Validate button in order to retrieve drone points created on the Map
@@ -327,9 +329,14 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
     @Override
     public void onModelServiceConnected() {
-        Log.d(TAG, "OnModelServiceConnected");
-
-
+        Log.d(TAG, modelService!=null?"ModelService connected":"ModelService null");
+        Position interventionPosition = new Position(48.115204, -1.637871);
+        if(modelService!=null) {
+            if(modelService.getCurrentIntervention()!=null) {
+                interventionPosition = modelService.getCurrentIntervention().getPosition();
+            }
+        }
+        mapFragment.onModelServiceConnected(interventionPosition);
     }
 
     @Override
