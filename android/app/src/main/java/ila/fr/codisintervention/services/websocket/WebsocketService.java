@@ -390,25 +390,23 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             Log.e(TAG, e.getMessage(), e);
         }
 
-        Intent toBeBroadcoastedIntent = null;
+        Intent symbolActionIntent  = new Intent(getApplicationContext(), ModelService.class);
 
         if("CREATE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_CREATED);
-            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_CREATED, symbols);
+            symbolActionIntent.setAction(INTERVENTION_SYMBOL_CREATED);
+            symbolActionIntent.putExtra(INTERVENTION_SYMBOL_CREATED, symbols);
         }
 
         if("UPDATE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_UPDATED);
-            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_UPDATED, symbols);
+            symbolActionIntent.setAction(INTERVENTION_SYMBOL_UPDATED);
+            symbolActionIntent.putExtra(INTERVENTION_SYMBOL_UPDATED, symbols);
         }
 
         if("DELETE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_DELETED);
-            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_DELETED, symbols);
+            symbolActionIntent.setAction(INTERVENTION_SYMBOL_DELETED);
+            symbolActionIntent.putExtra(INTERVENTION_SYMBOL_DELETED, symbols);
         }
-
-        LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
-
+        getApplicationContext().startService(symbolActionIntent);
     }
 
     @Override

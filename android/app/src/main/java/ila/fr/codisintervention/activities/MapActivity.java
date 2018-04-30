@@ -37,6 +37,7 @@ import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT;
 import static ila.fr.codisintervention.services.constants.ModelConstants.VALIDATE_VEHICLE_REQUEST;
+import static ila.fr.codisintervention.services.websocket.WebsocketService.INTERVENTION_SYMBOL_CREATED;
 
 /**
  * This activity is used to show the map of an intervention chosen
@@ -106,6 +107,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         mapIntentFilter.addAction(UPDATE_INTERVENTION_DELETE_SYMBOL);
         mapIntentFilter.addAction(ADD_VEHICLE_REQUEST);
         mapIntentFilter.addAction(VALIDATE_VEHICLE_REQUEST);
+        mapIntentFilter.addAction(INTERVENTION_SYMBOL_CREATED);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, mapIntentFilter);
     }
