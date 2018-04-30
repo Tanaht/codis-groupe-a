@@ -61,6 +61,7 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".activities.CodisRequestListActivity"></activity>
+        <activity android:name=".activities.MeansTableActivity"></activity>
     </application>
 
 </manifest>

@@ -1,55 +1,67 @@
 package fr.istic.sit.codisgroupea.socket;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import com.google.gson.Gson;
+import fr.istic.sit.codisgroupea.config.RoutesConfig;
+import fr.istic.sit.codisgroupea.model.message.LocationMessage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * 
  * Communication with the drone using socket
  *
  */
+@Service
 public class SocketForDroneCommunication {
-	
+
+	/** The logger */
+	private static final Logger logger = LogManager.getLogger();
+
+    private SimpMessagingTemplate simpMessagingTemplate;
+
 	private Socket socket;
 	private ServerSocket serverSocket;
-	
+
 	private boolean sending = false;
-	
+
 	/**
 	 * 
-	 * The the server socket, then create 2 Thread to send and receive message
-	 * 
-	 * @param context The application context
+	 * Start the socket, then create 2 Thread to send and receive message
+	 *
 	 * @throws IOException
 	 */
-	public SocketForDroneCommunication(ConfigurableApplicationContext context) throws IOException {
-		
-		this.start(context);
-		
-		//Read message from drone
-		this.receiveMessage();
-		
-		//Exemple of mission order sending
-		MissionOrder mission = new MissionOrder();
-		mission.setMissionType(DroneServerConstants.MISSION_TYPES.MISSION_CYCLE.getName());
-		mission.addLocation(new Location(48.1148383, -1.6388297));
-		mission.addLocation(new Location(48.1153379, -1.6391757));
-		this.sendMessage(mission);
+	public SocketForDroneCommunication(SimpMessagingTemplate simpMessagingTemplate) throws IOException {
+		this.simpMessagingTemplate = simpMessagingTemplate;
+		Runnable startSocket = new Runnable() {
+			@Override
+			public void run() {
+				try {
+					start();
+					//Read message from drone
+					receiveMessage();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+			}
+		};
+		//Start thread
+		Thread startSocketThread = new Thread(startSocket);
+		startSocketThread.start();
+		logger.info("Socket for drone communication is started");
 	}
-	
+
 	/**
 	 * Start socekt with drone
-	 * @param context
 	 * @throws IOException
 	 */
-	public void start(ConfigurableApplicationContext context) throws IOException {
+	public void start() throws IOException {
 		serverSocket = new ServerSocket(DroneServerConstants.SOCKET_PORT);
 		socket = serverSocket.accept();
 	}
@@ -74,7 +86,7 @@ public class SocketForDroneCommunication {
 				BufferedReader br;
 				try {
 					br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-					while(true) {
+					while(!socket.isClosed()) {
 						//No receive during sending
 						if(!sending) {
 							//Get new message (terminated by '\n')
@@ -89,10 +101,12 @@ public class SocketForDroneCommunication {
 								//Get current location
 								else if(messageType.equals(DroneServerConstants.MESSAGE_TYPES.SEND_SITUATION.getName())) {
 									Location loc = JsonForDroneCommunicationToolBox.getLocationFromMessage(receivedMessage);
+							        sendDronePosition(loc);
 								}
 							}
 						}
 					}
+					logger.info("Socket is closed");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -131,5 +145,15 @@ public class SocketForDroneCommunication {
 		//Start thread
 		Thread sendThread = new Thread(sendTask);
 		sendThread.start();
+	}
+
+	/**
+	 * Send the drone position (received by socket) to android (by websocket)
+	 * @param location
+	 */
+    public void sendDronePosition(Location location) {
+        Gson gson = new Gson();
+        String toJson = gson.toJson(new LocationMessage(location.getLat(), location.getLng(), location.getAlt()),LocationMessage.class);
+        simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1+location.getInterventionId()+RoutesConfig.SEND_DRONE_POSITION_PART2, toJson);
 	}
 }

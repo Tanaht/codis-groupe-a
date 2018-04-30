@@ -12,6 +12,8 @@ import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Type;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.VehicleStatus;
 import ila.fr.codisintervention.models.model.user.User;
@@ -36,6 +38,7 @@ public class ApplicationModel {
 
     private User user;
 
+    private PathDrone pathDrone;
     private List<InterventionModel> interventions;
     private InterventionModel currentIntervention;
 
@@ -44,7 +47,16 @@ public class ApplicationModel {
 
     private List<Request> requests;
 
+    /**
+     * Instantiates a new Application model.
+     */
     public ApplicationModel(){}
+
+    /**
+     * Instantiates a new Application model from initialize application message.
+     *
+     * @param init the init
+     */
     public ApplicationModel(InitializeApplication init){
         sinisterCodes = new ArrayList<>();
         vehicleTypes = new ArrayList<>();
@@ -71,6 +83,13 @@ public class ApplicationModel {
 
         user = new User(init.getUser());
     }
+
+    /**
+     * Sets current intervention from an id intervention contained in the interventions list.
+     *
+     * @param idIntervention the id intervention
+     * @throws InterventionNotFoundException the intervention not found exception. Throw when the id doesn't exist in the list
+     */
     public void setCurrentIntervention(int idIntervention) throws InterventionNotFoundException {
         for (InterventionModel interv : interventions){
             if (interv.getId().equals(idIntervention)){
@@ -81,6 +100,13 @@ public class ApplicationModel {
 
         throw new InterventionNotFoundException(idIntervention);
     }
+
+    /**
+     * Delete intervention in the list intervention.
+     *
+     * @param idIntervention the id intervention
+     * @throws InterventionNotFoundException the intervention not found exception
+     */
     public void deleteIntervention(int idIntervention) throws InterventionNotFoundException {
 
         for (int i = 0; i < interventions.size(); i++) {
@@ -97,9 +123,54 @@ public class ApplicationModel {
         }
         throw new InterventionNotFoundException(idIntervention);
     }
+
+    /**
+     * Actualise intervention current from intervention detailed intervention.
+     *
+     * @param intervention the intervention
+     */
     public void actualiseInterventionChoosen(Intervention intervention){
-        currentIntervention = new InterventionModel(intervention);
+        InterventionModel intervInList = null;
+        for (InterventionModel interv : interventions){
+            if (interv.getId().equals(intervention.getId())){
+                intervInList = interv;
+            }
+        }
+        if (intervInList != null){
+            currentIntervention = intervInList;
+
+            List<Photo> photos = new ArrayList<>();
+            for (ila.fr.codisintervention.models.messages.Photo photo : intervention.getPhotos()){
+                photos.add(new Photo(photo));
+            }
+            currentIntervention.setPhotos(photos);
+
+            List<Symbol> symbs  = new ArrayList<>();
+            for (ila.fr.codisintervention.models.messages.Symbol symb : intervention.getSymbols()){
+                symbs.add(new Symbol(symb));
+            }
+            currentIntervention.setSymbols(symbs);
+
+            List<Unit> units = new ArrayList<>();
+            for (ila.fr.codisintervention.models.messages.Unit uni : intervention.getUnits()){
+                units.add(new Unit(uni));
+            }
+            currentIntervention.setUnits(units);
+
+            currentIntervention.setLocation(intervInList.getLocation());
+            currentIntervention.setSinisterCode(intervInList.getSinisterCode());
+            currentIntervention.setAddress(intervInList.getAddress());
+            currentIntervention.setDate(intervInList.getDate());
+            currentIntervention.setOpened(intervInList.isOpened());
+        }
     }
+
+    /**
+     * Close an intervention.
+     *
+     * @param id the id
+     * @throws InterventionNotFoundException the intervention not found exception
+     */
     public void setInterventionClosedById(int id) throws InterventionNotFoundException {
         for(InterventionModel intervention : interventions){
             if(intervention.getId().equals(id)){
@@ -110,6 +181,13 @@ public class ApplicationModel {
         throw new InterventionNotFoundException(id);
     }
 
+    /**
+     * Gets intervention by id.
+     *
+     * @param id the id
+     * @return the intervention by id
+     * @throws InterventionNotFoundException the intervention not found exception
+     */
     public InterventionModel getInterventionById(int id) throws InterventionNotFoundException {
         for(InterventionModel intervention : interventions){
             if(intervention.getId().equals(id)){
@@ -118,6 +196,7 @@ public class ApplicationModel {
         }
         throw new InterventionNotFoundException(id);
     }
+
 
     public Request getRequestById(int id) throws RequestNotFoundException {
         for(Request request: requests){

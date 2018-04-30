@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * SpringData repository for unit entity.
@@ -18,4 +19,6 @@ public interface UnitRepository extends JpaRepository<Unit, Integer> {
     List<Unit> getAllRequestedVehicles();
 
     Iterable<? extends Unit> findAllByIntervention(Intervention intervention);
+
+    Optional<Unit> findOneById(int id);
 }

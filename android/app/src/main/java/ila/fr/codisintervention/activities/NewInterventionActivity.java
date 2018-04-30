@@ -1,13 +1,8 @@
 package ila.fr.codisintervention.activities;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,33 +15,27 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
-import ila.fr.codisintervention.entities.Vehicle;
-import ila.fr.codisintervention.models.messages.Location;
-import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.services.InterventionService;
-import ila.fr.codisintervention.services.websocket.WebsocketService;
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
+import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.services.ModelServiceAware;
+import ila.fr.codisintervention.services.WebSocketServiceAware;
 import ila.fr.codisintervention.utils.AutocompleteAdapter;
+import ila.fr.codisintervention.utils.GeocodingToolBox;
 import ila.fr.codisintervention.utils.VehiclesListAdapter;
 
 /**
  * This activity manage the interface used by Codis User to create a new Intervention
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class NewInterventionActivity extends AppCompatActivity {
+public class NewInterventionActivity extends AppCompatActivity implements ModelServiceAware, WebSocketServiceAware {
     private static final String TAG = "NewInterventionActivity";
-
-    /**
-     * TODO: To Remove and use the ModelService that provide all we need instead.
-     * Stub to get access to static datas about interventions like SinisterCodes or Vehicles
-     */
-    InterventionService interventionService;
 
     /**
      * An Adapter used to adapt the Model of a Vehicle with it's representation in the interface.
@@ -56,11 +45,11 @@ public class NewInterventionActivity extends AppCompatActivity {
     /**
      * String that represent the address of the intervention filled by the user.
      */
-    String inputtedAddress;
+    String inputAddress;
 
     /**
-     * Tuple of Lat and Lng coordinate that reflect the address from inputtedAddress.
-     * @see #getLocationFromAddress(String inputtedAddress)
+     * Tuple of Lat and Lng coordinate that reflect the address from inputAddress.
+     * @see #getLocationFromAddressAndCreateIntervention(InterventionModel)
      */
     LatLng latlngAddress;
 
@@ -75,26 +64,27 @@ public class NewInterventionActivity extends AppCompatActivity {
     private WebSocketServiceBinder.IMyServiceMethod webSocketService;
 
     /**
+     * ServiceConnection instance with the ModelService
+     */
+    private ServiceConnection modelServiceConnection;
+
+    private ModelServiceBinder.IMyServiceMethod modelService;
+
+    /**
      * FIXME: Bad Idea to initialize view in on create, it will be far better to do it onModelServiceConnected (because it's only when model is available that you have access to the datas)
      * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_new_intervention);
         setTitle(R.string.title_add_new_intervention);
 
-
         autocompleteTextViewInitialization();
 
-        interventionService = new InterventionService();
-        ArrayList<String> codesSinistre = interventionService.getCodesSinistre();
-        displaySpinner(codesSinistre);
-
-        ArrayList<Vehicle> vehiclesIntervention = interventionService.getMoyensDispo();
-        displayListView(vehiclesIntervention);
-
-        bindToService();
+        webSocketServiceConnection = bindWebSocketService();
+        modelServiceConnection = bindModelService();
     }
 
     /**
@@ -105,32 +95,12 @@ public class NewInterventionActivity extends AppCompatActivity {
         autoCompView.setAdapter(new AutocompleteAdapter(this, R.layout.list_item));
 
         autoCompView.setOnItemClickListener((parent, view, position, id) -> {
-            inputtedAddress = (String) parent.getItemAtPosition(position);
-            Log.d(TAG, "Set address to: " + inputtedAddress);
+            inputAddress = (String) parent.getItemAtPosition(position);
+            Log.d(TAG, "Set address to: " + inputAddress);
         });
     }
 
-    /**
-     * TODO: It could be mutualized because almost all Activities has to bind to ModelService or WebSocketService -> A separated class that do that has to be created ! like an Interface ModelServiceAware and WebsocketServiceAware, or a superclass Activity aware of services
-     * Method used to bind NewInterventionActivity to WebsocketService, with that, NewInterventionActivity is aware of WebSocketService
-     */
-    private void bindToService() {
-        webSocketServiceConnection = new ServiceConnection() {
-            public void onServiceDisconnected(ComponentName name) {
-                Log.w(TAG, "The Service " + name + " is disconnected");
-            }
-            public void onServiceConnected(ComponentName arg0, IBinder binder) {
 
-                // we retrieve the webSocketService instance in the activity
-                webSocketService = ((WebSocketServiceBinder)binder).getService();
-            }
-        };
-
-        startService(new Intent(getApplicationContext(), WebsocketService.class));
-        Intent intent = new Intent(getApplicationContext(), WebsocketService.class);
-        // start the webSocketService binding
-        bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
-    }
 
     /**
      * Method used to filled a dropdown list of SinisterCode send in parameter
@@ -157,7 +127,7 @@ public class NewInterventionActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Vehicle vehicle = (Vehicle) parent.getItemAtPosition(position);
-            Log.d(TAG, "VEHICLES ListView: item being clicked: " + vehicle.getName());
+            Log.d(TAG, "VEHICLES ListView: item being clicked: " + vehicle.getLabel());
         });
 
     }
@@ -166,7 +136,7 @@ public class NewInterventionActivity extends AppCompatActivity {
     /**
      * Method triggered by the button R.id.submitNewIntervention
      * this method check validity of intervention form filled by the user and send it throug the WebSocketService
-     * @see WebSocketServiceBinder.IMyServiceMethod#createIntervention(Intervention)
+     * @see WebSocketServiceBinder.IMyServiceMethod#createIntervention(InterventionModel)
      * @param v the view
      */
     public void submitNewInterventionAction(View v) {
@@ -181,17 +151,28 @@ public class NewInterventionActivity extends AppCompatActivity {
         String sinisterCode = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();
 
         // Check if address is set
-        if(inputtedAddress.equals("")){
+        if(inputAddress.equals("")){
             Toasty.error(getApplicationContext(), getString(R.string.error_address_field_empty), Toast.LENGTH_LONG).show();
         } else {
+            InterventionModel intervention = new InterventionModel();
+            intervention.setAddress(inputAddress);
+            intervention.setSinisterCode(sinisterCode);
+            getLocationFromAddressAndCreateIntervention(intervention);
 
-            Intervention intervention = new Intervention();
-            intervention.setAddress(inputtedAddress);
-            intervention.setCode(sinisterCode);
+        }
+    }
 
-            latlngAddress = getLocationFromAddress(intervention.getAddress());
-            Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
-
+    /**
+     * TODO: Make this raise an exception instead of returning null when error.
+     * Method used tor perform the geocoding from string address.
+     * The intervention is created in the JSONRequest
+     * @return a LatLng instance or null if failed
+     */
+    private void getLocationFromAddressAndCreateIntervention(InterventionModel intervention) {
+        Log.d(TAG, "Address given : " + intervention.getAddress());
+        GeocodingToolBox gtb = new GeocodingToolBox(this);
+        gtb.sendRequestForAddress(intervention.getAddress(), result -> {
+            latlngAddress = gtb.getLocationFromGoogleApiResult(result);
             if(latlngAddress != null) {
                 intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
                 // Send Intervention Details to WSS
@@ -200,62 +181,44 @@ public class NewInterventionActivity extends AppCompatActivity {
                 // Intent to Intervention List Activity
                 Intent intent = new Intent( getApplicationContext(), CodisMainMenu.class);
                 startActivity(intent);
+                Toasty.info(getApplicationContext(),getString(R.string.intervention_created), Toast.LENGTH_LONG).show();
             } else {
                 Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
             }
-        }
+        });
     }
-
-    /**
-     * TODO: Make this raise an exception instead of returning null when error.
-     * Method used tor perform the geocoding from string address.
-     * @param inputtedAddress the address
-     * @return a LatLng instance or null if failed
-     */
-    private LatLng getLocationFromAddress(String inputtedAddress) {
-        if(!Geocoder.isPresent()) {
-            Log.w(TAG, "Geocoder Method not implemented");
-        }
-        Geocoder coder = new Geocoder(getApplicationContext(), Locale.getDefault());
-
-        List<Address> address = null;
-        LatLng resLatLng = null;
-        try {
-
-            address = coder.getFromLocationName(inputtedAddress, 1);
-            if (address == null) {
-                Log.w(TAG, "Address is null for '" + inputtedAddress + "'");
-                return null;
-
-            }
-
-            if (address.isEmpty()) {
-                Log.w(TAG, "There is no address for '"+ inputtedAddress + "'");
-                return null;
-            }
-
-            Address location = address.get(0);
-            location.getLatitude();
-            location.getLongitude();
-
-            Log.d(TAG, "'" + inputtedAddress + "' converted to [" + location.getLatitude() + ", " + location.getLongitude() + "]");
-
-            resLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-        } catch (IOException ex) {
-            Log.e(TAG, ex.getMessage(), ex);
-        }
-
-        Log.d(TAG, "getLocationFromAddress retrieved: " + resLatLng);
-
-        return resLatLng;
-    }
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(webSocketServiceConnection != null)
-            unbindService(webSocketServiceConnection);
+
+        unbindWebSocketService(webSocketServiceConnection);
+        unbindModelService(modelServiceConnection);
+    }
+
+    @Override
+    public void onModelServiceConnected() {
+        Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
+
+        List<String> codesSinistre = modelService.getSinisterCodes();
+        displaySpinner(codesSinistre);
+
+        List<Vehicle> vehiclesIntervention = modelService.getAvailableVehicle();
+        displayListView(vehiclesIntervention);
+    }
+
+    @Override
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+        this.modelService = modelService;
+    }
+
+    @Override
+    public void onWebSocketServiceConnected() {
+
+    }
+
+    @Override
+    public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
+        this.webSocketService = webSocketService;
     }
 }

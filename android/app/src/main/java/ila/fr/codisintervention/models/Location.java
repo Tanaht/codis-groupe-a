@@ -1,4 +1,4 @@
-package ila.fr.codisintervention.models.messages;
+package ila.fr.codisintervention.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -105,5 +105,10 @@ public class Location implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(lat);
         dest.writeDouble(lng);
+    }
+
+    public void load(Location loc){
+        lat = loc.getLat();
+        lng = loc.getLng();
     }
 }

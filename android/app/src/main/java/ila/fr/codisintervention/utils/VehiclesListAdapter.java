@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.entities.Vehicle;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 
 import static android.content.ContentValues.TAG;
 
@@ -89,7 +89,7 @@ public class VehiclesListAdapter extends ArrayAdapter<Vehicle> {
                 CheckBox cb = (CheckBox) v ;
                 Vehicle vehicle = (Vehicle) cb.getTag();
 
-                Log.d(TAG, "Vehicle checked: " + vehicle.getName());
+                Log.d(TAG, "Vehicle checked: " + vehicle.getLabel());
 
                 vehicle.setSelected(cb.isChecked());
             });
@@ -99,8 +99,8 @@ public class VehiclesListAdapter extends ArrayAdapter<Vehicle> {
         }
 
         Vehicle vehicle = vehiclesList.get(position);
-        holder.code.setText(" (" +  vehicle.getCode() + ")");
-        holder.name.setText(vehicle.getName());
+        holder.code.setText(" (" +  vehicle.getType() + ")");
+        holder.name.setText(vehicle.getLabel());
         holder.name.setChecked(vehicle.isSelected());
         holder.name.setTag(vehicle);
 

@@ -16,18 +16,36 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.fragments.MapsFragment;
+import ila.fr.codisintervention.fragments.MeansTableFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
+import ila.fr.codisintervention.models.DronePoint;
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.DronePing;
+import ila.fr.codisintervention.models.messages.PathDrone;
+import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.Unit;
+import ila.fr.codisintervention.services.ModelServiceAware;
+import ila.fr.codisintervention.services.WebSocketServiceAware;
+import ila.fr.codisintervention.services.websocket.WebsocketService;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.ADD_VEHICLE_REQUEST;
+import static ila.fr.codisintervention.services.constants.ModelConstants.DRONE_PATH_ASSIGNED;
+import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL;
@@ -35,6 +53,7 @@ import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL;
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT;
 import static ila.fr.codisintervention.services.constants.ModelConstants.VALIDATE_VEHICLE_REQUEST;
+import static ila.fr.codisintervention.services.websocket.WebsocketService.INTERVENTION_SYMBOL_CREATED;
 
 /**
  * This activity is used to show the map of an intervention chosen
@@ -43,18 +62,20 @@ import static ila.fr.codisintervention.services.constants.ModelConstants.VALIDAT
  * TODO: Please log more often
  */
 @SuppressWarnings("squid:MaximumInheritanceDepth")
-public class MapActivity extends AppCompatActivity implements SymbolsListFragment.OnFragmentInteractionListener {
+public class MapActivity extends AppCompatActivity implements SymbolsListFragment.OnFragmentInteractionListener, WebSocketServiceAware, ModelServiceAware {
     private static final String TAG = "MapActivity";
-
     /**
-     * ServiceConnection instance with the ModelService
+     * Service connection of the service subscribed
      */
+    private ServiceConnection webSocketServiceConnection;
+
     private ServiceConnection modelServiceConnection;
 
-    /**
-     * Interface delivered by ModelService to be used by other android Component, the purpose of this is to update the model.
-     */
     private ModelServiceBinder.IMyServiceMethod modelService;
+
+
+    private WebSocketServiceBinder.IMyServiceMethod webSocketService;
+
 
     /**
      * Fragment intended to display a list of tools to add symbols on the map
@@ -66,15 +87,40 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
      */
     MapsFragment mapFragment;
 
+    /**
+     *
+     */
+    List<Location> dronePointsList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        webSocketServiceConnection = bindWebSocketService();
+        modelServiceConnection = bindModelService();
+        //bindToService();
+
         // Retrieve the content view that renders the map.
-        setContentView(R.layout.activity_map);
+        setContentView(R.layout.activity_map_content);
 
         FragmentManager manager = getSupportFragmentManager();
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
         mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
+
+
+
+        /*
+         * Validate button in order to retrieve drone points created on the Map
+         */
+
+        final Button validate = findViewById(R.id.send_drone_points);
+        validate.setOnClickListener(v ->
+        {
+            dronePointsList = mapFragment.send_dronePoints();
+            this.webSocketService.createPathDrone(modelService.getCurrentIntervention().getId(), new PathDrone ("SEGMENT", dronePointsList));
+
+        });
+
     }
 
     /**
@@ -92,6 +138,9 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         mapIntentFilter.addAction(UPDATE_INTERVENTION_DELETE_SYMBOL);
         mapIntentFilter.addAction(ADD_VEHICLE_REQUEST);
         mapIntentFilter.addAction(VALIDATE_VEHICLE_REQUEST);
+        mapIntentFilter.addAction(UPDATE_DRONE_POSITION);
+        mapIntentFilter.addAction(DRONE_PATH_ASSIGNED);
+        mapIntentFilter.addAction(INTERVENTION_SYMBOL_CREATED);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, mapIntentFilter);
     }
@@ -100,52 +149,29 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
      * TODO: To mutualize equally with BindToService method
      * Define BroadcoastReceiver Instance to get aware when an Intent is send to this activity among other
      */
-    //TODO la fonction ne fais rien ??
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int id = (int) intent.getExtras().get("id");
-            Symbol symbol;
-            Unit unit;
-
-            try{
-
-                switch (intent.getAction()) {
-                    case UPDATE_INTERVENTION_UPDATE_UNIT:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    case UPDATE_INTERVENTION_CREATE_UNIT:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    case UPDATE_INTERVENTION_DELETE_UNIT:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    case UPDATE_INTERVENTION_UPDATE_SYMBOL:
-                        symbol = modelService.getCurrentIntervention().getSymbol(id);
-                        break;
-                    case UPDATE_INTERVENTION_DELETE_SYMBOL:
-                        symbol = modelService.getCurrentIntervention().getSymbol(id);
-                        break;
-                    case UPDATE_INTERVENTION_CREATE_SYMBOL:
-                        symbol = modelService.getCurrentIntervention().getSymbol(id);
-                        break;
-                    case ADD_VEHICLE_REQUEST:
-                        break;
-                    case VALIDATE_VEHICLE_REQUEST:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    default:
-                        break;
+            updateView();
+                if(UPDATE_DRONE_POSITION.equals(intent.getAction())){
+                    DronePing dronePing = intent.getParcelableExtra(UPDATE_DRONE_POSITION);
+                    updateDronePosition(dronePing);
+                } else if(DRONE_PATH_ASSIGNED.equals(intent.getAction())){
+                    PathDrone pathDrone = (PathDrone) intent.getExtras().get("pathDrone");
+                    mapFragment.updateDronePath(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
                 }
-            }catch (SymbolNotFoundException e){
-                Log.e(TAG, "onReceive: try to get symbol who doesn't exist on current intervention selected" );
-                e.printStackTrace();
-            }catch (UnitNotFoundException e){
-                Log.e(TAG, "onReceive: try to get unit who doesn't exist on current intervention selected" );
-                e.printStackTrace();
-            }
         }
     };
+
+    /**
+     * Call the Map Fragment to update the drone position
+     * @param dronePing
+     */
+    private void updateDronePosition(DronePing dronePing) {
+        DronePoint dronePoint = new DronePoint(
+                0,dronePing.getLocation().getLat(),dronePing.getLocation().getLng());
+        mapFragment.modifyDronePosition(dronePoint);
+    }
 
 
     /**
@@ -153,6 +179,14 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
      * Method used to bind MapActivity to WebsocketService and ModelService, with that, MainActivity is aware of ModelService and WebSocketService
      */
     private void bindToService() {
+        webSocketServiceConnection = new ServiceConnection() {
+            public void onServiceDisconnected(ComponentName name) {
+                Log.w(TAG, "The Service " + name + " is disconnected");
+            }
+            public void onServiceConnected(ComponentName arg0, IBinder binder) {
+                webSocketService = ((WebSocketServiceBinder)binder).getService();
+            }
+        };
         modelServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder binder) {
@@ -165,13 +199,18 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
                 Log.w(TAG, "The Service " + name + " is disconnected");
             }
         };
+        //Binding Activity with WebSocketService
+        startService(new Intent(this, WebsocketService.class));
+        Intent intent = new Intent(this, WebsocketService.class);
+        //launch binding of WebSocketService
+        bindService(intent, webSocketServiceConnection, Context.BIND_AUTO_CREATE);
 
         //Binding Activity with ModelService
         startService(new Intent(this, ila.fr.codisintervention.services.model.ModelService.class));
-        Intent intent = new Intent(this, ila.fr.codisintervention.services.model.ModelService.class);
+        Intent intent2 = new Intent(this, ila.fr.codisintervention.services.model.ModelService.class);
 
         // start the websocketService binding
-        bindService(intent, modelServiceConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent2, modelServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -220,8 +259,9 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     protected void onDestroy() {
         super.onDestroy();
 
-        if (modelServiceConnection != null)
-            unbindService(modelServiceConnection);
+        unbindWebSocketService(webSocketServiceConnection);
+        unbindModelService(modelServiceConnection);
+
     }
 
     @Override
@@ -252,5 +292,77 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     public void onFragmentInteraction(Uri uri) {
 //        No Interaction because unnecessary
+    }
+
+    /**
+     * Refresh the googlemap on MapFragment
+     */
+    public void updateView(){
+        mapFragment.updateView();
+    }
+
+    /**
+     * Getter for the modelService
+     * @return
+     */
+    public ModelServiceBinder.IMyServiceMethod getModelService(){
+        return modelService;
+    }
+
+    /**
+     * Getter for the webSocketService
+     * @return
+     */
+    public WebSocketServiceBinder.IMyServiceMethod getWebSocketService(){
+        return webSocketService;
+    }
+
+    @Override
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+        this.modelService = modelService;
+    }
+
+    @Override
+    public void onModelServiceConnected() {
+        Log.d(TAG, modelService!=null?"ModelService connected":"ModelService null");
+        Location interventionPosition = new Location(48.115204, -1.637871);
+        if(modelService!=null) {
+            Log.d(TAG, modelService.getCurrentIntervention()!=null?"Current intervention not null":"Current intervention null");
+            if(modelService.getCurrentIntervention()!=null) {
+                interventionPosition = modelService.getCurrentIntervention().getLocation();
+            }
+        }
+        mapFragment.onModelServiceConnected(interventionPosition);
+    }
+
+    @Override
+    public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
+        this.webSocketService = webSocketService;
+    }
+
+    /**
+     * Show Means Table activity.
+     *
+     * Technically this method send an explicit intent to {@link MeansTableActivity }
+     *  
+     */
+    public void showMeansTable() {
+        showMeansTable();
+    }
+
+    /**
+     * Show Means Table activity.
+     *
+     * Technically this method send an explicit intent to {@link MeansTableActivity }
+     *
+     * @param v the view
+     */
+    public void showMeansTable(View v) {
+        Intent intent = new Intent( MapActivity.this, MeansTableActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onWebSocketServiceConnected(){
     }
 }

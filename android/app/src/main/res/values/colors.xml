@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#da0510</color>
     <color name="colorPrimaryDark">#d23b3b</color>
     <color name="colorAccent">#FF4081</color>
-    <!-- TODO: rename following colors but the class SymbolsListFragment potentially use it -->
+    <color name="colorPrimaryLight">#fae3e5</color>
+
     <color name="red">#FF0000</color>
     <color name="green">#00FF00</color>
     <color name="blue">#0000FF</color>
     <color name="orange">#ED7F10</color>
     <color name="purple">#EE82EE</color>
+
+    <color name="grey">#aaaaaa</color>
+    <color name="white">#ffffff</color>
+
 </resources>

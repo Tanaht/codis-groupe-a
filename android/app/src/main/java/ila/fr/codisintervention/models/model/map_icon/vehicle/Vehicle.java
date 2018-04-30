@@ -17,6 +17,8 @@ public class Vehicle {
 
     private String type;
 
+    private boolean selected;
+
     /** Instance of {@link VehicleStatus} for the status of the vehicle */
     private VehicleStatus status;
 

@@ -6,19 +6,27 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.model.InterventionModel;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represent an intervention in terms of JSON Message
  * Created by tanaky on 27/03/18.
  */
+@Getter
+@Setter
 public class Intervention implements Parcelable {
 
     /**
      * uniq Identifier
      */
     @Expose
-    private int id;
+    private Integer id;
 
     /**
      * Date of creation
@@ -58,153 +66,23 @@ public class Intervention implements Parcelable {
     @Expose
     private List<Photo> photos;
 
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
 
+    @Expose
+    public List<Symbol> symbols;
     /**
-     * Gets date.
-     *
-     * @return the date
+     * The Units.
      */
-    public long getDate() {
-        return date;
-    }
-
-    /**
-     * Gets code.
-     *
-     * @return the code
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * Gets address.
-     *
-     * @return the address
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * Is drone available boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isDrone_available() {
-        return drone_available;
-    }
-
-    /**
-     * Gets location.
-     *
-     * @return the location
-     */
-    public Location getLocation() {
-        return location;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * Sets date.
-     *
-     * @param date the date
-     */
-    public void setDate(long date) {
-        this.date = date;
-    }
-
-    /**
-     * Sets code.
-     *
-     * @param code the code
-     */
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    /**
-     * Sets address.
-     *
-     * @param address the address
-     */
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    /**
-     * Sets drone available.
-     *
-     * @param drone_available the drone available
-     */
-    public void setDrone_available(boolean drone_available) {
-        this.drone_available = drone_available;
-    }
-
-    /**
-     * Sets location.
-     *
-     * @param location the location
-     */
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    /**
-     * Gets photos.
-     *
-     * @return the photos
-     */
-    public List<Photo> getPhotos() {
-        return photos;
-    }
-
-    /**
-     * Sets photos.
-     *
-     * @param photos the photos
-     */
-    public void setPhotos(List<Photo> photos) {
-        this.photos = photos;
-    }
+    @Expose
+    public List<Unit> units;
 
     /**
      * Instantiates a new Intervention.
      */
     public Intervention() {
+        photos = new ArrayList<>();
+        symbols = new ArrayList<>();
+        units = new ArrayList<>();
     }
-
-    /**
-     * Instantiates a new Intervention.
-     *
-     * @param in the parcel that contain the details of this class
-     */
-    protected Intervention(Parcel in) {
-        id = in.readInt();
-        date = in.readLong();
-        code = in.readString();
-        address = in.readString();
-        drone_available = in.readByte() != 0;
-        location = in.readParcelable(Location.class.getClassLoader());
-        photos = in.createTypedArrayList(Photo.CREATOR);
-    }
-
     /**
      * The constant CREATOR.
      * Usefull to Parcelize an instance of this class  {@link Parcelable}
@@ -221,9 +99,57 @@ public class Intervention implements Parcelable {
         }
     };
 
+    public Intervention(InterventionModel interventionModel){
+        id = interventionModel.getId();
+        date = interventionModel.getDate();
+        code = interventionModel.getSinisterCode();
+        address = interventionModel.getAddress();
+        drone_available = true;
+
+        location = interventionModel.getLocation();
+        photos = new ArrayList<>();
+        if (interventionModel.getPhotos() != null){
+            for (ila.fr.codisintervention.models.model.Photo photo : interventionModel.getPhotos()){
+                photos.add(new Photo(photo));
+            }
+        }
+        symbols = new ArrayList<>();
+        if (interventionModel.getSymbols() != null){
+            for (ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb : interventionModel.getSymbols()){
+                symbols.add(new Symbol(symb));
+            }
+        }
+
+        units = new ArrayList<>();
+        if (interventionModel.getUnits() != null){
+            for (ila.fr.codisintervention.models.model.Unit unit : interventionModel.getUnits()){
+                units.add(new Unit(unit));
+            }
+        }
+
+    }
+
     @Override
     public int describeContents() {
         return 0;
+    }
+    /**
+     * Instantiates a new Intervention.
+     *
+     * @param in the parcel that contain the details of this class
+     */
+    protected Intervention(Parcel in) {
+        id = in.readInt();
+        date = in.readLong();
+        code = in.readString();
+        address = in.readString();
+        drone_available = in.readByte() != 0;
+
+        location = in.readParcelable(Location.class.getClassLoader());
+
+        photos = in.createTypedArrayList(Photo.CREATOR);
+        symbols = in.createTypedArrayList(Symbol.CREATOR);
+        units = in.createTypedArrayList(Unit.CREATOR);
     }
 
     @Override
@@ -233,8 +159,12 @@ public class Intervention implements Parcelable {
         dest.writeString(code);
         dest.writeString(address);
         dest.writeInt(drone_available ? 1 : 0);
+
         dest.writeParcelable(location, flags);
-        dest.writeList(photos);
+
+        dest.writeTypedList(photos);
+        dest.writeTypedList(symbols);
+        dest.writeTypedList(units);
     }
 
 

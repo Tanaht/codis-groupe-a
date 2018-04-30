@@ -95,7 +95,7 @@ public class SymbolSocketController {
      */
     @MessageMapping(RoutesConfig.CREATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.CREATE_SYMBOL_SERVER})
-    public SymbolsMessage createSymbols(@DestinationVariable("id") final int id, List<SymbolCreateMessage> dataSendByClient) {
+    public String createSymbols(@DestinationVariable("id") final int id, List<SymbolCreateMessage> dataSendByClient) {
         Gson jason = new Gson();
         logger.trace(RoutesConfig.CREATE_SYMBOL_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
 
@@ -119,14 +119,15 @@ public class SymbolSocketController {
             SymbolSitac symbolSitac;
 
             if (data.getPayload() == null){
-                symbolSitac = symbolSitacRepository.save(
-                        new SymbolSitac(
-                                optionalIntervention.get(),
-                                optSymbol.get(),
-                                positionRepository.save(new Position(data.getLocation().getLat(), data.getLocation().getLng())),
-                                payloadRepository.save(new Payload("",""))
-                        )
+                Position pos = new Position(data.getLocation().getLat(), data.getLocation().getLng());
+                Payload payload = new Payload("","");
+                SymbolSitac symbSitac = new SymbolSitac(
+                        optionalIntervention.get(),
+                        optSymbol.get(),
+                        pos,payload
                 );
+
+                symbolSitac = symbolSitacRepository.save(symbSitac);
             }else{
                 symbolSitac = symbolSitacRepository.save(
                         new SymbolSitac(
@@ -146,8 +147,9 @@ public class SymbolSocketController {
 
         SymbolsMessage toSend = new SymbolsMessage(SymbolsMessage.Type.CREATE, listMessage);
 
-        logger.trace(RoutesConfig.CREATE_SYMBOL_SERVER +" --> data send "+jason.toJson(toSend));
-        return toSend;
+        String toJson = jason.toJson(toSend);
+        logger.trace(RoutesConfig.CREATE_SYMBOL_SERVER +" --> data send "+toJson);
+        return toJson;
     }
 
     /**

@@ -10,7 +10,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
@@ -20,6 +22,7 @@ import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.exception.VehicleNotFoundException;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.ApplicationModel;
 import ila.fr.codisintervention.models.model.InterventionModel;
@@ -96,6 +99,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
      * @param intent the explicit intent received from {@link WebsocketService}
      */
     public void updateTheModel(Intent intent) {
+        Log.d(TAG, "Received intent : " + intent.getAction());
         if (intent.getAction() == null)
             return;
 
@@ -130,43 +134,54 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(id, ModelConstants.ACTION_DELETE_INTERVENTION);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_CREATED:
-                Symbol symbolCreated = intent.getParcelableExtra(WebsocketService.INTERVENTION_SYMBOL_CREATED);
-                model.getCurrentIntervention().getSymbols().add(symbolCreated);
-                sendToEveryone(symbolCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL);
+                ArrayList<ila.fr.codisintervention.models.messages.Symbol> symbList = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_SYMBOL_CREATED);
+
+                for (ila.fr.codisintervention.models.messages.Symbol symb : symbList){
+                    Symbol symbModel = new Symbol(symb);
+                    model.getCurrentIntervention().createSymbol(symbModel);
+                }
+                //TODO send list id and not a=only first
+                sendToEveryone(symbList.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_UPDATED:
-                Symbol symbolUpdated = intent.getParcelableExtra
-                        (WebsocketService.INTERVENTION_SYMBOL_UPDATED);
+                ArrayList<ila.fr.codisintervention.models.messages.Symbol> symbListUpdate = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_SYMBOL_UPDATED);
+
                 try {
-                    model.getCurrentIntervention()
-                            .updateSymbol(symbolUpdated);
+                    for (ila.fr.codisintervention.models.messages.Symbol symb : symbListUpdate){
+                        Symbol symbModel = new Symbol(symb);
+                        model.getCurrentIntervention()
+                                .updateSymbol(symbModel);
+                    }
                 } catch (SymbolNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to update symbol who doesn't exist");
                     e.printStackTrace();
                 }
-                sendToEveryone(symbolUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL);
+                sendToEveryone(symbListUpdate.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_DELETED:
-                int idSymbol = intent.getIntExtra(WebsocketService.INTERVENTION_SYMBOL_DELETED, -1);
+                ArrayList<ila.fr.codisintervention.models.messages.Symbol> symbolsListDelete = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_SYMBOL_DELETED);
                 try {
-                    model.getCurrentIntervention().deleteSymbolById(idSymbol);
+
+                    for (ila.fr.codisintervention.models.messages.Symbol symb : symbolsListDelete){
+                        model.getCurrentIntervention().deleteSymbolById(symb.getId());
+                    }
                 } catch (SymbolNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to remove a symbol who doesn't exist");
                     e.printStackTrace();
                 }
-                sendToEveryone(idSymbol, ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
+                sendToEveryone(symbolsListDelete.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_UNIT_CREATED:
                 Unit unitCreated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_CREATED);
-                model.getCurrentIntervention().getUnits().add(unitCreated);
+                model.getCurrentIntervention().createUnit(unitCreated);
                 sendToEveryone(unitCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT);
                 break;
             case WebsocketService.INTERVENTION_UNIT_UPDATED:
                 Unit unitUpdated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_UPDATED);
                 try {
-                    model.getCurrentIntervention().changeUnit(unitUpdated);
+                    model.getCurrentIntervention().updateUnit(unitUpdated);
                 } catch (UnitNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to update a unit who doesn't exist ");
                     e.printStackTrace();
@@ -193,15 +208,40 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 break;
             case WebsocketService.DRONE_PHOTO:
                 break;
+            case WebsocketService.DRONE_PATH_RECEIVED:
+                PathDrone pathDrone = intent.getParcelableExtra(WebsocketService.DRONE_PATH_RECEIVED);
+                updateDronePathFromMessage(pathDrone);
+
+                break;
             //Si l'action est mal définit
             default:
                 Log.e(TAG, "Erreur d'action non reconnu pour la mise à jour du model");
         }
     }
 
+    private void updateDronePathFromMessage(PathDrone pathDrone) {
+        if(this.model.getCurrentIntervention() != null) {
+            this.model.getCurrentIntervention().setPathDrone(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
+            Intent intent = new Intent(ModelConstants.DRONE_PATH_ASSIGNED);
+            intent.putExtra("pathDrone",pathDrone);
+            deliverIntent(intent);
+        } else {
+            Log.e(TAG,"There is no curent intervention");
+        }
+
+    }
 
     /**
-     * FIXME: Every intent doesn't have the same extra signature, si it has to be removed -> it would be exported equally when we will refactor this class
+     * Used to broadcoast an intent to everyone
+     * @param intent the intent to broadcoast
+     */
+    public void deliverIntent(Intent intent){
+        Log.d(TAG, "Broadcoasted Intent: " + intent.getAction());
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    /**
+     * FIXME: Every intent doesn't have the same extra signature, if it has to be removed -> it would be exported equally when we will refactor this class
      * Workaround to broadcoast an intent to everyone,
      * @param id the identifier to send in extra of the intent
      * @param intentAction the intent action name
@@ -224,11 +264,6 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     @Override
     public InterventionModel getInterventionById(int id) throws InterventionNotFoundException {
         return model.getInterventionById(id);
-    }
-
-    @Override
-    public void setCurrentIntervention(int id) throws InterventionNotFoundException {
-        model.setCurrentIntervention(id);
     }
 
     @Override

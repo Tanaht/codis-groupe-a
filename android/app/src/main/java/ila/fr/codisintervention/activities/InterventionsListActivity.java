@@ -22,6 +22,7 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.constants.ModelConstants;
@@ -90,7 +91,7 @@ public class InterventionsListActivity extends AppCompatActivity {
                 // we retrieve the modelService instance in the activity
                 modelService = ((ModelServiceBinder)binder).getService();
                 Log.d(TAG, "ModelService connected: " + modelService.getInterventions());
-                if(modelService.getInterventions() == null || modelService.getInterventions().size() == 0){
+                if(modelService.getInterventions() == null || modelService.getInterventions().isEmpty()){
                     TextView tv = (TextView) findViewById(R.id.IntvEmptyMsg);
                     tv.setText(R.string.msg_no_intervention_in_progress);
                     Toasty.warning(getApplicationContext(),
@@ -196,17 +197,9 @@ public class InterventionsListActivity extends AppCompatActivity {
                 Log.e(TAG, "onReceive: try to access to an intervention who doesn't exist");
                 e.printStackTrace();
             }
-            switch (intent.getAction()){
-                case ModelConstants.ADD_INTERVENTION:
-                    addElement(intervention);
-                    break;
-                case ModelConstants.ACTION_DELETE_INTERVENTION:
-                    int position = dataAdapter.getPosition(intervention);
-                    deleteElement(position);
-                    break;
-                default:
-                    break;
-            }
+
+            dataAdapter.notifyDataSetChanged();
+
         }
     };
 

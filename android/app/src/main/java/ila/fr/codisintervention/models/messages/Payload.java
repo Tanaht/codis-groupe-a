@@ -23,6 +23,11 @@ public class Payload implements Parcelable {
     @Expose
     private String details;
 
+    public Payload(ila.fr.codisintervention.models.model.map_icon.symbol.Payload payload) {
+        identifier = payload.getIdentifier();
+        details = payload.getDetails();
+    }
+
     /**
      * Gets identifier.
      *

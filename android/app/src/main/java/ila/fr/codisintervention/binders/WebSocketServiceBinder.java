@@ -4,8 +4,9 @@ import android.os.Binder;
 
 import java.util.List;
 
-import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.models.messages.Symbol;
+import ila.fr.codisintervention.models.messages.PathDrone;
+import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 
 /**
  * Created by tanaky on 27/03/18.
@@ -66,7 +67,7 @@ public class WebSocketServiceBinder extends Binder {
          * Send a create intervention request to server
          * @param intervention the intervention to send
          */
-        void createIntervention(Intervention intervention);
+        void createIntervention(InterventionModel intervention);
 
         /**
          * Send to server a request to choose an intervention
@@ -95,6 +96,9 @@ public class WebSocketServiceBinder extends Binder {
          * @param symbols the symbols to delete
          */
         void deleteSymbols(int interventionId, List<Symbol> symbols);
+
+
+        void createPathDrone(int interventionId, PathDrone path);
 
         /**
          * Accept a vehicle request and send a notification to remote server
