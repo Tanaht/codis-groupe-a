@@ -5,6 +5,7 @@ import android.os.Binder;
 import java.util.List;
 
 import ila.fr.codisintervention.models.messages.Intervention;
+import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
 
 /**
@@ -95,6 +96,18 @@ public class WebSocketServiceBinder extends Binder {
          * @param symbols the symbols to delete
          */
         void deleteSymbols(int interventionId, List<Symbol> symbols);
+
+        /**
+         * Accept a vehicle request and send a notification to remote server
+         * @param request The request
+         */
+        void acceptVehicleRequest(Request request);
+
+        /**
+         * Deny a vehicle request and send a notification to remote server
+         * @param request The request
+         */
+        void denyVehicleRequest(Request request);
     }
 
 

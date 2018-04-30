@@ -29,9 +29,10 @@ import ila.fr.codisintervention.services.WebSocketServiceAware;
 import ila.fr.codisintervention.services.constants.ModelConstants;
 import ila.fr.codisintervention.utils.RequestsListAdapter;
 
+@SuppressWarnings("squid:MaximumInheritanceDepth")
 public class CodisRequestListActivity extends AppCompatActivity implements WebSocketServiceAware, ModelServiceAware{
 
-    private static final String TAG = "CodisReqListActivity";
+    private static final String TAG = "CodisRequestListAct";
 
     /**
      * Service connection of the service subscribed
