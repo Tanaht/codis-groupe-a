@@ -3,7 +3,6 @@ package ila.fr.codisintervention.activities;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -24,6 +23,7 @@ import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.exception.RequestNotFoundException;
 import ila.fr.codisintervention.models.model.Request;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
 import ila.fr.codisintervention.services.constants.ModelConstants;
@@ -96,7 +96,7 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
      */
     @Override
     public void onModelServiceConnected() {
-        //DO NOTHING
+        initializeView();
     }
 
     private void initializeView() {
@@ -211,28 +211,25 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
         final CharSequence[] items = {"FTP-1", "FPT-2", "VLCG-1", "VLCG-2"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-        builder.setTitle("Choose the vehicle : ");
-        builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
-                // TODO Store chosen vehicle
-            }
+        builder.setTitle(R.string.label_choose_vehicle);
+
+        builder.setSingleChoiceItems(items, -1, (dialog, item) -> {
+            Log.d(TAG, "Chosen vehicle: " + ((Vehicle)items[item]).getLabel());
+            // TODO Store chosen vehicle
         });
 
-        builder.setPositiveButton("Yes",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Toasty.success(getApplicationContext(), "Request Accepted", Toast.LENGTH_SHORT).show();
-                        // TODO intent to model (accepted)
-                    }
-                });
-        builder.setNegativeButton("No",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Toasty.warning(getApplicationContext(), "Request Denied", Toast.LENGTH_SHORT).show();
-                        // TODO intent to model (denied)
-                    }
-                });
+        builder.setPositiveButton(R.string.label_validate, (dialog, id) -> {
+            Toasty.success(getApplicationContext(), "Request Accepted", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Accept " + id);
+//            webSocketService.acceptVehicleRequest();
+        });
+
+
+        builder.setNegativeButton(R.string.label_deny, (dialog, id) -> {
+            Toasty.warning(getApplicationContext(), "Request Denied", Toast.LENGTH_SHORT).show();
+//            webSocketService.denyVehicleRequest();
+            Log.d(TAG, "Deny " + id);
+        });
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -249,7 +246,8 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
         interventionListIntentFilter.addAction(ModelConstants.REJECT_VEHICLE_REQUEST);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, interventionListIntentFilter);
 
-        initializeView();
+        if(modelService != null)
+            initializeView();
     }
 
     /**
