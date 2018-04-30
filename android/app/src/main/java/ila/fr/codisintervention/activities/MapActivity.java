@@ -347,4 +347,16 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         Intent intent = new Intent( MapActivity.this, MeansTableActivity.class);
         startActivity(intent);
     }
+
+    /**
+     * Show Photos Display activity.
+     *
+     * Technically this method send an explicit intent to {@link PhotosDisplayActivity }
+     *
+     * @param v the view
+     */
+    public void showPhotosDisplay(View v) {
+        Intent intent = new Intent( MapActivity.this, PhotosDisplayActivity.class);
+        startActivity(intent);
+    }
 }
