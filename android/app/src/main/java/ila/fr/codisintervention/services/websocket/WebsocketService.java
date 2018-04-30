@@ -539,9 +539,11 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 Intent requestCreated  = new Intent(getApplicationContext(), ModelService.class);
 
                 Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                Request request = gson.fromJson(message.getPayload(), Request.class);
+                subscribeToRequest(request);
 
                 requestCreated.setAction(DEMANDE_CREATED);
-                requestCreated.putExtra(DEMANDE_CREATED, gson.fromJson(message.getPayload(), Request.class));
+                requestCreated.putExtra(DEMANDE_CREATED, request);
                 getApplicationContext().startService(requestCreated);
             });
 
@@ -556,16 +558,19 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      */
     private void performDemandeSubscriptionInitialization(List<Request> requests) {
         for(Request request : requests) {
-
-            this.client.topic("/topic/requests/" + request.getId() + "/accepted").subscribe(message -> {
-                Log.i(TAG, "[/topic/requests/" + request.getId() + "/accepted] Received message: " + message.getPayload());
-                notifyRequestAccepted(request);
-            });
-            this.client.topic("/topic/requests/" + request.getId() + "/denied").subscribe(message -> {
-                Log.i(TAG, "[/topic/requests/" + request.getId() + "/denied] Received message: " + message.getPayload());
-                notifyRequestDenied(request);
-            });
+            subscribeToRequest(request);
         }
+    }
+
+    private void subscribeToRequest(Request request) {
+        this.client.topic("/topic/requests/" + request.getId() + "/accepted").subscribe(message -> {
+            Log.i(TAG, "[/topic/requests/" + request.getId() + "/accepted] Received message: " + message.getPayload());
+            notifyRequestAccepted(request);
+        });
+        this.client.topic("/topic/requests/" + request.getId() + "/denied").subscribe(message -> {
+            Log.i(TAG, "[/topic/requests/" + request.getId() + "/denied] Received message: " + message.getPayload());
+            notifyRequestDenied(request);
+        });
     }
 
     /**
