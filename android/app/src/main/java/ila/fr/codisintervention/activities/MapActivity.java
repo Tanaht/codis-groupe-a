@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -319,13 +320,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     }
 
     @Override
-    public void onModelServiceConnected() {
-
-    }
-
-    @Override
     public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
-
+        this.modelService = modelService;
     }
 
     @Override
@@ -333,6 +329,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         Log.d(TAG, modelService!=null?"ModelService connected":"ModelService null");
         Position interventionPosition = new Position(48.115204, -1.637871);
         if(modelService!=null) {
+            Log.d(TAG, modelService.getCurrentIntervention()!=null?"Current intervention not null":"Current intervention null");
             if(modelService.getCurrentIntervention()!=null) {
                 interventionPosition = modelService.getCurrentIntervention().getPosition();
             }
@@ -342,7 +339,17 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
     @Override
     public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
+        this.webSocketService = webSocketService;
+    }
 
+    /**
+     * Show Means Table activity.
+     *
+     * Technically this method send an explicit intent to {@link MeansTableActivity }
+     *  
+     */
+    public void showMeansTable() {
+        showMeansTable();
     }
 
     /**
@@ -355,5 +362,9 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     public void showMeansTable(View v) {
         Intent intent = new Intent( MapActivity.this, MeansTableActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onWebSocketServiceConnected(){
     }
 }
