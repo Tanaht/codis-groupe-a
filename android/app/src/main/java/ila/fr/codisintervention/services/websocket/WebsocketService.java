@@ -608,6 +608,16 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         if(user.isCodisUser()) {
             this.client.topic("/topic/demandes/created").subscribe(message -> {
                 Log.i(TAG, "[/demandes/created] Received message: " + message.getPayload());
+
+                Intent requestCreated  = new Intent(getApplicationContext(), ModelService.class);
+
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                Request request = gson.fromJson(message.getPayload(), Request.class);
+                subscribeToRequest(request);
+
+                requestCreated.setAction(DEMANDE_CREATED);
+                requestCreated.putExtra(DEMANDE_CREATED, request);
+                getApplicationContext().startService(requestCreated);
             });
 
             performDemandeSubscriptionInitialization(initializeApplication.getDemandes());
@@ -621,15 +631,70 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      */
     private void performDemandeSubscriptionInitialization(List<Request> requests) {
         for(Request request : requests) {
-
-            this.client.topic("/topic/requests/" + request.getId() + "/accepted").subscribe(message -> {
-                Log.i(TAG, "[/topic/requests/" + request.getId() + "/accepted] Received message: " + message.getPayload());
-            });
-            this.client.topic("/topic/requests/" + request.getId() + "/denied").subscribe(message -> {
-                Log.i(TAG, "[/topic/requests/" + request.getId() + "/denied] Received message: " + message.getPayload());
-            });
+            subscribeToRequest(request);
         }
     }
 
+    private void subscribeToRequest(Request request) {
+        Log.d(TAG, "Perform subscription of 'Demandes' for idUnit equal to: " + request.getId());
+        this.client.topic("/topic/demandes/" + request.getId() + "/accepted").subscribe(message -> {
+            Log.i(TAG, "[/topic/demandes/" + request.getId() + "/accepted] Received message: " + message.getPayload());
+            notifyRequestAccepted(request);
+        });
+        this.client.topic("/topic/demandes/" + request.getId() + "/denied").subscribe(message -> {
+            Log.i(TAG, "[/topic/demandes/" + request.getId() + "/denied] Received message: " + message.getPayload());
+            notifyRequestDenied(request);
+        });
+    }
 
+    /**
+     * notify that the request is accepted
+     * @param request the request
+     */
+    private void notifyRequestAccepted(Request request) {
+        Intent acceptedRequest  = new Intent(getApplicationContext(), ModelService.class);
+        acceptedRequest.setAction(DEMANDE_ACCEPTED);
+        acceptedRequest.putExtra(DEMANDE_ACCEPTED, request);
+        getApplicationContext().startService(acceptedRequest);
+    }
+
+    /**
+     * notify that the request is denied
+     * @param request the request
+     */
+    private void notifyRequestDenied(Request request) {
+        Intent acceptedRequest  = new Intent(getApplicationContext(), ModelService.class);
+        acceptedRequest.setAction(DEMANDE_DENIED);
+        acceptedRequest.putExtra(DEMANDE_DENIED, request);
+        getApplicationContext().startService(acceptedRequest);
+    }
+
+    @Override
+    public void acceptVehicleRequest(ila.fr.codisintervention.models.model.Request request){
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return Arrays.asList("id", "type", "status").contains(f.getName());
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        }).create();
+        String json = gson.toJson(new Request(request));
+
+        this.client.send("/app/demandes/" + request.getId() + "/accept", json).subscribe(
+                () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/accept] Sent data!"),
+                error -> Log.e(TAG, "[/app/demandes/" + request.getId() + "/accept] Error Encountered", error)
+        );
+    }
+
+    @Override
+    public void denyVehicleRequest(ila.fr.codisintervention.models.model.Request request){
+        this.client.send("/app/demandes/" + request.getId() + "/deny", "PING").subscribe(
+                () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/deny] Sent data!"),
+                error -> Log.e(TAG, "[/app/demandes/" + request.getId() + "/deny] Error Encountered", error)
+        );
+    }
 }

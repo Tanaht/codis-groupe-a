@@ -137,6 +137,7 @@ public class DemandSocketController {
 
             String urlToSend = RoutesConfig.CONFIRM_DEMAND_SERVER_CODIS.replace("{id}", String.valueOf(unit.getId()));
 
+            logger.trace("{} --> data send {}",urlToSend, "PING");
             //Message for the codis
             simpMessagingTemplate.convertAndSend(urlToSend,"PING");
 
@@ -180,18 +181,20 @@ public class DemandSocketController {
 
         String toSend = "PING";
 
-        logger.trace("{} --> data send {}", RoutesConfig.DENY_DEMAND_SERVER_CODIS, toSend);
+        String urlToSend = RoutesConfig.DENY_DEMAND_SERVER_CODIS.replace("{id}", String.valueOf(unit.getId()));
+        logger.trace("{} --> data send {}", urlToSend, toSend);
+
+        //Message for the codis
+        simpMessagingTemplate.convertAndSend(urlToSend,toSend);
 
 
-        String urlToSend = DENY_DEMAND_SERVER_CLIENT
+        urlToSend = DENY_DEMAND_SERVER_CLIENT
                 .replace("{id}", String.valueOf(unit.getIntervention().getId()))
                 .replace("{idUnit}", String.valueOf(idUnit));
 
         logger.trace("{} --> data send {}", urlToSend, toSend);
 
 
-        //Message for the codis
-        simpMessagingTemplate.convertAndSend(RoutesConfig.DENY_DEMAND_SERVER_CODIS,toSend);
 
         //Message for the client
         simpMessagingTemplate.convertAndSend(urlToSend,toSend);

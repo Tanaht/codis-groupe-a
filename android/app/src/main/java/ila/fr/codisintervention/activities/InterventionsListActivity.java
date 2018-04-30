@@ -140,11 +140,6 @@ public class InterventionsListActivity extends AppCompatActivity {
             // When clicked, show a toast with the TextView text
             InterventionModel intervention = (InterventionModel) parent.getItemAtPosition(position);
 
-            Toasty.info(getApplicationContext(),
-                    "Intervention with id:" + intervention.getId() + " has been sent to wss",
-                    Toast.LENGTH_SHORT, true)
-                    .show();
-
             // Send Intervention choice to WSS
             webSocketService.chooseIntervention(intervention.getId());
             Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);

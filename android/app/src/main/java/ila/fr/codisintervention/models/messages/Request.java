@@ -11,6 +11,7 @@ import com.google.gson.annotations.Expose;
 
 public class Request implements Parcelable {
 
+    //TODO: is this useful ?
     @Expose
     private int id;
 
@@ -20,9 +21,14 @@ public class Request implements Parcelable {
     public Request() {
     }
 
+    public Request(ila.fr.codisintervention.models.model.Request request) {
+        this.id = request.getId();
+        this.vehicle = new Vehicle(request.getVehicle());
+    }
+
     protected Request(Parcel in) {
+        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
         id = in.readInt();
-//        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
     }
 
     public static final Creator<Request> CREATOR = new Creator<Request>() {
@@ -60,7 +66,7 @@ public class Request implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(vehicle, flags);
         dest.writeInt(id);
-//        dest.writeParcelable(vehicle, flags);
     }
 }

@@ -33,11 +33,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activities.CodisMainMenu"
-            android:launchMode="singleTask"/>
-        <activity android:name=".activities.UserMainMenu"
-            android:launchMode="singleTask"/>
+        <activity
+            android:name=".activities.CodisMainMenu"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".activities.UserMainMenu"
+            android:launchMode="singleTask" />
         <activity android:name=".activities.InterventionsListActivity" />
         <activity android:name=".activities.NewInterventionActivity" />
         <activity
@@ -59,6 +60,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity android:name=".activities.CodisRequestListActivity"></activity>
         <activity android:name=".activities.MeansTableActivity"></activity>
     </application>
 
