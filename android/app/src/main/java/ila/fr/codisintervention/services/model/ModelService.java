@@ -12,7 +12,6 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
@@ -23,9 +22,9 @@ import ila.fr.codisintervention.exception.VehicleNotFoundException;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.PathDrone;
-import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.ApplicationModel;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
@@ -189,12 +188,12 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(unitUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT);
                 break;
             case WebsocketService.DEMANDE_ACCEPTED:
-                Request request = intent.getParcelableExtra(WebsocketService.DEMANDE_ACCEPTED);
+                Request request = new Request(intent.getParcelableExtra(WebsocketService.DEMANDE_ACCEPTED));
                 model.getRequests().remove(request);
                 sendToEveryone(request.getId(), ModelConstants.VALIDATE_VEHICLE_REQUEST);
                 break;
             case WebsocketService.DEMANDE_DENIED:
-                Request req = intent.getParcelableExtra(WebsocketService.DEMANDE_DENIED);
+                Request req = new Request(intent.getParcelableExtra(WebsocketService.DEMANDE_DENIED));
                 model.getRequests().remove(req);
                 sendToEveryone(req.getId(), ModelConstants.REJECT_VEHICLE_REQUEST);
                 break;

@@ -636,12 +636,13 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
     private void subscribeToRequest(Request request) {
-        this.client.topic("/topic/requests/" + request.getId() + "/accepted").subscribe(message -> {
-            Log.i(TAG, "[/topic/requests/" + request.getId() + "/accepted] Received message: " + message.getPayload());
+        Log.d(TAG, "Perform subscription of 'Demandes' for idUnit equal to: " + request.getId());
+        this.client.topic("/topic/demandes/" + request.getId() + "/accepted").subscribe(message -> {
+            Log.i(TAG, "[/topic/demandes/" + request.getId() + "/accepted] Received message: " + message.getPayload());
             notifyRequestAccepted(request);
         });
-        this.client.topic("/topic/requests/" + request.getId() + "/denied").subscribe(message -> {
-            Log.i(TAG, "[/topic/requests/" + request.getId() + "/denied] Received message: " + message.getPayload());
+        this.client.topic("/topic/demandes/" + request.getId() + "/denied").subscribe(message -> {
+            Log.i(TAG, "[/topic/demandes/" + request.getId() + "/denied] Received message: " + message.getPayload());
             notifyRequestDenied(request);
         });
     }
