@@ -10,7 +10,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
@@ -129,43 +131,54 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(id, ModelConstants.ACTION_DELETE_INTERVENTION);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_CREATED:
-                Symbol symbolCreated = intent.getParcelableExtra(WebsocketService.INTERVENTION_SYMBOL_CREATED);
-                model.getCurrentIntervention().getSymbols().add(symbolCreated);
-                sendToEveryone(symbolCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL);
+                ArrayList<ila.fr.codisintervention.models.messages.Symbol> symbList = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_SYMBOL_CREATED);
+
+                for (ila.fr.codisintervention.models.messages.Symbol symb : symbList){
+                    Symbol symbModel = new Symbol(symb);
+                    model.getCurrentIntervention().createSymbol(symbModel);
+                }
+                //TODO send list id and not a=only first
+                sendToEveryone(symbList.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_UPDATED:
-                Symbol symbolUpdated = intent.getParcelableExtra
-                        (WebsocketService.INTERVENTION_SYMBOL_UPDATED);
+                ArrayList<ila.fr.codisintervention.models.messages.Symbol> symbListUpdate = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_SYMBOL_UPDATED);
+
                 try {
-                    model.getCurrentIntervention()
-                            .updateSymbol(symbolUpdated);
+                    for (ila.fr.codisintervention.models.messages.Symbol symb : symbListUpdate){
+                        Symbol symbModel = new Symbol(symb);
+                        model.getCurrentIntervention()
+                                .updateSymbol(symbModel);
+                    }
                 } catch (SymbolNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to update symbol who doesn't exist");
                     e.printStackTrace();
                 }
-                sendToEveryone(symbolUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL);
+                sendToEveryone(symbListUpdate.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_DELETED:
-                int idSymbol = intent.getIntExtra(WebsocketService.INTERVENTION_SYMBOL_DELETED, -1);
+                ArrayList<ila.fr.codisintervention.models.messages.Symbol> symbolsListDelete = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_SYMBOL_DELETED);
                 try {
-                    model.getCurrentIntervention().deleteSymbolById(idSymbol);
+
+                    for (ila.fr.codisintervention.models.messages.Symbol symb : symbolsListDelete){
+                        model.getCurrentIntervention().deleteSymbolById(symb.getId());
+                    }
                 } catch (SymbolNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to remove a symbol who doesn't exist");
                     e.printStackTrace();
                 }
-                sendToEveryone(idSymbol, ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
+                sendToEveryone(symbolsListDelete.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_UNIT_CREATED:
                 Unit unitCreated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_CREATED);
-                model.getCurrentIntervention().getUnits().add(unitCreated);
+                model.getCurrentIntervention().createUnit(unitCreated);
                 sendToEveryone(unitCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT);
                 break;
             case WebsocketService.INTERVENTION_UNIT_UPDATED:
                 Unit unitUpdated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_UPDATED);
                 try {
-                    model.getCurrentIntervention().changeUnit(unitUpdated);
+                    model.getCurrentIntervention().updateUnit(unitUpdated);
                 } catch (UnitNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to update a unit who doesn't exist ");
                     e.printStackTrace();
@@ -215,7 +228,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     }
 
     /**
-     * FIXME: Every intent doesn't have the same extra signature, si it has to be removed -> it would be exported equally when we will refactor this class
+     * FIXME: Every intent doesn't have the same extra signature, if it has to be removed -> it would be exported equally when we will refactor this class
      * Workaround to broadcoast an intent to everyone,
      * @param id the identifier to send in extra of the intent
      * @param intentAction the intent action name
@@ -239,7 +252,6 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     public InterventionModel getInterventionById(int id) throws InterventionNotFoundException {
         return model.getInterventionById(id);
     }
-
 
     @Override
     public InterventionModel getCurrentIntervention() {

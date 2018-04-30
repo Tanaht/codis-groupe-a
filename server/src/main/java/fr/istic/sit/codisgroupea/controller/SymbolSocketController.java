@@ -95,7 +95,7 @@ public class SymbolSocketController {
      */
     @MessageMapping(RoutesConfig.CREATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.CREATE_SYMBOL_SERVER})
-    public SymbolsMessage createSymbols(@DestinationVariable("id") final int id, List<SymbolCreateMessage> dataSendByClient) {
+    public String createSymbols(@DestinationVariable("id") final int id, List<SymbolCreateMessage> dataSendByClient) {
         Gson jason = new Gson();
         logger.trace(RoutesConfig.CREATE_SYMBOL_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
 
@@ -146,8 +146,9 @@ public class SymbolSocketController {
 
         SymbolsMessage toSend = new SymbolsMessage(SymbolsMessage.Type.CREATE, listMessage);
 
-        logger.trace(RoutesConfig.CREATE_SYMBOL_SERVER +" --> data send "+jason.toJson(toSend));
-        return toSend;
+        String toJson = jason.toJson(toSend);
+        logger.trace(RoutesConfig.CREATE_SYMBOL_SERVER +" --> data send "+toJson);
+        return toJson;
     }
 
     /**

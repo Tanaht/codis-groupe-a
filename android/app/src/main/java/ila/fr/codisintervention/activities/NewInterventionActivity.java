@@ -14,14 +14,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.IOException;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
-import ila.fr.codisintervention.models.model.Position;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
@@ -173,7 +174,7 @@ public class NewInterventionActivity extends AppCompatActivity implements ModelS
         gtb.sendRequestForAddress(intervention.getAddress(), result -> {
             latlngAddress = gtb.getLocationFromGoogleApiResult(result);
             if(latlngAddress != null) {
-                intervention.setPosition(new Position(latlngAddress.latitude, latlngAddress.longitude));
+                intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
                 // Send Intervention Details to WSS
                 webSocketService.createIntervention(intervention);
 

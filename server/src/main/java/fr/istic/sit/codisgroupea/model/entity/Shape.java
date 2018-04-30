@@ -5,27 +5,50 @@ package fr.istic.sit.codisgroupea.model.entity;
  */
 public enum Shape {
     /**
-     * Triangle up shape.
+     * Area shape.
      */
-    TRIANGLEUP,
+    AREA,
+
     /**
      * Triangle down shape.
      */
-    TRIANGLEDOWN,
+    DANGERDOWN,
+
     /**
-     * Circle shape.
+     * Triangle up shape.
      */
-    CIRCLE,
+    DANGERUP,
+
+    /**
+     * Not effective vehicle shape.
+     */
+    NOTEFFECTIVEVEHICLE,
+
+    /**
+     * Sinister shape.
+     */
+    SINISTER,
+
+    /**
+     * Fire vehicle shape.
+     */
+    VEHICLE
+    FIREVEHICLE,
+
+    /**
+     * Not effective fire vehicle shape.
+     */
+    NOTEFFECTIVEFIREVEHICLE,
+
+    /**
+     * Water resource shape.
+     */
+    WATERRESOURCE,
+
     /**
      * Vehicle shape.
      */
     VEHICLE,
-    /**
-     * Star shape.
-     */
-    STAR,
-    /**
-     * Action-zone shape.
-     */
+
     ACTIONZONE;
 }

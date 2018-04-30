@@ -5,10 +5,15 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by tanaky on 28/03/18.
  * A Unit is a Vehicle inside of an Intervention
  */
+@Getter
+@Setter
 public class Unit implements Parcelable {
 
     /**
@@ -31,6 +36,11 @@ public class Unit implements Parcelable {
     @Expose
     private long date_reserved;
 
+    @Expose
+    private long date_commited;
+    @Expose
+    private long date_released;
+
     /**
      * Boolean to now if unit is in movement
      */
@@ -49,20 +59,14 @@ public class Unit implements Parcelable {
     @Expose
     private Symbol symbol;
 
-
-    /**
-     * Instantiates a new Unit.
-     *
-     * @param in the parcel that contain the details of this class
-     */
-    protected Unit(Parcel in) {
-        id = in.readInt();
-        date_granted = in.readLong();
-        date_reserved = in.readLong();
-        moving = in.readByte() != 0;
-        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+    public Unit(ila.fr.codisintervention.models.model.Unit unit) {
+        id = unit.getId();
+        date_granted = unit.getAcceptDate().getTime();
+        date_reserved = unit.getRequestDate().getTime();
+        moving = unit.isMoving();
+        vehicle = new Vehicle(unit.getVehicle());
+        symbol = new Symbol(unit.getSymbolUnit());
     }
-
     /**
      * Usefull to Parcelize an instance of this class  {@link Parcelable}
      * The constant CREATOR.
@@ -79,9 +83,25 @@ public class Unit implements Parcelable {
         }
     };
 
+
+
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    /**
+     * Instantiates a new Unit.
+     *
+     * @param in the parcel that contain the details of this class
+     */
+    protected Unit(Parcel in) {
+        id = in.readInt();
+        date_granted = in.readLong();
+        date_reserved = in.readLong();
+        moving = in.readInt() != 0;
+        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+        symbol = in.readParcelable(Symbol.class.getClassLoader());
     }
 
     @Override
@@ -91,24 +111,7 @@ public class Unit implements Parcelable {
         dest.writeLong(date_reserved);
         dest.writeInt(moving ? 1 : 0);
         dest.writeParcelable(vehicle, flags);
-//        dest.writeParcelable(symbol, flags);
+        dest.writeParcelable(symbol, flags);
     }
 
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
 }

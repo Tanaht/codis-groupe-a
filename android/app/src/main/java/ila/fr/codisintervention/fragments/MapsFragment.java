@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,14 +29,21 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.model.Unit;
+import ila.fr.codisintervention.models.model.map_icon.Shape;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
 import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.model.Position;
@@ -114,8 +122,61 @@ public class MapsFragment extends Fragment {
         for(Map.Entry<String, MarkerOptions> entry: markers.entrySet()){
             googleMap.addMarker(entry.getValue());
         }
+
+        if (((MapActivity)getActivity()).getModelService().getCurrentIntervention() != null) {
+            if (((MapActivity)getActivity()).getModelService().getCurrentIntervention().getSymbols() != null) {
+                for (Symbol s : ((MapActivity) getActivity()).getModelService().getCurrentIntervention().getSymbols()) {
+                    printSymbol(s);
+                }
+            }
+            if (((MapActivity)getActivity()).getModelService().getCurrentIntervention().getUnits() != null) {
+                for (Unit u : ((MapActivity) getActivity()).getModelService().getCurrentIntervention().getUnits()) {
+                    printSymbolUnit(u.getSymbolUnit());
+                }
+            }
+        }
+
     }
 
+    /**
+     * Add on the googlemap a symbol or a unit from the model
+     * s : Symbol to draw
+     * @param s
+     */
+    public void printSymbol(Symbol s){
+        Integer drawablePath = getDrawablepathFromSymbol(s);
+        if (drawablePath > 0) { //the picture doesn't exist if =0
+            Bitmap marker = resizeBitmap(drawablePath, 50, 50);
+            addCustomMarkerZoom(new LatLng(s.getLocation().getLat(), s.getLocation().getLng()), marker);
+        }
+    }
+
+    public void printSymbolUnit(SymbolUnit s){
+        Integer drawablePath = getDrawablepathFromSymbolUnit(s);
+        if (drawablePath > 0) { //the picture doesn't exist if =0
+            Bitmap marker = resizeBitmap(drawablePath, 50, 50);
+            addCustomMarkerZoom(new LatLng(s.getLocation().getLat(), s.getLocation().getLng()), marker);
+        }
+        // need to print the payload.
+    }
+
+
+    /**
+     * Find the picture resource path of a symbol
+     * If >0 : found !
+     * s : Symbol to find
+     * return the resource's id.
+     * @param s
+     * @return
+     */
+    public Integer getDrawablepathFromSymbol(Symbol s){
+        String str = (ila.fr.codisintervention.models.model.map_icon.Color) s.getColor() + s.getShape().name();
+        return getResources().getIdentifier(str.toLowerCase(), "drawable", getActivity().getPackageName());
+    }
+    public Integer getDrawablepathFromSymbolUnit(SymbolUnit s){
+        String str = (ila.fr.codisintervention.models.model.map_icon.Color) s.getColor() + s.getShape().name();
+        return getResources().getIdentifier(str.toLowerCase(), "drawable", getActivity().getPackageName());
+    }
 
     public List<Location> send_dronePoints() {
 
@@ -168,19 +229,45 @@ public class MapsFragment extends Fragment {
                 /* add DronePoint */
                 SymbolKind symbole = getSymbolFragment();
                 if(symbole!=null) {
+                    Log.i(TAG, "onCreateView: symbol tap");
+                    
                     if (symbole.getIdDrawable() == R.drawable.drone_icon_map) {
                         DronePoint pt = new DronePoint(cptId, latLng.latitude, latLng.longitude);
                         course.put(new Integer(cptId), pt);   // add points in the course
                         cptId += 1;
                         updateUI(googleMap);                   // refresh the map
                     } else {
-                        Bitmap marker = resizeBitmap(symbole.getIdDrawable(), 50, 50);
-                        addCustomMarkerZoom(latLng, marker);
+
+                        //Bitmap marker = resizeBitmap(symbole.getIdDrawable(), 50, 50);
+                        //addCustomMarkerZoom(latLng, marker);
+
+                        // transform a SymbolKind to a Symbol and send it via websocket
+                        ila.fr.codisintervention.models.model.map_icon.Color color = ila.fr.codisintervention.models.model.map_icon.Color.valueOf(symbole.getColor().toUpperCase());
+                        int id = ((MapActivity)getActivity()).getModelService().getCurrentIntervention().getId();
+                        Shape shape = Shape.valueOf(symbole.getId().toUpperCase());
+                        Location location = new Location(latLng.latitude,latLng.longitude);
+                        Symbol mySymbol = new Symbol(location, color, shape);
+                        if (getDrawablepathFromSymbol(mySymbol) > 0) { // the symbol's picture exists
+                            List<Symbol> maListe = new ArrayList<Symbol>();
+                            maListe.add(mySymbol);
+                            ((MapActivity) getActivity()).getWebSocketService().createSymbols(id, maListe);
+                            //printSymbol(mySymbol); // draw it only for the test
+                        }else{
+                            Toasty.error(getActivity().getApplicationContext(), getString(R.string.error_symbol_not_found), Toast.LENGTH_SHORT, true).show();
+                        }
+
                     }
                 }
 
             });
 
+            googleMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback(){
+
+                @Override
+                public void onMapLoaded() {
+                    updateUI( googleMap );
+                }
+            });
             /*
                 Drag and drop a marker with a long clic
              */
@@ -223,7 +310,14 @@ public class MapsFragment extends Fragment {
                 }
             });
         });
+
+        //TODO a verifier suite au merge de la branche #43
+        mMapView.setClickable(true);
+        return rootView;
+
     }
+
+
     /**
      * Get symbol from activity {@link MapActivity}
      * @return
@@ -272,6 +366,7 @@ public class MapsFragment extends Fragment {
         MarkerOptions mo = new MarkerOptions().position(coord).draggable(true).title("").snippet("").icon(BitmapDescriptorFactory.fromBitmap(customizer));
         Marker mark = googleMap.addMarker(mo);
         markers.put(mark.getId(),mo);
+        Log.d(TAG,"FORM ON THE MAP : " );
     }
 
     /**
@@ -281,7 +376,6 @@ public class MapsFragment extends Fragment {
     public void zoomOnMarker(LatLng coord) {
         CameraPosition cameraPosition = new CameraPosition.Builder().target(coord).zoom(17).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
     }
 
     /**
@@ -339,6 +433,13 @@ public class MapsFragment extends Fragment {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    /**
+     * update the googleMap view from the mapActivity
+     */
+    public void updateView(){
+        updateUI(googleMap);
     }
 
     public void updateDronePath(PathDrone pathDrone) {

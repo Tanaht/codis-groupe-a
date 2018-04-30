@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -29,6 +31,7 @@ import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
 import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
+import ila.fr.codisintervention.models.messages.SymbolsMessage;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.model.ModelService;
@@ -408,33 +411,33 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+
+            SymbolsMessage symbMsg = gson.fromJson(message.getPayload(), SymbolsMessage.class);
             //FIXME: Ugly but this must works. Need to test other way
-            symbols = new ArrayList<>(Arrays.asList(gson.fromJson(message.getPayload(), Symbol[].class)));
+            symbols = new ArrayList<>(symbMsg.getSymbols());
 
 
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage(), e);
         }
 
-        Intent toBeBroadcoastedIntent = null;
+        Intent symbolActionIntent  = new Intent(getApplicationContext(), ModelService.class);
 
         if("CREATE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_CREATED);
-            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_CREATED, symbols);
+            symbolActionIntent.setAction(INTERVENTION_SYMBOL_CREATED);
+            symbolActionIntent.putExtra(INTERVENTION_SYMBOL_CREATED, symbols);
         }
 
         if("UPDATE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_UPDATED);
-            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_UPDATED, symbols);
+            symbolActionIntent.setAction(INTERVENTION_SYMBOL_UPDATED);
+            symbolActionIntent.putExtra(INTERVENTION_SYMBOL_UPDATED, symbols);
         }
 
         if("DELETE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_DELETED);
-            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_DELETED, symbols);
+            symbolActionIntent.setAction(INTERVENTION_SYMBOL_DELETED);
+            symbolActionIntent.putExtra(INTERVENTION_SYMBOL_DELETED, symbols);
         }
-
-        LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
-
+        getApplicationContext().startService(symbolActionIntent);
     }
 
     /**
@@ -466,6 +469,11 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
     @Override
     public void createSymbols(int interventionId, List<ila.fr.codisintervention.models.model.map_icon.symbol.Symbol> symbols) {
+        List<Symbol> listSymbols = new ArrayList<>();
+        for (ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb : symbols){
+            listSymbols.add(new Symbol(symb));
+        }
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {
@@ -478,7 +486,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             }
         }).create();
 
-        String json = gson.toJson(symbols);
+        String json = gson.toJson(listSymbols);
         Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/create] with message " + json);
         this.client.send("/app/interventions/" + interventionId + "/symbols/create", json).subscribe(
                 () -> Log.w(TAG, "[/app/interventions/" + interventionId + "/symbols/create] Sent data!"),
@@ -588,13 +596,12 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         this.client.topic("/topic/users/" + user.getUsername() + "/intervention-chosen").subscribe(message -> {
             Log.i(TAG, "[/users/" + user.getUsername() + "/intervention-chosen] Received message: " + message.getPayload());
 
-
             Intent interventionChosen  = new Intent(getApplicationContext(), ModelService.class);
-
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
             interventionChosen.setAction(INTERVENTION_CHOSEN);
-            interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), Intervention.class));
+            Intervention interv = gson.fromJson(message.getPayload(), Intervention.class);
+            interventionChosen.putExtra(INTERVENTION_CHOSEN, interv);
             getApplicationContext().startService(interventionChosen);
 
         });
