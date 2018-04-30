@@ -72,10 +72,12 @@ insert into default_vehicle_symbol VALUE (3, 1, 3);
 -- Insert payload
 Insert INTO payload VALUES (1, 'detail test 1', 'identifier test 1');
 Insert INTO payload VALUES (2, 'detail test 2', 'identifier test 2');
+INSERT INTO payload VALUES (3, '', '');
 
--- Insert symbol_sitac
+-- Insert symbol_sitac (ID, Intervention, Location, Payload, Symbol
 Insert INTO symbol_sitac VALUES (1, 1, 1, 1, 4);
 Insert INTO symbol_sitac VALUES (2, 2, 2, 2, 5);
+Insert INTO symbol_sitac VALUES (4, 2, 2, 3, 4);
 
 -- Insert unit (id, accept_date, commited_date, moving, released_date, request_date, intervention, symbol)
 Insert INTO unit VALUES ( 1, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 1, 1);
