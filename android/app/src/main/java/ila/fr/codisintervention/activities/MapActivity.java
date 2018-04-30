@@ -114,52 +114,10 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
      * TODO: To mutualize equally with BindToService method
      * Define BroadcoastReceiver Instance to get aware when an Intent is send to this activity among other
      */
-    //TODO la fonction ne fais rien ??
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             updateView();
-
-            int id = (int) intent.getExtras().get("id");
-            Symbol symbol;
-            Unit unit;
-
-            try{
-
-                switch (intent.getAction()) {
-                    case UPDATE_INTERVENTION_UPDATE_UNIT:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    case UPDATE_INTERVENTION_CREATE_UNIT:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    case UPDATE_INTERVENTION_DELETE_UNIT:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    case UPDATE_INTERVENTION_UPDATE_SYMBOL:
-                        symbol = modelService.getCurrentIntervention().getSymbol(id);
-                        break;
-                    case UPDATE_INTERVENTION_DELETE_SYMBOL:
-                        symbol = modelService.getCurrentIntervention().getSymbol(id);
-                        break;
-                    case UPDATE_INTERVENTION_CREATE_SYMBOL:
-                        symbol = modelService.getCurrentIntervention().getSymbol(id);
-                        break;
-                    case ADD_VEHICLE_REQUEST:
-                        break;
-                    case VALIDATE_VEHICLE_REQUEST:
-                        unit = modelService.getCurrentIntervention().getUnit(id);
-                        break;
-                    default:
-                        break;
-                }
-            }catch (SymbolNotFoundException e){
-                Log.e(TAG, "onReceive: try to get symbol who doesn't exist on current intervention selected" );
-                e.printStackTrace();
-            }catch (UnitNotFoundException e){
-                Log.e(TAG, "onReceive: try to get unit who doesn't exist on current intervention selected" );
-                e.printStackTrace();
-            }
         }
     };
 

@@ -27,6 +27,7 @@ import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
 import ila.fr.codisintervention.models.messages.Symbol;
+import ila.fr.codisintervention.models.messages.SymbolsMessage;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.model.ModelService;
@@ -379,8 +380,10 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+
+            SymbolsMessage symbMsg = gson.fromJson(message.getPayload(), SymbolsMessage.class);
             //FIXME: Ugly but this must works. Need to test other way
-            symbols = new ArrayList<>(Arrays.asList(gson.fromJson(message.getPayload(), Symbol[].class)));
+            symbols = new ArrayList<>(symbMsg.getSymbols());
 
 
         } catch (JSONException e) {
