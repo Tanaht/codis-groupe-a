@@ -24,6 +24,7 @@ import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.exception.RequestNotFoundException;
 import ila.fr.codisintervention.models.model.Request;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
 import ila.fr.codisintervention.services.constants.ModelConstants;
@@ -190,13 +191,23 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
         dataAdapter.notifyDataSetChanged();
     }
 
+    private CharSequence[] getAvailableVehicleLabels() {
+        List<Vehicle> availableVehicles = modelService.getAvailableVehicle();
+        List<CharSequence> labels = new ArrayList<>();
+
+        for(Vehicle vehicle : availableVehicles) {
+            labels.add(vehicle.getLabel());
+        }
+
+        return (CharSequence[]) labels.toArray();
+    }
+
     /**
      * Accept or deny the request
      * @param request
      */
     private void showPopUpToValidateRequest(Request request) {
-        // TODO Remplacer par model.getVehicles.getLabel
-        final CharSequence[] items = {"FTP-1", "FPT-2", "VLCG-1", "VLCG-2"};
+        final CharSequence[] items = getAvailableVehicleLabels();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
         builder.setTitle("Choose the vehicle : ");
