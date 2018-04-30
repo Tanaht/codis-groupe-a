@@ -43,13 +43,15 @@ class SocketIstic:
         self.send(json_data)
 
     # message to the server : SEND_PHOTO
-    def send_photo(self, location, image):
+    def send_photo(self, location, image, interventionId):
         now = datetime.now()
         json_data = {
             'type': "SEND_PHOTO",
             'datas': {
                 'photo': image,
                 'date': time.mktime(now.timetuple()),
+                'interventionId': interventionId,
+                'pointId': 1,
                 'location': {
                     'lat': location.lat,
                     'lng': location.lon

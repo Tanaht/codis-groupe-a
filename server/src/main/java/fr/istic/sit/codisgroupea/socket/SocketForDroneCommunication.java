@@ -156,4 +156,10 @@ public class SocketForDroneCommunication {
         String toJson = gson.toJson(new LocationMessage(location.getLat(), location.getLng(), location.getAlt()),LocationMessage.class);
         simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1+location.getInterventionId()+RoutesConfig.SEND_DRONE_POSITION_PART2, toJson);
 	}
+
+	public void sendDronePhoto(Photo photo) {
+		Gson gson = new Gson();
+		String toJson = gson.toJson("", Photo.class);
+		simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1 + photo.getInterventionId() + RoutesConfig.SEND_DRONE_POSITION_PART2);
+	}
 }
