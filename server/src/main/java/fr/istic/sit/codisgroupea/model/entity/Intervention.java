@@ -25,6 +25,8 @@ public class Intervention {
     private SinisterCode sinisterCode;
     private boolean opened;
 
+    private Path pathDrone;
+
 
     /**
      * Default constructor.
@@ -162,5 +164,14 @@ public class Intervention {
      */
     public void setOpened(boolean opened) {
         this.opened = opened;
+    }
+
+    @OneToOne
+    public Path getPathDrone() {
+        return pathDrone;
+    }
+
+    public void setPathDrone(Path pathDrone) {
+        this.pathDrone = pathDrone;
     }
 }

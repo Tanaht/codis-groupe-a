@@ -22,6 +22,7 @@ public class Path {
     /** Instance of {@link PathType} for the type of the path */
     private PathType type;
 
+
     /**
      * Instantiates a new Path.
      */
@@ -119,4 +120,5 @@ public class Path {
     public void setType(PathType type) {
         this.type = type;
     }
+
 }
