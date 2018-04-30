@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import ila.fr.codisintervention.R;
-import ila.fr.codisintervention.fragments.listeners.SymbolUpdateFragmentListener;
+import ila.fr.codisintervention.fragments.listeners.SymbolUpdateDialogListener;
 
 public class SymbolUpdateDialog extends DialogFragment {
     private static final String TAG = "SymbolUpdateDialog";
@@ -34,7 +34,7 @@ public class SymbolUpdateDialog extends DialogFragment {
     /**
      * Custom listener that the owner of the DialogFragment must implement to be aware of change
      */
-    private SymbolUpdateFragmentListener listener;
+    private SymbolUpdateDialogListener listener;
     private EditText identifier;
     private EditText details;
 
@@ -76,7 +76,7 @@ public class SymbolUpdateDialog extends DialogFragment {
         return v;
     }
 
-    public void setSymbolUpdateFragmentListener(SymbolUpdateFragmentListener listener) {
+    public void setSymbolUpdateDialogListener(SymbolUpdateDialogListener listener) {
         this.listener = listener;
     }
 }

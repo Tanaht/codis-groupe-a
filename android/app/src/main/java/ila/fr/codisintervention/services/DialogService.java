@@ -6,7 +6,10 @@ import android.app.FragmentTransaction;
 import android.util.Log;
 
 import ila.fr.codisintervention.fragments.SymbolUpdateDialog;
-import ila.fr.codisintervention.fragments.listeners.SymbolUpdateFragmentListener;
+import ila.fr.codisintervention.fragments.UnitUpdateDialog;
+import ila.fr.codisintervention.fragments.listeners.SymbolUpdateDialogListener;
+import ila.fr.codisintervention.fragments.listeners.UnitUpdateDialogListener;
+import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 
 /**
@@ -21,9 +24,9 @@ public class DialogService {
     /**
      * Entrypoint to offer update of Symbol through Dialog this entrypoint also unsure that a listener is filled in here
      */
-    public static void showSymbolUpdateDialog(FragmentManager manager, Symbol symbol, SymbolUpdateFragmentListener listener) {
+    public static void showSymbolUpdateDialog(FragmentManager manager, Symbol symbol, SymbolUpdateDialogListener listener) {
         if(listener == null) {
-            Log.e(TAG, "An instance of SymbolUpdateFragmentListener must be provided !");
+            Log.e(TAG, "An instance of SymbolUpdateDialogListener must be provided !");
         }
 
 
@@ -39,15 +42,25 @@ public class DialogService {
         removePreviousDialogIfNotAlready(manager, ft);
 
         SymbolUpdateDialog newFragment = SymbolUpdateDialog.newInstance(identifier, details);
-        newFragment.setSymbolUpdateFragmentListener(listener);
+        newFragment.setSymbolUpdateDialogListener(listener);
         newFragment.show(ft, DIALOG_TAG);
     }
 
     /**
-     * Entrypoint to offer update of Unit through Dialog
+     * Entrypoint to offer update of Unit through Dialog this entrypoint also unsure that a listener is filled in here
      */
-    public static void showUnitUpdateDialog() {
-        throw new RuntimeException("Not Implemented yet");
+    public static void showUnitUpdateDialog(FragmentManager manager, Unit unit, UnitUpdateDialogListener listener) {
+        if(listener == null) {
+            Log.e(TAG, "An instance of UnitUpdateDialogListener must be provided !");
+        }
+
+        FragmentTransaction ft = manager.beginTransaction();
+
+        removePreviousDialogIfNotAlready(manager, ft);
+
+        UnitUpdateDialog newFragment = UnitUpdateDialog.newInstance(unit.getSymbolUnit().getColor(), unit.isMoving());
+        newFragment.setUnitUpdateDialogListener(listener);
+        newFragment.show(ft, DIALOG_TAG);
     }
 
     /**

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--<TextView-->
+        <!--android:id="@+id/label_identifier"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="24dp"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="24dp"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="24dp"-->
+        <!--android:text="@string/label_identifier"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/editText_identifier"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/label_details"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="24dp"-->
+        <!--android:layout_marginLeft="16dp"-->
+        <!--android:layout_marginRight="24dp"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="44dp"-->
+        <!--android:text="@string/label_details"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/editText_details"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/label_identifier" />-->
+
+    <Button
+        android:id="@+id/validate_dialog_fragment"
+        style="@android:style/Widget.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="17dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/label_validate"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/invalidate_dialog_fragment"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/invalidate_dialog_fragment"
+        style="@android:style/Widget.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="17dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="24dp"
+        android:text="@string/label_cancel"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/validate_dialog_fragment" />
+
+    <!--<EditText-->
+        <!--android:id="@+id/editText_identifier"-->
+        <!--style="@android:style/Widget.EditText"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:layout_marginLeft="24dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_marginStart="24dp"-->
+        <!--android:layout_marginTop="17dp"-->
+        <!--android:ems="10"-->
+        <!--android:hint="@string/hint_identifier"-->
+        <!--android:inputType="text"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/label_identifier"-->
+        <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--<EditText-->
+        <!--android:id="@+id/editText_details"-->
+        <!--style="@android:style/Widget.EditText"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:layout_marginLeft="24dp"-->
+        <!--android:layout_marginRight="16dp"-->
+        <!--android:layout_marginStart="24dp"-->
+        <!--android:layout_marginTop="24dp"-->
+        <!--android:ems="10"-->
+        <!--android:hint="@string/hint_details"-->
+        <!--android:inputType="text"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/label_details"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/editText_identifier" />-->
+</android.support.constraint.ConstraintLayout>
