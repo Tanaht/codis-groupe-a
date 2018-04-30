@@ -2,7 +2,12 @@ package fr.istic.sit.codisgroupea.socket;
 
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
+import fr.istic.sit.codisgroupea.model.entity.Intervention;
+import fr.istic.sit.codisgroupea.model.entity.Position;
 import fr.istic.sit.codisgroupea.model.message.LocationMessage;
+import fr.istic.sit.codisgroupea.model.message.PhotoMessage;
+import fr.istic.sit.codisgroupea.repository.InterventionRepository;
+import fr.istic.sit.codisgroupea.repository.PhotoRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -11,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Timestamp;
 
 /**
  * 
@@ -24,6 +30,8 @@ public class SocketForDroneCommunication {
 	private static final Logger logger = LogManager.getLogger();
 
     private SimpMessagingTemplate simpMessagingTemplate;
+	private InterventionRepository interventionRepository;
+	private PhotoRepository photoRepository;
 
 	private Socket socket;
 	private ServerSocket serverSocket;
@@ -36,8 +44,10 @@ public class SocketForDroneCommunication {
 	 *
 	 * @throws IOException
 	 */
-	public SocketForDroneCommunication(SimpMessagingTemplate simpMessagingTemplate) throws IOException {
+	public SocketForDroneCommunication(SimpMessagingTemplate simpMessagingTemplate, InterventionRepository interventionRepository, PhotoRepository photoRepository) throws IOException {
 		this.simpMessagingTemplate = simpMessagingTemplate;
+		this.interventionRepository = interventionRepository;
+		this.photoRepository = photoRepository;
 		Runnable startSocket = new Runnable() {
 			@Override
 			public void run() {
@@ -96,7 +106,9 @@ public class SocketForDroneCommunication {
 								String messageType = JsonForDroneCommunicationToolBox.getMessageType(receivedMessage);
 								//Get photo
 								if(messageType.equals(DroneServerConstants.MESSAGE_TYPES.SEND_PHOTO.getName())) {
-									JsonForDroneCommunicationToolBox.getPhotoFromMessage(receivedMessage);
+									Photo photo = JsonForDroneCommunicationToolBox.getPhotoFromMessage(receivedMessage);
+									savePhoto(photo);
+									sendDronePhoto(photo);
 								}
 								//Get current location
 								else if(messageType.equals(DroneServerConstants.MESSAGE_TYPES.SEND_SITUATION.getName())) {
@@ -157,9 +169,26 @@ public class SocketForDroneCommunication {
         simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1+location.getInterventionId()+RoutesConfig.SEND_DRONE_POSITION_PART2, toJson);
 	}
 
+	/**
+	 * Save photo in database
+	 * @param photo
+	 */
+	public void savePhoto(Photo photo){
+		String uri = photo.getPhoto();
+		Position coordinates = new Position(photo.getLocation().getLat(), photo.getLocation().getLng());
+		Timestamp date = new Timestamp(photo.getDate());
+		Intervention intervention = interventionRepository.getOne(photo.getInterventionId());
+		int point = photo.getPointId();
+		photoRepository.save(new fr.istic.sit.codisgroupea.model.entity.Photo(uri, coordinates, date, intervention, point));
+	}
+
+	/**
+	 * Send the photo information (received by socket) to android (by websocket)
+	 * @param photo
+	 */
 	public void sendDronePhoto(Photo photo) {
 		Gson gson = new Gson();
-		String toJson = gson.toJson("", Photo.class);
+		String toJson = gson.toJson(photo, Photo.class);
 		simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1 + photo.getInterventionId() + RoutesConfig.SEND_DRONE_POSITION_PART2);
 	}
 }

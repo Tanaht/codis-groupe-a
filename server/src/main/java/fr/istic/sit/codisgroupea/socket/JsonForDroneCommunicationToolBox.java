@@ -73,7 +73,7 @@ public class JsonForDroneCommunicationToolBox {
 	 * @param message The message given by the drone
 	 * @throws IOException
 	 */
-	public static void getPhotoFromMessage(String message) throws IOException {
+	public static Photo getPhotoFromMessage(String message) throws IOException {
 		Photo photo = new Photo();
 		try {
 			JSONObject jsonObject = new JSONObject(message);
@@ -81,7 +81,6 @@ public class JsonForDroneCommunicationToolBox {
 			//Get datas from json
 			JSONObject datas = jsonObject.getJSONObject(DroneServerConstants.DATAS);
 			//The photo format is String in the message
-			photo.setPhoto(datas.getString(DroneServerConstants.PHOTO));
 			photo.setDate(datas.getLong(DroneServerConstants.DATE));
 			photo.setInterventionId(datas.getInt(DroneServerConstants.INTERVENTION_ID));
 			photo.setPointId(datas.getInt(DroneServerConstants.POINT_ID));
@@ -99,8 +98,10 @@ public class JsonForDroneCommunicationToolBox {
 		//Put byte array image in BufferedImage
 		InputStream in = new ByteArrayInputStream(valueDecoded);
 		BufferedImage bImage = ImageIO.read(in);
-		//Create Image (.png), the name is 'image' + date in milliseconds + '.png'
-		ImageIO.write(bImage, DroneServerConstants.IMAGE_EXTENSION, new File(DroneServerConstants.IMAGE_LOCATION + DroneServerConstants.IMAGE_NAME + "_" + String.valueOf(photo.getPointId()) + "_" + String.valueOf(photo.getDate()) + "." + DroneServerConstants.IMAGE_EXTENSION));
+		String imagePath = DroneServerConstants.IMAGE_LOCATION + DroneServerConstants.IMAGE_NAME + "_" + String.valueOf(photo.getPointId()) + "_" + String.valueOf(photo.getDate()) + "." + DroneServerConstants.IMAGE_EXTENSION;
+		ImageIO.write(bImage, DroneServerConstants.IMAGE_EXTENSION, new File(imagePath));
+		photo.setPhoto(imagePath);
+		return photo;
 	}
 	
 	/**
