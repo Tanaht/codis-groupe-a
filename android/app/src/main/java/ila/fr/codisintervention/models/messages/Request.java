@@ -22,8 +22,8 @@ public class Request implements Parcelable {
     }
 
     protected Request(Parcel in) {
+        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
         id = in.readInt();
-//        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
     }
 
     public static final Creator<Request> CREATOR = new Creator<Request>() {
@@ -61,7 +61,7 @@ public class Request implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(vehicle, flags);
         dest.writeInt(id);
-//        dest.writeParcelable(vehicle, flags);
     }
 }
