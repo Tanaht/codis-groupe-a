@@ -10,7 +10,6 @@ import fr.istic.sit.codisgroupea.sig.stub.ListSigService;
 import org.apache.logging.log4j.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -240,8 +239,23 @@ public class InterventionSocketController {
 
         String toJson = jason.toJson(toReturn);
 
+        addSIGSymbols(persisted);
+
         logger.trace(RoutesConfig.CREATE_INTERVENTION_SERVER+" --> data send "+toJson);
         simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_INTERVENTION_SERVER, toJson);
+    }
+
+    /**
+     * Add SIG symbols into the intervention.
+     *
+     * @param intervention the intervention
+     */
+    private void addSIGSymbols(Intervention intervention) {
+        List<SymbolSitac> sigSymbols = listSigService.getSymbolsInTheIntervention(intervention);
+
+        for(SymbolSitac entry : sigSymbols) {
+            listSigService.createSymbolFromSigEntry(intervention, symbolSitacRepository.save(entry));
+        }
     }
 
     /**
