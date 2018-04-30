@@ -83,8 +83,8 @@ public class JsonForDroneCommunicationToolBox {
 			//The photo format is String in the message
 			photo.setPhoto(datas.getString(DroneServerConstants.PHOTO));
 			photo.setDate(datas.getLong(DroneServerConstants.DATE));
-			photo.setDate(datas.getLong(DroneServerConstants.DATE));
-			
+			photo.setInterventionId(datas.getInt(DroneServerConstants.INTERVENTION_ID));
+			photo.setPointId(datas.getInt(DroneServerConstants.POINT_ID));
 			//Get location of the photo
 			JSONObject loc = datas.getJSONObject(DroneServerConstants.LOCATION);
 			photo.setLocation(new Location(
@@ -100,7 +100,7 @@ public class JsonForDroneCommunicationToolBox {
 		InputStream in = new ByteArrayInputStream(valueDecoded);
 		BufferedImage bImage = ImageIO.read(in);
 		//Create Image (.png), the name is 'image' + date in milliseconds + '.png'
-		ImageIO.write(bImage, DroneServerConstants.IMAGE_EXTENSION, new File(DroneServerConstants.IMAGE_LOCATION + DroneServerConstants.IMAGE_NAME + String.valueOf(photo.getDate()) + "." + DroneServerConstants.IMAGE_EXTENSION));
+		ImageIO.write(bImage, DroneServerConstants.IMAGE_EXTENSION, new File(DroneServerConstants.IMAGE_LOCATION + DroneServerConstants.IMAGE_NAME + "_" + String.valueOf(photo.getPointId()) + "_" + String.valueOf(photo.getDate()) + "." + DroneServerConstants.IMAGE_EXTENSION));
 	}
 	
 	/**

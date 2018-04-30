@@ -222,7 +222,7 @@ class NotreDrone():
                 if self.vehicle.commands[self.vehicle.commands.next - 1].command == 19:
                     if not photo_ok:
                         (photo_ok, image) = Photo.take_photo(location)
-                        SocketIstic.get_socket().send_photo(location, image)
+                        SocketIstic.get_socket().send_photo(location, image, self.interventionId)
                 else:
                     photo_ok = False
 
