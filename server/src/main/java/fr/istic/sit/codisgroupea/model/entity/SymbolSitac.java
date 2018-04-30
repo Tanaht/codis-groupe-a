@@ -30,8 +30,14 @@ public class SymbolSitac implements SigEntry {
      * Instantiates a new Symbol sitac.
      */
     public SymbolSitac() {
+        this.payload = new Payload();
     }
 
+    public SymbolSitac(Intervention intervention, Symbol symbol) {
+        this.intervention = intervention;
+        this.symbol = symbol;
+        this.payload = new Payload();
+    }
     /**
      * Instantiates a new Symbol sitac.
      *
@@ -111,7 +117,7 @@ public class SymbolSitac implements SigEntry {
      *
      * @return the location
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     public Position getLocation() {
         return location;
     }
@@ -130,7 +136,7 @@ public class SymbolSitac implements SigEntry {
      *
      * @return the payload
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @NotNull
     public Payload getPayload() {
         return payload;

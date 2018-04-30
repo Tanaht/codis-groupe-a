@@ -29,6 +29,7 @@ import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.fragments.MapsFragment;
+import ila.fr.codisintervention.fragments.MeansTableFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.messages.DronePing;
@@ -318,13 +319,13 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     }
 
     @Override
-    public void onWebSocketServiceConnected() {
-        Log.d(TAG, "onWebSocketServiceConnected");
+    public void onModelServiceConnected() {
+
     }
 
     @Override
-    public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
-       this.webSocketService = webSocketService;
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+
     }
 
     @Override
@@ -340,7 +341,19 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     }
 
     @Override
-    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
-        this.modelService = modelService;
+    public void setWebSocketService(WebSocketServiceBinder.IMyServiceMethod webSocketService) {
+
+    }
+
+    /**
+     * Show Means Table activity.
+     *
+     * Technically this method send an explicit intent to {@link MeansTableActivity }
+     *
+     * @param v the view
+     */
+    public void showMeansTable(View v) {
+        Intent intent = new Intent( MapActivity.this, MeansTableActivity.class);
+        startActivity(intent);
     }
 }

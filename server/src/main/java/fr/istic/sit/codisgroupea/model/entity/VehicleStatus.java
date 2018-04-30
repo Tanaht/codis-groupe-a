@@ -8,8 +8,11 @@ public enum VehicleStatus {
     REQUESTED,
     /** Already used in an intervention */
     USED,
+
     /** Available for an intervention */
+
     AVAILABLE,
-    /** In intervention, waiting for orders */
+
+    /** In intervention, waiting for orders, no location on map */
     CRM
 }
