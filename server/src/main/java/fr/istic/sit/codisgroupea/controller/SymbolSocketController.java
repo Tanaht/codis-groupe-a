@@ -119,14 +119,15 @@ public class SymbolSocketController {
             SymbolSitac symbolSitac;
 
             if (data.getPayload() == null){
-                symbolSitac = symbolSitacRepository.save(
-                        new SymbolSitac(
-                                optionalIntervention.get(),
-                                optSymbol.get(),
-                                positionRepository.save(new Position(data.getLocation().getLat(), data.getLocation().getLng())),
-                                payloadRepository.save(new Payload("",""))
-                        )
+                Position pos = new Position(data.getLocation().getLat(), data.getLocation().getLng());
+                Payload payload = new Payload("","");
+                SymbolSitac symbSitac = new SymbolSitac(
+                        optionalIntervention.get(),
+                        optSymbol.get(),
+                        pos,payload
                 );
+
+                symbolSitac = symbolSitacRepository.save(symbSitac);
             }else{
                 symbolSitac = symbolSitacRepository.save(
                         new SymbolSitac(

@@ -111,11 +111,11 @@ Insert INTO symbol_sitac VALUES (4, 2, 2, 3, 4);
 -- Insert unit_vehicle
 
 -- Insert unit (id, accept_date, commited_date, moving, released_date, request_date, intervention, symbol)
-Insert INTO unit VALUES ( 1, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 1, 1);
-Insert INTO unit VALUES ( 2, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 2, 2);
-Insert INTO unit VALUES ( 3, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 2, 4);
+--Insert INTO unit VALUES ( 1, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 1, 1);
+--Insert INTO unit VALUES ( 2, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 2, 2);
+--Insert INTO unit VALUES ( 3, '00/12/25', '00/12/24', 1, '00/12/31', '00/12/23', 2, 4);
 
 -- Insert unit_vehicle (ID, Status, Vehicle, Type, Unit)
-Insert INTO unit_vehicle VALUES (1, 1, 1, 1, 1);
-Insert INTO unit_vehicle VALUES (2, 2, 2, 2, 2);
-Insert INTO unit_vehicle VALUES (3, 0, null, 3, 3);
+--Insert INTO unit_vehicle VALUES (1, 1, 1, 1, 1);
+--Insert INTO unit_vehicle VALUES (2, 2, 2, 2, 2);
+--Insert INTO unit_vehicle VALUES (3, 0, null, 3, 3);

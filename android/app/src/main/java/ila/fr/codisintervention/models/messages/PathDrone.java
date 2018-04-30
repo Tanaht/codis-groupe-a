@@ -8,6 +8,7 @@ import com.google.gson.annotations.Expose;
 import java.util.List;
 
 import ila.fr.codisintervention.models.DronePoint;
+import ila.fr.codisintervention.models.Location;
 import lombok.Getter;
 import lombok.Setter;
 

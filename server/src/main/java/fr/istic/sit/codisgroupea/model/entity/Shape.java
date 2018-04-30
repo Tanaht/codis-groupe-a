@@ -32,7 +32,7 @@ public enum Shape {
     /**
      * Fire vehicle shape.
      */
-    VEHICLE
+    VEHICLE,
     FIREVEHICLE,
 
     /**
@@ -45,10 +45,6 @@ public enum Shape {
      */
     WATERRESOURCE,
 
-    /**
-     * Vehicle shape.
-     */
-    VEHICLE,
 
     ACTIONZONE;
 }

@@ -45,8 +45,6 @@ import ila.fr.codisintervention.models.model.map_icon.Shape;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
 import ila.fr.codisintervention.models.DronePoint;
-import ila.fr.codisintervention.models.messages.Location;
-import ila.fr.codisintervention.models.model.Position;
 import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 
 /**
@@ -216,10 +214,10 @@ public class MapsFragment extends Fragment {
         return rootView;
     }
 
-    public void onModelServiceConnected(Position interventionPosition){
+    public void onModelServiceConnected(Location interventionPosition){
         mMapView.getMapAsync(mMap -> {
             googleMap = mMap;
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(interventionPosition.getLatitude(), interventionPosition.getLongitude())).zoom(18).build();
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(interventionPosition.getLat(), interventionPosition.getLng())).zoom(18).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
             /*
@@ -312,8 +310,8 @@ public class MapsFragment extends Fragment {
         });
 
         //TODO a verifier suite au merge de la branche #43
-        mMapView.setClickable(true);
-        return rootView;
+        //mMapView.setClickable(true);
+        //return rootView;
 
     }
 

@@ -33,11 +33,10 @@ import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.MeansTableFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
 import ila.fr.codisintervention.models.DronePoint;
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.DronePing;
-import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.InterventionModel;
-import ila.fr.codisintervention.models.model.Position;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.services.ModelServiceAware;
@@ -77,15 +76,6 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
     private WebSocketServiceBinder.IMyServiceMethod webSocketService;
 
-    /**
-     * ServiceConnection instance with the WebSocketService
-     */
-    private ServiceConnection webSocketServiceConnection;
-
-    /**
-     * Interface delivered by WebSocketService to be used by other android Component.
-     */
-    private WebSocketServiceBinder.IMyServiceMethod webSocketService;
 
     /**
      * Fragment intended to display a list of tools to add symbols on the map
@@ -108,6 +98,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
         webSocketServiceConnection = bindWebSocketService();
         modelServiceConnection = bindModelService();
+        //bindToService();
 
         // Retrieve the content view that renders the map.
         setContentView(R.layout.activity_map_content);
@@ -116,7 +107,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         symbolFragment = (SymbolsListFragment) manager.findFragmentById(R.id.listSymbolFragment);
         mapFragment = (MapsFragment) manager.findFragmentById(R.id.mapFragment);
 
-        bindToService();
+
 
         /*
          * Validate button in order to retrieve drone points created on the Map
@@ -334,11 +325,11 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     @Override
     public void onModelServiceConnected() {
         Log.d(TAG, modelService!=null?"ModelService connected":"ModelService null");
-        Position interventionPosition = new Position(48.115204, -1.637871);
+        Location interventionPosition = new Location(48.115204, -1.637871);
         if(modelService!=null) {
             Log.d(TAG, modelService.getCurrentIntervention()!=null?"Current intervention not null":"Current intervention null");
             if(modelService.getCurrentIntervention()!=null) {
-                interventionPosition = modelService.getCurrentIntervention().getPosition();
+                interventionPosition = modelService.getCurrentIntervention().getLocation();
             }
         }
         mapFragment.onModelServiceConnected(interventionPosition);
