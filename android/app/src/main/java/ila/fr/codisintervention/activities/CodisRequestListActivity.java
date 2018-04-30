@@ -7,9 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -66,9 +66,8 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
         setTitle(R.string.title_requests_in_progress_list);
 
         //Here we call the aware interface to perform the binding at our place, we gain an instance of ServiceConnection
-        Log.d(TAG, "Bind to services");
-        modelServiceConnection = bindModelService();
         webSocketServiceConnection = bindWebSocketService();
+        modelServiceConnection = bindModelService();
     }
 
     /**
@@ -97,7 +96,10 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
      */
     @Override
     public void onModelServiceConnected() {
-        Log.d(TAG, "ModelService connected: " + modelService.getRequests());
+        //DO NOTHING
+    }
+
+    private void initializeView() {
         if(modelService.getRequests() == null || modelService.getRequests().size() == 0){
             TextView tv = (TextView) findViewById(R.id.requestListEmptyMsg);
             tv.setText(R.string.msg_no_request_in_progress);
@@ -143,8 +145,20 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int id = (int) intent.getExtras().get("id");
+            if(intent == null || intent.getAction() == null) {
+                Log.w(TAG, "Intent is null or no action defined");
+                return;
+            }
+            int id = intent.getIntExtra("id", -1);
+
+            if(id == -1) {
+                Log.w(TAG, "No requested ID defined in extra");
+            }
+
+            int pos = -1;
+
             Request request = null;
+
             try {
                 request = modelService.getRequestById(id);
             } catch (RequestNotFoundException e) {
@@ -156,11 +170,8 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
                     addElement(request);
                     break;
                 case ModelConstants.VALIDATE_VEHICLE_REQUEST:
-                    int position = dataAdapter.getPosition(request);
-                    deleteElement(position);
-                    break;
                 case ModelConstants.REJECT_VEHICLE_REQUEST:
-                    int pos = dataAdapter.getPosition(request);
+                    pos = dataAdapter.getPosition(request);
                     deleteElement(pos);
                     break;
                 default:
@@ -237,6 +248,8 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
         interventionListIntentFilter.addAction(ModelConstants.VALIDATE_VEHICLE_REQUEST);
         interventionListIntentFilter.addAction(ModelConstants.REJECT_VEHICLE_REQUEST);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, interventionListIntentFilter);
+
+        initializeView();
     }
 
     /**

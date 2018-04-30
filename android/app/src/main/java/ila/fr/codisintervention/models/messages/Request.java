@@ -11,6 +11,7 @@ import com.google.gson.annotations.Expose;
 
 public class Request implements Parcelable {
 
+    //TODO: is this useful ?
     @Expose
     private int id;
 

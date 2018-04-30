@@ -590,10 +590,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         getApplicationContext().startService(acceptedRequest);
     }
 
-    /**
-     * Accept vehicle request (Codis)
-     * @param request
-     */
+    @Override
     public void acceptVehicleRequest(Request request){
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
             @Override
@@ -614,10 +611,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         );
     }
 
-    /**
-     * Deny vehicle request (Codis)
-     * @param request
-     */
+    @Override
     public void denyVehicleRequest(Request request){
         this.client.send("/app/demandes/" + request.getId() + "/deny", "PING").subscribe(
                 () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/deny] Sent data!"),
