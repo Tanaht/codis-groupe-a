@@ -351,7 +351,7 @@ public class InitializeApplicationMessage {
             }
 
             this.id = unit.getId();
-            this.vehicle = new VehicleMessage(unit.getVehicle());
+            this.vehicle = new VehicleMessage(unit.getUnitVehicle());
         }
 
         public int getId() {

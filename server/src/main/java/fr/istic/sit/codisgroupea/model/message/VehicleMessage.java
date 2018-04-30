@@ -58,7 +58,8 @@ public class VehicleMessage {
      * @param unitVehicle the unit vehicle
      */
     public VehicleMessage(UnitVehicle unitVehicle){
-        label = unitVehicle.getAssignedVehicle().getLabel();
+        if(unitVehicle.getAssignedVehicle() != null)
+            label = unitVehicle.getAssignedVehicle().getLabel();
         type = unitVehicle.getType().getName();
         status = unitVehicle.getStatus().name();
     }
