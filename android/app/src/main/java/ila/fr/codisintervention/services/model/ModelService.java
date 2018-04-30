@@ -17,6 +17,7 @@ import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.exception.RequestNotFoundException;
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
+import ila.fr.codisintervention.exception.VehicleNotFoundException;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.model.Request;
@@ -247,7 +248,20 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
     @Override
     public List<Vehicle> getAvailableVehicle() {
-        return model.getVehicleAvailables();
+        return model.getAvailableVehicles();
+    }
+
+    @Override
+    public List<Vehicle> getVehicles() { return model.getVehicles(); }
+
+    @Override
+    public List<Vehicle> getAvailableVehiclesByType(String type) {
+        return model.getAvailableVehiclesByType(type);
+    }
+
+    @Override
+    public Vehicle getVehicleByLabel(String label) throws VehicleNotFoundException{
+        return model.getVehicleByLabel(label);
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.os.Binder;
 import java.util.List;
 
 import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
 
 /**
@@ -101,13 +100,13 @@ public class WebSocketServiceBinder extends Binder {
          * Accept a vehicle request and send a notification to remote server
          * @param request The request
          */
-        void acceptVehicleRequest(Request request);
+        void acceptVehicleRequest(ila.fr.codisintervention.models.model.Request request);
 
         /**
          * Deny a vehicle request and send a notification to remote server
          * @param request The request
          */
-        void denyVehicleRequest(Request request);
+        void denyVehicleRequest(ila.fr.codisintervention.models.model.Request request);
     }
 
 

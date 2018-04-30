@@ -22,6 +22,7 @@ import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.exception.RequestNotFoundException;
+import ila.fr.codisintervention.exception.VehicleNotFoundException;
 import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.services.ModelServiceAware;
@@ -59,6 +60,9 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
      */
     RequestsListAdapter dataAdapter;
 
+    private Request currentRequest;
+    private Vehicle chosenVehicle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,9 +89,10 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             // When clicked, show a toast with the TextView text
-            Request request = (Request) parent.getItemAtPosition(position);
+            this.currentRequest = (Request) parent.getItemAtPosition(position);
+
             // show popUp to accept or deny the request
-            showPopUpToValidateRequest(request);
+            showPopUpToValidateRequest();
         });
     }
 
@@ -202,43 +207,49 @@ public class CodisRequestListActivity extends AppCompatActivity implements WebSo
         dataAdapter.notifyDataSetChanged();
     }
 
-    private CharSequence[] getAvailableVehicleLabels() {
-        List<Vehicle> availableVehicles = modelService.getAvailableVehicle();
+    private CharSequence[] getAvailableVehicleLabels(String type) {
+        List<Vehicle> availableVehicles = modelService.getAvailableVehiclesByType(type);
         List<CharSequence> labels = new ArrayList<>();
 
         for(Vehicle vehicle : availableVehicles) {
             labels.add(vehicle.getLabel());
         }
 
-        return (CharSequence[]) labels.toArray();
+        CharSequence[] charSequences = new CharSequence[labels.size()];
+        labels.toArray(charSequences);
+        return charSequences;
     }
 
     /**
-     * Accept or deny the request
-     * @param request
+     * Accept or deny the current request
+     * @see #currentRequest
      */
-    private void showPopUpToValidateRequest(Request request) {
-        final CharSequence[] items = getAvailableVehicleLabels();
+    private void showPopUpToValidateRequest() {
+        final CharSequence[] vehicleLabels = getAvailableVehicleLabels(currentRequest.getVehicle().getType());
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(CodisRequestListActivity.this);
         builder.setTitle(R.string.label_choose_vehicle);
 
-        builder.setSingleChoiceItems(items, -1, (dialog, item) -> {
-            Log.d(TAG, "Chosen vehicle: " + ((Vehicle)items[item]).getLabel());
-            // TODO Store chosen vehicle
+        builder.setSingleChoiceItems(vehicleLabels, -1, (dialog, item) -> {
+            try {
+                this.chosenVehicle = modelService.getVehicleByLabel(vehicleLabels[item].toString());
+            }
+            catch (VehicleNotFoundException e) {
+                Log.e(TAG, "Vehicle Not Found here: " + e.getMessage());
+            }
         });
 
         builder.setPositiveButton(R.string.label_validate, (dialog, id) -> {
             Toasty.success(getApplicationContext(), "Request Accepted", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Accept " + id);
-//            webSocketService.acceptVehicleRequest();
+            currentRequest.setVehicle(chosenVehicle);
+            webSocketService.acceptVehicleRequest(currentRequest);
         });
 
 
         builder.setNegativeButton(R.string.label_deny, (dialog, id) -> {
             Toasty.warning(getApplicationContext(), "Request Denied", Toast.LENGTH_SHORT).show();
-//            webSocketService.denyVehicleRequest();
-            Log.d(TAG, "Deny " + id);
+            webSocketService.denyVehicleRequest(currentRequest);
         });
         AlertDialog alert = builder.create();
         alert.show();

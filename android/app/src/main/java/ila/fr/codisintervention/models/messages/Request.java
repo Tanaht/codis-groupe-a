@@ -21,6 +21,11 @@ public class Request implements Parcelable {
     public Request() {
     }
 
+    public Request(ila.fr.codisintervention.models.model.Request request) {
+        this.id = request.getId();
+        this.vehicle = new Vehicle(request.getVehicle());
+    }
+
     protected Request(Parcel in) {
         vehicle = in.readParcelable(Vehicle.class.getClassLoader());
         id = in.readInt();

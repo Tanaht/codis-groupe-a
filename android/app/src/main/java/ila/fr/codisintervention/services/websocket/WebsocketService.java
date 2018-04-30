@@ -591,7 +591,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
     @Override
-    public void acceptVehicleRequest(Request request){
+    public void acceptVehicleRequest(ila.fr.codisintervention.models.model.Request request){
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {
@@ -603,7 +603,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 return false;
             }
         }).create();
-        String json = gson.toJson(request);
+        String json = gson.toJson(new Request(request));
 
         this.client.send("/app/demandes/" + request.getId() + "/accept", json).subscribe(
                 () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/accept] Sent data!"),
@@ -612,7 +612,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
     @Override
-    public void denyVehicleRequest(Request request){
+    public void denyVehicleRequest(ila.fr.codisintervention.models.model.Request request){
         this.client.send("/app/demandes/" + request.getId() + "/deny", "PING").subscribe(
                 () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/deny] Sent data!"),
                 error -> Log.e(TAG, "[/app/demandes/" + request.getId() + "/deny] Error Encountered", error)
