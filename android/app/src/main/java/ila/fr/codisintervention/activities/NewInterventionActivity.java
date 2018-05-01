@@ -14,7 +14,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.IOException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -22,12 +23,13 @@ import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
-import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
 import ila.fr.codisintervention.utils.AutocompleteAdapter;
 import ila.fr.codisintervention.utils.GeocodingToolBox;
+import ila.fr.codisintervention.utils.ServerCallback;
 import ila.fr.codisintervention.utils.VehiclesListAdapter;
 
 /**
@@ -171,19 +173,28 @@ public class NewInterventionActivity extends AppCompatActivity implements ModelS
     private void getLocationFromAddressAndCreateIntervention(InterventionModel intervention) {
         Log.d(TAG, "Address given : " + intervention.getAddress());
         GeocodingToolBox gtb = new GeocodingToolBox(this);
-        gtb.sendRequestForAddress(intervention.getAddress(), result -> {
-            latlngAddress = gtb.getLocationFromGoogleApiResult(result);
-            if(latlngAddress != null) {
-                intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
-                // Send Intervention Details to WSS
-                webSocketService.createIntervention(intervention);
 
-                // Intent to Intervention List Activity
-                Intent intent = new Intent( getApplicationContext(), CodisMainMenu.class);
-                startActivity(intent);
-                Toasty.info(getApplicationContext(),getString(R.string.intervention_created), Toast.LENGTH_LONG).show();
-            } else {
-                Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
+        gtb.sendRequestForAddress(intervention.getAddress(), new ServerCallback() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                latlngAddress = gtb.getLocationFromGoogleApiResult(result);
+                if(latlngAddress != null) {
+                    intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
+                    // Send Intervention Details to WSS
+                    webSocketService.createIntervention(intervention);
+
+                    // Intent to Intervention List Activity
+                    Intent intent = new Intent( getApplicationContext(), CodisMainMenu.class);
+                    startActivity(intent);
+                    Toasty.info(getApplicationContext(),getString(R.string.intervention_created), Toast.LENGTH_LONG).show();
+                } else {
+                    Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onError() {
+                Toasty.error(getApplicationContext(), getString(R.string.error_converting_address2geocode),  Toast.LENGTH_LONG).show();
             }
         });
     }

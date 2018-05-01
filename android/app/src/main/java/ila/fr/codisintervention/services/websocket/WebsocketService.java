@@ -21,19 +21,20 @@ import java.util.List;
 
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
-import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
+import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.SymbolsMessage;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
+import rx.Subscription;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
@@ -156,6 +157,10 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     private IBinder binder;
     private String url;
 
+    /**
+     * The channel initialize-application representation
+     */
+    private Subscription subscription;
 
     /**
      * websocket service constructor
@@ -181,6 +186,40 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         binder = new WebSocketServiceBinder(this);
     }
 
+    /**
+     * Send a Ping to the remote server to notify the remote server of the correct connection of this device
+     * @param username
+     */
+    private void notifySubscriptionToRemoteServer(String username) {
+        client.send("/users/" + username + "/subscribed", "PING").subscribe(
+                () -> Log.d(TAG, "[/subscribed] Sent data!"),
+                error -> Log.e(TAG, "[/subscribed] Error Encountered", error)
+        );
+    }
+
+    /**
+     * Used to subscribe to correct channel to get aware of application initialization
+     * @param username the username of the user that attempt a connection
+     */
+    private void initializeApplication(String username) {
+        if(this.subscription != null && !this.subscription.isUnsubscribed())
+            this.subscription.unsubscribe();
+
+        this.subscription = client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
+            Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+            InitializeApplication initializeApplication = gson.fromJson(message.getPayload(), InitializeApplication.class);
+            this.performInitializationSubscription(initializeApplication);
+
+            Intent initializeAppIntent  = new Intent(getApplicationContext(), ModelService.class);
+            initializeAppIntent.setAction(CONNECT_TO_APPLICATION);
+            initializeAppIntent.putExtra(CONNECT_TO_APPLICATION, initializeApplication);
+            getApplicationContext().startService(initializeAppIntent);
+
+        });
+    }
 
     @Override
     public  void connect(String username, String password) {
@@ -193,51 +232,23 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 new StompHeader(USERNAME_HEADER_KEY, username),
                 new StompHeader(PASSWORD_HEADER_KEY, password));
 
-
         this.client.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
 
                 case OPENED:
                     Log.d(TAG, "STOMP CONNECTION OPENED");
-
-                    client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
-                        Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
-
-                        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-                        InitializeApplication initializeApplication = gson.fromJson(message.getPayload(), InitializeApplication.class);
-
-                        Log.d(TAG, "JsonToObject of InitializeApplication, retrieved: " + initializeApplication.getInterventions().size() + " interventions");
-                        this.performInitializationSubscription(initializeApplication);
-
-
-                        Intent initializeAppIntent  = new Intent(getApplicationContext(), ModelService.class);
-                        initializeAppIntent.setAction(CONNECT_TO_APPLICATION);
-                        initializeAppIntent.putExtra(CONNECT_TO_APPLICATION, initializeApplication);
-                        getApplicationContext().startService(initializeAppIntent);
-
-                    });
-
-                    client.send("/users/" + username + "/subscribed", "PING").subscribe(
-                            () -> Log.d(TAG, "[/subscribed] Sent data!"),
-                            error -> Log.e(TAG, "[/subscribed] Error Encountered", error)
-                    );
+                    initializeApplication(username);
+                    notifySubscriptionToRemoteServer(username);
                     break;
 
                 case ERROR:
                     Log.d(TAG, "STOMP CONNECTION ERROR");
-
-                    // Notify Registered Activity from ERROR Connection
-                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
                     Intent errorIntent = new Intent(PROTOCOL_ERROR);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
 
                 case CLOSED:
                     Log.d(TAG, "STOMP CONNECTION CLOSED");
-                    // Notify Registered Activity from CLOSE Connection
-
-                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
                     Intent closeIntent  = new Intent(PROTOCOL_CLOSE);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(closeIntent);
                     break;

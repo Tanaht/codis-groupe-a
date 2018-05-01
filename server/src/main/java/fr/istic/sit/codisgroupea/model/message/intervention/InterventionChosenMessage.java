@@ -1,5 +1,7 @@
 package fr.istic.sit.codisgroupea.model.message.intervention;
 
+import fr.istic.sit.codisgroupea.model.message.utils.Location;
+
 import java.util.List;
 
 /**
@@ -665,6 +667,11 @@ public class InterventionChosenMessage {
     public List<Photo> photos;
 
     /**
+     * The location
+     */
+    public Location location;
+
+    /**
      * Instantiates a new intervention-chosen message.
      *
      * @param id      the id
@@ -672,11 +679,12 @@ public class InterventionChosenMessage {
      * @param units   the units
      * @param photos  the photos
      */
-    public InterventionChosenMessage(int id, List<Symbol> symbols, List<Unit> units, List<Photo> photos) {
+    public InterventionChosenMessage(int id, List<Symbol> symbols, List<Unit> units, List<Photo> photos, fr.istic.sit.codisgroupea.model.entity.Position location) {
         this.id = id;
         this.symbols = symbols;
         this.units = units;
         this.photos = photos;
+        this.location = new Location(location);
     }
 
 
