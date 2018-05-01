@@ -20,6 +20,11 @@ public class ModelConstants {
     public static final String ADD_INTERVENTION = "add-intervention";
 
     /**
+     * Intent Name being broadcoasted by {@link ila.fr.codisintervention.services.model.ModelService} when an intervention is chosen
+     */
+    public static final String INTERVENTION_CHOSEN = "intervention-chosen";
+
+    /**
      * Intent Name being broadcoasted by {@link ila.fr.codisintervention.services.model.ModelService} when an intervention is deleted to the model by remote server
      */
     public static final String ACTION_DELETE_INTERVENTION = "delete-intervention";

@@ -22,7 +22,6 @@ import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
-import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.constants.ModelConstants;
@@ -142,8 +141,6 @@ public class InterventionsListActivity extends AppCompatActivity {
 
             // Send Intervention choice to WSS
             webSocketService.chooseIntervention(intervention.getId());
-            Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
-            startActivity(mapIntent);
         });
     }
 
@@ -179,6 +176,7 @@ public class InterventionsListActivity extends AppCompatActivity {
         IntentFilter interventionListIntentFilter = new IntentFilter();
         interventionListIntentFilter.addAction(ModelConstants.ADD_INTERVENTION);
         interventionListIntentFilter.addAction(ModelConstants.ACTION_DELETE_INTERVENTION);
+        interventionListIntentFilter.addAction(ModelConstants.INTERVENTION_CHOSEN);
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, interventionListIntentFilter);
     }
 
@@ -189,16 +187,25 @@ public class InterventionsListActivity extends AppCompatActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int id = (int) intent.getExtras().get("id");
-            InterventionModel intervention = null;
-            try {
-                intervention = modelService.getInterventionById(id);
-            } catch (InterventionNotFoundException e) {
-                Log.e(TAG, "onReceive: try to access to an intervention who doesn't exist");
-                e.printStackTrace();
-            }
+            if(intent == null)
+                return;
 
-            dataAdapter.notifyDataSetChanged();
+            if(ModelConstants.INTERVENTION_CHOSEN.equals(intent.getAction())) {
+                Intent mapIntent = new Intent(getApplicationContext(), MapActivity.class);
+                startActivity(mapIntent);
+            }
+            else {
+                int id = (int) intent.getExtras().get("id");
+                InterventionModel intervention = null;
+                try {
+                    intervention = modelService.getInterventionById(id);
+                } catch (InterventionNotFoundException e) {
+                    Log.e(TAG, "onReceive: try to access to an intervention who doesn't exist");
+                    e.printStackTrace();
+                }
+
+                dataAdapter.notifyDataSetChanged();
+            }
 
         }
     };
