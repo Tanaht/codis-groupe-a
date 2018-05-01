@@ -324,15 +324,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
     @Override
     public void onModelServiceConnected() {
-        Log.d(TAG, modelService!=null?"ModelService connected":"ModelService null");
-        Location interventionPosition = new Location(modelService.getCurrentIntervention().getLocation().getLat(), modelService.getCurrentIntervention().getLocation().getLng());
-        if(modelService!=null) {
-            Log.d(TAG, modelService.getCurrentIntervention()!=null?"Current intervention not null":"Current intervention null");
-            if(modelService.getCurrentIntervention()!=null) {
-                interventionPosition = modelService.getCurrentIntervention().getLocation();
-            }
-        }
-        mapFragment.onModelServiceConnected(interventionPosition);
+        mapFragment.onModelServiceConnected(modelService.getCurrentIntervention().getLocation());
     }
 
     @Override

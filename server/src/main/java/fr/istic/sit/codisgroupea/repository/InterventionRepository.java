@@ -13,4 +13,6 @@ import java.util.List;
 public interface InterventionRepository extends JpaRepository<Intervention, Integer> {
 
     List<Intervention> findAllByOpened(boolean open);
+
+    Intervention getOneById(int id);
 }

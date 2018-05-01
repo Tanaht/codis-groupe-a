@@ -111,4 +111,9 @@ public class Location implements Parcelable {
         lat = loc.getLat();
         lng = loc.getLng();
     }
+
+    @Override
+    public String toString() {
+        return "(" + lat + ", " + lng + ")";
+    }
 }

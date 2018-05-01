@@ -12,8 +12,8 @@ import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Type;
-import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.VehicleStatus;
 import ila.fr.codisintervention.models.model.user.User;
@@ -139,6 +139,8 @@ public class ApplicationModel {
         if (intervInList != null){
             currentIntervention = intervInList;
 
+            Log.d(TAG, "Set Current intervention to " + intervention.getId());
+
             List<Photo> photos = new ArrayList<>();
             for (ila.fr.codisintervention.models.messages.Photo photo : intervention.getPhotos()){
                 photos.add(new Photo(photo));
@@ -157,6 +159,7 @@ public class ApplicationModel {
             }
             currentIntervention.setUnits(units);
 
+            Log.d(TAG, "Set Location on current intervention to " + intervention.getLocation());
             currentIntervention.setLocation(intervInList.getLocation());
             currentIntervention.setSinisterCode(intervInList.getSinisterCode());
             currentIntervention.setAddress(intervInList.getAddress());

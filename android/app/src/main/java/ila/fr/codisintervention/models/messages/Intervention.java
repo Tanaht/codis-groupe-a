@@ -139,13 +139,14 @@ public class Intervention implements Parcelable {
      * @param in the parcel that contain the details of this class
      */
     protected Intervention(Parcel in) {
+        super();
+        location = in.readParcelable(Location.class.getClassLoader());
         id = in.readInt();
         date = in.readLong();
         code = in.readString();
         address = in.readString();
         drone_available = in.readByte() != 0;
 
-        location = in.readParcelable(Location.class.getClassLoader());
 
         photos = in.createTypedArrayList(Photo.CREATOR);
         symbols = in.createTypedArrayList(Symbol.CREATOR);
@@ -154,13 +155,13 @@ public class Intervention implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(location, flags);
         dest.writeInt(id);
         dest.writeLong(date);
         dest.writeString(code);
         dest.writeString(address);
         dest.writeInt(drone_available ? 1 : 0);
 
-        dest.writeParcelable(location, flags);
 
         dest.writeTypedList(photos);
         dest.writeTypedList(symbols);

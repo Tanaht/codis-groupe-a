@@ -605,9 +605,10 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         this.client.topic("/topic/users/" + user.getUsername() + "/intervention-chosen").subscribe(message -> {
             Log.i(TAG, "[/users/" + user.getUsername() + "/intervention-chosen] Received message: " + message.getPayload());
 
-            Intent interventionChosen  = new Intent(getApplicationContext(), ModelService.class);
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+
+            Intent interventionChosen  = new Intent(getApplicationContext(), ModelService.class);
             interventionChosen.setAction(INTERVENTION_CHOSEN);
             Intervention interv = gson.fromJson(message.getPayload(), Intervention.class);
             interventionChosen.putExtra(INTERVENTION_CHOSEN, interv);
