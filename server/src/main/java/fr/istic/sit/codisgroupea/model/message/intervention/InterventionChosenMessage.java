@@ -679,12 +679,12 @@ public class InterventionChosenMessage {
      * @param units   the units
      * @param photos  the photos
      */
-    public InterventionChosenMessage(int id, List<Symbol> symbols, List<Unit> units, List<Photo> photos, fr.istic.sit.codisgroupea.model.entity.Position location) {
+    public InterventionChosenMessage(int id, List<Symbol> symbols, List<Unit> units, List<Photo> photos, Location location) {
         this.id = id;
         this.symbols = symbols;
         this.units = units;
         this.photos = photos;
-        this.location = new Location(location);
+        this.location = location;
     }
 
 

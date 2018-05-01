@@ -5,6 +5,7 @@ import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.*;
 import fr.istic.sit.codisgroupea.model.message.intervention.Position;
+import fr.istic.sit.codisgroupea.model.message.utils.Location;
 import fr.istic.sit.codisgroupea.repository.*;
 import fr.istic.sit.codisgroupea.sig.stub.ListSigService;
 import org.apache.logging.log4j.*;
@@ -181,7 +182,7 @@ public class InterventionSocketController {
                                                         String dataSentByClient) {
         logger.trace(RoutesConfig.CHOOSE_INTERVENTION_CLIENT +" --> data receive "+dataSentByClient);
         String username = principal.getName();
-        Intervention intervention = interventionRepository.getOne(id);
+        Intervention intervention = interventionRepository.getOneById(id);
 
 
         Gson gson = new Gson();
@@ -191,7 +192,7 @@ public class InterventionSocketController {
                 populateSymbolList(intervention),
                 populateUnitList(intervention),
                 populatePhotoList(intervention),
-                intervention.getPosition()
+                new Location(intervention.getPosition())
         );
 
         String toJson = gson.toJson(interv);
@@ -222,24 +223,23 @@ public class InterventionSocketController {
 
         fr.istic.sit.codisgroupea.model.entity.Position pos = dataFromClient.location.toPositionEntity();
 
-        fr.istic.sit.codisgroupea.model.entity.Position posPersisted = positionRepository.save(pos);
-
         Intervention intervention = new Intervention();
         intervention.setDate(new Date().getTime());
-        intervention.setPosition(posPersisted);
+        intervention.setPosition(pos);
         intervention.setAddress(dataFromClient.address);
         intervention.setSinisterCode(sinisterCode);
         intervention.setOpened(true);
 
         Intervention persisted = interventionRepository.save(intervention);
 
+        logger.debug("Position: " + intervention.getPosition());
         InterventionCreatedMessage toReturn = new InterventionCreatedMessage(
                 persisted.getId(),
                 persisted.getDate(),
                 persisted.getSinisterCode().getCode(),
                 persisted.getAddress(),
                 true,
-                new Position(persisted.getPosition()));
+                new Location(persisted.getPosition()));
 
         String toJson = jason.toJson(toReturn);
 

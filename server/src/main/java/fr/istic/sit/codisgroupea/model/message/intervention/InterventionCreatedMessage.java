@@ -1,5 +1,7 @@
 package fr.istic.sit.codisgroupea.model.message.intervention;
 
+import fr.istic.sit.codisgroupea.model.message.utils.Location;
+
 /**
  * The type  intervention-created message.
  */
@@ -27,7 +29,7 @@ public class InterventionCreatedMessage {
     /**
      * The Location.
      */
-    public Position location;
+    public Location location;
 
     /**
      * Instantiates a new intervention-created message.
@@ -44,7 +46,7 @@ public class InterventionCreatedMessage {
                                       String code,
                                       String address,
                                       boolean droneAvailable,
-                                      Position location) {
+                                      Location location) {
         this.id = id;
         this.date = date;
         this.code = code;
@@ -155,7 +157,7 @@ public class InterventionCreatedMessage {
      *
      * @return the location
      */
-    public Position getLocation() {
+    public Location getLocation() {
         return location;
     }
 
@@ -164,7 +166,7 @@ public class InterventionCreatedMessage {
      *
      * @param location the location
      */
-    public void setLocation(Position location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 }

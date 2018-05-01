@@ -92,8 +92,8 @@ public class Intervention {
      *
      * @return the position
      */
+    @OneToOne(cascade = CascadeType.ALL)
     @NotNull
-    @OneToOne
     public Position getPosition() {
         return position;
     }
