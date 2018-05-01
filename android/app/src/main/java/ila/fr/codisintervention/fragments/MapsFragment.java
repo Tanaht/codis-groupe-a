@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -41,11 +40,18 @@ import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.Unit;
+import ila.fr.codisintervention.models.model.map_icon.Color;
+import ila.fr.codisintervention.models.model.map_icon.I_MarkerElement;
+import ila.fr.codisintervention.models.model.map_icon.MarkerDrone;
+import ila.fr.codisintervention.models.model.map_icon.MarkerSymbol;
+import ila.fr.codisintervention.models.model.map_icon.MarkerUnit;
 import ila.fr.codisintervention.models.model.map_icon.Shape;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDroneType;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
 import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
+import ila.fr.codisintervention.utils.MarkerUtility;
 
 /**
  * Fragment that contain the Map to show
@@ -65,6 +71,11 @@ public class MapsFragment extends Fragment {
      */
     DronePoint dronePosition;
 
+    /**
+     * this list contains all symbols, units and dronepoints with assiciated marker on the map.
+     * Usefull to modify or delete markers on the map.
+     */
+    Map<String,I_MarkerElement> markerList;
 
     /**
      * TODO: I don't know what this variable is ?
@@ -99,6 +110,9 @@ public class MapsFragment extends Fragment {
      */
     public void updateUI(GoogleMap mMap) {
         mMap.clear();
+        markerList = new TreeMap<String,I_MarkerElement>();
+
+
         DronePoint previous = null;
         java.util.Set<Integer> keyList = course.keySet();
         for (Integer num : keyList) {
@@ -109,7 +123,7 @@ public class MapsFragment extends Fragment {
                             .add(new LatLng(previous.getLat(), previous.getLon()),
                                     new LatLng(point.getLat(), point.getLon()))
                             .width(5)
-                            .color(Color.DKGRAY));
+                            .color( android.graphics.Color.DKGRAY));
                 }
                 previous = point;
             }
@@ -124,39 +138,74 @@ public class MapsFragment extends Fragment {
         if (((MapActivity)getActivity()).getModelService().getCurrentIntervention() != null) {
             if (((MapActivity)getActivity()).getModelService().getCurrentIntervention().getSymbols() != null) {
                 for (Symbol s : ((MapActivity) getActivity()).getModelService().getCurrentIntervention().getSymbols()) {
-                    printSymbol(s);
+                    I_MarkerElement IMarker = new MarkerSymbol(s,getActivity());
+                    Marker marker = IMarker.printOnMap(googleMap);
+                    if (marker != null) //requested marker doesn't exit as bitmap
+                        markerList.put( marker.getId(), IMarker );
                 }
             }
             if (((MapActivity)getActivity()).getModelService().getCurrentIntervention().getUnits() != null) {
                 for (Unit u : ((MapActivity) getActivity()).getModelService().getCurrentIntervention().getUnits()) {
-                    printSymbolUnit(u.getSymbolUnit());
+                    I_MarkerElement IMarker = new MarkerUnit(u,getActivity());
+                    Marker marker = IMarker.printOnMap(googleMap);
+                    if (marker != null) //requested marker doesn't exit as bitmap
+                        markerList.put( marker.getId(), IMarker );
+                }
+            }
+            PathDrone path = ((MapActivity)getActivity()).getModelService().getCurrentIntervention().getPathDrone();
+
+            if (path == null) {
+                // TODO Think to remove : For the test !!!
+                List<Location>posList = new ArrayList<Location>();
+                posList.add(new Location( 48.1153379,  -1.6391757 ));
+                posList.add(new Location( 48.1161849,  -1.6390014 ));
+                posList.add(new Location( 48.1164571,  -1.6373706 ));
+                posList.add(new Location( 48.1155689,  -1.6360724 ));
+                posList.add(new Location( 48.1152322,  -1.6378534 ));
+                path = new PathDrone(new ila.fr.codisintervention.models.messages.PathDrone(PathDroneType.CYCLE.name(), posList ));
+                // add drone's path
+                int i = 1;
+                Marker previousMarkerDrone = null;  // for line to draw between each point of the path
+                for (Location l : path.getPoints()) {
+                    I_MarkerElement IMarker = new MarkerDrone(false,new DronePoint(i,l.getLat(),l.getLng()),getActivity());
+                    Marker marker = IMarker.printOnMap(googleMap);
+                    if (marker != null) { //requested marker doesn't exit as bitmap
+                        markerList.put(marker.getId(), IMarker);
+                        if (previousMarkerDrone != null){   // we draw each line of the path
+                            mMap.addPolyline(new PolylineOptions()
+                                    .add(previousMarkerDrone.getPosition(),marker.getPosition())
+                                    .width(5)
+                                    .color( android.graphics.Color.DKGRAY));
+                        }
+                        previousMarkerDrone = marker;
+                    }
                 }
             }
         }
 
     }
 
-    /**
-     * Add on the googlemap a symbol or a unit from the model
-     * s : Symbol to draw
-     * @param s
-     */
-    public void printSymbol(Symbol s){
-        Integer drawablePath = getDrawablepathFromSymbol(s);
-        if (drawablePath > 0) { //the picture doesn't exist if =0
-            Bitmap marker = resizeBitmap(drawablePath, 50, 50);
-            addCustomMarkerZoom(new LatLng(s.getLocation().getLat(), s.getLocation().getLng()), marker);
-        }
-    }
-
-    public void printSymbolUnit(SymbolUnit s){
-        Integer drawablePath = getDrawablepathFromSymbolUnit(s);
-        if (drawablePath > 0) { //the picture doesn't exist if =0
-            Bitmap marker = resizeBitmap(drawablePath, 50, 50);
-            addCustomMarkerZoom(new LatLng(s.getLocation().getLat(), s.getLocation().getLng()), marker);
-        }
-        // need to print the payload.
-    }
+//    /**
+//     * Add on the googlemap a symbol or a unit from the model
+//     * s : Symbol to draw
+//     * @param s
+//     */
+//    public void printSymbol(Symbol s){
+//        Integer drawablePath = getDrawablepathFromSymbol(s);
+//        if (drawablePath > 0) { //the picture doesn't exist if =0
+//            Bitmap marker = resizeBitmap(drawablePath, 50, 50);
+//            addCustomMarkerZoom(new LatLng(s.getLocation().getLat(), s.getLocation().getLng()), marker);
+//        }
+//    }
+//
+//    public void printSymbolUnit(SymbolUnit s){
+//        Integer drawablePath = getDrawablepathFromSymbolUnit(s);
+//        if (drawablePath > 0) { //the picture doesn't exist if =0
+//            Bitmap marker = resizeBitmap(drawablePath, 50, 50);
+//            addCustomMarkerZoom(new LatLng(s.getLocation().getLat(), s.getLocation().getLng()), marker);
+//        }
+//        // need to print the payload.
+//    }
 
 
     /**
@@ -236,23 +285,26 @@ public class MapsFragment extends Fragment {
                         updateUI(googleMap);                   // refresh the map
                     } else {
 
-                        //Bitmap marker = resizeBitmap(symbole.getIdDrawable(), 50, 50);
-                        //addCustomMarkerZoom(latLng, marker);
+//                        //Bitmap marker = resizeBitmap(symbole.getIdDrawable(), 50, 50);
+//                        //addCustomMarkerZoom(latLng, marker);
+//
+//                        // transform a SymbolKind to a Symbol and send it via websocket
+//                        Color color = Color.valueOf(symbole.getColor().toUpperCase());
+//                        int id = ((MapActivity)getActivity()).getModelService().getCurrentIntervention().getId();
+//                        Shape shape = Shape.valueOf(symbole.getId().toUpperCase());
+//                        Location location = new Location(latLng.latitude,latLng.longitude);
+//                        Symbol mySymbol = new Symbol(location, color, shape);
+//                        if (getDrawablepathFromSymbol(mySymbol) > 0) { // the symbol's picture exists
+//                            List<Symbol> maListe = new ArrayList<Symbol>();
+//                            maListe.add(mySymbol);
+//                            ((MapActivity) getActivity()).getWebSocketService().createSymbols(id, maListe);
+//                            //printSymbol(mySymbol); // draw it only for the test
+//                        }else{
+//                            Toasty.error(getActivity().getApplicationContext(), getString(R.string.error_symbol_not_found), Toast.LENGTH_SHORT, true).show();
+//                        }
 
-                        // transform a SymbolKind to a Symbol and send it via websocket
-                        ila.fr.codisintervention.models.model.map_icon.Color color = ila.fr.codisintervention.models.model.map_icon.Color.valueOf(symbole.getColor().toUpperCase());
-                        int id = ((MapActivity)getActivity()).getModelService().getCurrentIntervention().getId();
-                        Shape shape = Shape.valueOf(symbole.getId().toUpperCase());
-                        Location location = new Location(latLng.latitude,latLng.longitude);
-                        Symbol mySymbol = new Symbol(location, color, shape);
-                        if (getDrawablepathFromSymbol(mySymbol) > 0) { // the symbol's picture exists
-                            List<Symbol> maListe = new ArrayList<Symbol>();
-                            maListe.add(mySymbol);
-                            ((MapActivity) getActivity()).getWebSocketService().createSymbols(id, maListe);
-                            //printSymbol(mySymbol); // draw it only for the test
-                        }else{
+                        if (!MarkerUtility.createObjectOnMap(latLng,symbole,getActivity()))
                             Toasty.error(getActivity().getApplicationContext(), getString(R.string.error_symbol_not_found), Toast.LENGTH_SHORT, true).show();
-                        }
 
                     }
                 }
@@ -272,37 +324,54 @@ public class MapsFragment extends Fragment {
             googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
                 Integer num;
                 String idMarker;
+                I_MarkerElement element;
 
                 @Override
                 public void onMarkerDragStart(Marker marker) {
-                    if (!marker.getTitle().equals("")) {
+//                    if (!marker.getTitle().equals("")) {
+//                        num = new Integer(marker.getTitle());   // the id of the point = marker's title for drone's course
+//                    }else{
+//                        num=null;
+//                        idMarker = marker.getId();
+//                    }
+
+                    if (markerList.containsKey(marker.getId())) {
+                        element = markerList.get(marker.getId());   // Symbol or Unit
+                    } else if (!marker.getTitle().equals("")) {
                         num = new Integer(marker.getTitle());   // the id of the point = marker's title for drone's course
-                    }else{
-                        num=null;
-                        idMarker = marker.getId();
                     }
                 }
 
                 @Override
                 public void onMarkerDrag(Marker marker) {
-                    if (num != null) {                        // update marker for drone
-                        course.get(num).setLat(marker.getPosition().latitude);
-                        course.get(num).setLon(marker.getPosition().longitude);
-                    }
+//                    if (num != null) {                        // update marker for drone
+//                        course.get(num).setLat(marker.getPosition().latitude);
+//                        course.get(num).setLon(marker.getPosition().longitude);
+//                    }
                 }
 
                 @Override
                 public void onMarkerDragEnd(Marker marker) {
-                    if (num == null) {
-                        for(Map.Entry<String, MarkerOptions> entry : markers.entrySet()){
-                            if (entry.getKey().equals(idMarker)) {
-                                MarkerOptions mo = entry.getValue();
-                                mo.position(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
-                                markers.put(marker.getId(), mo);
-                                markers.remove(entry.getKey());
-                                //markers.get(str).position(new LatLng(marker.getPosition().latitude,marker.getPosition().longitude));
-                            }
-                        }
+//                    if (num == null) {
+//                        for(Map.Entry<String, MarkerOptions> entry : markers.entrySet()){
+//                            if (entry.getKey().equals(idMarker)) {
+//                                MarkerOptions mo = entry.getValue();
+//                                mo.position(new LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+//                                markers.put(marker.getId(), mo);
+//                                markers.remove(entry.getKey());
+//                                //markers.get(str).position(new LatLng(marker.getPosition().latitude,marker.getPosition().longitude));
+//                            }
+//                        }
+//                    }else { // update marker for drone
+//                        course.get(num).setLat(marker.getPosition().latitude);
+//                        course.get(num).setLon(marker.getPosition().longitude);
+//                    }
+
+                    if(element != null){
+                        element.udpatefromDragAndDrop(marker);
+                    }else { // update marker for drone
+                        course.get(num).setLat(marker.getPosition().latitude);
+                        course.get(num).setLon(marker.getPosition().longitude);
                     }
                     updateUI(googleMap);
                 }

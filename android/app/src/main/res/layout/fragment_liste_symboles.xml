@@ -75,10 +75,16 @@
         android:src="@drawable/triangle_up" />
 
     <ImageView
-        android:id="@+id/vehicle"
+        android:id="@+id/area"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:src="@drawable/vehicle" />
+        android:src="@drawable/area" />
+
+    <!--<ImageView-->
+        <!--android:id="@+id/vehicle"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:src="@drawable/vehicle" />-->
 
     <ImageView
         android:id="@+id/not_effective_vehicle"
@@ -86,23 +92,17 @@
         android:layout_height="50dp"
         android:src="@drawable/not_effective_vehicle" />
 
-    <ImageView
-        android:id="@+id/fire_vehicle"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:src="@drawable/fire_vehicle" />
+    <!--<ImageView-->
+        <!--android:id="@+id/fire_vehicle"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:src="@drawable/fire_vehicle" />-->
 
     <ImageView
         android:id="@+id/not_effective_fire_vehicle"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:src="@drawable/not_effective_fire_vehicle" />
-
-    <ImageView
-        android:id="@+id/area"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:src="@drawable/area" />
 
     <ImageView
         android:id="@+id/drone"

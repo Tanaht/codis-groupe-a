@@ -49,6 +49,33 @@ public enum Shape {
     /**
      * Vehicle shape.
      */
-    VEHICLE,
+    VEHICLE;
 
+
+    /**
+     * add a type for each shape
+     * Not the best way
+     */
+    static public String SYMBOL = "SYMBOL";
+    static public String UNIT = "UNIT";
+
+    static public String findAssociatedObject(Shape myShape){
+        String ret = SYMBOL;
+
+        switch (myShape) {
+            case FIREVEHICLE:
+                ret = UNIT;
+                break;
+            case VEHICLE:
+                ret = UNIT;
+                break;
+            case NOTEFFECTIVEFIREVEHICLE:
+                ret = UNIT;
+                break;
+            case NOTEFFECTIVEVEHICLE:
+                ret = UNIT;
+                break;
+        }
+        return ret;
+    }
 }
