@@ -190,13 +190,14 @@ public class InterventionSocketController {
                 id,
                 populateSymbolList(intervention),
                 populateUnitList(intervention),
-                populatePhotoList(intervention)
+                populatePhotoList(intervention),
+                intervention.getPosition()
         );
 
         String toJson = gson.toJson(interv);
 
         String urlToSend = "/topic/users/"+username+"/intervention-chosen";
-        logger.trace(urlToSend+" --> data send "+toJson);
+        logger.trace(urlToSend+" --> data send "+ toJson);
         simpMessagingTemplate.convertAndSend(urlToSend, toJson);
     }
 
