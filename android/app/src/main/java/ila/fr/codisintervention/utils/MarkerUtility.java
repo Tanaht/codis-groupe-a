@@ -10,8 +10,10 @@ import com.google.android.gms.maps.model.Marker;
 import java.util.ArrayList;
 import java.util.List;
 
+import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.entities.SymbolKind;
+import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.Color;
@@ -56,7 +58,13 @@ public class MarkerUtility {
 //            Unit myUnit = new Unit(location, color, shape);
 //            myObject = new MarkerUnit(myUnit,activity);
 //            myObject.createObjectOnMap();
+        }else if (Shape.findAssociatedObject(shape).equals(Shape.DRONE_POINT)) {
+            DronePoint dp = new DronePoint(((MapActivity)activity).getCptId(), latLng.latitude,latLng.longitude);
+            myObject = new MarkerDrone(false, dp, activity);
+            myObject.createObjectOnMap();
+            ((MapActivity)activity).increaseCptId();
         }
+
         return (myObject.getMarker()!=null);
     }
 

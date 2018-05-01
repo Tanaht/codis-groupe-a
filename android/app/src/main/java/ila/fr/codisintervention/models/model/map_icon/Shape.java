@@ -49,7 +49,12 @@ public enum Shape {
     /**
      * Vehicle shape.
      */
-    VEHICLE;
+    VEHICLE,
+
+    /**
+     * Drone point for the path
+     */
+    DRONE;
 
 
     /**
@@ -58,6 +63,8 @@ public enum Shape {
      */
     static public String SYMBOL = "SYMBOL";
     static public String UNIT = "UNIT";
+    static public String DRONE_POINT = "DRONE_POINT";
+
 
     static public String findAssociatedObject(Shape myShape){
         String ret = SYMBOL;
@@ -75,6 +82,10 @@ public enum Shape {
             case NOTEFFECTIVEVEHICLE:
                 ret = UNIT;
                 break;
+            case DRONE:
+                ret = DRONE_POINT;
+                break;
+
         }
         return ret;
     }

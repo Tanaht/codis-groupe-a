@@ -9,8 +9,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.models.DronePoint;
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Payload;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.utils.MarkerUtility;
 
 public class MarkerDrone implements I_MarkerElement {
@@ -70,11 +77,21 @@ public class MarkerDrone implements I_MarkerElement {
 
     @Override
     public void udpatefromDragAndDrop(Marker marker) {
+        this.getData().setLat(marker.getPosition().latitude);
+        this.getData().setLon(marker.getPosition().longitude);
 
+        int id = ((MapActivity)activity).getModelService().getCurrentIntervention().getId();
+        List<Location> dronePointsList = ((MapActivity) activity).getDronePointList();
+        ((MapActivity) activity).getWebSocketService().createPathDrone(((MapActivity) activity).getModelService().getCurrentIntervention().getId(), new PathDrone("SEGMENT", dronePointsList));
+        // TODO see method on server side for path update
     }
 
     @Override
     public void createObjectOnMap() {
+        int id = ((MapActivity)activity).getModelService().getCurrentIntervention().getId();
 
+        List<Location> dronePointsList = ((MapActivity) activity).getDronePointList();
+        dronePointsList.add(getData().getLocation());
+        ((MapActivity) activity).getWebSocketService().createPathDrone(((MapActivity) activity).getModelService().getCurrentIntervention().getId(), new PathDrone("SEGMENT", dronePointsList));
     }
 }

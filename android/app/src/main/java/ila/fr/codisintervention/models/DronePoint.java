@@ -88,4 +88,8 @@ public class DronePoint {
     public void setMoving(boolean moving) {
         this.moving = moving;
     }
+
+    public Location getLocation() {
+        return new Location( lat, lon );
+    }
 }
