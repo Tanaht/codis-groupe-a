@@ -14,6 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import ila.fr.codisintervention.R;
 
 /**
@@ -50,10 +53,9 @@ public class GeocodingToolBox {
      * @param address needed for parameters of the request
      * @return the google api request
      */
-    private String getUrlFromAdress(String address) {
-        String url = GOOGLE_API_URL_FORM;
+    private String getUrlFromAdress(String address) throws UnsupportedEncodingException {
         String key = this.context.getString(R.string.google_maps_key);
-        return cleanUrl(url + GOOGLE_API_PARAMETER_ADDRESS + address + GOOGLE_API_PARAMETER_KEY + key);
+        return GOOGLE_API_URL_FORM + GOOGLE_API_PARAMETER_ADDRESS + URLEncoder.encode(address, "utf-8") + GOOGLE_API_PARAMETER_KEY + key;
     }
 
     /**
@@ -62,28 +64,24 @@ public class GeocodingToolBox {
      * @param serverCallback
      */
     public void sendRequestForAddress(String address, final ServerCallback serverCallback) {
-        String url = this.getUrlFromAdress(address);
-        RequestQueue queue = Volley.newRequestQueue(this.context);
-        //Send the request
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
-            if (response.length() != 0) {
-                serverCallback.onSuccess(response);
-            }
-        }, error -> Log.e(TAG,"Error during GoogleMapApi request"));
-        queue.add(jsonObjectRequest);
-    }
+        try {
+            String url = this.getUrlFromAdress(address);
+            RequestQueue queue = Volley.newRequestQueue(this.context);
+            //Send the request
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+                if (response.length() != 0) {
+                    serverCallback.onSuccess(response);
+                }
+            }, error -> {
+                Log.e(TAG, "Error during GoogleMapApi request");
+                serverCallback.onError();
+            });
 
-    /**
-     * Clean url to prevent errors
-     * @param url
-     * @return url without whitespace, accents...
-     */
-    private String cleanUrl(String url) {
-        return url.replaceAll("\\s", "+")
-                .replaceAll("é", "e")
-                .replaceAll("è", "e")
-                .replaceAll("à", "a")
-                .replaceAll("ù", "u");
+            queue.add(jsonObjectRequest);
+        } catch (UnsupportedEncodingException e) {
+            Log.e(TAG, e.getMessage(), e);
+            serverCallback.onError();
+        }
     }
 
     /**
@@ -102,7 +100,7 @@ public class GeocodingToolBox {
                 return new LatLng(lat, lng);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         }
         return null;
     }
