@@ -185,8 +185,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
                     updateDronePosition(dronePing);
                 } else if(DRONE_PATH_ASSIGNED.equals(intent.getAction())){
                     PathDrone pathDrone = (PathDrone) intent.getExtras().get("pathDrone");
-                    updateView();
-                    //mapFragment.updateDronePath(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
+                    //updateView();
+                    mapFragment.updateDronePath(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
                 }
         }
     };

@@ -70,7 +70,7 @@ public class MapsFragment extends Fragment {
     /**
      * TODO: temporary instance of a Stub object, is job is to simulate the drone position normally returned by the server
      */
-    DronePoint dronePosition;
+    //DronePoint dronePosition;
 
     /**
      * this list contains all symbols, units and dronepoints with assiciated marker on the map.
@@ -272,16 +272,21 @@ public class MapsFragment extends Fragment {
      * @param newDrone
      */
     public void modifyDronePosition(DronePoint newDrone) {
-        if (course.containsKey(0)) {                // Modify
-            DronePoint drone = course.get(0);
-            drone.setLat(newDrone.getLat());
-            drone.setLon(newDrone.getLon());
-        } else {                                        // Create
-            DronePoint drone = new DronePoint(0, newDrone.getLat(), newDrone.getLon());
-            drone.setMoving(true);
-            course.put(0, drone);
+        for (Map.Entry<Marker,I_MarkerElement> md: markerListDrone.entrySet()){
+            MarkerDrone drone=null;
+            if (((MarkerDrone)md).getData().isMoving()){
+                drone = (MarkerDrone)md;
+            }
+            if (drone == null){
+                DronePoint dpDrone = new DronePoint(0, newDrone.getLat(), newDrone.getLon());
+                dpDrone.setMoving(true);
+                drone = new MarkerDrone(true, dpDrone,getActivity());
+            }else {
+                drone.getData().setLat(newDrone.getLat());
+                drone.getData().setLon(newDrone.getLon());
+            }
         }
-        updateUI(googleMap);
+        updateView();
     }
 
     /**
@@ -327,10 +332,10 @@ public class MapsFragment extends Fragment {
     }
 
     public void deleteAllDronePointOnTheMap(){
-        for (Map.Entry<Marker,I_MarkerElement> line: markerList.entrySet()){
-            if(line.getValue() instanceof MarkerDrone){
-                line.getKey().remove(); // delete the marker
-                //markerList.remove(line);
+        if (markerListDrone != null) {
+            for (Map.Entry<Marker, I_MarkerElement> line : markerListDrone.entrySet()) {
+                if (line != null && line.getKey() != null)
+                    line.getKey().remove(); // delete the marker
             }
         }
     }
