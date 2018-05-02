@@ -70,18 +70,14 @@ public class MarkerUnit implements I_MarkerElement{
     public void udpatefromDragAndDrop(Marker marker) {
         this.getData().getSymbolUnit().setLocation(new Location(marker.getPosition().latitude,marker.getPosition().longitude));
         int id = ((MapActivity)activity).getModelService().getCurrentIntervention().getId();
-        List<Unit> maListe = new ArrayList<Unit>();
-        maListe.add(getData());
-        //((MapActivity) activity).getWebSocketService().updateUnits(id, maListe);
+        //((MapActivity) activity).getWebSocketService().updateUnits(id, getData());
         //TODO create this method on websoketService
     }
 
     @Override
     public void createObjectOnMap() {
         int id = ((MapActivity)activity).getModelService().getCurrentIntervention().getId();
-        List<Unit> maListe = new ArrayList<Unit>();
-        maListe.add(getData());
-        //((MapActivity) activity).getWebSocketService().createUnit(id, maListe);
+        //((MapActivity) activity).getWebSocketService().requestUnit(id, getData());
         //TODO create this method on websoketService
     }
 }

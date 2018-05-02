@@ -1,6 +1,7 @@
 package fr.istic.sit.codisgroupea.model.message.utils;
 
 import fr.istic.sit.codisgroupea.constraints.groups.Message;
+import fr.istic.sit.codisgroupea.model.entity.Position;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -67,6 +68,11 @@ public class Location {
     public Location (double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
+    }
+
+    public Location(Position pos){
+        lat = pos.getLatitude();
+        lng = pos.getLongitude();
     }
 
     public void setLat(double lat) {

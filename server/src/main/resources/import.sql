@@ -49,8 +49,8 @@ INSERT INTO path_points VALUES (1, 6);
 INSERT INTO path_points VALUES (1, 7);
 
 -- Insert Intervention
-INSERT INTO intervention VALUES (1, '11 Rue du Bois Perrin', 1522159274, 1, NULL, 1, 1);
-INSERT INTO intervention VALUES (2, 'Cours des Alliés, 35024 Rennes', 1522159274, 1, 1, 2, 2);
+INSERT INTO intervention VALUES (1, '11 Rue du Bois Perrin', 1522159274, 1, 1, 1, 1);
+INSERT INTO intervention VALUES (2, 'Cours des Alliés, 35024 Rennes', 1522159274, 1, NULL, 2, 2);
 
 -- Insert symbol
 insert into symbol VALUE  (1, 0, 0);

@@ -17,6 +17,8 @@ public class Path {
     private double altitude;
 
     /** List of {@link Position} for all the point in the path */
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Position> points;
 
     /** Instance of {@link PathType} for the type of the path */

@@ -22,6 +22,11 @@ public class Vehicle {
     /** Instance of {@link VehicleStatus} for the status of the vehicle */
     private VehicleStatus status;
 
+    public Vehicle( String label, String type ){
+        this.label = label;
+        this.type = type;
+    }
+
     public Vehicle(ila.fr.codisintervention.models.messages.Vehicle vehicle) {
         label = vehicle.getLabel();
         type = vehicle.getType();
