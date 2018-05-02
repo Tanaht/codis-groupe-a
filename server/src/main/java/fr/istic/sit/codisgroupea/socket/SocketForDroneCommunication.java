@@ -11,6 +11,8 @@ import fr.istic.sit.codisgroupea.repository.PhotoRepository;
 import fr.istic.sit.codisgroupea.repository.PositionRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,9 @@ public class SocketForDroneCommunication {
 	private InterventionRepository interventionRepository;
 	private PhotoRepository photoRepository;
 	private PositionRepository positionRepository;
+
+	@Autowired
+	private ApplicationContext appContext;
 
 	private Socket socket;
 	private ServerSocket serverSocket;
@@ -193,7 +198,7 @@ public class SocketForDroneCommunication {
 	 */
 	public void sendDronePhoto(Photo photo) {
 		Gson gson = new Gson();
-		photo.setPhoto("http://blog.teamtreehouse.com/wp-content/uploads/2014/03/data-uri-feature.png");
+		photo.setPhoto("http://192.168.43.107:8080/" + photo.getPhoto());
 		String toJson = gson.toJson(photo, Photo.class);
 		simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_PHOTO_PART1 + photo.getInterventionId() + RoutesConfig.SEND_DRONE_PHOTO_PART2, toJson);
 	}

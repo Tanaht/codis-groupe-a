@@ -1,26 +1,23 @@
 package ila.fr.codisintervention.activities;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import ila.fr.codisintervention.R;
@@ -28,14 +25,13 @@ import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.models.model.Photo;
 import ila.fr.codisintervention.services.ModelServiceAware;
 
-import static ila.fr.codisintervention.R.drawable.area;
-
 
 /**
  * The type Photos display activity.
  */
 public class PhotosDisplayActivity extends AppCompatActivity implements ModelServiceAware {
 
+    protected static final String TAG = "PhotosDisplayActivity";
 
     private ServiceConnection modelServiceConnection;
 
@@ -102,7 +98,6 @@ public class PhotosDisplayActivity extends AppCompatActivity implements ModelSer
                     indexImage++;
                 }
                 imageDrone();
-
             }
         });
 
@@ -116,7 +111,7 @@ public class PhotosDisplayActivity extends AppCompatActivity implements ModelSer
         //Toast.makeText(this, "pouet", Toast.LENGTH_SHORT).show();
         if(!urlList.isEmpty()) {
             url = urlList.get(indexImage);
-            EditText azerty = (EditText) findViewById(R.id.text);
+            TextView azerty = (TextView) findViewById(R.id.text);
             azerty.setEnabled(false);
             azerty.setFocusable(false);
             azerty.setText(url);
@@ -146,7 +141,7 @@ public class PhotosDisplayActivity extends AppCompatActivity implements ModelSer
             try {
                 bitmap= BitmapFactory.decodeStream((InputStream)new URL(url).getContent());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.w(TAG, "Impossible to load the image file");
             }
 
             return bitmap;

@@ -100,7 +100,7 @@ public class JsonForDroneCommunicationToolBox {
 		InputStream in = new ByteArrayInputStream(valueDecoded);
 		BufferedImage bImage = ImageIO.read(in);
 		String imagePath = DroneServerConstants.IMAGE_LOCATION + DroneServerConstants.IMAGE_NAME + "_" + String.valueOf(photo.getPointId()) + "_" + String.valueOf(photo.getDate()) + "." + DroneServerConstants.IMAGE_EXTENSION;
-		ImageIO.write(bImage, DroneServerConstants.IMAGE_EXTENSION, new File(imagePath));
+		ImageIO.write(bImage, DroneServerConstants.IMAGE_EXTENSION, new File("."+imagePath));
 		photo.setPhoto(imagePath);
 		return photo;
 	}
