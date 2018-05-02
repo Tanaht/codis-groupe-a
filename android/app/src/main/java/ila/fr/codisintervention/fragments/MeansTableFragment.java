@@ -2,6 +2,7 @@ package ila.fr.codisintervention.fragments;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -13,50 +14,44 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
 
 /**
  * The type Means table fragment.
  */
 public class MeansTableFragment extends Fragment {
 
+    private TableLayout meansTable;
+    private List<String> headers;
+    private ModelServiceBinder.IMyServiceMethod modelService;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_means_table,container,false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView =  inflater.inflate(R.layout.fragment_means_table,container,false);
 
-    }
+        meansTable = rootView.findViewById(R.id.meansTable);
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        TableLayout meansTable;
-        meansTable = (TableLayout) getActivity().findViewById(R.id.meansTable);
-
-        String[] headers = {
-                getResources().getString(R.string.header_1),
+        headers = Arrays.asList(getResources().getString(R.string.header_1),
                 getResources().getString(R.string.header_2),
                 getResources().getString(R.string.header_3),
                 getResources().getString(R.string.header_4),
                 getResources().getString(R.string.header_5),
-                getResources().getString(R.string.header_6)};
+                getResources().getString(R.string.header_6));
 
-        TableRow tableRow = new TableRow(getActivity());
+        TableRow tableRow = new TableRow(getContext());
         meansTable.addView(tableRow, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         meansTable.setBackgroundColor(getResources().getColor(R.color.grey));
 
-        tableRow.setLayoutParams(new LayoutParams(headers.length));
+        tableRow.setLayoutParams(new LayoutParams(headers.size()));
 
         int i = 0;
         for (String header : headers) {
-            TextView text = createTextView(false , i == headers.length - 1,0);
+            TextView text = createTextView(false , i == headers.size() - 1,0);
             text.setText(header);
             text.setBackgroundResource(R.color.colorPrimary);
             text.setTextSize(20);
@@ -65,21 +60,40 @@ public class MeansTableFragment extends Fragment {
             tableRow.addView(text, i++);
         }
 
-
-        for (int j = 0; j < 10; j++) {
-            tableRow = new TableRow(getActivity());
-            meansTable.addView(tableRow, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-            i = 0;
-            for (String header : headers) {
-                TextView text = createTextView(j==9, i == headers.length - 1, j);
-                text.setText("123");
-
-                tableRow.addView(text, i++);
-                text.setGravity(Gravity.RIGHT);
-            }
-        }
+        return rootView;
 
     }
+
+    public void onModelServiceConnected(ModelServiceBinder.IMyServiceMethod modelService) {
+            this.modelService = modelService;
+            this.refreshTable();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(modelService != null)
+            this.refreshTable();
+    }
+
+    private void refreshTable() {
+        TableRow row = null;
+
+//        for (int j = 0; j < 10; j++) {
+//            row = new TableRow(getContext());
+//            meansTable.addView(row, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+//            i = 0;
+//            for (String header : headers) {
+//                TextView text = createTextView(j==9, i == headers.size() - 1, j);
+//                text.setText("123");
+//
+//                row.addView(text, i++);
+//                text.setGravity(Gravity.RIGHT);
+//            }
+//        }
+    }
+
 
     private TextView createTextView(boolean endline, boolean endcolumn, int line){
         TextView text = new TextView(getActivity(), null, R.style.meansTabHeaderCol);

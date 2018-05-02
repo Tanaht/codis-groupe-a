@@ -6,8 +6,11 @@ import android.os.Bundle;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.fragments.AdditionalMeanFragment;
+import ila.fr.codisintervention.fragments.MeansTableFragment;
 
-public class MeansTableActivity extends AppCompatActivity implements AdditionalMeanFragment.OnFragmentInteractionListener{
+public class MeansTableActivity extends AppCompatActivity implements AdditionalMeanFragment.OnFragmentInteractionListener {
+
+    private MeansTableFragment meansTableFragment;
 
 
     @Override
@@ -15,7 +18,6 @@ public class MeansTableActivity extends AppCompatActivity implements AdditionalM
         super.onCreate(savedInstanceState);
         setTitle(R.string.title_means_table);
         setContentView(R.layout.activity_means_table);
-
     }
 
 
