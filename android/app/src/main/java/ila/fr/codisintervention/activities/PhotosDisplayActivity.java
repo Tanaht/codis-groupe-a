@@ -1,21 +1,18 @@
 package ila.fr.codisintervention.activities;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +26,7 @@ import static ila.fr.codisintervention.R.drawable.area;
  * The type Photos display activity.
  */
 public class PhotosDisplayActivity extends AppCompatActivity {
+    protected static final String TAG = "PhotosDisplayActivity";
 
     private List<String> urlList = new ArrayList<>();
     private int indexImage = 0;
@@ -55,7 +53,9 @@ public class PhotosDisplayActivity extends AppCompatActivity {
         addArrowsListeners();
 
         imageDrone();
+        comments();
     }
+
 
     private void loadList() {
         urlList.add("https://zonevideo.telequebec.tv/visuels_containers/1280x720/sam_le_pompier.jpg");
@@ -102,13 +102,13 @@ public class PhotosDisplayActivity extends AppCompatActivity {
      *
      */
     private void imageDrone() {
-
-        //Toast.makeText(this, "pouet", Toast.LENGTH_SHORT).show();
-
         url = urlList.get(indexImage);
+        new LoadImage().execute();
+    }
+
+    private void comments(){
         EditText azerty = (EditText) findViewById(R.id.text);
         azerty.setText(url);
-        new LoadImage().execute();
     }
 
 
@@ -121,7 +121,7 @@ public class PhotosDisplayActivity extends AppCompatActivity {
             try {
                 bitmap= BitmapFactory.decodeStream((InputStream)new URL(url).getContent());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.w(TAG, "Impossible to load the image file");
             }
 
             return bitmap;
