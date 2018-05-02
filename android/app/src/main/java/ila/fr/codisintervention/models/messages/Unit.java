@@ -106,22 +106,22 @@ public class Unit implements Parcelable {
      * @param in the parcel that contain the details of this class
      */
     protected Unit(Parcel in) {
+        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+        symbol = in.readParcelable(Symbol.class.getClassLoader());
         id = in.readInt();
         date_granted = in.readLong();
         date_reserved = in.readLong();
-        moving = in.readInt() != 0;
-        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
-        symbol = in.readParcelable(Symbol.class.getClassLoader());
+        moving = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(vehicle, flags);
+        dest.writeParcelable(symbol, flags);
         dest.writeInt(id);
         dest.writeLong(date_granted);
         dest.writeLong(date_reserved);
         dest.writeInt(moving ? 1 : 0);
-        dest.writeParcelable(vehicle, flags);
-        dest.writeParcelable(symbol, flags);
     }
 
 }

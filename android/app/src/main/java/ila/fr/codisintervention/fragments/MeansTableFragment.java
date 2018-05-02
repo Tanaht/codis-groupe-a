@@ -80,13 +80,19 @@ public class MeansTableFragment extends Fragment {
             this.refreshTable();
     }
 
-    private void refreshTable() {
+    /**
+     * Refresh the table with data from the model
+     */
+    public void refreshTable() {
+        int count = meansTable.getChildCount();
+
+        Log.d(TAG, "Refresh Table requested, there is " + count + " currently in table");
         if(meansTable.getChildCount() > 1)
-            meansTable.removeViews(1, meansTable.getChildCount());
+            meansTable.removeViews(1, meansTable.getChildCount() - 1);
         TableRow row = null;
 
         List<Unit> units = modelService.getCurrentIntervention().getUnits();
-        Log.d(TAG, "There is " + units.size() + " units too print in meansTable");
+        Log.d(TAG, "There is " + units.size() + " units to print in meansTable");
         for(int j = 0 ; j < units.size() ; j++) {
             Unit unit = units.get(j);
             Log.d(TAG, "Add Unit " + unit.getVehicle().getLabel());
@@ -100,32 +106,32 @@ public class MeansTableFragment extends Fragment {
 
                 switch (i) {
                     case 0:
-                        text.setText(unit.getVehicle().getLabel() == null ? unit.getVehicle().getType() : unit.getVehicle().getLabel());
+                        text.setText(unit.getVehicle().getLabel() == null || unit.getVehicle().getLabel().equals("") ? unit.getVehicle().getType() : unit.getVehicle().getLabel());
                         break;
                     case 1:
                         if(unit.getVehicle().getStatus() != null)
                             text.setText(unit.getVehicle().getStatus().getTranslation());
                         break;
                     case 2:
-                        if(unit.getRequestDate() != null) {
+                        if(unit.getRequestDate() != null && unit.getRequestDate().getTime() != 0) {
                             SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
                             text.setText(df.format(unit.getRequestDate()));
                         }
                         break;
                     case 3:
-                        if(unit.getAcceptDate() != null) {
+                        if(unit.getAcceptDate() != null && unit.getAcceptDate().getTime() != 0) {
                             SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
                             text.setText(df.format(unit.getAcceptDate()));
                         }
                         break;
                     case 4:
-                        if(unit.getCommitedDate() != null) {
+                        if(unit.getCommitedDate() != null && unit.getCommitedDate().getTime() != 0) {
                             SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
                             text.setText(df.format(unit.getCommitedDate()));
                         }
                         break;
                     case 5:
-                        if(unit.getReleasedDate() != null) {
+                        if(unit.getReleasedDate() != null && unit.getReleasedDate().getTime() != 0) {
                             SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
                             text.setText(df.format(unit.getReleasedDate()));
                         }

@@ -5,6 +5,7 @@ import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.exception.InvalidMessageException;
 import fr.istic.sit.codisgroupea.model.entity.Intervention;
 import fr.istic.sit.codisgroupea.model.entity.Unit;
+import fr.istic.sit.codisgroupea.model.entity.VehicleStatus;
 import fr.istic.sit.codisgroupea.model.message.ListUnitCreatedMessage;
 import fr.istic.sit.codisgroupea.model.message.UnitMessage;
 import fr.istic.sit.codisgroupea.model.message.demand.CreateUnitMessage;
@@ -86,16 +87,17 @@ public class DemandSocketController {
 
             UnitCreatedMessage unitCreated = new UnitCreatedMessage(
                     unit.getId(),
-                    new UnitCreatedMessage.Vehicle(dataSendByClient.vehicle.type)
+                    unit.getRequestDate().getTime(),
+                    new UnitCreatedMessage.Vehicle(dataSendByClient.vehicle.type, VehicleStatus.REQUESTED.name())
             );
 
-            ListUnitCreatedMessage listUnitCreatedMessage = new ListUnitCreatedMessage("CREATED", Arrays.asList(unitCreated));
+            ListUnitCreatedMessage listUnitCreatedMessage = new ListUnitCreatedMessage("CREATE", Arrays.asList(unitCreated));
             Gson jason = new Gson();
 
             String toJson = jason.toJson(listUnitCreatedMessage);
             String urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CLIENT.replace("{id}", String.valueOf(id));
             logger.trace("{} --> data send {}", urlToSend, toJson);
-            simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_UNIT_SERVER_CLIENT,toJson);
+            simpMessagingTemplate.convertAndSend(urlToSend, toJson);
 
             toJson = jason.toJson(new DemandesCreatedMessage(unit));
             urlToSend = RoutesConfig.CREATE_UNIT_SERVER_CODIS;

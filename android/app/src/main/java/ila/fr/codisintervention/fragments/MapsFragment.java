@@ -1,13 +1,10 @@
 package ila.fr.codisintervention.fragments;
 
-import android.content.ComponentName;
-import android.content.ServiceConnection;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,20 +29,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
-import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
+import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.Shape;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
-import ila.fr.codisintervention.models.DronePoint;
-import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
 
 /**
  * Fragment that contain the Map to show
@@ -129,7 +124,8 @@ public class MapsFragment extends Fragment {
             }
             if (((MapActivity)getActivity()).getModelService().getCurrentIntervention().getUnits() != null) {
                 for (Unit u : ((MapActivity) getActivity()).getModelService().getCurrentIntervention().getUnits()) {
-                    printSymbolUnit(u.getSymbolUnit());
+                    if(u.getSymbolUnit() != null)
+                        printSymbolUnit(u.getSymbolUnit());
                 }
             }
         }

@@ -176,10 +176,19 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(symbolsListDelete.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_UNIT_CREATED:
-                Unit unitCreated = intent.getParcelableExtra
-                        (WebsocketService.INTERVENTION_UNIT_CREATED);
-                model.getCurrentIntervention().createUnit(unitCreated);
-                sendToEveryone(unitCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT);
+                List<ila.fr.codisintervention.models.messages.Unit> units = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_UNIT_CREATED);
+
+                Intent unitCreatedIntent = new Intent(ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT);
+
+                ArrayList<Integer> ids = new ArrayList<>();
+                for(ila.fr.codisintervention.models.messages.Unit unit : units) {
+                    Unit unitCreated = new Unit(unit);
+                    model.getCurrentIntervention().createUnit(unitCreated);
+                    ids.add(unitCreated.getId());
+                }
+
+                unitCreatedIntent.putExtra("ids", ids);
+                deliverIntent(unitCreatedIntent);
                 break;
             case WebsocketService.INTERVENTION_UNIT_UPDATED:
                 Unit unitUpdated = intent.getParcelableExtra

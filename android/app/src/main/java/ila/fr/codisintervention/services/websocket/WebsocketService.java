@@ -11,10 +11,12 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -245,6 +247,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
                 case ERROR:
                     Log.d(TAG, "STOMP CONNECTION ERROR");
+                    Log.d(TAG, lifecycleEvent.getMessage(), lifecycleEvent.getException());
                     Intent errorIntent = new Intent(PROTOCOL_ERROR);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
@@ -380,13 +383,14 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     @Override
     public void chooseIntervention(int id){
         this.client.topic("/topic/interventions/" + id + "/symbols/event").subscribe(message -> {
-            Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
+            Log.i(TAG, "[/topic/interventions/" + id + "/symbols/event] Received message: " + message.getPayload());
             deliverSymbolsEventIntents(message);
         });
 
 
         this.client.topic("/topic/interventions/" + id + "/units/event").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
+            deliverUnitsEventIntents(message);
         });
 
         this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
@@ -411,6 +415,58 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             getApplicationContext().startService(dronePathReceived);
         });
 
+    }
+
+    /**
+     * Class triggered when receiving events of type "/topic/interventions/{id}/units/event"
+     * It send the correct intent.
+     * @param message
+     */
+    private void deliverUnitsEventIntents(StompMessage message) {
+        //FIXME: Refactoring this method can be done with enum (EventKind, EventType) or other class architecture
+
+        String type = "";
+
+        ArrayList<ila.fr.codisintervention.models.messages.Unit> units = new ArrayList<>();
+
+        try {
+            JSONObject object = new JSONObject(message.getPayload());
+
+            if(!object.has("type"))
+                throw new JSONException("JSON Message must have a 'type' key");
+
+            type = object.getString("type");
+
+            if(!Arrays.asList("CREATE", "UPDATE", "DELETE").contains(type)) {
+                throw new JSONException("JSON Message 'type' key must be one of the following: 'CREATE|UPDATE|DELETE'");
+            }
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+            Type gsonType = new TypeToken<List<ila.fr.codisintervention.models.messages.Unit>>() {}.getType();
+
+            units = gson.fromJson(object.getJSONArray("units").toString(), gsonType);
+
+//            for(ila.fr.codisintervention.models.messages.Unit unit : units)
+//                unit.setSymbol(new Symbol());
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        Intent unitActionIntent  = new Intent(getApplicationContext(), ModelService.class);
+
+        if("CREATE".equals(type)) {
+            unitActionIntent.setAction(INTERVENTION_UNIT_CREATED);
+            unitActionIntent.putParcelableArrayListExtra(INTERVENTION_UNIT_CREATED, units);
+        }
+
+        if("UPDATE".equals(type)) {
+            unitActionIntent.setAction(INTERVENTION_UNIT_UPDATED);
+            unitActionIntent.putExtra(INTERVENTION_UNIT_UPDATED, units);
+        }
+
+        Log.d(TAG, "Send Explicit Intent");
+        getApplicationContext().startService(unitActionIntent);
     }
 
 

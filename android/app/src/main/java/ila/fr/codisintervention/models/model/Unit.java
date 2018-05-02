@@ -46,9 +46,15 @@ public class Unit {
         id = uni.getId();
         vehicle = new Vehicle(uni.getVehicle());
         moving = uni.isMoving();
-        requestDate = new Timestamp(uni.getDate_reserved());
-        acceptDate = new Timestamp(uni.getDate_granted());
-        symbolUnit = new SymbolUnit(uni.getSymbol());
+
+        if(uni.getDate_reserved() != 0)
+            requestDate = new Timestamp(uni.getDate_reserved());
+
+        if(uni.getDate_granted() != 0)
+            acceptDate = new Timestamp(uni.getDate_granted());
+
+        if(uni.getSymbol() != null)
+            symbolUnit = new SymbolUnit(uni.getSymbol());
     }
 
     public Unit(Vehicle vehicle) {

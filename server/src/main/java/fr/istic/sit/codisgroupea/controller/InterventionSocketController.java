@@ -135,17 +135,17 @@ public class InterventionSocketController {
         List<InterventionChosenMessage.Unit> units = new ArrayList<>();
 
         for(Unit unit : unitRepository.findAllByIntervention(intervention)) {
-            Vehicle vehicle = unit.getVehicle();
+            UnitVehicle unitVehicle = unit.getUnitVehicle();
             Symbol symbol = unit.getSymbolSitac().getSymbol();
 
             InterventionChosenMessage.Unit unitObject = new InterventionChosenMessage.Unit(
                     unit.getId(),
                     unit.getRequestDate().getTime(),
                     unit.isMoving(),
-                    new InterventionChosenMessage.Unit.Vehicle(
-                            vehicle.getLabel(),
-                            vehicle.getType().getName(),
-                            vehicle.getStatus().toString()
+                    unitVehicle == null ? null : new InterventionChosenMessage.Unit.Vehicle(
+                            unitVehicle.getAssignedVehicle() == null ? "" : unitVehicle.getAssignedVehicle().getLabel(),
+                            unitVehicle.getType().getName(),
+                            unitVehicle.getStatus().toString()
                     ),
                     new InterventionChosenMessage.Unit.Symbol(
                             symbol.getShape().toString(),
