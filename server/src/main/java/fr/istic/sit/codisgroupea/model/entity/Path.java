@@ -18,7 +18,7 @@ public class Path {
 
     /** List of {@link Position} for all the point in the path */
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
     private List<Position> points;
 
     /** Instance of {@link PathType} for the type of the path */
@@ -89,7 +89,7 @@ public class Path {
      *
      * @return the points
      */
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     public List<Position> getPoints() {
         return points;
     }
