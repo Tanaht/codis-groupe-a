@@ -60,6 +60,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity android:name=".activities.PhotosDisplayActivity"></activity>
         <activity android:name=".activities.CodisRequestListActivity"></activity>
         <activity android:name=".activities.MeansTableActivity"></activity>
     </application>

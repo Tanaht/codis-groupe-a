@@ -21,6 +21,7 @@
     <string name="title_dialog_fragment">Modifier un moyen</string>
     <string name="title_activity_map">Map</string>
     <string name="title_means_table">Tableau des Moyens</string>
+    <string name="title_photos_display">Photos Mission</string>
 
     <!-- Headers for the Means Table -->
     <string name="header_1">Label/Type</string>
@@ -87,6 +88,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="btn_go_to_means_table">Tableau des Moyens</string>
     <string name="btn_go_to_map">Carte</string>
+    <string name="btn_go_to_photos_display">Photos</string>
+    <string name="btn_previous_photo"></string>
     <string name="btn_crm">CRM</string>
 
 </resources>

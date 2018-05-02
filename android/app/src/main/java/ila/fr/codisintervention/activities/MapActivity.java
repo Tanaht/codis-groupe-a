@@ -370,6 +370,18 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     }
 
     /**
+     * Show Photos Display activity.
+     *
+     * Technically this method send an explicit intent to {@link PhotosDisplayActivity }
+     *
+     * @param v the view
+     */
+    public void showPhotosDisplay(View v) {
+        Intent intent = new Intent( MapActivity.this, PhotosDisplayActivity.class);
+        startActivity(intent);
+    }
+
+    /**
      * show pop-up with CRM vehicles list
      */
     private void showCrmListPopup() {
