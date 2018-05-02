@@ -47,7 +47,7 @@ public class WebSocketAuthenticatorService {
         return new UsernamePasswordAuthenticationToken(
                 username,
                 null,
-                Collections.singleton(user.get().getRoles())
+                Collections.singleton(user.get().getRole())
         );
     }
 }

@@ -257,7 +257,7 @@ public class InitializeApplicationMessage {
          */
         public UserMessage(User user) {
             username = user.getUsername();
-            role = user.getRoles().getAuthority();
+            role = user.getRole().getAuthority();
         }
 
         public String getUsername() {
