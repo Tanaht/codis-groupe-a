@@ -148,6 +148,8 @@ public class ApplicationModel {
             }
             currentIntervention.setUnits(units);
 
+            currentIntervention.setPathDrone(new PathDrone(intervention.getPathDrone()));
+
             currentIntervention.setLocation(intervInList.getLocation());
             currentIntervention.setSinisterCode(intervInList.getSinisterCode());
             currentIntervention.setAddress(intervInList.getAddress());

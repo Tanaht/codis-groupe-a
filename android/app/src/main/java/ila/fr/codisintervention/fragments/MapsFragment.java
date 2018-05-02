@@ -287,17 +287,7 @@ public class MapsFragment extends Fragment {
 
         deleteAllDronePointOnTheMap();
         markerListDrone = new LinkedHashMap<Marker,I_MarkerElement>();
-
-        if (path == null) {
-            // TODO Think to remove : For the test !!!
-            List<Location> posList = new ArrayList<Location>();
-            posList.add(new Location(48.1153379, -1.6391757));
-            posList.add(new Location(48.1161849, -1.6390014));
-            posList.add(new Location(48.1164571, -1.6373706));
-            posList.add(new Location(48.1155689, -1.6360724));
-            posList.add(new Location(48.1152322, -1.6378534));
-            path = new PathDrone(new ila.fr.codisintervention.models.messages.PathDrone(PathDroneType.CYCLE.name(), posList));
-        }
+        
         if (path != null) {
             // add the drone on the map
             if (drone != null){
