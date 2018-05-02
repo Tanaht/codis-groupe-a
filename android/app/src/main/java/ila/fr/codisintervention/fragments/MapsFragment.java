@@ -287,7 +287,7 @@ public class MapsFragment extends Fragment {
 
         deleteAllDronePointOnTheMap();
         markerListDrone = new LinkedHashMap<Marker,I_MarkerElement>();
-        
+
         if (path != null) {
             // add the drone on the map
             if (drone != null){

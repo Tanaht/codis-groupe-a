@@ -52,7 +52,7 @@ public class DroneController {
     public void getMission(@DestinationVariable("id") final int id, MissionOrderMessage missionOrder) {
         logger.info("Mission order received from drone");
         List<Location> path = new ArrayList<>();
-        for(MissionOrderMessage.Location loc : missionOrder.getPath()){
+        for(MissionOrderMessage.Location loc : missionOrder.getPoints()){
             path.add(new Location(loc.getLat(), loc.getLng()));
         }
         logger.info("Link mission to drone using SocketForDroneCommunication");
