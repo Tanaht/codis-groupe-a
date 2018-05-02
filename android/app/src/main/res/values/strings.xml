@@ -53,6 +53,7 @@
     <string name="label_intervention_address_city">Ville :</string>
     <string name="label_intervention_sinister_code">Code sinistre :</string>
     <string name="label_choose_vehicle">Veuillez choisir le véhicule pour accepter la demande</string>
+    <string name="label_crm_vehicle">Veuillez choisir le véhicule à placer au CRM</string>
     <string name="intervention_created">L\'intervention a été créée.</string>
     <string name="label_additional_mean">Demander Moyen Supplémentaire</string>
     <string name="label_identifier">Identifiant</string>
@@ -86,5 +87,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="btn_go_to_means_table">Tableau des Moyens</string>
     <string name="btn_go_to_map">Carte</string>
+    <string name="btn_crm">CRM</string>
 
 </resources>
