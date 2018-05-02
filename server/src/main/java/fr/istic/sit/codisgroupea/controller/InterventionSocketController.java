@@ -14,6 +14,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +24,7 @@ import java.util.List;
  * Controller for intervention basic routes
  */
 @Controller
+@Transactional
 public class InterventionSocketController {
 
     /** The logger */
@@ -181,7 +183,7 @@ public class InterventionSocketController {
                                                         String dataSentByClient) {
         logger.trace(RoutesConfig.CHOOSE_INTERVENTION_CLIENT +" --> data receive "+dataSentByClient);
         String username = principal.getName();
-        Intervention intervention = interventionRepository.getOne(id);
+        Intervention intervention = interventionRepository.getOneById(id);
 
 
         Gson gson = new Gson();
@@ -190,7 +192,8 @@ public class InterventionSocketController {
                 id,
                 populateSymbolList(intervention),
                 populateUnitList(intervention),
-                populatePhotoList(intervention)
+                populatePhotoList(intervention),
+                new PathDrone(intervention.getPathDrone())
         );
 
         String toJson = gson.toJson(interv);

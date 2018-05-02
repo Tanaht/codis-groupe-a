@@ -664,6 +664,7 @@ public class InterventionChosenMessage {
      */
     public List<Photo> photos;
 
+    public PathDrone pathDrone;
     /**
      * Instantiates a new intervention-chosen message.
      *
@@ -672,12 +673,19 @@ public class InterventionChosenMessage {
      * @param units   the units
      * @param photos  the photos
      */
-    public InterventionChosenMessage(int id, List<Symbol> symbols, List<Unit> units, List<Photo> photos) {
+    public InterventionChosenMessage(int id, List<Symbol> symbols, List<Unit> units, List<Photo> photos, PathDrone path) {
         this.id = id;
         this.symbols = symbols;
         this.units = units;
         this.photos = photos;
+        this.pathDrone = path;
     }
 
+    public PathDrone getPathDrone() {
+        return pathDrone;
+    }
 
+    public void setPathDrone(PathDrone pathDrone) {
+        this.pathDrone = pathDrone;
+    }
 }
