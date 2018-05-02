@@ -43,6 +43,15 @@ public class SymbolSitac implements SigEntry {
         this.payload = new Payload();
     }
 
+    /**
+     * Instantiate a new Symbol from a Symbol
+     * @param symbol
+     */
+    public SymbolSitac(Symbol symbol) {
+        this.symbol =symbol;
+        this.payload = new Payload();
+    }
+
     public SymbolSitac(Intervention intervention, Symbol symbol) {
         this.intervention = intervention;
         this.symbol = symbol;

@@ -150,11 +150,13 @@ public class ApplicationModel {
             List<Symbol> symbs  = new ArrayList<>();
             for (ila.fr.codisintervention.models.messages.Symbol symb : intervention.getSymbols()){
                 symbs.add(new Symbol(symb));
+                Log.d(TAG, "Add a new Symbol to intervention chosen");
             }
             currentIntervention.setSymbols(symbs);
 
             List<Unit> units = new ArrayList<>();
             for (ila.fr.codisintervention.models.messages.Unit uni : intervention.getUnits()){
+                Log.d(TAG, "Add a new Unit to intervention chosen");
                 units.add(new Unit(uni));
             }
             currentIntervention.setUnits(units);

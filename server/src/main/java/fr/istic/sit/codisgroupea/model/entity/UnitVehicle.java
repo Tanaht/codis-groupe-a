@@ -1,6 +1,7 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Data
+@NoArgsConstructor
 public class UnitVehicle {
 
     /** The id of the unit */
@@ -53,5 +55,9 @@ public class UnitVehicle {
     public void setAssignedVehicle(Vehicle assignedVehicle) {
         this.assignedVehicle = assignedVehicle;
         this.assignedVehicle.setUnitVehicle(this);
+    }
+
+    public UnitVehicle(Unit unit) {
+        this.unit = unit;
     }
 }

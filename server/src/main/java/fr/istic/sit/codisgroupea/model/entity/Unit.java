@@ -1,7 +1,6 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,7 +15,6 @@ import java.util.Date;
  */
 @Entity
 @Data
-@NoArgsConstructor
 public class Unit {
     /** The id of the unit */
     @Id
@@ -68,7 +66,14 @@ public class Unit {
     public Unit(Intervention intervention) {
         this.moving = false;
         this.intervention = intervention;
-        this.unitVehicle = new UnitVehicle();
+        this.unitVehicle = new UnitVehicle(this);
+        this.requestDate = new Timestamp(new Date().getTime());
+    }
+
+    /**
+     * No Arg Constructor
+     */
+    public Unit() {
         this.requestDate = new Timestamp(new Date().getTime());
     }
 

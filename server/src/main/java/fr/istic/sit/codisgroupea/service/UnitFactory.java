@@ -205,7 +205,6 @@ public class UnitFactory {
 
         SymbolSitac symbolSitac = unit.getSymbolSitac();
         if(requestedSymbol.isPresent()) {
-            symbolSitac.setIntervention(unit.getIntervention());
             symbolSitac.setSymbol(requestedSymbol.get());
 
             if(symbolSitac.getLocation() == null)

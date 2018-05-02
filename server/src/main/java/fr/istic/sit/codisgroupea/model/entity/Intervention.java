@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Representation of an intervention.
@@ -38,6 +40,15 @@ public class Intervention {
 
     private boolean opened;
 
+
+    @NotNull
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "intervention")
+    private List<Unit> units;
+
+    @NotNull
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "intervention")
+    private List<SymbolSitac> symbols;
+
     /**
      * Constructor by value.
      *
@@ -52,5 +63,33 @@ public class Intervention {
         this.position = position;
         this.address = address;
         this.sinisterCode = sinisterCode;
+
+        this.symbols = new ArrayList<>();
+        this.units = new ArrayList<>();
+    }
+
+    /**
+     * Add a Unit and map it correctly with this intervention
+     * @param unit
+     */
+    public void addUnit(Unit unit) {
+        if(this.getUnits() == null)
+            this.units = new ArrayList<>();
+
+        if(!this.equals(unit.getIntervention()))
+            unit.setIntervention(this);
+        this.getUnits().add(unit);
+    }
+
+    /**
+     * Remove correctly a unit from this intervention
+     * @param unit
+     */
+    public void removeUnit(Unit unit) {
+        if(this.getUnits() == null)
+            this.units = new ArrayList<>();
+
+        unit.setIntervention(null);
+        this.getUnits().remove(unit);
     }
 }

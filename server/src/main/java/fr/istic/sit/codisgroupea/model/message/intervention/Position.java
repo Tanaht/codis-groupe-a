@@ -37,8 +37,10 @@ public class Position {
      * @param position the position
      */
     public Position(fr.istic.sit.codisgroupea.model.entity.Position position) {
-        this.lat = (float) position.getLatitude();
-        this.lng = (float) position.getLongitude();
+        if(position != null) {
+            this.lat = (float) position.getLatitude();
+            this.lng = (float) position.getLongitude();
+        }
     }
 
     /**

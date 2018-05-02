@@ -26,8 +26,17 @@ INSERT INTO vehicle_type VALUES (3, 'VLCG');
 
 -- Insert Vehicle
 INSERT INTO vehicle VALUES (1, 'VSAV 1', 1);
+INSERT INTO vehicle VALUES (4, 'VSAV 2', 1);
+INSERT INTO vehicle VALUES (5, 'VSAV 3', 1);
+INSERT INTO vehicle VALUES (6, 'VSAV 4', 1);
 INSERT INTO vehicle VALUES (2, 'FPT 1', 2);
+INSERT INTO vehicle VALUES (7, 'FPT 2', 2);
+INSERT INTO vehicle VALUES (8, 'FPT 3', 2);
+INSERT INTO vehicle VALUES (9, 'FPT 4', 2);
 INSERT INTO vehicle VALUES (3, 'VLCG 1', 3);
+INSERT INTO vehicle VALUES (10, 'VLCG 2', 3);
+INSERT INTO vehicle VALUES (11, 'VLCG 3', 3);
+INSERT INTO vehicle VALUES (12, 'VLCG 4', 3);
 
 -- Insert Position
 INSERT INTO position VALUES (1, 48.116487, -1.647416);

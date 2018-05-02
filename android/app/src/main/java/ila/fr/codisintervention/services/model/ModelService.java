@@ -81,8 +81,10 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "START COMMAND by " + intent);
 
+
         try {
-            updateTheModel(intent);
+            if(intent != null)
+                updateTheModel(intent);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
