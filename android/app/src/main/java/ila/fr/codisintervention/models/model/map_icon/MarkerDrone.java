@@ -90,10 +90,12 @@ public class MarkerDrone implements I_MarkerElement {
 
     @Override
     public void createObjectOnMap() {
-        int id = ((MapActivity)activity).getModelService().getCurrentIntervention().getId();
+        if (((MapActivity)activity).getModelService().getCurrentIntervention()!=null) {
+            int id = ((MapActivity) activity).getModelService().getCurrentIntervention().getId();
 
-        List<Location> dronePointsList = ((MapActivity) activity).getDronePointList();
-        dronePointsList.add(getData().getLocation());
-        ((MapActivity) activity).getWebSocketService().createPathDrone(((MapActivity) activity).getModelService().getCurrentIntervention().getId(), new PathDrone("SEGMENT", dronePointsList));
+            List<Location> dronePointsList = ((MapActivity) activity).getDronePointList();
+            dronePointsList.add(getData().getLocation());
+            ((MapActivity) activity).getWebSocketService().createPathDrone(((MapActivity) activity).getModelService().getCurrentIntervention().getId(), new PathDrone("SEGMENT", dronePointsList));
+        }
     }
 }

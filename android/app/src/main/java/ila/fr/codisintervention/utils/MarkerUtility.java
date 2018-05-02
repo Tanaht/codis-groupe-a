@@ -23,6 +23,8 @@ import ila.fr.codisintervention.models.model.map_icon.MarkerSymbol;
 import ila.fr.codisintervention.models.model.map_icon.MarkerUnit;
 import ila.fr.codisintervention.models.model.map_icon.Shape;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 
 public class MarkerUtility {
     static public Integer getDrawablePath(I_MarkerElement ms, Activity activity){
@@ -52,12 +54,13 @@ public class MarkerUtility {
             Symbol mySymbol = new Symbol(location, color, shape);
             myObject = new MarkerSymbol(mySymbol,activity);
             myObject.createObjectOnMap();
-        }
-        else if (Shape.findAssociatedObject(shape).equals(Shape.UNIT)) {
+        }else if (Shape.findAssociatedObject(shape).equals(Shape.UNIT)) {
             //ask for a new Unit
-//            Unit myUnit = new Unit(location, color, shape);
-//            myObject = new MarkerUnit(myUnit,activity);
-//            myObject.createObjectOnMap();
+            SymbolUnit mySymbolUnit = new SymbolUnit(location, color, shape);
+            Vehicle myVehicle = new Vehicle("VSAV 1","VSAV");
+            Unit myUnit = new Unit(mySymbolUnit, myVehicle);
+            myObject = new MarkerUnit(myUnit,activity);
+            myObject.createObjectOnMap();
         }else if (Shape.findAssociatedObject(shape).equals(Shape.DRONE_POINT)) {
             DronePoint dp = new DronePoint(((MapActivity)activity).getCptId(), latLng.latitude,latLng.longitude);
             myObject = new MarkerDrone(false, dp, activity);
