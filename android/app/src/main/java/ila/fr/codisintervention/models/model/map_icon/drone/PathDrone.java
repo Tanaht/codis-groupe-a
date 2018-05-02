@@ -29,6 +29,6 @@ public class PathDrone {
     public PathDrone(ila.fr.codisintervention.models.messages.PathDrone pathDrone) {
         this.setAltitude(pathDrone.getAltitude());
         this.setType(PathDroneType.valueOf(pathDrone.getType()));
-        this.setPoints(pathDrone.getPath());
+        this.setPoints(pathDrone.getPoints());
     }
 }
