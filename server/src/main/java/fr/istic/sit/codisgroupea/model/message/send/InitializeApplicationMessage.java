@@ -122,7 +122,7 @@ public class InitializeApplicationMessage {
         private String address;
 
         /** Boolean which tells if the drone is available or not */
-        private boolean drone_available;
+        private boolean droneAvailable;
 
         /** Instance of {@link fr.istic.sit.codisgroupea.model.entity.Position} for the position */
         private Position location;
@@ -143,7 +143,7 @@ public class InitializeApplicationMessage {
             code = intervention.getSinisterCode().getCode();
             address = intervention.getAddress();
             //TODO drone available à changer
-            drone_available = true;
+            droneAvailable = true;
             location = new Position(intervention.getPosition());
         }
 
@@ -179,12 +179,12 @@ public class InitializeApplicationMessage {
             this.address = adress;
         }
 
-        public boolean isDrone_available() {
-            return drone_available;
+        public boolean isDroneAvailable() {
+            return droneAvailable;
         }
 
-        public void setDrone_available(boolean drone_available) {
-            this.drone_available = drone_available;
+        public void setDroneAvailable(boolean droneAvailable) {
+            this.droneAvailable = droneAvailable;
         }
 
         public Position getLocation() {
