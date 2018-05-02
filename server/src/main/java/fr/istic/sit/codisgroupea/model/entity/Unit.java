@@ -1,5 +1,8 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
@@ -12,9 +15,12 @@ import java.util.Date;
  * @see Intervention
  */
 @Entity
+@Data
+@NoArgsConstructor
 public class Unit {
-
     /** The id of the unit */
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
 
     /**
@@ -22,15 +28,21 @@ public class Unit {
      * From this class we can gain the instance of the vehicle
      * @see Vehicle
      */
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "unit")
+    @NotNull
     private UnitVehicle unitVehicle;
 
     /** Instance of {@link Intervention} for the intervention of the unit */
+    @ManyToOne
+    @NotNull
     private Intervention intervention;
 
     /** Boolean which tells if the unit is moving or not */
+    @NotNull
     private boolean moving;
 
     /** request date of the vehicle for the intervention */
+    @NotNull
     private Timestamp requestDate;
 
     /** Date of the CODIS acceptation of the vehicle for the intervention */
@@ -43,24 +55,20 @@ public class Unit {
     private Timestamp releasedDate;
 
     /** Instance of {@link SymbolSitac} for the symbol sitac of the unit */
+    @OneToOne(cascade = CascadeType.ALL)
+    @NotNull
     private SymbolSitac symbolSitac;
-
-    /**
-     * Default constructor.
-     */
-    public Unit() {
-
-    }
 
 
     /**
      * Constructor that instanciate a Unit in an Intervention context,
      * it Will initialize the Request Date and the related UnitVehicle instance
-     * @param intervention
+     * @param intervention the intervention
      */
     public Unit(Intervention intervention) {
+        this.moving = false;
         this.intervention = intervention;
-        this.setUnitVehicle(new UnitVehicle());
+        this.unitVehicle = new UnitVehicle();
         this.requestDate = new Timestamp(new Date().getTime());
     }
 
@@ -89,46 +97,6 @@ public class Unit {
     }
 
     /**
-     * Gets ID.
-     *
-     * @return the ID
-     */
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets the intervention.
-     *
-     * @return the intervention
-     */
-    @ManyToOne
-    @NotNull
-    public Intervention getIntervention() {
-        return intervention;
-    }
-
-    /**
-     * Sets intervention.
-     *
-     * @param intervention the intervention
-     */
-    public void setIntervention(Intervention intervention) {
-        this.intervention = intervention;
-    }
-
-    /**
      * Gets vehicle.
      *
      * @return the vehicle
@@ -146,139 +114,5 @@ public class Unit {
     @Transient
     public void setVehicle(Vehicle vehicle) {
         this.unitVehicle.setAssignedVehicle(vehicle);
-    }
-
-    /**
-     * Is moving boolean.
-     *
-     * @return the boolean
-     */
-    @NotNull
-    public boolean isMoving() {
-        return moving;
-    }
-
-    /**
-     * Sets moving.
-     *
-     * @param moving the moving
-     */
-    public void setMoving(boolean moving) {
-        this.moving = moving;
-    }
-
-    /**
-     * Gets request date.
-     *
-     * @return the request date
-     */
-    @NotNull
-    public Timestamp getRequestDate() {
-        return requestDate;
-    }
-
-    /**
-     * Sets request date.
-     *
-     * @param requestDate the request date
-     */
-    public void setRequestDate(Timestamp requestDate) {
-        this.requestDate = requestDate;
-    }
-
-    /**
-     * Gets accept date.
-     *
-     * @return the accept date
-     */
-    public Timestamp getAcceptDate() {
-        return acceptDate;
-    }
-
-    /**
-     * Sets accept date.
-     *
-     * @param acceptDate the accept date
-     */
-    public void setAcceptDate(Timestamp acceptDate) {
-        this.acceptDate = acceptDate;
-    }
-
-    /**
-     * Gets commited date.
-     *
-     * @return the commited date
-     */
-    public Timestamp getCommitedDate() {
-        return commitedDate;
-    }
-
-    /**
-     * Sets commited date.
-     *
-     * @param commitedDate the commited date
-     */
-    public void setCommitedDate(Timestamp commitedDate) {
-        this.commitedDate = commitedDate;
-    }
-
-    /**
-     * Gets released date.
-     *
-     * @return the released date
-     */
-    public Timestamp getReleasedDate() {
-        return releasedDate;
-    }
-
-    /**
-     * Sets est
-     * e =released date.
-     *
-     * @param releasedDate the released date
-     */
-    public void setReleasedDate(Timestamp releasedDate) {
-        this.releasedDate = releasedDate;
-    }
-
-    /**
-     * Gets symbol sitac.
-     *
-     * @return the symbol sitac
-     */
-    @OneToOne(cascade = CascadeType.ALL)
-    @NotNull
-    public SymbolSitac getSymbolSitac() {
-        return symbolSitac;
-    }
-
-    /**
-     * Sets symbol sitac.
-     *
-     * @param symbolSitac the symbol sitac
-     */
-    public void setSymbolSitac(SymbolSitac symbolSitac) {
-        this.symbolSitac = symbolSitac;
-    }
-
-    /**
-     * Gets unit vehicle.
-     *
-     * @return the unit vehicle
-     */
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "unit")
-    @NotNull
-    public UnitVehicle getUnitVehicle() {
-        return unitVehicle;
-    }
-
-    /**
-     * Sets unit vehicle.
-     *
-     * @param unitVehicle the unit vehicle
-     */
-    public void setUnitVehicle(UnitVehicle unitVehicle) {
-        this.unitVehicle = unitVehicle;
-        this.unitVehicle.setUnit(this);
     }
 }
