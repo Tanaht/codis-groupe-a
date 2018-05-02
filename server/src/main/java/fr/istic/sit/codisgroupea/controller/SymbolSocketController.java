@@ -259,8 +259,12 @@ public class SymbolSocketController {
             symbolSitac.setSymbol(optSymbol.get());
             symbolSitac.getLocation().setLatitude(dataLocation.getLat());
             symbolSitac.getLocation().setLongitude(dataLocation.getLng());
-            symbolSitac.getPayload().setIdentifier(dataPayload.getIdentifier());
-            symbolSitac.getPayload().setDetails(dataPayload.getDetails());
+
+            if(dataPayload != null) {
+                val payload = symbolSitac.getPayload();
+                payload.setIdentifier(dataPayload.getIdentifier());
+                payload.setDetails(dataPayload.getDetails());
+            }
 
             //Create the return message
             val newSymbolSitac = symbolSitacRepository.save(symbolSitac);
