@@ -31,6 +31,7 @@ import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.SymbolsMessage;
 import ila.fr.codisintervention.models.messages.User;
+import ila.fr.codisintervention.models.messages.Vehicle;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.services.model.ModelService;
@@ -325,10 +326,28 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 if(f.getDeclaringClass().equals(Intervention.class)) {
                     switch (f.getName()) {
                         case "drone_available":
-                            return true;
                         case "id":
-                            return true;
                         case "date":
+                            return true;
+                        default:
+                    }
+                }
+
+                if(f.getDeclaringClass().equals(ila.fr.codisintervention.models.messages.Unit.class)) {
+                    switch (f.getName()) {
+                        case "id":
+                        case "date_released":
+                        case "date_granted":
+                        case "date_commited":
+                        case "date_reserved":
+                            return true;
+                        default:
+                    }
+                }
+
+                if(f.getDeclaringClass().equals(Vehicle.class)) {
+                    switch (f.getName()) {
+                        case "status":
                             return true;
                         default:
                     }

@@ -51,6 +51,10 @@ public class Unit {
         symbolUnit = new SymbolUnit(uni.getSymbol());
     }
 
+    public Unit(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
     public void load(Unit unitUpdated) {
         moving = unitUpdated.isMoving();
 
