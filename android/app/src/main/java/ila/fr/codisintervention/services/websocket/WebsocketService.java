@@ -32,6 +32,7 @@ import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.SymbolsMessage;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
 import rx.Subscription;
@@ -708,5 +709,15 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/deny] Sent data!"),
                 error -> Log.e(TAG, "[/app/demandes/" + request.getId() + "/deny] Error Encountered", error)
         );
+    }
+
+    @Override
+    public void requestUnit(int interventionId, Unit unit) {
+        this.client.send("/app/interventions/" + interventionId + "/units/create");
+    }
+
+    @Override
+    public void updateUnit(int interventionId, Unit unit) {
+
     }
 }
