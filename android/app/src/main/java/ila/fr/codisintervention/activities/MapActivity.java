@@ -373,8 +373,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
      * show pop-up with CRM vehicles list
      */
     private void showCrmListPopup() {
-        //final CharSequence[] crmVehicleLabels = getAvailableCRMVehicleLabels();
-        final CharSequence[] crmVehicleLabels = {"VLCG1", "FPT2", "FPT3"};
+        final CharSequence[] crmVehicleLabels = getAvailableCRMVehicleLabels();
         AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
         builder.setTitle(R.string.label_crm_vehicle);
 
@@ -390,6 +389,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         builder.setPositiveButton(R.string.label_validate, (dialog, id) -> {
             Toasty.success(getApplicationContext(), "CRM Vehicle Chosen", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "CRM Vehicle chosen " + id);
+            // TODO Put the vehicle on the map when clicked
             // TODO tell webSocketService that I choosed the crm vehicle
         });
 
@@ -398,7 +398,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     }
 
     private CharSequence[] getAvailableCRMVehicleLabels() {
-       /* TODO List<Vehicle> availableCRMVehicles = modelService.getAvailableCRMVehiclesByType();
+        List<Vehicle> availableCRMVehicles = modelService.getAvailableVehicle();
         List<CharSequence> labels = new ArrayList<>();
 
         for(Vehicle vehicle : availableCRMVehicles) {
@@ -407,7 +407,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
         CharSequence[] charSequences = new CharSequence[labels.size()];
         labels.toArray(charSequences);
-        return charSequences;*/
+        return charSequences;
     }
 
     @Override
