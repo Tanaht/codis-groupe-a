@@ -35,6 +35,9 @@ public class InitializeApplicationMessage {
     /** Intervention list */
     private List<InterventionMessage> interventions;
 
+    /** photo list */
+    private List<PhotoMessage> photos;
+
     public UserMessage getUser() {
         return user;
     }
@@ -83,6 +86,14 @@ public class InitializeApplicationMessage {
         this.interventions = interventions;
     }
 
+    public List<PhotoMessage> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<PhotoMessage> photos) {
+        this.photos = photos;
+    }
+
     /**
      * Empty Constructor
      */
@@ -99,13 +110,15 @@ public class InitializeApplicationMessage {
     public InitializeApplicationMessage(User usr, List<VehicleTypeMessage> typesList,
                                         List<SinisterCodeMessage> codesList,
                                         List<VehicleMessage> vehicleList,
-                                        List<DemandMessage> demandList, List<InterventionMessage> interventions){
+                                        List<DemandMessage> demandList, List<InterventionMessage> interventions,
+                                        List<PhotoMessage> photoList){
         user = new UserMessage(usr);
         types = typesList;
         codes = codesList;
         vehicles = vehicleList;
         demandes = demandList;
         this.interventions = interventions;
+        this.photos = photoList;
     }
     public static class InterventionMessage{
 
@@ -371,5 +384,101 @@ public class InitializeApplicationMessage {
         }
     }
 
+    public static class PhotoMessage {
+        /**
+         * URL of the photo to retrieve through HTTP
+         */
+        private String url;
 
+        /**
+         * Date of the snapshot
+         */
+        private long date;
+
+        /**
+         * Location of the snapshot
+         */
+        private LocationMessage location;
+
+        private int interventionId;
+
+        /**
+         * Id of the point
+         */
+        private int pointId;
+
+        public PhotoMessage(Photo photo){
+            this.url = photo.getUri();
+            this.date = photo.getDate().getTime();
+            this.location = new LocationMessage(photo.getCoordinates().getLatitude(), photo.getCoordinates().getLongitude());
+            this.interventionId = photo.getIntervention().getId();
+            this.pointId = photo.getId();
+
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public long getDate() {
+            return date;
+        }
+
+        public void setDate(long date) {
+            this.date = date;
+        }
+
+        public LocationMessage getLocation() {
+            return location;
+        }
+
+        public void setLocation(LocationMessage location) {
+            this.location = location;
+        }
+
+        public int getInterventionId() {
+            return interventionId;
+        }
+
+        public void setInterventionId(int interventionId) {
+            this.interventionId = interventionId;
+        }
+
+        public int getPointId() {
+            return pointId;
+        }
+
+        public void setPointId(int pointId) {
+            this.pointId = pointId;
+        }
+    }
+
+    public static class LocationMessage {
+        private double lat;
+        private double lng;
+
+        public LocationMessage(double lat, double lng){
+            this.lat = lat;
+            this.lng = lng;
+        }
+
+        public double getLat() {
+            return lat;
+        }
+
+        public void setLat(double lat) {
+            this.lat = lat;
+        }
+        public double getLng() {
+            return lng;
+        }
+
+        public void setLng(double lng) {
+            this.lng = lng;
+        }
+    }
 }

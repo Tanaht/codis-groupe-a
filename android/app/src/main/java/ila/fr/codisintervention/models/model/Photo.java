@@ -22,10 +22,24 @@ public class Photo {
     /** Instance of {@link Timestamp} for the date of the photo */
     private Timestamp date;
 
+    private int interventionId;
+
+    private int pointId;
+
     public Photo(ila.fr.codisintervention.models.messages.Photo photo){
         uri = photo.getUrl();
         coordinates = new Position(photo.getLocation());
         date = new Timestamp(photo.getDate());
+        interventionId = photo.getInterventionId();
+        pointId = photo.getPointId();
+    }
+
+    public Photo(ila.fr.codisintervention.models.PhotoReception photo){
+        uri = photo.getPhoto();
+        coordinates = new Position(photo.getLocation());
+        date = new Timestamp(photo.getDate());
+        interventionId = photo.getInterventionId();
+        pointId = photo.getPointId();
     }
 
     @Override

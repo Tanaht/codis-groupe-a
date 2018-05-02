@@ -1,15 +1,12 @@
 package ila.fr.codisintervention.binders;
 
-import android.content.res.Resources;
 import android.os.Binder;
 
 import java.util.List;
 
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
-import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.models.model.InterventionModel;
-import ila.fr.codisintervention.models.model.Unit;
-import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.Photo;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.user.User;
 
@@ -86,5 +83,6 @@ public class ModelServiceBinder extends Binder {
          */
         User getUser();
 
+        List<Photo> getPhotos();
     }
 }

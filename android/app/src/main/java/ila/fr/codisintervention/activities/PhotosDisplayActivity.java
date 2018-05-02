@@ -2,6 +2,7 @@ package ila.fr.codisintervention.activities;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -18,9 +19,14 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.models.model.Photo;
+import ila.fr.codisintervention.services.ModelServiceAware;
 
 import static ila.fr.codisintervention.R.drawable.area;
 
@@ -28,7 +34,12 @@ import static ila.fr.codisintervention.R.drawable.area;
 /**
  * The type Photos display activity.
  */
-public class PhotosDisplayActivity extends AppCompatActivity {
+public class PhotosDisplayActivity extends AppCompatActivity implements ModelServiceAware {
+
+
+    private ServiceConnection modelServiceConnection;
+
+    private ModelServiceBinder.IMyServiceMethod modelService;
 
     private List<String> urlList = new ArrayList<>();
     private int indexImage = 0;
@@ -48,21 +59,20 @@ public class PhotosDisplayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        modelServiceConnection = bindModelService();
         setContentView(R.layout.activity_photos_display);
         setTitle(R.string.title_photos_display);
-
-        loadList();
-        addArrowsListeners();
-
-        imageDrone();
     }
 
     private void loadList() {
-        urlList.add("https://zonevideo.telequebec.tv/visuels_containers/1280x720/sam_le_pompier.jpg");
-        urlList.add("http://aws.vdkimg.com/tv_show/6/1/2/6/61265_backdrop_scale_1280xauto.jpg");
-        urlList.add("http://i.f1g.fr/media/ext/1900x1900/madame.lefigaro.fr/sites/default/files/img/2017/09/pourquoi-le-fantasme-du-pompier-est-aussi-intemporel-.jpg");
-        urlList.add("http://www.le-deguisement.fr/image-deguisement/2014/01/deguisement-pompier-sexy-femme.jpg");
-        urlList.add("https://www.aurorecinema.fr/evenement/03_sam-le-pompier-2018.jpg");
+        Integer currentIntervention = modelService.getCurrentIntervention().getId();
+        List<Photo> photos = modelService.getPhotos();
+        for(Photo photo : photos){
+            if(photo.getInterventionId() == currentIntervention){
+                urlList.add(photo.getUri());
+            }
+        }
+        Collections.sort(urlList);
     }
 
     private void addArrowsListeners() {
@@ -104,13 +114,28 @@ public class PhotosDisplayActivity extends AppCompatActivity {
     private void imageDrone() {
 
         //Toast.makeText(this, "pouet", Toast.LENGTH_SHORT).show();
-
-        url = urlList.get(indexImage);
-        EditText azerty = (EditText) findViewById(R.id.text);
-        azerty.setText(url);
-        new LoadImage().execute();
+        if(!urlList.isEmpty()) {
+            url = urlList.get(indexImage);
+            EditText azerty = (EditText) findViewById(R.id.text);
+            azerty.setEnabled(false);
+            azerty.setFocusable(false);
+            azerty.setText(url);
+            new LoadImage().execute();
+        }
     }
 
+    @Override
+    public void onModelServiceConnected() {
+        loadList();
+        addArrowsListeners();
+
+        imageDrone();
+    }
+
+    @Override
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+        this.modelService = modelService;
+    }
 
 
     private class LoadImage extends AsyncTask <Void,Void,Bitmap> {
@@ -146,6 +171,13 @@ public class PhotosDisplayActivity extends AppCompatActivity {
                 Toast.makeText(PhotosDisplayActivity.this,"Some error occurred!",Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindModelService(modelServiceConnection);
+
     }
 }
 

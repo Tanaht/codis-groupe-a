@@ -82,6 +82,7 @@ public class JsonForDroneCommunicationToolBox {
 			JSONObject datas = jsonObject.getJSONObject(DroneServerConstants.DATAS);
 			//The photo format is String in the message
 			photo.setDate(datas.getLong(DroneServerConstants.DATE));
+			photo.setPhoto(datas.getString(DroneServerConstants.PHOTO));
 			photo.setInterventionId(datas.getInt(DroneServerConstants.INTERVENTION_ID));
 			photo.setPointId(datas.getInt(DroneServerConstants.POINT_ID));
 			//Get location of the photo

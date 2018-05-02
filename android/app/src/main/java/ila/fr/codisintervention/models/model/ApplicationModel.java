@@ -41,6 +41,8 @@ public class ApplicationModel {
     private List<String> sinisterCodes;
     private List<String> vehicleTypes;
 
+    private List<Photo> photos;
+
     /**
      * Instantiates a new Application model.
      */
@@ -56,6 +58,7 @@ public class ApplicationModel {
         vehicleTypes = new ArrayList<>();
         interventions = new ArrayList<>();
         vehicleAvailables = new ArrayList<>();
+        photos = new ArrayList<>();
         currentIntervention = null;
 
         for (Code code : init.getCodes()){
@@ -69,6 +72,9 @@ public class ApplicationModel {
         }
         for (ila.fr.codisintervention.models.messages.Vehicle vehicle : init.getVehicles()){
             vehicleAvailables.add(new Vehicle(vehicle));
+        }
+        for(ila.fr.codisintervention.models.messages.Photo photo : init.getPhotos()){
+            photos.add(new Photo((photo)));
         }
 
         user = new User(init.getUser());

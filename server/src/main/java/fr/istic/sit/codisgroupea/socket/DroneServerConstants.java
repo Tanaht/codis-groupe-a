@@ -54,7 +54,7 @@ public class DroneServerConstants {
 	/**
 	 * File informations
 	 */
-	public static final String IMAGE_LOCATION = "../imagesDrone/";
+	public static final String IMAGE_LOCATION = "/images/";
 	public static final String IMAGE_NAME = "photo";
 	public static final String IMAGE_EXTENSION = "png";
 	

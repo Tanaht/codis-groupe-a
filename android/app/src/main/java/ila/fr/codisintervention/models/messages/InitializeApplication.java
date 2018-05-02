@@ -38,6 +38,9 @@ public class InitializeApplication implements Parcelable{
     @Expose
     private List<Vehicle> vehicles;
 
+    @Expose
+    private List<Photo> photos;
+
     /**
      * The list of All demande
      */
@@ -108,6 +111,15 @@ public class InitializeApplication implements Parcelable{
     }
 
     /**
+     * Gets photos.
+     *
+     * @return the photos
+     */
+    public List<Photo> getPhotos() {
+        return photos;
+    }
+
+    /**
      * Get intervention by id intervention.
      *
      * @param id the id
@@ -151,6 +163,7 @@ public class InitializeApplication implements Parcelable{
         vehicles = in.createTypedArrayList(Vehicle.CREATOR);
         demandes = in.createTypedArrayList(Request.CREATOR);
         interventions = in.createTypedArrayList(Intervention.CREATOR);
+        photos = in.createTypedArrayList(Photo.CREATOR);
     }
 
     /**
@@ -182,5 +195,6 @@ public class InitializeApplication implements Parcelable{
         dest.writeTypedList(this.vehicles);
         dest.writeTypedList(this.demandes);
         dest.writeTypedList(this.interventions);
+        dest.writeTypedList(this.photos);
     }
 }

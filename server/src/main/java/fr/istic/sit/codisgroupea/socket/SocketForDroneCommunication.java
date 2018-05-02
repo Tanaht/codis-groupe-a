@@ -8,6 +8,7 @@ import fr.istic.sit.codisgroupea.model.message.LocationMessage;
 import fr.istic.sit.codisgroupea.model.message.PhotoMessage;
 import fr.istic.sit.codisgroupea.repository.InterventionRepository;
 import fr.istic.sit.codisgroupea.repository.PhotoRepository;
+import fr.istic.sit.codisgroupea.repository.PositionRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -32,6 +33,7 @@ public class SocketForDroneCommunication {
     private SimpMessagingTemplate simpMessagingTemplate;
 	private InterventionRepository interventionRepository;
 	private PhotoRepository photoRepository;
+	private PositionRepository positionRepository;
 
 	private Socket socket;
 	private ServerSocket serverSocket;
@@ -44,10 +46,11 @@ public class SocketForDroneCommunication {
 	 *
 	 * @throws IOException
 	 */
-	public SocketForDroneCommunication(SimpMessagingTemplate simpMessagingTemplate, InterventionRepository interventionRepository, PhotoRepository photoRepository) throws IOException {
+	public SocketForDroneCommunication(SimpMessagingTemplate simpMessagingTemplate, InterventionRepository interventionRepository, PhotoRepository photoRepository, PositionRepository positionRepository) throws IOException {
 		this.simpMessagingTemplate = simpMessagingTemplate;
 		this.interventionRepository = interventionRepository;
 		this.photoRepository = photoRepository;
+		this.positionRepository = positionRepository;
 		Runnable startSocket = new Runnable() {
 			@Override
 			public void run() {
@@ -179,7 +182,9 @@ public class SocketForDroneCommunication {
 		Timestamp date = new Timestamp(photo.getDate());
 		Intervention intervention = interventionRepository.getOne(photo.getInterventionId());
 		int point = photo.getPointId();
-		photoRepository.save(new fr.istic.sit.codisgroupea.model.entity.Photo(uri, coordinates, date, intervention, point));
+		Position pos = new Position(coordinates.getLatitude(), coordinates.getLongitude());
+		positionRepository.save(pos);
+		photoRepository.save(new fr.istic.sit.codisgroupea.model.entity.Photo(uri, pos, date, intervention, point));
 	}
 
 	/**
@@ -188,7 +193,8 @@ public class SocketForDroneCommunication {
 	 */
 	public void sendDronePhoto(Photo photo) {
 		Gson gson = new Gson();
+		photo.setPhoto("http://:8080/"+photo.getPhoto());
 		String toJson = gson.toJson(photo, Photo.class);
-		simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_POSITION_PART1 + photo.getInterventionId() + RoutesConfig.SEND_DRONE_POSITION_PART2);
+		simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_PHOTO_PART1 + photo.getInterventionId() + RoutesConfig.SEND_DRONE_PHOTO_PART2, toJson);
 	}
 }

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.PhotoReception;
 import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
@@ -37,7 +38,6 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
 import ua.naiksoftware.stomp.client.StompMessage;
-import fr.istic.sit.codisgroupea.socket.PhotoReception;
 
 import static ila.fr.codisintervention.services.constants.ModelConstants.UPDATE_DRONE_POSITION;
 
@@ -139,7 +139,6 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      * Define the Intent action send in case of CLOSE Websocket
      */
     public static final String PROTOCOL_CLOSE = "PROTOCOL_CLOSE";
-
 
     /**
      * The constant DRONE_PATH_RECEIVED
@@ -338,28 +337,15 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         );
     }
 
-    /**
-     * Subscribe to photo receiving
-     * /topic/interventions/{id}/photo
-     */
-    @Override
-    public void getPhoto(int id){
-        this.client.topic("/topic/interventions/" + id + "/photo").subscribe(message -> {
-            Log.i(TAG, "[/topic/interventions/" + id + "/photo] Received message: " + message.getPayload());
-            deliverPhotoEventIntents(message);
-        });
-    }
-
     public void deliverPhotoEventIntents(StompMessage message){
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         PhotoReception photo = gson.fromJson(message.getPayload(), PhotoReception.class);
 
-        //TODO set intent name
-        Intent photoIntent = new Intent("PHOTO");
-        photoIntent.putExtra("photo", photo);
-
-        LocalBroadcastManager.getInstance(this).sendBroadcast(photoIntent);
+        Intent photoIntent  = new Intent(getApplicationContext(), ModelService.class);
+        photoIntent.setAction(DRONE_PHOTO);
+        photoIntent.putExtra(DRONE_PHOTO, photo);
+        getApplicationContext().startService(photoIntent);
 
     }
 
@@ -373,20 +359,19 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     * */
     @Override
     public void chooseIntervention(int id){
+        this.client.topic("/topic/interventions/" + id + "/photo").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/photo] Received message: " + message.getPayload());
+            deliverPhotoEventIntents(message);
+        });
+
         this.client.topic("/topic/interventions/" + id + "/symbols/event").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
             deliverSymbolsEventIntents(message);
         });
 
-
         this.client.topic("/topic/interventions/" + id + "/units/event").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
         });
-
-        this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
-                () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
-                error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
-        );
 
         this.client.topic("/topic/interventions/" + id + "/drone/ping").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/drone/ping] Received message: " + message.getPayload());
@@ -398,12 +383,17 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-            
+
             Intent dronePathReceived = new Intent(getApplicationContext(), ModelService.class);
             dronePathReceived.setAction(DRONE_PATH_RECEIVED);
             dronePathReceived.putExtra(DRONE_PATH_RECEIVED, gson.fromJson(message.getPayload(), PathDrone.class));
             getApplicationContext().startService(dronePathReceived);
         });
+
+        this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
+        );
 
     }
 

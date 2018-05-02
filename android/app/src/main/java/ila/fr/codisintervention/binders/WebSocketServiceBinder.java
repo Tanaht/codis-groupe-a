@@ -69,8 +69,6 @@ public class WebSocketServiceBinder extends Binder {
          */
         void createIntervention(InterventionModel intervention);
 
-        void getPhoto(int id);
-
         /**
          * Send to server a request to choose an intervention
          * @param id
