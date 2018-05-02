@@ -1,20 +1,13 @@
 package fr.istic.sit.codisgroupea.security;
 
-import fr.istic.sit.codisgroupea.model.entity.Role;
 import fr.istic.sit.codisgroupea.model.entity.User;
 import fr.istic.sit.codisgroupea.service.AuthenticationService;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -47,7 +40,7 @@ public class WebSocketAuthenticatorService {
         return new UsernamePasswordAuthenticationToken(
                 username,
                 null,
-                Collections.singleton(user.get().getRoles())
+                Collections.singleton(user.get().getRole())
         );
     }
 }

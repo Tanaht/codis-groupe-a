@@ -1,5 +1,7 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -8,6 +10,7 @@ import javax.validation.constraints.NotNull;
  * This class Manage to properties, the VehicleType and the IsVehicleStatus
  */
 @Entity
+@Data
 public class UnitVehicle {
 
     /** The id of the unit */
@@ -43,51 +46,6 @@ public class UnitVehicle {
     private VehicleStatus status;
 
     /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets unit.
-     *
-     * @return the unit
-     */
-    public Unit getUnit() {
-        return unit;
-    }
-
-    /**
-     * Sets unit.
-     *
-     * @param unit the unit
-     */
-    public void setUnit(Unit unit) {
-        this.unit = unit;
-    }
-
-    /**
-     * Gets assigned vehicle.
-     *
-     * @return the assigned vehicle
-     */
-    public Vehicle getAssignedVehicle() {
-        return assignedVehicle;
-    }
-
-    /**
      * Sets assigned vehicle.
      *
      * @param assignedVehicle the assigned vehicle
@@ -95,41 +53,5 @@ public class UnitVehicle {
     public void setAssignedVehicle(Vehicle assignedVehicle) {
         this.assignedVehicle = assignedVehicle;
         this.assignedVehicle.setUnitVehicle(this);
-    }
-
-    /**
-     * Gets type.
-     *
-     * @return the type
-     */
-    public VehicleType getType() {
-        return type;
-    }
-
-    /**
-     * Sets type.
-     *
-     * @param type the type
-     */
-    public void setType(VehicleType type) {
-        this.type = type;
-    }
-
-    /**
-     * Gets status.
-     *
-     * @return the status
-     */
-    public VehicleStatus getStatus() {
-        return status;
-    }
-
-    /**
-     * Sets status.
-     *
-     * @param status the status
-     */
-    public void setStatus(VehicleStatus status) {
-        this.status = status;
     }
 }
