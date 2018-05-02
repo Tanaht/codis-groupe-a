@@ -99,6 +99,18 @@ public class WebSocketServiceBinder extends Binder {
 
 
         void createPathDrone(int interventionId, PathDrone path);
+
+        /**
+         * Accept a vehicle request and send a notification to remote server
+         * @param request The request
+         */
+        void acceptVehicleRequest(ila.fr.codisintervention.models.model.Request request);
+
+        /**
+         * Deny a vehicle request and send a notification to remote server
+         * @param request The request
+         */
+        void denyVehicleRequest(ila.fr.codisintervention.models.model.Request request);
     }
 
 

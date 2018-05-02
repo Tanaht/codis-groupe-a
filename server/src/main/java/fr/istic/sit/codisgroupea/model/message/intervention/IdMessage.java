@@ -1,5 +1,8 @@
 package fr.istic.sit.codisgroupea.model.message.intervention;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * The Id message.
  */
@@ -7,6 +10,8 @@ public class IdMessage {
     /**
      * The Id.
      */
+    @NotEmpty
+    @NotNull
     public int id;
 
     /**

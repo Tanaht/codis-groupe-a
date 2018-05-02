@@ -49,6 +49,12 @@ public class Vehicle implements Parcelable {
         status = in.readString();
     }
 
+    public Vehicle(ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle vehicle) {
+        this.label = vehicle.getLabel();
+        this.status = vehicle.getStatus().name();
+        this.type = vehicle.getType();
+    }
+
     /**
      * Usefull to Parcelize an instance of this class  {@link Parcelable}
      * The constant CREATOR.

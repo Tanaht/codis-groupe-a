@@ -53,11 +53,10 @@ public class CodisMainMenu extends AppCompatActivity {
      *
      * Technically this method send an explicit intent to the activity in charge of the vehicle requests list display.
      *
-     * @throws UnsupportedOperationException feature not supported yet
      * @param v the view
      */
     public void showVehicleRequestsList(View v) {
-        Log.w(TAG, "Currently showVehicleRequestsList is not implemented");
-        throw new UnsupportedOperationException("For Now we cannot support this request");
+        Intent intent = new Intent( CodisMainMenu.this, CodisRequestListActivity.class);
+        startActivity(intent);
     }
 }

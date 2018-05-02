@@ -18,6 +18,22 @@
     <string name="title_user_menu">Menu Intervenant</string>
     <string name="title_codis_menu">Menu Codis</string>
     <string name="title_add_new_intervention">Ajouter une nouvelle intervention</string>
+    <string name="title_dialog_fragment">Modifier un moyen</string>
+    <string name="title_activity_map">Map</string>
+    <string name="title_means_table">Tableau des Moyens</string>
+
+    <!-- Headers for the Means Table -->
+    <string name="header_1">Label/Type</string>
+    <string name="header_2">Statut</string>
+    <string name="header_3">Heure demande</string>
+    <string name="header_4">Heure validation</string>
+    <string name="header_5">Heure engagement</string>
+    <string name="header_6">Heure libération</string>
+
+    <!-- Additional means types -->
+    <string name="mean_1">VSAV</string>
+    <string name="mean_2">FPT</string>
+    <string name="mean_3">VLCG</string>
 
     <!-- All strings related to ihm are here, no special convention -->
     <string name="label_vehicles_list">Liste des moyens :</string>
@@ -28,32 +44,47 @@
     <string name="label_vehicles_list_asked">Liste des moyens demandés</string>
     <string name="label_create_intervention">Créer intervention</string>
     <string name="label_validate">Valider</string>
+    <string name="label_deny">Refuser</string>
+    <string name="label_cancel">Arrêter</string>
     <string name="label_intervention_address">Adresse de l\'intervention :</string>
     <string name="hint_intervention_address">Veuillez entrer l\'adresse de l\'intervention</string>
     <string name="label_intervention_address_number">Numero de la voie :</string>
     <string name="label_intervention_address_postal_code">Code postale :</string>
     <string name="label_intervention_address_city">Ville :</string>
     <string name="label_intervention_sinister_code">Code sinistre :</string>
+    <string name="label_choose_vehicle">Veuillez choisir le véhicule pour accepter la demande</string>
+    <string name="intervention_created">L\'intervention a été créée.</string>
+    <string name="label_additional_mean">Demander Moyen Supplémentaire</string>
+    <string name="label_identifier">Identifiant</string>
+    <string name="label_details">Détails</string>
 
     <!-- Message must be prefixed by msg-->
     <string name="msg_authentication_success">Connexion effectué avec succès !</string>
     <string name="msg_no_intervention_in_progress">    - Il n\'y a pas d\'interventions en cours !</string>
+    <string name="msg_no_request_in_progress">    - Il n\'y a pas de demandes de moyen en cours !</string>
 
     <!-- Error Message must be prefixed by error -->
     <string name="error_connection_error">Une erreur à eu lieu durant la connexion avec le serveur !</string>
     <string name="error_connection_close">Pour certaines raisons, vous n\'êtes plus connecté au serveur</string>
     <string name="error_incomplete_credentials">Veuillez renseigner votre nom d\'utilisateur et votre mot de passe !</string>
-    <string name="error_invalid_credentials">Les informations de connexions sont incorrecte, veuillez réessayer !</string>
+    <string name="error_invalid_credentials">Les informations de connexions sont incorrectes, veuillez réessayer !</string>
     <string name="error_converting_address2geocode">Aucune coordonnée n\'a pu être récupéré pour cette adresse, veuillez choisir une autre adresse !</string>
     <string name="error_address_field_empty">Veuillez saisir l\'adresse de l\'intervention svp !</string>
+    <string name="error_symbol_not_found">Ce symbole n\'existe pas.</string>
 
-
-    <!-- TODO: Not renamed for instance (a feature about MapActivity is in progress)-->
-    <string name="title_activity_map">Map</string>
+    <!-- TODO: Not renamed for now -->
     <string name="action_tableau_moyen">Tableau Moyen</string>
     <string name="action_drone">Envoyer Drone</string>
     <string name="action_demande_moyen">Demande Moyen</string>
     <string name="action_deconnexion">Deconnexion</string>
+    <string name="title_requests_in_progress_list">Liste des demandes de moyen en cours</string>
     <string name="send_drone_points">Valider</string>
+    <string name="hint_identifier">Identifiant</string>
+    <string name="hint_details">Détails</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btn_go_to_means_table">Tableau des Moyens</string>
+    <string name="btn_go_to_map">Carte</string>
 
 </resources>

@@ -2,6 +2,9 @@ package ila.fr.codisintervention.entities;
 
 import android.widget.ImageView;
 
+import ila.fr.codisintervention.models.model.map_icon.Color;
+import ila.fr.codisintervention.models.model.map_icon.Shape;
+
 /**
  * FIXME: Refactor as soon as possible -> It can be a lot better
  * FIXME: Why do we not using an Enum for that ? THAT is the question
@@ -27,6 +30,8 @@ public class SymbolKind {
     private ImageView imageView;
     private String defaultIcon;
     private String selectedIcon;
+
+    private String color;
 
     /**
      * boolean used to know if this "tool" is selected to draw symbol on map
@@ -175,5 +180,23 @@ public class SymbolKind {
      */
     public String getSelectedIcon() {
         return selectedIcon;
+    }
+
+    /**
+     * Gets selected color.
+     *
+     * @return the selected color
+     */
+    public String getColor() {
+        return color;
+    }
+
+    /**
+     * Sets color of the current icon.
+     *
+     * @param color the image view
+     */
+    public void setColor(String color) {
+        this.color = color;
     }
 }

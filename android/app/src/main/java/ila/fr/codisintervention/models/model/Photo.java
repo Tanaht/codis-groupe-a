@@ -1,8 +1,8 @@
 package ila.fr.codisintervention.models.model;
 
 import java.sql.Timestamp;
-import java.util.Objects;
 
+import ila.fr.codisintervention.models.Location;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,14 +17,14 @@ public class Photo {
     private String uri;
 
     /** Instance of {@link Position} for the location of the photo */
-    private Position coordinates;
+    private Location location;
 
     /** Instance of {@link Timestamp} for the date of the photo */
     private Timestamp date;
 
     public Photo(ila.fr.codisintervention.models.messages.Photo photo){
         uri = photo.getUrl();
-        coordinates = new Position(photo.getLocation());
+        location = photo.getLocation();
         date = new Timestamp(photo.getDate());
     }
 

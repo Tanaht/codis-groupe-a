@@ -1,13 +1,8 @@
 package ila.fr.codisintervention.activities;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,28 +10,26 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import org.json.JSONObject;
+
 import java.util.List;
-import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
-import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
-import ila.fr.codisintervention.models.model.Position;
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
-import ila.fr.codisintervention.services.model.ModelService;
-import ila.fr.codisintervention.services.websocket.WebsocketService;
 import ila.fr.codisintervention.utils.AutocompleteAdapter;
+import ila.fr.codisintervention.utils.GeocodingToolBox;
+import ila.fr.codisintervention.utils.ServerCallback;
 import ila.fr.codisintervention.utils.VehiclesListAdapter;
 
 /**
@@ -58,7 +51,7 @@ public class NewInterventionActivity extends AppCompatActivity implements ModelS
 
     /**
      * Tuple of Lat and Lng coordinate that reflect the address from inputAddress.
-     * @see #getLocationFromAddress(String inputAddress)
+     * @see #getLocationFromAddressAndCreateIntervention(InterventionModel)
      */
     LatLng latlngAddress;
 
@@ -163,73 +156,48 @@ public class NewInterventionActivity extends AppCompatActivity implements ModelS
         if(inputAddress.equals("")){
             Toasty.error(getApplicationContext(), getString(R.string.error_address_field_empty), Toast.LENGTH_LONG).show();
         } else {
-
             InterventionModel intervention = new InterventionModel();
             intervention.setAddress(inputAddress);
             intervention.setSinisterCode(sinisterCode);
+            getLocationFromAddressAndCreateIntervention(intervention);
 
-            latlngAddress = getLocationFromAddress(intervention.getAddress());
-            Log.d(TAG, latlngAddress == null ? "LatLng is null" : "LatLng is not null");
-
-            if(latlngAddress != null) {
-                intervention.setPosition(new Position(latlngAddress.latitude, latlngAddress.longitude));
-                // Send Intervention Details to WSS
-                webSocketService.createIntervention(intervention);
-
-                // Intent to Intervention List Activity
-                Intent intent = new Intent( getApplicationContext(), CodisMainMenu.class);
-                startActivity(intent);
-            } else {
-                Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
-            }
         }
     }
 
     /**
      * TODO: Make this raise an exception instead of returning null when error.
      * Method used tor perform the geocoding from string address.
-     * @param inputtedAddress the address
+     * The intervention is created in the JSONRequest
      * @return a LatLng instance or null if failed
      */
-    private LatLng getLocationFromAddress(String inputtedAddress) {
-        if(!Geocoder.isPresent()) {
-            Log.w(TAG, "Geocoder Method not implemented");
-        }
-        Geocoder coder = new Geocoder(getApplicationContext(), Locale.getDefault());
+    private void getLocationFromAddressAndCreateIntervention(InterventionModel intervention) {
+        Log.d(TAG, "Address given : " + intervention.getAddress());
+        GeocodingToolBox gtb = new GeocodingToolBox(this);
 
-        List<Address> address = null;
-        LatLng resLatLng = null;
-        try {
+        gtb.sendRequestForAddress(intervention.getAddress(), new ServerCallback() {
+            @Override
+            public void onSuccess(JSONObject result) {
+                latlngAddress = gtb.getLocationFromGoogleApiResult(result);
+                if(latlngAddress != null) {
+                    intervention.setLocation(new Location(latlngAddress.latitude, latlngAddress.longitude));
+                    // Send Intervention Details to WSS
+                    webSocketService.createIntervention(intervention);
 
-            address = coder.getFromLocationName(inputtedAddress, 1);
-            if (address == null) {
-                Log.w(TAG, "Address is null for '" + inputtedAddress + "'");
-                return null;
-
+                    // Intent to Intervention List Activity
+                    Intent intent = new Intent( getApplicationContext(), CodisMainMenu.class);
+                    startActivity(intent);
+                    Toasty.info(getApplicationContext(),getString(R.string.intervention_created), Toast.LENGTH_LONG).show();
+                } else {
+                    Toasty.error(getApplicationContext(),getString(R.string.error_converting_address2geocode), Toast.LENGTH_LONG).show();
+                }
             }
 
-            if (address.isEmpty()) {
-                Log.w(TAG, "There is no address for '"+ inputtedAddress + "'");
-                return null;
+            @Override
+            public void onError() {
+                Toasty.error(getApplicationContext(), getString(R.string.error_converting_address2geocode),  Toast.LENGTH_LONG).show();
             }
-
-            Address location = address.get(0);
-            location.getLatitude();
-            location.getLongitude();
-
-            Log.d(TAG, "'" + inputtedAddress + "' converted to [" + location.getLatitude() + ", " + location.getLongitude() + "]");
-
-            resLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-        } catch (IOException ex) {
-            Log.e(TAG, ex.getMessage(), ex);
-        }
-
-        Log.d(TAG, "getLocationFromAddress retrieved: " + resLatLng);
-
-        return resLatLng;
+        });
     }
-
 
     @Override
     protected void onDestroy() {

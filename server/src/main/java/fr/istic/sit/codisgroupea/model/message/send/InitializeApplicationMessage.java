@@ -346,12 +346,12 @@ public class InitializeApplicationMessage {
          */
         public DemandMessage(Unit unit){
 
-            if (unit.getVehicle().getStatus() != VehicleStatus.REQUESTED){
+            if (unit.getUnitVehicle().getStatus() != VehicleStatus.REQUESTED){
                 throw new IllegalArgumentException("You created a DemandMessage but unit.vehicle status is not equal to requested");
             }
 
             this.id = unit.getId();
-            this.vehicle = new VehicleMessage(unit.getVehicle());
+            this.vehicle = new VehicleMessage(unit.getUnitVehicle());
         }
 
         public int getId() {

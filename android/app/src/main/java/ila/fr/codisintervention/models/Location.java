@@ -1,11 +1,9 @@
-package ila.fr.codisintervention.models.messages;
+package ila.fr.codisintervention.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
-
-import ila.fr.codisintervention.models.model.Position;
 
 /**
  * Represent a Location in terms of gps coordinate
@@ -34,11 +32,6 @@ public class Location implements Parcelable {
     public Location(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
-    }
-
-    public Location(Position position) {
-        lat = position.getLatitude();
-        lng = position.getLongitude();
     }
 
     /**
@@ -112,5 +105,15 @@ public class Location implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(lat);
         dest.writeDouble(lng);
+    }
+
+    public void load(Location loc){
+        lat = loc.getLat();
+        lng = loc.getLng();
+    }
+
+    @Override
+    public String toString() {
+        return "(" + lat + ", " + lng + ")";
     }
 }

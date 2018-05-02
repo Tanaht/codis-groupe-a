@@ -20,19 +20,21 @@ import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
-import ila.fr.codisintervention.models.messages.Location;
 import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.messages.Payload;
 import ila.fr.codisintervention.models.messages.Photo;
 import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
+import ila.fr.codisintervention.models.messages.SymbolsMessage;
 import ila.fr.codisintervention.models.messages.User;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
+import rx.Subscription;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompHeader;
 import ua.naiksoftware.stomp.client.StompClient;
@@ -155,6 +157,10 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     private IBinder binder;
     private String url;
 
+    /**
+     * The channel initialize-application representation
+     */
+    private Subscription subscription;
 
     /**
      * websocket service constructor
@@ -180,6 +186,40 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         binder = new WebSocketServiceBinder(this);
     }
 
+    /**
+     * Send a Ping to the remote server to notify the remote server of the correct connection of this device
+     * @param username
+     */
+    private void notifySubscriptionToRemoteServer(String username) {
+        client.send("/users/" + username + "/subscribed", "PING").subscribe(
+                () -> Log.d(TAG, "[/subscribed] Sent data!"),
+                error -> Log.e(TAG, "[/subscribed] Error Encountered", error)
+        );
+    }
+
+    /**
+     * Used to subscribe to correct channel to get aware of application initialization
+     * @param username the username of the user that attempt a connection
+     */
+    private void initializeApplication(String username) {
+        if(this.subscription != null && !this.subscription.isUnsubscribed())
+            this.subscription.unsubscribe();
+
+        this.subscription = client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
+            Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+            InitializeApplication initializeApplication = gson.fromJson(message.getPayload(), InitializeApplication.class);
+            this.performInitializationSubscription(initializeApplication);
+
+            Intent initializeAppIntent  = new Intent(getApplicationContext(), ModelService.class);
+            initializeAppIntent.setAction(CONNECT_TO_APPLICATION);
+            initializeAppIntent.putExtra(CONNECT_TO_APPLICATION, initializeApplication);
+            getApplicationContext().startService(initializeAppIntent);
+
+        });
+    }
 
     @Override
     public  void connect(String username, String password) {
@@ -192,51 +232,23 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 new StompHeader(USERNAME_HEADER_KEY, username),
                 new StompHeader(PASSWORD_HEADER_KEY, password));
 
-
         this.client.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
 
                 case OPENED:
                     Log.d(TAG, "STOMP CONNECTION OPENED");
-
-                    client.topic("/topic/users/" + username + "/initialize-application").subscribe(message -> {
-                        Log.i(TAG, "[/initialize-application] Received message: " + message.getPayload());
-
-                        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-                        InitializeApplication initializeApplication = gson.fromJson(message.getPayload(), InitializeApplication.class);
-
-                        Log.d(TAG, "JsonToObject of InitializeApplication, retrieved: " + initializeApplication.getInterventions().size() + " interventions");
-                        this.performInitializationSubscription(initializeApplication);
-
-
-                        Intent initializeAppIntent  = new Intent(getApplicationContext(), ModelService.class);
-                        initializeAppIntent.setAction(CONNECT_TO_APPLICATION);
-                        initializeAppIntent.putExtra(CONNECT_TO_APPLICATION, initializeApplication);
-                        getApplicationContext().startService(initializeAppIntent);
-
-                    });
-
-                    client.send("/users/" + username + "/subscribed", "PING").subscribe(
-                            () -> Log.d(TAG, "[/subscribed] Sent data!"),
-                            error -> Log.e(TAG, "[/subscribed] Error Encountered", error)
-                    );
+                    initializeApplication(username);
+                    notifySubscriptionToRemoteServer(username);
                     break;
 
                 case ERROR:
                     Log.d(TAG, "STOMP CONNECTION ERROR");
-
-                    // Notify Registered Activity from ERROR Connection
-                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_error), Toast.LENGTH_SHORT);
                     Intent errorIntent = new Intent(PROTOCOL_ERROR);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
 
                 case CLOSED:
                     Log.d(TAG, "STOMP CONNECTION CLOSED");
-                    // Notify Registered Activity from CLOSE Connection
-
-                    //Toasty.error(getApplicationContext(), getString(R.string.error_connection_close), Toast.LENGTH_SHORT);
                     Intent closeIntent  = new Intent(PROTOCOL_CLOSE);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(closeIntent);
                     break;
@@ -408,33 +420,33 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+
+            SymbolsMessage symbMsg = gson.fromJson(message.getPayload(), SymbolsMessage.class);
             //FIXME: Ugly but this must works. Need to test other way
-            symbols = new ArrayList<>(Arrays.asList(gson.fromJson(message.getPayload(), Symbol[].class)));
+            symbols = new ArrayList<>(symbMsg.getSymbols());
 
 
         } catch (JSONException e) {
             Log.e(TAG, e.getMessage(), e);
         }
 
-        Intent toBeBroadcoastedIntent = null;
+        Intent symbolActionIntent  = new Intent(getApplicationContext(), ModelService.class);
 
         if("CREATE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_CREATED);
-            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_CREATED, symbols);
+            symbolActionIntent.setAction(INTERVENTION_SYMBOL_CREATED);
+            symbolActionIntent.putExtra(INTERVENTION_SYMBOL_CREATED, symbols);
         }
 
         if("UPDATE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_UPDATED);
-            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_UPDATED, symbols);
+            symbolActionIntent.setAction(INTERVENTION_SYMBOL_UPDATED);
+            symbolActionIntent.putExtra(INTERVENTION_SYMBOL_UPDATED, symbols);
         }
 
         if("DELETE".equals(type)) {
-            toBeBroadcoastedIntent = new Intent(INTERVENTION_SYMBOL_DELETED);
-            toBeBroadcoastedIntent.putParcelableArrayListExtra(INTERVENTION_SYMBOL_DELETED, symbols);
+            symbolActionIntent.setAction(INTERVENTION_SYMBOL_DELETED);
+            symbolActionIntent.putExtra(INTERVENTION_SYMBOL_DELETED, symbols);
         }
-
-        LocalBroadcastManager.getInstance(this).sendBroadcast(toBeBroadcoastedIntent);
-
+        getApplicationContext().startService(symbolActionIntent);
     }
 
     /**
@@ -466,6 +478,11 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
     @Override
     public void createSymbols(int interventionId, List<ila.fr.codisintervention.models.model.map_icon.symbol.Symbol> symbols) {
+        List<Symbol> listSymbols = new ArrayList<>();
+        for (ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb : symbols){
+            listSymbols.add(new Symbol(symb));
+        }
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
             @Override
             public boolean shouldSkipField(FieldAttributes f) {
@@ -478,7 +495,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
             }
         }).create();
 
-        String json = gson.toJson(symbols);
+        String json = gson.toJson(listSymbols);
         Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/create] with message " + json);
         this.client.send("/app/interventions/" + interventionId + "/symbols/create", json).subscribe(
                 () -> Log.w(TAG, "[/app/interventions/" + interventionId + "/symbols/create] Sent data!"),
@@ -588,13 +605,13 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         this.client.topic("/topic/users/" + user.getUsername() + "/intervention-chosen").subscribe(message -> {
             Log.i(TAG, "[/users/" + user.getUsername() + "/intervention-chosen] Received message: " + message.getPayload());
 
-
-            Intent interventionChosen  = new Intent(getApplicationContext(), ModelService.class);
-
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
+
+            Intent interventionChosen  = new Intent(getApplicationContext(), ModelService.class);
             interventionChosen.setAction(INTERVENTION_CHOSEN);
-            interventionChosen.putExtra(INTERVENTION_CHOSEN, gson.fromJson(message.getPayload(), Intervention.class));
+            Intervention interv = gson.fromJson(message.getPayload(), Intervention.class);
+            interventionChosen.putExtra(INTERVENTION_CHOSEN, interv);
             getApplicationContext().startService(interventionChosen);
 
         });
@@ -603,6 +620,16 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         if(user.isCodisUser()) {
             this.client.topic("/topic/demandes/created").subscribe(message -> {
                 Log.i(TAG, "[/demandes/created] Received message: " + message.getPayload());
+
+                Intent requestCreated  = new Intent(getApplicationContext(), ModelService.class);
+
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                Request request = gson.fromJson(message.getPayload(), Request.class);
+                subscribeToRequest(request);
+
+                requestCreated.setAction(DEMANDE_CREATED);
+                requestCreated.putExtra(DEMANDE_CREATED, request);
+                getApplicationContext().startService(requestCreated);
             });
 
             performDemandeSubscriptionInitialization(initializeApplication.getDemandes());
@@ -616,15 +643,70 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      */
     private void performDemandeSubscriptionInitialization(List<Request> requests) {
         for(Request request : requests) {
-
-            this.client.topic("/topic/requests/" + request.getId() + "/accepted").subscribe(message -> {
-                Log.i(TAG, "[/topic/requests/" + request.getId() + "/accepted] Received message: " + message.getPayload());
-            });
-            this.client.topic("/topic/requests/" + request.getId() + "/denied").subscribe(message -> {
-                Log.i(TAG, "[/topic/requests/" + request.getId() + "/denied] Received message: " + message.getPayload());
-            });
+            subscribeToRequest(request);
         }
     }
 
+    private void subscribeToRequest(Request request) {
+        Log.d(TAG, "Perform subscription of 'Demandes' for idUnit equal to: " + request.getId());
+        this.client.topic("/topic/demandes/" + request.getId() + "/accepted").subscribe(message -> {
+            Log.i(TAG, "[/topic/demandes/" + request.getId() + "/accepted] Received message: " + message.getPayload());
+            notifyRequestAccepted(request);
+        });
+        this.client.topic("/topic/demandes/" + request.getId() + "/denied").subscribe(message -> {
+            Log.i(TAG, "[/topic/demandes/" + request.getId() + "/denied] Received message: " + message.getPayload());
+            notifyRequestDenied(request);
+        });
+    }
 
+    /**
+     * notify that the request is accepted
+     * @param request the request
+     */
+    private void notifyRequestAccepted(Request request) {
+        Intent acceptedRequest  = new Intent(getApplicationContext(), ModelService.class);
+        acceptedRequest.setAction(DEMANDE_ACCEPTED);
+        acceptedRequest.putExtra(DEMANDE_ACCEPTED, request);
+        getApplicationContext().startService(acceptedRequest);
+    }
+
+    /**
+     * notify that the request is denied
+     * @param request the request
+     */
+    private void notifyRequestDenied(Request request) {
+        Intent acceptedRequest  = new Intent(getApplicationContext(), ModelService.class);
+        acceptedRequest.setAction(DEMANDE_DENIED);
+        acceptedRequest.putExtra(DEMANDE_DENIED, request);
+        getApplicationContext().startService(acceptedRequest);
+    }
+
+    @Override
+    public void acceptVehicleRequest(ila.fr.codisintervention.models.model.Request request){
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return Arrays.asList("id", "type", "status").contains(f.getName());
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        }).create();
+        String json = gson.toJson(new Request(request));
+
+        this.client.send("/app/demandes/" + request.getId() + "/accept", json).subscribe(
+                () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/accept] Sent data!"),
+                error -> Log.e(TAG, "[/app/demandes/" + request.getId() + "/accept] Error Encountered", error)
+        );
+    }
+
+    @Override
+    public void denyVehicleRequest(ila.fr.codisintervention.models.model.Request request){
+        this.client.send("/app/demandes/" + request.getId() + "/deny", "PING").subscribe(
+                () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/deny] Sent data!"),
+                error -> Log.e(TAG, "[/app/demandes/" + request.getId() + "/deny] Error Encountered", error)
+        );
+    }
 }

@@ -22,4 +22,9 @@ public class Payload {
         details = payload.getDetails();
     }
 
+    public Payload(ila.fr.codisintervention.models.messages.Payload payload){
+        identifier = payload.getIdentifier();
+        details =  payload.getDetails();
+    }
+
 }

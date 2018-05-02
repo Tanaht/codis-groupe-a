@@ -111,7 +111,7 @@ public class Vehicle {
     /**
      * @return the unit vehicle if present
      */
-    @OneToOne
+    @OneToOne(mappedBy = "assignedVehicle")
     public UnitVehicle getUnitVehicle() {
         return unitVehicle;
     }

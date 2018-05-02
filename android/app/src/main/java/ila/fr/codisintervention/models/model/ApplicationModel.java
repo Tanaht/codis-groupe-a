@@ -6,12 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.exception.RequestNotFoundException;
+import ila.fr.codisintervention.exception.VehicleNotFoundException;
 import ila.fr.codisintervention.models.messages.Code;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.Type;
 import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.VehicleStatus;
 import ila.fr.codisintervention.models.model.user.User;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +32,7 @@ public class ApplicationModel {
 
     private static final String TAG = "ApplicationModel";
 
-    private List<Vehicle> vehicleAvailables;
+    private List<Vehicle> vehicles;
 
     private boolean droneAvailable = true;
 
@@ -40,6 +44,8 @@ public class ApplicationModel {
 
     private List<String> sinisterCodes;
     private List<String> vehicleTypes;
+
+    private List<Request> requests;
 
     /**
      * Instantiates a new Application model.
@@ -55,7 +61,8 @@ public class ApplicationModel {
         sinisterCodes = new ArrayList<>();
         vehicleTypes = new ArrayList<>();
         interventions = new ArrayList<>();
-        vehicleAvailables = new ArrayList<>();
+        vehicles = new ArrayList<>();
+        requests = new ArrayList<>();
         currentIntervention = null;
 
         for (Code code : init.getCodes()){
@@ -68,7 +75,10 @@ public class ApplicationModel {
             interventions.add(new InterventionModel(interv));
         }
         for (ila.fr.codisintervention.models.messages.Vehicle vehicle : init.getVehicles()){
-            vehicleAvailables.add(new Vehicle(vehicle));
+            vehicles.add(new Vehicle(vehicle));
+        }
+        for(ila.fr.codisintervention.models.messages.Request req: init.getDemandes()){
+            requests.add(new Request(req));
         }
 
         user = new User(init.getUser());
@@ -120,7 +130,42 @@ public class ApplicationModel {
      * @param intervention the intervention
      */
     public void actualiseInterventionChoosen(Intervention intervention){
-        currentIntervention = new InterventionModel(intervention);
+        InterventionModel intervInList = null;
+        for (InterventionModel interv : interventions){
+            if (interv.getId().equals(intervention.getId())){
+                intervInList = interv;
+            }
+        }
+        if (intervInList != null){
+            currentIntervention = intervInList;
+
+            Log.d(TAG, "Set Current intervention to " + intervention.getId());
+
+            List<Photo> photos = new ArrayList<>();
+            for (ila.fr.codisintervention.models.messages.Photo photo : intervention.getPhotos()){
+                photos.add(new Photo(photo));
+            }
+            currentIntervention.setPhotos(photos);
+
+            List<Symbol> symbs  = new ArrayList<>();
+            for (ila.fr.codisintervention.models.messages.Symbol symb : intervention.getSymbols()){
+                symbs.add(new Symbol(symb));
+            }
+            currentIntervention.setSymbols(symbs);
+
+            List<Unit> units = new ArrayList<>();
+            for (ila.fr.codisintervention.models.messages.Unit uni : intervention.getUnits()){
+                units.add(new Unit(uni));
+            }
+            currentIntervention.setUnits(units);
+
+            Log.d(TAG, "Set Location on current intervention to " + intervention.getLocation());
+            currentIntervention.setLocation(intervInList.getLocation());
+            currentIntervention.setSinisterCode(intervInList.getSinisterCode());
+            currentIntervention.setAddress(intervInList.getAddress());
+            currentIntervention.setDate(intervInList.getDate());
+            currentIntervention.setOpened(intervInList.isOpened());
+        }
     }
 
     /**
@@ -155,4 +200,60 @@ public class ApplicationModel {
         throw new InterventionNotFoundException(id);
     }
 
+
+    public Request getRequestById(int id) throws RequestNotFoundException {
+        for(Request request: requests){
+            if(request.getId().equals(id)){
+                return request;
+            }
+        }
+        throw new RequestNotFoundException(id);
+    }
+
+    /**
+     * @return The list of available vehicles
+     */
+    public List<Vehicle> getAvailableVehicles() {
+
+        List<Vehicle> availableVehicles = new ArrayList<>();
+
+        for(Vehicle vehicle : getVehicles())
+            if(VehicleStatus.AVAILABLE.equals(vehicle.getStatus()))
+                availableVehicles.add(vehicle);
+
+
+        return availableVehicles;
+    }
+
+    /**
+     * Return vehicles according to a type
+     * @param type the type to look for
+     * @return a list of vehicle instance
+     */
+    public List<Vehicle> getAvailableVehiclesByType(String type) {
+
+        List<Vehicle> availableVehicleFilteredByTypes = new ArrayList<>();
+
+        for(Vehicle vehicle : getVehicles())
+            if(VehicleStatus.AVAILABLE.equals(vehicle.getStatus()) && type.equals(vehicle.getType()))
+                availableVehicleFilteredByTypes.add(vehicle);
+
+
+        return availableVehicleFilteredByTypes;
+    }
+
+
+    /**
+     * Return a vehicle given it's label
+     * @param label the labe
+     * @return
+     * @throws ila.fr.codisintervention.exception.VehicleNotFoundException if no vehicle can be found
+     */
+    public Vehicle getVehicleByLabel(String label) throws VehicleNotFoundException {
+        for(Vehicle vehicle : getVehicles())
+            if(label.equals(vehicle.getLabel()))
+                return vehicle;
+
+        throw new VehicleNotFoundException("Unable to find a vehicle with the following label: '" + label + "'");
+    }
 }

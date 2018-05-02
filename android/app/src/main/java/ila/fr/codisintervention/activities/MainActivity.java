@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        usernameEditText = (EditText) this.findViewById(R.id.usernameEditText);
-        passwordEditText = (EditText) this.findViewById(R.id.passwordEditText);
+        usernameEditText = this.findViewById(R.id.usernameEditText);
+        passwordEditText = this.findViewById(R.id.passwordEditText);
 
         //TODO: Ugly, but less with lambda, see the wiki about coding convention: Used android:onClick in related xml layout file to avoid subscribing listener in the code.
         this.findViewById(R.id.submitButton).setOnClickListener(view -> attemptConnection());

@@ -10,17 +10,21 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
+import ila.fr.codisintervention.exception.RequestNotFoundException;
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
+import ila.fr.codisintervention.exception.VehicleNotFoundException;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.ApplicationModel;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
@@ -109,6 +113,9 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 break;
             case WebsocketService.INTERVENTION_CHOSEN:
                 model.actualiseInterventionChoosen(intent.getParcelableExtra(WebsocketService.INTERVENTION_CHOSEN));
+
+                deliverIntent(new Intent(ModelConstants.INTERVENTION_CHOSEN));
+
                 break;
             case WebsocketService.DISCONNECT_TO_APPLICATION:
                 model = new ApplicationModel();
@@ -129,43 +136,54 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(id, ModelConstants.ACTION_DELETE_INTERVENTION);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_CREATED:
-                Symbol symbolCreated = intent.getParcelableExtra(WebsocketService.INTERVENTION_SYMBOL_CREATED);
-                model.getCurrentIntervention().getSymbols().add(symbolCreated);
-                sendToEveryone(symbolCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL);
+                ArrayList<ila.fr.codisintervention.models.messages.Symbol> symbList = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_SYMBOL_CREATED);
+
+                for (ila.fr.codisintervention.models.messages.Symbol symb : symbList){
+                    Symbol symbModel = new Symbol(symb);
+                    model.getCurrentIntervention().createSymbol(symbModel);
+                }
+                //TODO send list id and not a=only first
+                sendToEveryone(symbList.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_UPDATED:
-                Symbol symbolUpdated = intent.getParcelableExtra
-                        (WebsocketService.INTERVENTION_SYMBOL_UPDATED);
+                ArrayList<ila.fr.codisintervention.models.messages.Symbol> symbListUpdate = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_SYMBOL_UPDATED);
+
                 try {
-                    model.getCurrentIntervention()
-                            .updateSymbol(symbolUpdated);
+                    for (ila.fr.codisintervention.models.messages.Symbol symb : symbListUpdate){
+                        Symbol symbModel = new Symbol(symb);
+                        model.getCurrentIntervention()
+                                .updateSymbol(symbModel);
+                    }
                 } catch (SymbolNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to update symbol who doesn't exist");
                     e.printStackTrace();
                 }
-                sendToEveryone(symbolUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL);
+                sendToEveryone(symbListUpdate.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_SYMBOL_DELETED:
-                int idSymbol = intent.getIntExtra(WebsocketService.INTERVENTION_SYMBOL_DELETED, -1);
+                ArrayList<ila.fr.codisintervention.models.messages.Symbol> symbolsListDelete = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_SYMBOL_DELETED);
                 try {
-                    model.getCurrentIntervention().deleteSymbolById(idSymbol);
+
+                    for (ila.fr.codisintervention.models.messages.Symbol symb : symbolsListDelete){
+                        model.getCurrentIntervention().deleteSymbolById(symb.getId());
+                    }
                 } catch (SymbolNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to remove a symbol who doesn't exist");
                     e.printStackTrace();
                 }
-                sendToEveryone(idSymbol, ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
+                sendToEveryone(symbolsListDelete.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_UNIT_CREATED:
                 Unit unitCreated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_CREATED);
-                model.getCurrentIntervention().getUnits().add(unitCreated);
+                model.getCurrentIntervention().createUnit(unitCreated);
                 sendToEveryone(unitCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT);
                 break;
             case WebsocketService.INTERVENTION_UNIT_UPDATED:
                 Unit unitUpdated = intent.getParcelableExtra
                         (WebsocketService.INTERVENTION_UNIT_UPDATED);
                 try {
-                    model.getCurrentIntervention().changeUnit(unitUpdated);
+                    model.getCurrentIntervention().updateUnit(unitUpdated);
                 } catch (UnitNotFoundException e) {
                     Log.e(TAG, "updateTheModel: try to update a unit who doesn't exist ");
                     e.printStackTrace();
@@ -173,10 +191,20 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(unitUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT);
                 break;
             case WebsocketService.DEMANDE_ACCEPTED:
+                Request request = new Request(intent.getParcelableExtra(WebsocketService.DEMANDE_ACCEPTED));
+                model.getRequests().remove(request);
+                sendToEveryone(request.getId(), ModelConstants.VALIDATE_VEHICLE_REQUEST);
                 break;
             case WebsocketService.DEMANDE_DENIED:
+                Request req = new Request(intent.getParcelableExtra(WebsocketService.DEMANDE_DENIED));
+                model.getRequests().remove(req);
+                sendToEveryone(req.getId(), ModelConstants.REJECT_VEHICLE_REQUEST);
                 break;
             case WebsocketService.DEMANDE_CREATED:
+                ila.fr.codisintervention.models.messages.Request requset =
+                        intent.getParcelableExtra(WebsocketService.DEMANDE_CREATED);
+                model.getRequests().add(new Request(requset));
+                sendToEveryone(requset.getId(), ModelConstants.ADD_VEHICLE_REQUEST);
                 break;
             case WebsocketService.DRONE_PING:
                 break;
@@ -215,7 +243,7 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     }
 
     /**
-     * FIXME: Every intent doesn't have the same extra signature, si it has to be removed -> it would be exported equally when we will refactor this class
+     * FIXME: Every intent doesn't have the same extra signature, if it has to be removed -> it would be exported equally when we will refactor this class
      * Workaround to broadcoast an intent to everyone,
      * @param id the identifier to send in extra of the intent
      * @param intentAction the intent action name
@@ -240,7 +268,6 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
         return model.getInterventionById(id);
     }
 
-
     @Override
     public InterventionModel getCurrentIntervention() {
         return model.getCurrentIntervention();
@@ -258,7 +285,30 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
     @Override
     public List<Vehicle> getAvailableVehicle() {
-        return model.getVehicleAvailables();
+        return model.getAvailableVehicles();
+    }
+
+    @Override
+    public List<Vehicle> getVehicles() { return model.getVehicles(); }
+
+    @Override
+    public List<Vehicle> getAvailableVehiclesByType(String type) {
+        return model.getAvailableVehiclesByType(type);
+    }
+
+    @Override
+    public Vehicle getVehicleByLabel(String label) throws VehicleNotFoundException{
+        return model.getVehicleByLabel(label);
+    }
+
+    @Override
+    public List<Request> getRequests() {
+        return model.getRequests();
+    }
+
+    @Override
+    public Request getRequestById(int id) throws RequestNotFoundException {
+        return model.getRequestById(id);
     }
 
     @Override

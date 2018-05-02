@@ -1,15 +1,14 @@
 package ila.fr.codisintervention.binders;
 
-import android.content.res.Resources;
 import android.os.Binder;
 
 import java.util.List;
 
 import ila.fr.codisintervention.exception.InterventionNotFoundException;
-import ila.fr.codisintervention.exception.UnitNotFoundException;
+import ila.fr.codisintervention.exception.RequestNotFoundException;
+import ila.fr.codisintervention.exception.VehicleNotFoundException;
 import ila.fr.codisintervention.models.model.InterventionModel;
-import ila.fr.codisintervention.models.model.Unit;
-import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
+import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.user.User;
 
@@ -79,6 +78,40 @@ public class ModelServiceBinder extends Binder {
          * @return the list of vehicles available.
          */
         List<Vehicle> getAvailableVehicle();
+
+        /**
+         *
+         * @return the list of vehicles
+         */
+        List<Vehicle> getVehicles();
+
+        /**
+         * Return vehicles according to a type
+         * @param type the type to look for
+         * @return a list of vehicle instance
+         */
+        List<Vehicle> getAvailableVehiclesByType(String type);
+
+        /**
+         * Return a vehicle given it's label
+         * @param label the labe
+         * @return
+         *
+         */
+        Vehicle getVehicleByLabel(String label) throws VehicleNotFoundException;
+
+        /**
+         *
+         * @return the list of vehicle requests
+         */
+        List<Request> getRequests();
+
+        /**
+         * @param id the id of the request
+         * @return the request
+         * @throws RequestNotFoundException
+         */
+        Request getRequestById(int id) throws RequestNotFoundException;
 
         /**
          *

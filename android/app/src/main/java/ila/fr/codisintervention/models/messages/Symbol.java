@@ -5,10 +5,17 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 
+import ila.fr.codisintervention.models.Location;
+import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Java Object representation of a Symbol in term of JSON message send to and from the server.
  * Created by tanaky on 28/03/18.
  */
+@Getter
+@Setter
 public class Symbol implements Parcelable {
 
     /**
@@ -47,119 +54,21 @@ public class Symbol implements Parcelable {
     public Symbol() {
     }
 
-    /**
-     * Gets id.
-     *
-     * @return the id
-     */
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * Sets id.
-     *
-     * @param id the id
-     */
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets shape.
-     *
-     * @return the shape
-     */
-    public String getShape() {
-        return shape;
-    }
-
-    /**
-     * Sets shape.
-     *
-     * @param shape the shape
-     */
-    public void setShape(String shape) {
-        this.shape = shape;
-    }
-
-    /**
-     * Gets color.
-     *
-     * @return the color
-     */
-    public String getColor() {
-        return color;
-    }
-
-    /**
-     * Sets color.
-     *
-     * @param color the color
-     */
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    /**
-     * Gets location.
-     *
-     * @return the location
-     */
-    public Location getLocation() {
-        return location;
-    }
-
-    /**
-     * Sets location.
-     *
-     * @param location the location
-     */
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    /**
-     * Gets payload.
-     *
-     * @return the payload
-     */
-    public Payload getPayload() {
-        return payload;
-    }
-
-    /**
-     * Sets payload.
-     *
-     * @param payload the payload
-     */
-    public void setPayload(Payload payload) {
-        this.payload = payload;
-    }
-
-    /**
-     * Instantiates a new Symbol from a Parcel (used for Intent based communication).
-     *
-     * @param in the in
-     */
-    protected Symbol(Parcel in) {
-        if (in.readByte() == 0) {
-            id = null;
-        } else {
-            id = in.readInt();
-        }
-        shape = in.readString();
-        color = in.readString();
-        location = in.readParcelable(Location.class.getClassLoader());
-        payload = in.readParcelable(Payload.class.getClassLoader());
+    public Symbol(SymbolUnit symbolUnit) {
+        shape = symbolUnit.getShape().name();
+        color = symbolUnit.getColor().name();
+        location = symbolUnit.getLocation();
+        payload = new Payload(symbolUnit.getPayload());
     }
 
     public Symbol(ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb){
         id = symb.getId();
         shape = symb.getShape().name();
         color = symb.getColor().name();
-        location = new Location(symb.getLocation());
-        payload = new Payload(symb.getPayload());
+        location = symb.getLocation();
+        if (payload != null){
+            payload = new Payload(symb.getPayload());
+        }
     }
 
     /**
@@ -182,11 +91,24 @@ public class Symbol implements Parcelable {
         return 0;
     }
 
+    /**
+     * Instantiates a new Symbol from a Parcel (used for Intent based communication).
+     *
+     * @param in the in
+     */
+    protected Symbol(Parcel in) {
+        shape = in.readString();
+        color = in.readString();
+        id = (Integer) in.readValue(Integer.class.getClassLoader());
+        location = in.readParcelable(Location.class.getClassLoader());
+        payload = in.readParcelable(Payload.class.getClassLoader());
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(shape);
         dest.writeString(color);
+        dest.writeValue(id);
         dest.writeParcelable(location, flags);
         dest.writeParcelable(payload, flags);
     }

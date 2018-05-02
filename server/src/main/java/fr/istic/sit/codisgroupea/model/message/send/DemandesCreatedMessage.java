@@ -60,7 +60,7 @@ public class DemandesCreatedMessage {
          * @param unit The unit concerned
          */
         public VehicleDemandesCreatedMessage(Unit unit){
-            type = unit.getVehicle().getType().getName();
+            type = unit.getUnitVehicle().getType().getName();
             status = unit.getUnitVehicle().getStatus().toString();
         }
 
