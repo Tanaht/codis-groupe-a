@@ -35,7 +35,7 @@ public class PathDrone implements Parcelable {
      * List of the gps coordinates representing the path.
      */
     @Expose
-    private List<Location> path;
+    private List<Location> points;
 
     /**
      * Instantiates a new Path drone.
@@ -44,7 +44,7 @@ public class PathDrone implements Parcelable {
      */
     public PathDrone(String type, List<Location> path) {
         this.type = type;
-        this.path = path;
+        this.points = path;
         this.altitude = 30;
     }
 
@@ -56,7 +56,7 @@ public class PathDrone implements Parcelable {
     protected PathDrone(Parcel in) {
         type = in.readString();
         altitude = in.readDouble();
-        path = in.createTypedArrayList(Location.CREATOR);
+        points = in.createTypedArrayList(Location.CREATOR);
     }
 
 
@@ -79,6 +79,6 @@ public class PathDrone implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(type);
         dest.writeDouble(altitude);
-        dest.writeTypedList(this.path);
+        dest.writeTypedList(this.points);
     }
 }
