@@ -713,11 +713,29 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
     @Override
     public void requestUnit(int interventionId, Unit unit) {
-        this.client.send("/app/interventions/" + interventionId + "/units/create");
+        ila.fr.codisintervention.models.messages.Unit unitMessage = new ila.fr.codisintervention.models.messages.Unit(unit);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        String json = gson.toJson(unitMessage, ila.fr.codisintervention.models.messages.Unit.class);
+
+
+        this.client.send("/app/interventions/" + interventionId + "/units/create", json).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/units/create] Sent " + json),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/units/create] Error Encountered", error)
+        );
     }
 
     @Override
     public void updateUnit(int interventionId, Unit unit) {
+        ila.fr.codisintervention.models.messages.Unit unitMessage = new ila.fr.codisintervention.models.messages.Unit(unit);
 
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        String json = gson.toJson(unitMessage, ila.fr.codisintervention.models.messages.Unit.class);
+
+        this.client.send("/app/interventions/" + interventionId + "/units/update", json).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/units/update] Sent " + json),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/units/update] Error Encountered", error)
+        );
     }
 }
