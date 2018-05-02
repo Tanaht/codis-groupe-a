@@ -119,11 +119,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
          */
 
         final Button validate = findViewById(R.id.send_drone_points);
-        validate.setOnClickListener(v ->
-        {
-            dronePointsList = mapFragment.getDronePath();
-            this.webSocketService.createPathDrone(modelService.getCurrentIntervention().getId(), new PathDrone ("SEGMENT", dronePointsList));
-
+        validate.setOnClickListener(v -> {
+            this.webSocketService.sendMissionToDrone(modelService.getCurrentIntervention().getId());
         });
 
     }

@@ -383,6 +383,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
 
+
     /**
      * Class triggered when receiving events of type "/topic/interventions/{id}/symbols/event"
      * It send the correct intent.
@@ -539,6 +540,14 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/drone/path] Error Encountered", error)
         );
 
+    }
+
+    @Override
+    public void sendMissionToDrone(int idIntervention){
+        this.client.send("/app/interventions/"+idIntervention+"/drone/send","PING").subscribe(
+                () -> Log.d(TAG, "[/app/interventions/"+idIntervention+"/drone/send] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/"+idIntervention+"/drone/send] Error Encountered", error)
+        );
     }
 
     /**

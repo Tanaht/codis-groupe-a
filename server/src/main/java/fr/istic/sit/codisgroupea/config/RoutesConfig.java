@@ -49,4 +49,6 @@ public class RoutesConfig {
     public final static String RECEIVE_DRONE_MISSION = "/app/interventions/{id}/drone/path";
     public final static String RECEIVE_DRONE_MISSION_PART1 = "/topic/interventions/";
     public final static String RECEIVE_DRONE_MISSION_PART2 = "/drone/path";
+
+    public final static String RECEIVE_ORDER_MISSION_DRONE = "/app/interventions/{id}/drone/send";
 }
