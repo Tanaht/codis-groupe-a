@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Representation of an intervention.
@@ -36,6 +37,12 @@ public class Intervention {
     @ManyToOne
     private SinisterCode sinisterCode;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<SymbolSitac> symbols;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Unit> units;
+
     private boolean opened;
 
     /**
@@ -45,12 +52,23 @@ public class Intervention {
      * @param position     the location of the intervention
      * @param address      the address of the intervention
      * @param sinisterCode the sinister code
+     * @param symbols      the symbols
+     * @param units        the units
      * @param opened       is the intervention opened
      */
-    public Intervention(long date, Position position, String address, SinisterCode sinisterCode, boolean opened) {
+    public Intervention(long date,
+                        Position position,
+                        String address,
+                        SinisterCode sinisterCode,
+                        List<SymbolSitac> symbols,
+                        List<Unit> units,
+                        boolean opened) {
         this.date = date;
         this.position = position;
         this.address = address;
         this.sinisterCode = sinisterCode;
+        this.symbols = symbols;
+        this.units = units;
+        this.opened = opened;
     }
 }
