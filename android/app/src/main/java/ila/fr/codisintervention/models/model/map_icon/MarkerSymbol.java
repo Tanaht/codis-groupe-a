@@ -78,9 +78,11 @@ public class MarkerSymbol implements I_MarkerElement {
 
     @Override
     public void createObjectOnMap() {
-        int id = ((MapActivity)activity).getModelService().getCurrentIntervention().getId();
-        List<Symbol> maListe = new ArrayList<Symbol>();
-        maListe.add(getData());
-        ((MapActivity) activity).getWebSocketService().createSymbols(id, maListe);
+        if (((MapActivity)activity).getModelService().getCurrentIntervention() != null) {
+            int id = ((MapActivity) activity).getModelService().getCurrentIntervention().getId();
+            List<Symbol> maListe = new ArrayList<Symbol>();
+            maListe.add(getData());
+            ((MapActivity) activity).getWebSocketService().createSymbols(id, maListe);
+        }
     }
 }

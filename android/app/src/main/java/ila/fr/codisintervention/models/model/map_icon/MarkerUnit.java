@@ -77,7 +77,9 @@ public class MarkerUnit implements I_MarkerElement{
     @Override
     public void createObjectOnMap() {
         int id = ((MapActivity)activity).getModelService().getCurrentIntervention().getId();
-        //((MapActivity) activity).getWebSocketService().requestUnit(id, getData());
-        //TODO create this method on websoketService
+        if(((MapActivity)activity).getModelService().getCurrentIntervention()!=null) {
+            //((MapActivity) activity).getWebSocketService().requestUnit(id, getData());
+            //TODO create this method on websoketService
+        }
     }
 }

@@ -262,9 +262,13 @@ public class SymbolSocketController {
 
             if(dataPayload != null) {
                 val payload = symbolSitac.getPayload();
+                payload.setId(Integer.valueOf(dataPayload.getIdentifier()));
                 payload.setIdentifier(dataPayload.getIdentifier());
                 payload.setDetails(dataPayload.getDetails());
+            }else{
+                symbolSitac.setPayload(new Payload());
             }
+
 
             //Create the return message
             val newSymbolSitac = symbolSitacRepository.save(symbolSitac);
