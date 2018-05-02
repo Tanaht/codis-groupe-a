@@ -1,5 +1,6 @@
 package ila.fr.codisintervention.activities;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -18,17 +19,21 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
+import ila.fr.codisintervention.exception.VehicleNotFoundException;
 import ila.fr.codisintervention.fragments.MapsFragment;
 import ila.fr.codisintervention.fragments.MeansTableFragment;
 import ila.fr.codisintervention.fragments.SymbolsListFragment;
@@ -39,6 +44,7 @@ import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.Unit;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
 import ila.fr.codisintervention.services.websocket.WebsocketService;
@@ -73,8 +79,9 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
     private ModelServiceBinder.IMyServiceMethod modelService;
 
-
     private WebSocketServiceBinder.IMyServiceMethod webSocketService;
+
+    private Vehicle chosenCRMVehicle;
 
 
     /**
@@ -109,16 +116,24 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
 
 
 
-        /*
+        /**
          * Validate button in order to retrieve drone points created on the Map
          */
-
         final Button validate = findViewById(R.id.send_drone_points);
         validate.setOnClickListener(v ->
         {
             dronePointsList = mapFragment.send_dronePoints();
             this.webSocketService.createPathDrone(modelService.getCurrentIntervention().getId(), new PathDrone ("SEGMENT", dronePointsList));
 
+        });
+
+        /**
+         * show pop-up with CRM vehicles list
+         */
+        final Button crmList = findViewById(R.id.crm_button);
+        crmList.setOnClickListener(v ->
+        {
+            showCrmListPopup();
         });
 
     }
@@ -352,6 +367,47 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
     public void showMeansTable(View v) {
         Intent intent = new Intent( MapActivity.this, MeansTableActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * show pop-up with CRM vehicles list
+     */
+    private void showCrmListPopup() {
+        //final CharSequence[] crmVehicleLabels = getAvailableCRMVehicleLabels();
+        final CharSequence[] crmVehicleLabels = {"VLCG1", "FPT2", "FPT3"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapActivity.this);
+        builder.setTitle(R.string.label_crm_vehicle);
+
+        builder.setSingleChoiceItems(crmVehicleLabels, -1, (dialog, item) -> {
+            try {
+                this.chosenCRMVehicle = modelService.getVehicleByLabel(crmVehicleLabels[item].toString());
+            }
+            catch (VehicleNotFoundException e) {
+                Log.e(TAG, "Vehicle Not Found here: " + e.getMessage());
+            }
+        });
+
+        builder.setPositiveButton(R.string.label_validate, (dialog, id) -> {
+            Toasty.success(getApplicationContext(), "CRM Vehicle Chosen", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "CRM Vehicle chosen " + id);
+            // TODO tell webSocketService that I choosed the crm vehicle
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private CharSequence[] getAvailableCRMVehicleLabels() {
+       /* TODO List<Vehicle> availableCRMVehicles = modelService.getAvailableCRMVehiclesByType();
+        List<CharSequence> labels = new ArrayList<>();
+
+        for(Vehicle vehicle : availableCRMVehicles) {
+            labels.add(vehicle.getLabel());
+        }
+
+        CharSequence[] charSequences = new CharSequence[labels.size()];
+        labels.toArray(charSequences);
+        return charSequences;*/
     }
 
     @Override
