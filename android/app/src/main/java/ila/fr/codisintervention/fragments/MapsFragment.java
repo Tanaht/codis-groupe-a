@@ -70,7 +70,7 @@ public class MapsFragment extends Fragment {
     /**
      * TODO: temporary instance of a Stub object, is job is to simulate the drone position normally returned by the server
      */
-    //DronePoint dronePosition;
+    MarkerDrone drone=null;
 
     /**
      * this list contains all symbols, units and dronepoints with assiciated marker on the map.
@@ -78,11 +78,6 @@ public class MapsFragment extends Fragment {
      */
     Map<Marker,I_MarkerElement> markerList;
     Map<Marker,I_MarkerElement> markerListDrone;
-
-    /**
-     * list of points for the drone's course
-     */
-    Map<Integer, DronePoint> course = new TreeMap<>();
 
     /**
      * instance of the map displayed on layout
@@ -272,19 +267,13 @@ public class MapsFragment extends Fragment {
      * @param newDrone
      */
     public void modifyDronePosition(DronePoint newDrone) {
-        for (Map.Entry<Marker,I_MarkerElement> md: markerListDrone.entrySet()){
-            MarkerDrone drone=null;
-            if (((MarkerDrone)md).getData().isMoving()){
-                drone = (MarkerDrone)md;
-            }
-            if (drone == null){
-                DronePoint dpDrone = new DronePoint(0, newDrone.getLat(), newDrone.getLon());
-                dpDrone.setMoving(true);
-                drone = new MarkerDrone(true, dpDrone,getActivity());
-            }else {
-                drone.getData().setLat(newDrone.getLat());
-                drone.getData().setLon(newDrone.getLon());
-            }
+        if (drone == null){
+            DronePoint dpDrone = new DronePoint(0, newDrone.getLat(), newDrone.getLon());
+            dpDrone.setMoving(true);
+            drone = new MarkerDrone(true, dpDrone,getActivity());
+        }else {
+            drone.getData().setLat(newDrone.getLat());
+            drone.getData().setLon(newDrone.getLon());
         }
         updateView();
     }
@@ -310,6 +299,11 @@ public class MapsFragment extends Fragment {
             path = new PathDrone(new ila.fr.codisintervention.models.messages.PathDrone(PathDroneType.CYCLE.name(), posList));
         }
         if (path != null) {
+            // add the drone on the map
+            if (drone != null){
+                drone.printOnMap(googleMap);
+            }
+
             // add drone's path
             Marker previousMarkerDrone = null;  // for line to draw between each point of the path
             for (Location l : path.getPoints()) {

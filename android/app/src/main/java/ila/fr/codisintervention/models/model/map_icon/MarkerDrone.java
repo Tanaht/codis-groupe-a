@@ -36,6 +36,8 @@ public class MarkerDrone implements I_MarkerElement {
         return (data.isMoving()?"drone_icon_map":"drone_marker");
     }
 
+    public boolean isDrone(){return isDrone;}
+
     @Override
     public DronePoint getData() {
         return this.data;
