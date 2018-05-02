@@ -193,7 +193,7 @@ public class SocketForDroneCommunication {
 	 */
 	public void sendDronePhoto(Photo photo) {
 		Gson gson = new Gson();
-		photo.setPhoto("http://:8080/"+photo.getPhoto());
+		photo.setPhoto("http://blog.teamtreehouse.com/wp-content/uploads/2014/03/data-uri-feature.png");
 		String toJson = gson.toJson(photo, Photo.class);
 		simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_PHOTO_PART1 + photo.getInterventionId() + RoutesConfig.SEND_DRONE_PHOTO_PART2, toJson);
 	}
