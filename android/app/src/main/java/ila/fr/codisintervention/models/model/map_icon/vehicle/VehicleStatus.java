@@ -5,13 +5,25 @@ package ila.fr.codisintervention.models.model.map_icon.vehicle;
  */
 public enum VehicleStatus {
     /** Requested for an intervention */
-    REQUESTED,
+    REQUESTED("Demandé"),
     /** Already used in an intervention */
-    USED,
+    USED("Utilisé"),
     /** Available for an intervention */
-    AVAILABLE,
+    AVAILABLE("Disponible"),
     /** In intervention, waiting for orders */
-    CRM;
+    CRM("Au CRM");
+
+    /**
+     * French translation of status
+     */
+    private String translation;
+
+
+    VehicleStatus(String translation) {
+        this.translation = translation;
+    }
+
+    public String getTranslation() { return  translation; }
 
     public static VehicleStatus getStatusEnumFromString(String str){
         if (REQUESTED.name().equals(str)){
@@ -25,4 +37,6 @@ public enum VehicleStatus {
         }
         throw new IllegalArgumentException("Bad string :"+str);
     }
+
+
 }

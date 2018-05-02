@@ -7,7 +7,7 @@
     tools:context="ila.fr.codisintervention.activities.MeansTableActivity">
 
     <fragment
-        android:id="@+id/fragment"
+        android:id="@+id/means_table_fragment"
         android:name="ila.fr.codisintervention.fragments.MeansTableFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

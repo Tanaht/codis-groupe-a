@@ -33,6 +33,12 @@ public class Unit {
     /** Date of the CODIS acceptation of the vehicle for the intervention */
     private Timestamp acceptDate;
 
+    /** Date of the CODIS commited of the vehicle for the intervention */
+    private Timestamp commitedDate;
+
+    /** Date of the CODIS released of the vehicle for the intervention */
+    private Timestamp releasedDate;
+
     /** Instance of {@link Symbol} for the symbol sitac of the unit */
     private SymbolUnit symbolUnit;
 

@@ -14,11 +14,13 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.models.model.Unit;
 
 /**
  * The type Means table fragment.
@@ -80,18 +82,51 @@ public class MeansTableFragment extends Fragment {
     private void refreshTable() {
         TableRow row = null;
 
-//        for (int j = 0; j < 10; j++) {
-//            row = new TableRow(getContext());
-//            meansTable.addView(row, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-//            i = 0;
-//            for (String header : headers) {
-//                TextView text = createTextView(j==9, i == headers.size() - 1, j);
-//                text.setText("123");
-//
-//                row.addView(text, i++);
-//                text.setGravity(Gravity.RIGHT);
-//            }
-//        }
+        List<Unit> units = modelService.getCurrentIntervention().getUnits();
+
+        for(int j = 0 ; j < units.size() ; j++) {
+            Unit unit = units.get(j);
+            row = new TableRow(getContext());
+            meansTable.addView(row, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+
+            for(int i = 0 ; i < headers.size(); i++) {
+                TextView text = createTextView(j == units.size() - 1, i == headers.size() - 1, i);
+
+                switch (i) {
+                    case 0:
+                        text.setText(unit.getVehicle().getLabel() == null ? unit.getVehicle().getType() : unit.getVehicle().getLabel());
+                        break;
+                    case 1:
+                        if(unit.getVehicle().getStatus() != null)
+                            text.setText(unit.getVehicle().getStatus().getTranslation());
+                        break;
+                    case 2:
+                        if(unit.getRequestDate() != null) {
+                            SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
+                            text.setText(df.format(unit.getRequestDate()));
+                        }
+                        break;
+                    case 3:
+                        if(unit.getAcceptDate() != null) {
+                            SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
+                            text.setText(df.format(unit.getAcceptDate()));
+                        }
+                        break;
+                    case 4:
+                        if(unit.getCommitedDate() != null) {
+                            SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
+                            text.setText(df.format(unit.getCommitedDate()));
+                        }
+                        break;
+                    case 5:
+                        if(unit.getReleasedDate() != null) {
+                            SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
+                            text.setText(df.format(unit.getReleasedDate()));
+                        }
+                        break;
+                }
+            }
+        }
     }
 
 
