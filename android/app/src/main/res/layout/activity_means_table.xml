@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <fragment
-        android:id="@+id/fragment2"
+        android:id="@+id/additional_mean_fragment"
         android:name="ila.fr.codisintervention.fragments.AdditionalMeanFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

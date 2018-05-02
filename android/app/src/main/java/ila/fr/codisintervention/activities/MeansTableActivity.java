@@ -1,7 +1,6 @@
 package ila.fr.codisintervention.activities;
 
 import android.content.ServiceConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +10,7 @@ import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.fragments.AdditionalMeanFragment;
 import ila.fr.codisintervention.fragments.MeansTableFragment;
+import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
 
@@ -18,6 +18,7 @@ import ila.fr.codisintervention.services.WebSocketServiceAware;
 public class MeansTableActivity extends AppCompatActivity implements AdditionalMeanFragment.OnFragmentInteractionListener, WebSocketServiceAware, ModelServiceAware {
 
     private MeansTableFragment meansTableFragment;
+    private AdditionalMeanFragment additionalMeanFragment;
 
     private ServiceConnection webSocketServiceConnection, modelServiceConnexion;
 
@@ -33,6 +34,7 @@ public class MeansTableActivity extends AppCompatActivity implements AdditionalM
         FragmentManager manager = getSupportFragmentManager();
 
         meansTableFragment = (MeansTableFragment) manager.findFragmentById(R.id.means_table_fragment);
+        additionalMeanFragment = (AdditionalMeanFragment) manager.findFragmentById(R.id.additional_mean_fragment);
 
         webSocketServiceConnection = bindWebSocketService();
         modelServiceConnexion = bindModelService();
@@ -47,6 +49,7 @@ public class MeansTableActivity extends AppCompatActivity implements AdditionalM
     @Override
     public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
         this.modelService = modelService;
+        additionalMeanFragment.setModelService(modelService);
     }
 
     @Override
@@ -59,17 +62,16 @@ public class MeansTableActivity extends AppCompatActivity implements AdditionalM
         this.webSocketService = webSocketService;
     }
 
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        //not used
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
         unbindModelService(modelServiceConnexion);
         unbindWebSocketService(webSocketServiceConnection);
+    }
+
+    @Override
+    public void onNewVehicleRequest(Request request) {
+        webSocketService.requestUnit(modelService.getCurrentIntervention().getId(), request);
     }
 }

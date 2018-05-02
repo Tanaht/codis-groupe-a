@@ -29,6 +29,15 @@ public class Request {
     }
 
     /**
+     * Create a request from a vehicle type
+     * @param vehicleType
+     */
+    public Request(String vehicleType) {
+        this.vehicle = new Vehicle();
+        this.vehicle.setType(vehicleType);
+    }
+
+    /**
      * Instantiate from model request
      * @param request
      */

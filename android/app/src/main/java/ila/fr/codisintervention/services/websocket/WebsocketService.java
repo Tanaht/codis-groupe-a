@@ -737,11 +737,37 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
         String json = gson.toJson(unitMessage, ila.fr.codisintervention.models.messages.Unit.class);
 
+        requestUnit(interventionId, json);
+    }
 
+    /**
+     * Send Request Unit message to remote server
+     * @param interventionId
+     * @param json the json to send
+     */
+    private void requestUnit(int interventionId, String json) {
         this.client.send("/app/interventions/" + interventionId + "/units/create", json).subscribe(
                 () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/units/create] Sent " + json),
                 error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/units/create] Error Encountered", error)
         );
+    }
+
+    @Override
+    public void requestUnit(int interventionId, ila.fr.codisintervention.models.model.Request unit) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return Arrays.asList("id", "label").contains(f.getName());
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        }).create();
+
+        String json = gson.toJson(new Request(unit), Request.class);
+        requestUnit(interventionId, json);
     }
 
     @Override

@@ -193,12 +193,12 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(unitUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT);
                 break;
             case WebsocketService.DEMANDE_ACCEPTED:
-                Request request = new Request(intent.getParcelableExtra(WebsocketService.DEMANDE_ACCEPTED));
+                Request request = new Request((ila.fr.codisintervention.models.messages.Request) intent.getParcelableExtra(WebsocketService.DEMANDE_ACCEPTED));
                 model.getRequests().remove(request);
                 sendToEveryone(request.getId(), ModelConstants.VALIDATE_VEHICLE_REQUEST);
                 break;
             case WebsocketService.DEMANDE_DENIED:
-                Request req = new Request(intent.getParcelableExtra(WebsocketService.DEMANDE_DENIED));
+                Request req = new Request((ila.fr.codisintervention.models.messages.Request) intent.getParcelableExtra(WebsocketService.DEMANDE_DENIED));
                 model.getRequests().remove(req);
                 sendToEveryone(req.getId(), ModelConstants.REJECT_VEHICLE_REQUEST);
                 break;
