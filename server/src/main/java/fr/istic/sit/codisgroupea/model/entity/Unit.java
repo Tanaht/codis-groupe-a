@@ -31,8 +31,7 @@ public class Unit {
     private UnitVehicle unitVehicle;
 
     /** Instance of {@link Intervention} for the intervention of the unit */
-    @ManyToOne
-    @NotNull
+    @ManyToOne()
     private Intervention intervention;
 
     /** Boolean which tells if the unit is moving or not */
@@ -119,5 +118,10 @@ public class Unit {
     @Transient
     public void setVehicle(Vehicle vehicle) {
         this.unitVehicle.setAssignedVehicle(vehicle);
+    }
+
+    public void setUnitVehicle(UnitVehicle unitVehicle) {
+        this.unitVehicle = unitVehicle;
+        unitVehicle.setUnit(this);
     }
 }

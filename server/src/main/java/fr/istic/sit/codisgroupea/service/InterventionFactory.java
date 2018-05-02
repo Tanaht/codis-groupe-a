@@ -27,6 +27,9 @@ public class InterventionFactory {
     private VehicleRepository vehicleRepository;
     private VehicleTypeRepository vehicleTypeRepository;
     private SinisterCodeRepository sinisterCodeRepository;
+    private UnitRepository unitRepository;
+    private InterventionRepository interventionRepository;
+    private UnitVehicleRepository unitVehicleRepository;
     private Validator validator;
 
     /**
@@ -40,11 +43,17 @@ public class InterventionFactory {
                                VehicleRepository vehicleRepository,
                                VehicleTypeRepository vehicleTypeRepository,
                                SinisterCodeRepository sinisterCodeRepository,
+                               UnitRepository unitRepository,
+                               UnitVehicleRepository unitVehicleRepository,
+                               InterventionRepository interventionRepository,
                                Validator validator) {
         this.defaultVehicleSymbolRepository = defaultVehicleSymbolRepository;
         this.vehicleRepository = vehicleRepository;
         this.vehicleTypeRepository = vehicleTypeRepository;
         this.sinisterCodeRepository = sinisterCodeRepository;
+        this.unitRepository = unitRepository;
+        this.unitVehicleRepository = unitVehicleRepository;
+        this.interventionRepository = interventionRepository;
         this.validator = validator;
     }
 
@@ -65,6 +74,7 @@ public class InterventionFactory {
 
         for(UnitMessage unitMessage : message.getUnits()) {
             assignUnitToIntervention(intervention, unitMessage);
+            interventionRepository.save(intervention);
         }
 
         return intervention;
@@ -85,14 +95,19 @@ public class InterventionFactory {
 
 
         Unit unit = new Unit();
-        unit.setRequestDate(new Timestamp(new Date().getTime()));
+        unit.setAcceptDate(new Timestamp(new Date().getTime()));
         DefaultVehicleSymbol defaultVehicleSymbol = defaultVehicleSymbolRepository.findByType(vehicle.getType());
         unit.setSymbolSitac(new SymbolSitac(defaultVehicleSymbol.getSymbol()));
-        UnitVehicle unitVehicle = new UnitVehicle(unit);
+        UnitVehicle unitVehicle = new UnitVehicle();
+
+
         unitVehicle.setAssignedVehicle(vehicle);
+
         unitVehicle.setStatus(VehicleStatus.CRM);
         unitVehicle.setType(vehicle.getType());
         unit.setUnitVehicle(unitVehicle);
+
+        unitRepository.save(unit);
         intervention.addUnit(unit);
     }
 }

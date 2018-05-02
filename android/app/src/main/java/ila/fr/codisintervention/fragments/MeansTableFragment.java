@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,7 @@ import ila.fr.codisintervention.models.model.Unit;
  * The type Means table fragment.
  */
 public class MeansTableFragment extends Fragment {
-
+    private static final String TAG = "MeansTableFragment";
     private TableLayout meansTable;
     private List<String> headers;
     private ModelServiceBinder.IMyServiceMethod modelService;
@@ -80,17 +81,22 @@ public class MeansTableFragment extends Fragment {
     }
 
     private void refreshTable() {
+        if(meansTable.getChildCount() > 1)
+            meansTable.removeViews(1, meansTable.getChildCount());
         TableRow row = null;
 
         List<Unit> units = modelService.getCurrentIntervention().getUnits();
-
+        Log.d(TAG, "There is " + units.size() + " units too print in meansTable");
         for(int j = 0 ; j < units.size() ; j++) {
             Unit unit = units.get(j);
+            Log.d(TAG, "Add Unit " + unit.getVehicle().getLabel());
             row = new TableRow(getContext());
             meansTable.addView(row, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 
             for(int i = 0 ; i < headers.size(); i++) {
                 TextView text = createTextView(j == units.size() - 1, i == headers.size() - 1, i);
+                row.addView(text, i);
+                text.setGravity(Gravity.END);
 
                 switch (i) {
                     case 0:
@@ -124,6 +130,8 @@ public class MeansTableFragment extends Fragment {
                             text.setText(df.format(unit.getReleasedDate()));
                         }
                         break;
+                        default:
+                            Log.w(TAG, "No row exist here to print something");
                 }
             }
         }

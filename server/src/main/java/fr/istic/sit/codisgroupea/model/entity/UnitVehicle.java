@@ -23,14 +23,13 @@ public class UnitVehicle {
     /**
      * A unit is always associated with a UnitVehicle instance
      */
-    @NotNull
     @OneToOne
     private Unit unit;
 
     /**
      * The vehicle assigned to the unit
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Vehicle assignedVehicle;
 
     /**
