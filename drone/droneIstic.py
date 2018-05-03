@@ -8,6 +8,9 @@ from utils.SocketIstic import SocketIstic
 # library help : http://python.dronekit.io/automodule.html
 class NotreDrone():
 
+    stopRequested = False
+    droneStopped = False;
+
     # Construtor with specific IP, targeted altitude
     def __init__(self, sIP, simulation, altitude, interventionId):
         # START du drone
@@ -25,6 +28,10 @@ class NotreDrone():
         print("Connecting to vehicle on: %", self.connection_string)
         self.vehicle = connect(self.connection_string, wait_ready=True)
         self.patrol = 0
+
+
+    def turnoff(self, value):
+        self.stopRequested = value
 
     # Arms vehicle and fly to aTargetAltitude.
     def arm_and_takeoff(self, aTargetAltitude):
@@ -131,6 +138,9 @@ class NotreDrone():
         print('Return to launch')
         self.vehicle.mode = VehicleMode("RTL")
 
+        location = self.vehicle.location.global_relative_frame
+        SocketIstic.get_socket().send_position(location, self.vehicle.battery.level, self.interventionId)
+
         # Floor is reached
         while self.is_takeoff(1):
             update_kml_file(self.vehicle.location.global_relative_frame)
@@ -153,7 +163,7 @@ class NotreDrone():
         liste = self.patrol_mission_location
         liste_back = []
 
-        while self.vehicle.battery.level > 40:
+        while (self.vehicle.battery.level > Patrol.BATTERY_LOW) and not self.stopRequested :
             self.execute(liste, True)
 
             if self.patrol == Patrol.PATROL_GO_AND_BACK:
@@ -205,7 +215,7 @@ class NotreDrone():
         # we take a photo only one time per 201 command
         photo_ok = False
 
-        while self.vehicle.battery.level > Patrol.BATTERY_LOW:
+        while (self.vehicle.battery.level > Patrol.BATTERY_LOW) and not self.stopRequested:
             nextwaypoint = self.vehicle.commands.next
 
             location = self.vehicle.location.global_relative_frame
@@ -222,7 +232,7 @@ class NotreDrone():
                 if self.vehicle.commands[self.vehicle.commands.next - 1].command == 19:
                     if not photo_ok:
                         (photo_ok, image) = Photo.take_photo(location)
-                        SocketIstic.get_socket().send_photo(location, image)
+                        SocketIstic.get_socket().send_photo(location, image, self.interventionId)
                 else:
                     photo_ok = False
 

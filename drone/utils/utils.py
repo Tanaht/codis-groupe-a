@@ -7,10 +7,10 @@ import PIL
 
 # Define all patrol mode
 class Patrol:
-    PATROL_GO_AND_BACK = 0
-    PATROL_CIRCLE = 1
-    PATROL_ZONE = 2
-    BATTERY_LOW = 40
+    PATROL_GO_AND_BACK = "SEGMENT"
+    PATROL_CIRCLE = "CIRCLE"
+    PATROL_ZONE = "GRID"
+    BATTERY_LOW = 0
 
 
 # Define Photo screenshot

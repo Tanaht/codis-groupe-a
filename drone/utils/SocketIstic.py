@@ -10,6 +10,7 @@ import time
 # Manage the socket with the server. Drone will receive a mission and send positions and photos
 class SocketIstic:
     client = None
+    used = False
 
     # SINGLETON
     @classmethod
@@ -43,13 +44,15 @@ class SocketIstic:
         self.send(json_data)
 
     # message to the server : SEND_PHOTO
-    def send_photo(self, location, image):
+    def send_photo(self, location, image, interventionId):
         now = datetime.now()
         json_data = {
             'type': "SEND_PHOTO",
             'datas': {
                 'photo': image,
                 'date': time.mktime(now.timetuple()),
+                'interventionId': interventionId,
+                'pointId': 1,
                 'location': {
                     'lat': location.lat,
                     'lng': location.lon
@@ -68,12 +71,18 @@ class SocketIstic:
 
     # wait a mission from the server
     def wait_a_mission(self):
-        ma_mission = None
-        while True:
+        ma_mission = ""
+        if not self.used:
+            self.used = True
             response = self.client.recv(4096)
-            if response != "":
-                ma_mission = Mission(json.loads(response.decode()))
-                break
+            print("Received : " + response)
+            if response != "!" and response != "STOP":
+                response = response.replace("!","")
+                if response != "":
+                    ma_mission = Mission(json.loads(response.decode()))
+            else:
+                ma_mission = response
+            self.used = False
         return ma_mission
 
     # close the socket
@@ -83,4 +92,8 @@ class SocketIstic:
     # send data to the server
     # \n in the end of data trame for the java server program (readline)
     def send(self, data):
-        self.client.sendall((json.dumps(data) + "\n").encode())
+        if not self.used:
+            self.used = True
+            self.client.sendall((json.dumps(data) + "\n").encode())
+            print("DATA SENT")
+            self.used = False

@@ -21,9 +21,10 @@ while True:
     json_data = {
       'type': 'ASSIGN_MISSION',
       'datas': {
+        'interventionId' : 1,
         'title': "highway to hell",
         'altitude': 30,
-        'type': 1,
+        'type': 'SEGMENT',
         'locations': [
             {'lat': 48.1148383, 'lng': -1.6388297, 'alt': 30, 'photo': False},
             {'lat': 48.1153379, 'lng': -1.6391757, 'alt': 30, 'photo': False},
@@ -53,10 +54,10 @@ while True:
                 print("PARCOURS TERMINE !")
                 break
             elif mission == "SEND_SITUATION":
-                print "POSITION DRONE :", format(trame['datas']['location'])
+                print("POSITION DRONE :", format(trame['datas']['location']))
                 time.sleep(0.5)
             else:
-                print "STATUS UNKNOWN :", mission
+                print("STATUS UNKNOWN :", mission)
                 break
     print("Close client")
     client.close()
