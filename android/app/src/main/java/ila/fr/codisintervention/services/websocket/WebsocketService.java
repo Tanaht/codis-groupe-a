@@ -394,6 +394,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     }
 
 
+
     /**
      * Class triggered when receiving events of type "/topic/interventions/{id}/symbols/event"
      * It send the correct intent.
@@ -466,9 +467,14 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
     @Override
     public void updateSymbols(int interventionId, List<ila.fr.codisintervention.models.model.map_icon.symbol.Symbol> symbols) {
+        List<Symbol> listSymbols = new ArrayList<>();
+        for (ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb : symbols){
+            listSymbols.add(new Symbol(symb));
+        }
+
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-        String json = gson.toJson(symbols);
+        String json = gson.toJson(listSymbols);
         Log.d(TAG, "[/app/interventions/" + interventionId + "/symbols/create] with message " + json);
         this.client.send("/app/interventions/" + interventionId + "/symbols/update", json).subscribe(
                 () -> Log.w(TAG, "[/app/interventions/" + interventionId + "/symbols/update] Sent data!"),
@@ -545,6 +551,14 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/drone/path] Error Encountered", error)
         );
 
+    }
+
+    @Override
+    public void sendMissionToDrone(int idIntervention){
+        this.client.send("/app/interventions/"+idIntervention+"/drone/send","PING").subscribe(
+                () -> Log.d(TAG, "[/app/interventions/"+idIntervention+"/drone/send] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/"+idIntervention+"/drone/send] Error Encountered", error)
+        );
     }
 
     /**

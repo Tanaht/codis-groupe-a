@@ -20,6 +20,12 @@ public class SymbolUnit {
     private Payload payload;
 
 
+    public SymbolUnit( Location location, Color color, Shape shape ){
+        this.location = location;
+        this.color = color;
+        this.shape = shape;
+    }
+
     public SymbolUnit(ila.fr.codisintervention.models.messages.Symbol symb){
         location = symb.getLocation();
         color = Color.valueOf(symb.getColor());

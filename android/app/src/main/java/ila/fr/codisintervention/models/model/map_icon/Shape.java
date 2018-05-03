@@ -51,4 +51,42 @@ public enum Shape {
      */
     VEHICLE,
 
+    /**
+     * Drone point for the path
+     */
+    DRONE;
+
+
+    /**
+     * add a type for each shape
+     * Not the best way
+     */
+    static public String SYMBOL = "SYMBOL";
+    static public String UNIT = "UNIT";
+    static public String DRONE_POINT = "DRONE_POINT";
+
+
+    static public String findAssociatedObject(Shape myShape){
+        String ret = SYMBOL;
+
+        switch (myShape) {
+            case FIREVEHICLE:
+                ret = UNIT;
+                break;
+            case VEHICLE:
+                ret = UNIT;
+                break;
+            case NOTEFFECTIVEFIREVEHICLE:
+                ret = UNIT;
+                break;
+            case NOTEFFECTIVEVEHICLE:
+                ret = UNIT;
+                break;
+            case DRONE:
+                ret = DRONE_POINT;
+                break;
+
+        }
+        return ret;
+    }
 }

@@ -159,6 +159,8 @@ public class ApplicationModel {
             }
             currentIntervention.setUnits(units);
 
+            currentIntervention.setPathDrone(new PathDrone(intervention.getPathDrone()));
+
             Log.d(TAG, "Set Location on current intervention to " + intervention.getLocation());
             currentIntervention.setLocation(intervInList.getLocation());
             currentIntervention.setSinisterCode(intervInList.getSinisterCode());

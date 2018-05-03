@@ -36,6 +36,12 @@ public class Unit {
     /** Instance of {@link Symbol} for the symbol sitac of the unit */
     private SymbolUnit symbolUnit;
 
+
+    public Unit( SymbolUnit symbol, Vehicle vehicle ){
+        this.symbolUnit = symbol;
+        this.vehicle = vehicle;
+    }
+
     public Unit(ila.fr.codisintervention.models.messages.Unit uni) {
         id = uni.getId();
         vehicle = new Vehicle(uni.getVehicle());

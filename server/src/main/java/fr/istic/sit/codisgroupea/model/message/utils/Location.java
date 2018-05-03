@@ -70,9 +70,9 @@ public class Location {
         this.lng = lng;
     }
 
-    public Location(Position position) {
-        this.lat = position.getLatitude();
-        this.lng = position.getLongitude();
+    public Location(Position pos){
+        lat = pos.getLatitude();
+        lng = pos.getLongitude();
     }
 
     public void setLat(double lat) {

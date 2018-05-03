@@ -1,5 +1,8 @@
 package fr.istic.sit.codisgroupea.socket;
 
+import fr.istic.sit.codisgroupea.model.entity.Intervention;
+import fr.istic.sit.codisgroupea.model.entity.Position;
+
 public class Location {
 		
 	private double lat;
@@ -9,6 +12,13 @@ public class Location {
 	private int interventionId;
 	
 	public Location() {
+	}
+
+	public Location(Position pos, Intervention interv){
+		this.lat = pos.getLatitude();
+		this.lng = pos.getLongitude();
+		this.alt = 0;
+		this.interventionId = interv.getId();
 	}
 
 	public Location(double lat, double lng) {

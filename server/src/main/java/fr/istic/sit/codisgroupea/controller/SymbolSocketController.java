@@ -8,6 +8,7 @@ import fr.istic.sit.codisgroupea.model.message.receive.SymbolMessage;
 import fr.istic.sit.codisgroupea.model.message.send.SymbolsMessage;
 import fr.istic.sit.codisgroupea.model.message.intervention.IdMessage;
 import fr.istic.sit.codisgroupea.repository.*;
+import lombok.val;
 import org.apache.logging.log4j.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,22 +25,34 @@ import java.util.Optional;
 @Controller
 public class SymbolSocketController {
 
-    /** The logger */
+    /**
+     * The logger
+     */
     private static final Logger logger = LogManager.getLogger();
 
-    /** {@link InterventionRepository} instance */
+    /**
+     * {@link InterventionRepository} instance
+     */
     private InterventionRepository interventionRepository;
 
-    /** {@link SymbolRepository} instance */
+    /**
+     * {@link SymbolRepository} instance
+     */
     private SymbolRepository symbolRepository;
 
-    /** {@link SymbolSitacRepository} instance */
+    /**
+     * {@link SymbolSitacRepository} instance
+     */
     private SymbolSitacRepository symbolSitacRepository;
 
-    /** {@link PositionRepository} instance */
+    /**
+     * {@link PositionRepository} instance
+     */
     private PositionRepository positionRepository;
 
-    /** {@link PayloadRepository} instance */
+    /**
+     * {@link PayloadRepository} instance
+     */
     private PayloadRepository payloadRepository;
 
 
@@ -47,16 +60,16 @@ public class SymbolSocketController {
      * Constructor of the class {@link SymbolSocketController}
      *
      * @param interventionRepository {@link InterventionRepository}
-     * @param symbolRepository {@link SymbolRepository} instance
-     * @param symbolSitacRepository {@link SymbolSitacRepository} instance
-     * @param positionRepository {@link PositionRepository} instance
-     * @param payloadRepository {@link PayloadRepository} instance
+     * @param symbolRepository       {@link SymbolRepository} instance
+     * @param symbolSitacRepository  {@link SymbolSitacRepository} instance
+     * @param positionRepository     {@link PositionRepository} instance
+     * @param payloadRepository      {@link PayloadRepository} instance
      */
-    public SymbolSocketController (InterventionRepository interventionRepository,
-                                   SymbolRepository symbolRepository,
-                                   SymbolSitacRepository symbolSitacRepository,
-                                   PositionRepository positionRepository,
-                                   PayloadRepository payloadRepository) {
+    public SymbolSocketController(InterventionRepository interventionRepository,
+                                  SymbolRepository symbolRepository,
+                                  SymbolSitacRepository symbolSitacRepository,
+                                  PositionRepository positionRepository,
+                                  PayloadRepository payloadRepository) {
         this.interventionRepository = interventionRepository;
         this.symbolRepository = symbolRepository;
         this.symbolSitacRepository = symbolSitacRepository;
@@ -70,7 +83,7 @@ public class SymbolSocketController {
      * @param sitac the symbol sitac with the information
      * @return the {@link SymbolMessage}
      */
-    private SymbolMessage createSymbolMessage (SymbolSitac sitac) {
+    private SymbolMessage createSymbolMessage(SymbolSitac sitac) {
         //Get the value of the SymbolSitac object
         Symbol symbol = sitac.getSymbol();
         Position location = sitac.getLocation();
@@ -78,7 +91,7 @@ public class SymbolSocketController {
 
         //Create the return message
         return new SymbolMessage(
-                symbol.getId(),
+                sitac.getId(),
                 symbol.getShape(),
                 symbol.getColor(),
                 new SymbolMessage.Location(location.getLatitude(), location.getLongitude()),
@@ -97,7 +110,7 @@ public class SymbolSocketController {
     @SendTo({RoutesConfig.CREATE_SYMBOL_SERVER})
     public String createSymbols(@DestinationVariable("id") final int id, List<SymbolCreateMessage> dataSendByClient) {
         Gson jason = new Gson();
-        logger.trace(RoutesConfig.CREATE_SYMBOL_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
+        logger.trace(RoutesConfig.CREATE_SYMBOL_CLIENT + " --> data receive " + jason.toJson(dataSendByClient));
 
         List<SymbolMessage> listMessage = new ArrayList<>();
 
@@ -107,28 +120,28 @@ public class SymbolSocketController {
             Optional<Intervention> optionalIntervention = interventionRepository.findById(id);
 
             //Verify if the two optional are present
-            if(!optSymbol.isPresent()) {
-                logger.error("Le symbol n'existe pas. Couleur : "+data.getColor().toString()+" forme : "+data.getShape().toString());
+            if (!optSymbol.isPresent()) {
+                logger.error("Le symbol n'existe pas. Couleur : " + data.getColor().toString() + " forme : " + data.getShape().toString());
             }
 
 
-            if(!optionalIntervention.isPresent()){
+            if (!optionalIntervention.isPresent()) {
                 logger.error("L'intervention n'existe pas.");
             }
 
             SymbolSitac symbolSitac;
 
-            if (data.getPayload() == null){
+            if (data.getPayload() == null) {
                 Position pos = new Position(data.getLocation().getLat(), data.getLocation().getLng());
-                Payload payload = new Payload("","");
+                Payload payload = new Payload("", "");
                 SymbolSitac symbSitac = new SymbolSitac(
                         optionalIntervention.get(),
                         optSymbol.get(),
-                        pos,payload
+                        pos, payload
                 );
 
                 symbolSitac = symbolSitacRepository.save(symbSitac);
-            }else{
+            } else {
                 symbolSitac = symbolSitacRepository.save(
                         new SymbolSitac(
                                 optionalIntervention.get(),
@@ -148,7 +161,7 @@ public class SymbolSocketController {
         SymbolsMessage toSend = new SymbolsMessage(SymbolsMessage.Type.CREATE, listMessage);
 
         String toJson = jason.toJson(toSend);
-        logger.trace(RoutesConfig.CREATE_SYMBOL_SERVER +" --> data send "+toJson);
+        logger.trace(RoutesConfig.CREATE_SYMBOL_SERVER + " --> data send " + toJson);
         return toJson;
     }
 
@@ -165,7 +178,7 @@ public class SymbolSocketController {
 
         Gson jason = new Gson();
 
-        logger.trace(RoutesConfig.DELETE_SYMBOL_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
+        logger.trace(RoutesConfig.DELETE_SYMBOL_CLIENT + " --> data receive " + jason.toJson(dataSendByClient));
 
         List<SymbolMessage> listMessage = new ArrayList<>();
 
@@ -190,7 +203,7 @@ public class SymbolSocketController {
         }
 
         SymbolsMessage toSend = new SymbolsMessage(SymbolsMessage.Type.DELETE, listMessage);
-        logger.trace(RoutesConfig.DELETE_SYMBOL_SERVER +" --> data send "+jason.toJson(toSend));
+        logger.trace(RoutesConfig.DELETE_SYMBOL_SERVER + " --> data send " + jason.toJson(toSend));
 
         return toSend;
     }
@@ -204,52 +217,72 @@ public class SymbolSocketController {
      */
     @MessageMapping(RoutesConfig.UPDATE_SYMBOL_CLIENT)
     @SendTo({RoutesConfig.UPDATE_SYMBOL_SERVER})
-    public SymbolsMessage updateSymbols(@DestinationVariable("id") final int id, List<SymbolMessage> dataSendByClient) {
+    public SymbolsMessage updateSymbols(@DestinationVariable("id") final int id,
+                                        List<SymbolMessage> dataSendByClient) {
         Gson jason = new Gson();
-        logger.trace(RoutesConfig.UPDATE_SYMBOL_CLIENT +" --> data receive "+jason.toJson(dataSendByClient));
+        logger.trace(RoutesConfig.UPDATE_SYMBOL_CLIENT
+                + " --> data receive "
+                + jason.toJson(dataSendByClient));
 
-        List<SymbolMessage> listMessage = new ArrayList<>();
+        List<SymbolMessage> messageList = new ArrayList<>();
 
         for (SymbolMessage data : dataSendByClient) {
             //Get the optional intervention & symbol
-            Optional<Symbol> optSymbol = symbolRepository.findSymbolByColorAndShape(data.getColor(), data.getShape());
-            Optional<Intervention> optionalIntervention = interventionRepository.findById(id);
+            val optIntervention = interventionRepository.findById(id);
+            val optSymbol = symbolRepository.findSymbolByColorAndShape(
+                    data.getColor(), data.getShape());
 
             //Verify if the two optional are present
-            if(!optSymbol.isPresent()) {
+            if (!optSymbol.isPresent()) {
                 logger.error("Le symbol n'existe pas.");
+                return null;
             }
 
-            if(!optionalIntervention.isPresent()){
+            if (!optIntervention.isPresent()) {
                 logger.error("L'intervention n'existe pas.");
+                return null;
             }
 
             //Create a nex SymbolSitac
-            Optional <SymbolSitac> optSitac = symbolSitacRepository.findById(data.getId());
+            val optSitac = symbolSitacRepository.findById(data.getId());
 
-            if(!optSitac.isPresent()){
+            if (!optSitac.isPresent()) {
                 logger.error("Le symbol Sitac n'existe pas.");
+                return null;
             }
 
-            SymbolSitac symbolSitac = optSitac.get();
+            val symbolSitac = optSitac.get();
 
-            symbolSitac.setId(data.getId());
+            val dataLocation = data.getLocation();
+            val dataPayload = data.getPayload();
+
             symbolSitac.setSymbol(optSymbol.get());
-            symbolSitac.getLocation().setLatitude(data.getLocation().getLat());
-            symbolSitac.getLocation().setLongitude(data.getLocation().getLng());
-            symbolSitac.getPayload().setIdentifier(data.getPayload().getIdentifier());
-            symbolSitac.getPayload().setDetails(data.getPayload().getDetails());
+            symbolSitac.getLocation().setLatitude(dataLocation.getLat());
+            symbolSitac.getLocation().setLongitude(dataLocation.getLng());
 
-            SymbolSitac newSymbolSitac = symbolSitacRepository.save(symbolSitac);
+            if(dataPayload != null) {
+                val payload = symbolSitac.getPayload();
+                payload.setId(Integer.valueOf(dataPayload.getIdentifier()));
+                payload.setIdentifier(dataPayload.getIdentifier());
+                payload.setDetails(dataPayload.getDetails());
+            }else{
+                symbolSitac.setPayload(new Payload());
+            }
+
 
             //Create the return message
-            SymbolMessage symbolMessage = createSymbolMessage(newSymbolSitac);
+            val newSymbolSitac = symbolSitacRepository.save(symbolSitac);
+            val symbolMessage = createSymbolMessage(newSymbolSitac);
 
-            listMessage.add(symbolMessage);
+            messageList.add(symbolMessage);
         }
 
-        SymbolsMessage toSend = new SymbolsMessage(SymbolsMessage.Type.UPDATE, listMessage);
-        logger.trace(RoutesConfig.UPDATE_SYMBOL_SERVER +" --> data send "+jason.toJson(toSend));
+        val toSend = new SymbolsMessage(SymbolsMessage.Type.UPDATE,
+                messageList);
+
+        logger.trace(RoutesConfig.UPDATE_SYMBOL_SERVER
+                + " --> data send "
+                + jason.toJson(toSend));
         return toSend;
     }
 }

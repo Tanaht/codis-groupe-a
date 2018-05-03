@@ -99,6 +99,11 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
      */
     List<Location> dronePointsList;
 
+    /**
+     * Index of new drone point for the path
+     */
+    Integer cptId = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,11 +125,8 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
          * Validate button in order to retrieve drone points created on the Map
          */
         final Button validate = findViewById(R.id.send_drone_points);
-        validate.setOnClickListener(v ->
-        {
-            dronePointsList = mapFragment.send_dronePoints();
-            this.webSocketService.createPathDrone(modelService.getCurrentIntervention().getId(), new PathDrone ("SEGMENT", dronePointsList));
-
+        validate.setOnClickListener(v -> {
+            this.webSocketService.sendMissionToDrone(modelService.getCurrentIntervention().getId());
         });
 
         /**
@@ -136,6 +138,28 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
             showCrmListPopup();
         });
 
+    }
+
+    /**
+     * give the drone path draw on the map
+     * @return a list of Location
+     */
+    public List<Location> getDronePointList(){
+       return  mapFragment.getDronePath();
+    }
+
+    /**
+     * give the index of the last drone path point
+     * @return the last index
+     */
+    public Integer getCptId() {
+        return cptId;
+    }
+    public void increaseCptId(){
+        cptId = cptId + 1;
+    }
+    public void resetCptId(){
+        cptId = 1;
     }
 
     /**
@@ -173,6 +197,7 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
                     updateDronePosition(dronePing);
                 } else if(DRONE_PATH_ASSIGNED.equals(intent.getAction())){
                     PathDrone pathDrone = (PathDrone) intent.getExtras().get("pathDrone");
+                    //updateView();
                     mapFragment.updateDronePath(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
                 }
         }

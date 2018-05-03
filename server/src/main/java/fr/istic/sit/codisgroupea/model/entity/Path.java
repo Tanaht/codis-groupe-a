@@ -30,6 +30,7 @@ public class Path {
     @NotNull
     private PathType type;
 
+
     /**
      * Instantiates a new Path.
      */
@@ -49,4 +50,5 @@ public class Path {
         this.points = points;
         this.type = type;
     }
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 }

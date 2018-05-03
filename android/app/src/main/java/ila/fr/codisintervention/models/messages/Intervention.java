@@ -75,6 +75,9 @@ public class Intervention implements Parcelable {
     @Expose
     public List<Unit> units;
 
+    @Expose
+    public PathDrone pathDrone;
+
     /**
      * Instantiates a new Intervention.
      */
@@ -147,6 +150,8 @@ public class Intervention implements Parcelable {
         address = in.readString();
         drone_available = in.readByte() != 0;
 
+        location = in.readParcelable(Location.class.getClassLoader());
+        pathDrone = in.readParcelable(PathDrone.class.getClassLoader());
 
         photos = in.createTypedArrayList(Photo.CREATOR);
         symbols = in.createTypedArrayList(Symbol.CREATOR);
@@ -162,6 +167,8 @@ public class Intervention implements Parcelable {
         dest.writeString(address);
         dest.writeInt(drone_available ? 1 : 0);
 
+        dest.writeParcelable(location, flags);
+        dest.writeParcelable(pathDrone, flags);
 
         dest.writeTypedList(photos);
         dest.writeTypedList(symbols);

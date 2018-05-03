@@ -32,10 +32,25 @@ INSERT INTO vehicle VALUES (3, 'VLCG 1', 3);
 -- Insert Position
 INSERT INTO position VALUES (1, 48.116487, -1.647416);
 INSERT INTO position VALUES (2, 48.105727, -1.674720);
+INSERT INTO position VALUES (3, 48.1153379, -1.6391757);
+INSERT INTO position VALUES (4, 48.1161849, -1.6390014);
+INSERT INTO position VALUES (5, 48.1164571, -1.6373706);
+INSERT INTO position VALUES (6, 48.1155689, -1.6360724);
+INSERT INTO position VALUES (7, 48.1152322, -1.6378534);
+
+-- Insert Path
+INSERT INTO path VALUES (1, 30, 0);
+
+-- Insert Path_Points
+INSERT INTO path_points VALUES (1, 3);
+INSERT INTO path_points VALUES (1, 4);
+INSERT INTO path_points VALUES (1, 5);
+INSERT INTO path_points VALUES (1, 6);
+INSERT INTO path_points VALUES (1, 7);
 
 -- Insert Intervention
-INSERT INTO intervention VALUES (1, '11 Rue du Bois Perrin', 1522159274, 1, 1, 1);
-INSERT INTO intervention VALUES (2, 'Cours des Alliés, 35024 Rennes', 1522159274, 1, 2, 2);
+INSERT INTO intervention VALUES (1, '11 Rue du Bois Perrin', 1522159274, 1, 1, 1, 1);
+INSERT INTO intervention VALUES (2, 'Cours des Alliés, 35024 Rennes', 1522159274, 1, NULL, 2, 2);
 
 -- Insert symbol
 insert into symbol VALUE  (1, 0, 0);

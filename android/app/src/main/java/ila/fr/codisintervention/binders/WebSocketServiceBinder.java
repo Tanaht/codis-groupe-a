@@ -75,6 +75,8 @@ public class WebSocketServiceBinder extends Binder {
          */
         void chooseIntervention(int id);
 
+        void sendMissionToDrone(int idIntervention);
+
         /**
          * TODO: for now WebSocketService do not store context of which intervention is being selected, so we send it in parameter
          * This method is used to update symbols on a specific intervention

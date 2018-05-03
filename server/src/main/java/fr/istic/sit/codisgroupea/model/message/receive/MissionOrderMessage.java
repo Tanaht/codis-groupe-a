@@ -6,7 +6,7 @@ import java.util.List;
  * A mission order message
  * message form :
  *      * {
- *      *   path :: [{
+ *      *   points :: [{
  *      *     lat :: double,
  *      *     lng :: double
  *      *   }],
@@ -20,7 +20,7 @@ public class MissionOrderMessage {
 
     private String type;
 
-    private List<Location> path;
+    private List<Location> points;
 
     public static class Location{
 
@@ -61,11 +61,11 @@ public class MissionOrderMessage {
         this.type = type;
     }
 
-    public List<Location> getPath() {
-        return path;
+    public List<Location> getPoints() {
+        return points;
     }
 
-    public void setPath(List<Location> path) {
-        this.path = path;
+    public void setPoints(List<Location> points) {
+        this.points = points;
     }
 }
