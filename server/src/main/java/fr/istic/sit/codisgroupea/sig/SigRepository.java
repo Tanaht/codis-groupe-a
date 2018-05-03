@@ -1,7 +1,6 @@
 package fr.istic.sit.codisgroupea.sig;
 
 import fr.istic.sit.codisgroupea.model.entity.Intervention;
-import fr.istic.sit.codisgroupea.model.entity.Position;
 import fr.istic.sit.codisgroupea.model.entity.SymbolSitac;
 
 import java.util.List;
@@ -22,8 +21,8 @@ public interface SigRepository<T extends SigEntry> {
 
     /**
      *
-     * @param intervention
-     * @return
+     * @param intervention the intervention
+     * @return the list of symbols within the intervention area
      */
-    List<T> getSymbolsInTheIntervention(Intervention intervention);
+    List<T> getInterventionSymbols(Intervention intervention);
 }
