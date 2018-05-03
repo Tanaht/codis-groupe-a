@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 
 import java.util.List;
 
@@ -49,6 +51,7 @@ public class SymbolsListFragment extends Fragment {
 
     private SymbolsListFragment.OnFragmentInteractionListener mListener;
 
+    private Spinner dropdown;
     /**
      * Instantiates a new Symbols list fragment.
      */
@@ -82,9 +85,18 @@ public class SymbolsListFragment extends Fragment {
         addImageViewListeners(list);
         addRadioButtonListeners(view);
 
+        //get the spinner from the xml.
+        dropdown = getActivity().findViewById(R.id.typeDronePath);
+        String[] items = new String[]{"CIRCLE", "SEGMENT", "GRID"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+        dropdown.setAdapter(adapter);
+
         return view;
     }
 
+    public String getTypeDronePath(){
+        return dropdown.getSelectedItem().toString();
+    }
     /**
      * Iterate over all SymbolKind defined in {@link SymbolKindFactory} and populate it's imageView Variable
      * @see SymbolKind#imageView
