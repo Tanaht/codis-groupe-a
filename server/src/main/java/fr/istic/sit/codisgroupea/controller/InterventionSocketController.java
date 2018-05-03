@@ -45,16 +45,6 @@ public class InterventionSocketController {
     private InterventionRepository interventionRepository;
 
     /**
-     * {@link SinisterCodeRepository} instance
-     */
-    private SinisterCodeRepository sinisterCodeRepository;
-
-    /**
-     * {@link SymbolSitacRepository} instance
-     */
-    private SymbolSitacRepository symbolSitacRepository;
-
-    /**
      * {@link UnitRepository} instance
      */
     private UnitRepository unitRepository;
@@ -73,8 +63,6 @@ public class InterventionSocketController {
      *
      * @param simpMessagingTemplate  the simp messaging template
      * @param interventionRepository {@link InterventionRepository} instance
-     * @param sinisterCodeRepository {@link SinisterCodeRepository} instance
-     * @param symbolSitacRepository  {@link SymbolSitacRepository} instance
      * @param unitRepository         {@link UnitRepository} instance
      * @param photoRepository        {@link PhotoRepository} instance
      * @param listSigService         the SIG service
@@ -83,16 +71,12 @@ public class InterventionSocketController {
     public InterventionSocketController(
             SimpMessagingTemplate simpMessagingTemplate,
             InterventionRepository interventionRepository,
-            SinisterCodeRepository sinisterCodeRepository,
-            SymbolSitacRepository symbolSitacRepository,
             UnitRepository unitRepository,
             PhotoRepository photoRepository,
             ListSigService listSigService,
             InterventionFactory interventionFactory) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.interventionRepository = interventionRepository;
-        this.sinisterCodeRepository = sinisterCodeRepository;
-        this.symbolSitacRepository = symbolSitacRepository;
         this.unitRepository = unitRepository;
         this.photoRepository = photoRepository;
         this.listSigService = listSigService;
@@ -108,22 +92,24 @@ public class InterventionSocketController {
     private List<InterventionChosenMessage.Symbol> populateSymbolList(Intervention intervention) {
         List<InterventionChosenMessage.Symbol> symbols = new ArrayList<>();
 
-        List<SymbolSitac> listSymbol = intervention.getSymbols();
-        List<SymbolSitac> listSymbolBouchon = listSigService.getInterventionSymbols(intervention);
+        val symbolList = intervention.getSymbols();
+        val stubSymbolList = listSigService.getInterventionSymbols
+                (intervention);
 
-        List<SymbolSitac> union = new ArrayList<>(listSymbol);
-        union.addAll(listSymbolBouchon);
+        List<SymbolSitac> union = new ArrayList<>(symbolList);
+        union.addAll(stubSymbolList);
 
         for (SymbolSitac symSitac : union) {
             Symbol actualSymbol = symSitac.getSymbol();
             Payload payload = symSitac.getPayload();
 
-            InterventionChosenMessage.Symbol sym = new InterventionChosenMessage.Symbol(
+            val sym = new InterventionChosenMessage.Symbol(
                     actualSymbol.getId(),
                     actualSymbol.getShape().toString(),
                     actualSymbol.getColor().toString(),
                     new Position(symSitac.getLocation()),
-                    new InterventionChosenMessage.Symbol.Payload(payload.getIdentifier(), payload.getDetails())
+                    new InterventionChosenMessage.Symbol.Payload(
+                            payload.getIdentifier(), payload.getDetails())
             );
 
             symbols.add(sym);
@@ -283,7 +269,7 @@ public class InterventionSocketController {
             toReturn.setUnits(unitMessages);
             String toJson = jason.toJson(toReturn);
             logger.trace(RoutesConfig.CREATE_INTERVENTION_SERVER
-                    + " --> data send " + toJson);
+                    + DATA_SEND + toJson);
             simpMessagingTemplate.convertAndSend(
                     RoutesConfig.CREATE_INTERVENTION_SERVER, toJson);
         } catch (VehicleAlreadyAssignedException | VehicleNotFoundException e) {
