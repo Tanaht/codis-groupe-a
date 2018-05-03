@@ -2,11 +2,11 @@ package fr.istic.sit.codisgroupea.controller;
 
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
-import fr.istic.sit.codisgroupea.model.entity.*;
 import fr.istic.sit.codisgroupea.model.message.send.InitializeApplicationMessage;
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 import fr.istic.sit.codisgroupea.repository.*;
 import fr.istic.sit.codisgroupea.service.AuthenticationService;
+import lombok.val;
 import org.apache.logging.log4j.*;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,9 +14,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static fr.istic.sit.codisgroupea.model.message.send.InitializeApplicationMessage.*;
 
 @Controller
 public class AuthenticationController {
@@ -82,61 +84,74 @@ public class AuthenticationController {
     /**
      * Requested by android client when he connected to the application.
      * @param principal Injected param who contain the user login who send the request
-     * @param username Username in the url. Useless
+     * @param u         Username in the url. Useless
      */
+    @SuppressWarnings("unused")
     @MessageMapping(RoutesConfig.SUBSCRIBED)
-    public void getInfoUser(Principal principal, @DestinationVariable("username") final String username) {
-        logger.trace(RoutesConfig.SUBSCRIBED +" --> data receive : empty string");
+    public void getInfoUser(Principal principal,
+                            @DestinationVariable("username") final String u) {
+        logger.trace(RoutesConfig.SUBSCRIBED
+                + " --> data receive : empty string");
+        logger.info("msg receive from " + principal.getName());
 
-        logger.info("msg receive from "+principal.getName());
-
-        Optional<User> user = authenticationService.getUser(principal.getName());
+        val user = authenticationService.getUser(principal.getName());
 
         if (!user.isPresent()){
             logger.error(principal.getName() + " doesn't exist in the bdd");
         }
 
-        List<InitializeApplicationMessage.VehicleTypeMessage> types = new ArrayList<>();
-        for (VehicleType vehicleType : vehicleTypeRepository.findAll()){
-            types.add(new InitializeApplicationMessage.VehicleTypeMessage(vehicleType));
-        }
+        val types = populateList(
+                vehicleTypeRepository.findAll(),
+                VehicleTypeMessage::new);
 
-        List<InitializeApplicationMessage.SinisterCodeMessage> codes = new ArrayList<>();
-        for (SinisterCode sinisterCode : sinisterCodeRepository.findAll()){
-            codes.add(new InitializeApplicationMessage.SinisterCodeMessage(sinisterCode));
-        }
+        val codes = populateList(
+                sinisterCodeRepository.findAll(),
+                SinisterCodeMessage::new);
 
-        List<VehicleMessage> vehicles = new ArrayList<>();
-        for (Vehicle vehicle : vehicleRepository.findAll()){
-            vehicles.add(new VehicleMessage(vehicle));
-        }
+        val vehicles = populateList(
+                vehicleRepository.findAll(),
+                VehicleMessage::new);
 
-        List<InitializeApplicationMessage.DemandMessage> demandes = new ArrayList<>();
-        for (Unit unit : unitRepository.getAllRequestedVehicles()){
-            demandes.add(new InitializeApplicationMessage.DemandMessage(unit));
-        }
+        val demands = populateList(
+                unitRepository.getAllRequestedVehicles(),
+                DemandMessage::new);
 
-        List<InitializeApplicationMessage.InterventionMessage> interventionsAvailable = new ArrayList<>();
-        for (Intervention intervention : interventionRepository.findAllByOpened(true)){
-            interventionsAvailable.add(new InitializeApplicationMessage.InterventionMessage(intervention));
-        }
+        val interventionsAvailable = populateList(
+                interventionRepository.findAllByOpened(true),
+                InterventionMessage::new);
 
         List<InitializeApplicationMessage.PhotoMessage> photoAvailable = new ArrayList<>();
         for (Photo photo : photoRepository.findAll()){
             photoAvailable.add(new InitializeApplicationMessage.PhotoMessage(photo));
         }
+        // The check is redundant with the one above.
+        @SuppressWarnings({"unchecked", "ConstantConditions"})
+        val iniAppli = new InitializeApplicationMessage(user.get(),
+                types, codes, vehicles, demands, interventionsAvailable);
 
-
-
-        InitializeApplicationMessage iniAppli = new InitializeApplicationMessage(user.get(),
-                types,codes,vehicles,demandes, interventionsAvailable, photoAvailable);
-
-        String urlToSend = "/topic/users/"+principal.getName()+"/initialize-application";
+        String urlToSend = "/topic/users/" + principal.getName()
+                + "/initialize-application";
 
         Gson gson = new Gson();
-        String toJson = gson.toJson(iniAppli,InitializeApplicationMessage.class);
+        val toJson = gson.toJson(iniAppli, InitializeApplicationMessage.class);
 
         logger.trace("{} --> data send {}", urlToSend, toJson);
         simpMessagingTemplate.convertAndSend(urlToSend, toJson);
+    }
+
+    /**
+     * Take a list of E and return a list of M,
+     * converting each element of the list using the function f.
+     *
+     * @param list the input list
+     * @param f    the conversion function
+     * @param <E>  the type of the input list elements
+     * @param <M>  the type of the output list elements
+     * @return     a list of M
+     */
+    private <E, M> List<M> populateList(List<E> list, Function<E, M> f) {
+        return list.parallelStream()
+                .map(f)
+                .collect(Collectors.toList());
     }
 }

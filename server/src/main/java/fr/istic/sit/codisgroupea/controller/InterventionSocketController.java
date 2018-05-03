@@ -51,9 +51,6 @@ public class InterventionSocketController {
     /** {@link PhotoRepository} instance */
     private PhotoRepository photoRepository;
 
-    /** {@link PositionRepository} instance */
-    private PositionRepository positionRepository;
-
     private ListSigService listSigService;
 
     private VehicleRepository vehicleRepository;
@@ -61,25 +58,22 @@ public class InterventionSocketController {
 
     /**
      * Constructor of the class {@link InterventionSocketController}.
-     * @param simpMessagingTemplate
+     * @param simpMessagingTemplate the simp messaging template
      * @param interventionRepository {@link InterventionRepository} instance
      * @param sinisterCodeRepository {@link SinisterCodeRepository} instance
      * @param symbolSitacRepository {@link SymbolSitacRepository} instance
      * @param unitRepository {@link UnitRepository} instance
      * @param photoRepository {@link PhotoRepository} instance
-     * @param positionRepository
-     * @param listSigService
-     * @param vehicleRepository
+     * @param listSigService the SIG service
      */
-    public InterventionSocketController(SimpMessagingTemplate simpMessagingTemplate, InterventionRepository interventionRepository,
-                                        SinisterCodeRepository sinisterCodeRepository,
-                                        SymbolSitacRepository symbolSitacRepository,
-                                        UnitRepository unitRepository,
-                                        PhotoRepository photoRepository,
-                                        PositionRepository positionRepository,
-                                        ListSigService listSigService,
-                                        VehicleRepository vehicleRepository,
-                                        InterventionFactory interventionFactory) {
+    public InterventionSocketController(
+            SimpMessagingTemplate simpMessagingTemplate,
+            InterventionRepository interventionRepository,
+            SinisterCodeRepository sinisterCodeRepository,
+            SymbolSitacRepository symbolSitacRepository,
+            UnitRepository unitRepository,
+            PhotoRepository photoRepository,
+            ListSigService listSigService) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.interventionRepository = interventionRepository;
         this.sinisterCodeRepository = sinisterCodeRepository;
@@ -87,7 +81,6 @@ public class InterventionSocketController {
         this.interventionFactory = interventionFactory;
         this.unitRepository = unitRepository;
         this.photoRepository = photoRepository;
-        this.positionRepository = positionRepository;
         this.listSigService = listSigService;
         this.vehicleRepository = vehicleRepository;
     }
@@ -102,7 +95,7 @@ public class InterventionSocketController {
         List<InterventionChosenMessage.Symbol> symbols = new ArrayList<>();
 
         List<SymbolSitac> listSymbol = intervention.getSymbols();
-        List<SymbolSitac> listSymbolBouchon = listSigService.getSymbolsInTheIntervention(intervention);
+        List<SymbolSitac> listSymbolBouchon = listSigService.getInterventionSymbols(intervention);
 
         List<SymbolSitac> union = new ArrayList<>(listSymbol);
         union.addAll(listSymbolBouchon);
@@ -186,19 +179,24 @@ public class InterventionSocketController {
         return photos;
     }
 
+    /* Constants used in many methods below */
+    private static final String DATA_RECEIVE = " --> data receive ";
+    private static final String DATA_SEND = " --> data send ";
+
     /**
      * Choose intervention.
      *
      * @param id               the id
      * @param principal        the principal
      * @param dataSentByClient the data sent by client
-     * @return the string
      */
     @MessageMapping(RoutesConfig.CHOOSE_INTERVENTION_CLIENT)
     public void chooseIntervention(@DestinationVariable("id") final int id,
                                                         Principal principal,
                                                         String dataSentByClient) {
-        logger.trace(RoutesConfig.CHOOSE_INTERVENTION_CLIENT +" --> data receive "+dataSentByClient);
+        logger.trace(RoutesConfig.CHOOSE_INTERVENTION_CLIENT
+                + DATA_RECEIVE + dataSentByClient);
+
         String username = principal.getName();
         Intervention intervention = interventionRepository.getOneById(id);
 
@@ -228,13 +226,14 @@ public class InterventionSocketController {
      *
      * @param principal        the principal
      * @param dataSentByClient the data sent by client
-     * @return the string
      */
     @MessageMapping(RoutesConfig.CREATE_INTERVENTION_CLIENT)
     public void createIntervention(Principal principal, String dataSentByClient) {
         logger.trace("{} --> data receive {}", RoutesConfig.CREATE_INTERVENTION_CLIENT, dataSentByClient);
         Gson jason = new Gson();
 
+        logger.trace(RoutesConfig.CREATE_INTERVENTION_CLIENT
+                + DATA_RECEIVE + dataSentByClient);
 
         CreateInterventionMessage dataFromClient = jason.fromJson(dataSentByClient,CreateInterventionMessage.class);
 
@@ -264,6 +263,22 @@ public class InterventionSocketController {
             logger.error(e.getMessage(), e);
         }
 
+        Intervention persisted = interventionRepository.save(intervention);
+
+        logger.debug("Position: " + intervention.getPosition());
+        InterventionCreatedMessage toReturn = new InterventionCreatedMessage(
+                persisted.getId(),
+                persisted.getDate(),
+                persisted.getSinisterCode().getCode(),
+                persisted.getAddress(),
+                true,
+                new Location(persisted.getPosition()));
+
+        String toJson = jason.toJson(toReturn);
+
+        logger.trace(RoutesConfig.CREATE_INTERVENTION_SERVER
+                + DATA_SEND + toJson);
+        simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_INTERVENTION_SERVER, toJson);
     }
 
     /**
@@ -272,13 +287,13 @@ public class InterventionSocketController {
      * @param id               the id
      * @param principal        the principal
      * @param dataSentByClient the data sent by client
-     * @return the string
      */
     @MessageMapping(RoutesConfig.CLOSE_INTERVENTION_CLIENT)
     public void closeIntervention(@DestinationVariable("id") final int id,
                                        Principal principal,
                                        String dataSentByClient) {
-        logger.trace(RoutesConfig.CLOSE_INTERVENTION_CLIENT +" --> data receive "+dataSentByClient);
+        logger.trace(RoutesConfig.CLOSE_INTERVENTION_CLIENT
+                + DATA_RECEIVE + dataSentByClient);
 
         Intervention intervention = interventionRepository.getOne(id);
         intervention.setOpened(false);
@@ -289,7 +304,8 @@ public class InterventionSocketController {
         Gson jason = new Gson();
 
         String toJson = jason.toJson(toSend);
-        logger.trace(RoutesConfig.CLOSE_INTERVENTION_SERVER +" --> data send "+toJson);
+        logger.trace(RoutesConfig.CLOSE_INTERVENTION_SERVER
+                + DATA_SEND + toJson);
 
         simpMessagingTemplate.convertAndSend(RoutesConfig.CLOSE_INTERVENTION_SERVER, toJson);
     }
