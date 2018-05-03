@@ -25,7 +25,7 @@
         android:id="@+id/mapFragment"
         android:name="ila.fr.codisintervention.fragments.MapsFragment"
         android:layout_width="1124dp"
-        android:layout_height="671dp"
+        android:layout_height="674dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/button3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +42,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/send_drone_points"
+        android:text="@string/label_deploy_drone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/mapFragment"
         app:layout_constraintHorizontal_bias="0.604"
@@ -52,33 +52,41 @@
 
     <Button
         android:id="@+id/crm_button"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:onClick="showMeansTable"
         android:text="@string/btn_crm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button3"
-        app:layout_constraintHorizontal_bias="0.978"
         app:layout_constraintStart_toEndOf="@+id/listSymbolFragment" />
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="360dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:onClick="showMeansTable"
         android:text="@string/btn_go_to_means_table"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-        
-      <Button
+        app:layout_constraintEnd_toStartOf="@+id/button4"
+        app:layout_constraintStart_toEndOf="@+id/crm_button" />
+
+    <Button
         android:id="@+id/button4"
-        android:layout_width="86dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:onClick="showPhotosDisplay"
         android:text="@string/btn_go_to_photos_display"
