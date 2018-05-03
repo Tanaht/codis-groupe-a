@@ -71,7 +71,7 @@ public class DroneController {
     private Path missionOrderMessageToPath(MissionOrderMessage msg) {
         List<Position> points = new LinkedList<>();
 
-        for(MissionOrderMessage.Location loc : msg.getPath()) {
+        for(MissionOrderMessage.Location loc : msg.getPoints()) {
             Position position = new Position(loc.getLat(), loc.getLng());
             points.add(position);
         }

@@ -22,7 +22,7 @@ public class Path {
     private double altitude;
 
     /** List of {@link Position} for all the point in the path */
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Position> points;
 
     /** Instance of {@link PathType} for the type of the path */
@@ -50,5 +50,5 @@ public class Path {
         this.points = points;
         this.type = type;
     }
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+
 }
