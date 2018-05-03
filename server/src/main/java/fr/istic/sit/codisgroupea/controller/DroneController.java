@@ -123,6 +123,7 @@ public class DroneController {
                 .map(e->new Location(e,interv))
                 .collect(Collectors.toList());
 
+        socketForDroneCommunication.sendMessagePing();
         socketForDroneCommunication.sendMessage(
                 new MissionOrder("ASSIGN_MISSION",
                         interv.getId(),

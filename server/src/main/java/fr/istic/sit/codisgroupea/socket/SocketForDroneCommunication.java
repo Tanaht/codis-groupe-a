@@ -42,6 +42,8 @@ public class SocketForDroneCommunication {
 
 	private boolean sending = false;
 
+	private boolean launchPing = false;
+
 	/**
 	 * 
 	 * Start the socket, then create 2 Thread to send and receive message
@@ -164,6 +166,76 @@ public class SocketForDroneCommunication {
 		sendThread.start();
 	}
 
+
+	/**
+	 * Send a ping to the drone for helping sync
+	 *
+	 */
+	public void sendMessagePing() {
+		Runnable sendPing = new Runnable() {
+			@Override
+			public void run() {
+				//Lock reception
+				while (true) {
+					if (!sending) {
+						sending = true;
+						try {
+							//Send message
+							OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
+							BufferedWriter writer = new BufferedWriter(out);
+							writer.write("!");
+							writer.flush();
+						} catch (IOException e) {
+							e.getMessage();
+						}
+						//Release lock
+						sending = false;
+						try {
+							Thread.sleep(200);
+						} catch (Exception e) {
+							e.getMessage();
+						}
+					}
+				}
+			}
+		};
+		//Start thread
+		if (!launchPing) {
+			launchPing = true;
+			Thread sendThread = new Thread(sendPing);
+			sendThread.start();
+		}
+	}
+
+	/**
+	 * Send mission to the drone
+	 * @param mission A MissionOrder containing mission informations
+	 */
+	public void sendSTOP(MissionOrder mission) {
+		Runnable sendTask = new Runnable() {
+			@Override
+			public void run() {
+				//Lock reception
+				sending = true;
+				//Convert mission to json
+				String message = JsonForDroneCommunicationToolBox.getJsonFromMissionOrder(mission);
+				try {
+					//Send message
+					OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
+					BufferedWriter writer = new BufferedWriter(out);
+					writer.write("STOP");
+					writer.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				//Release lock
+				sending = false;
+			}
+		};
+		//Start thread
+		Thread sendThread = new Thread(sendTask);
+		sendThread.start();
+	}
 	/**
 	 * Send the drone position (received by socket) to android (by websocket)
 	 * @param location
