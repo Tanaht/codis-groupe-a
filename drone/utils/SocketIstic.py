@@ -74,8 +74,13 @@ class SocketIstic:
         ma_mission = ""
         if not self.used:
             self.used = True
-            response = self.client.recv(4096)
-            print("Received : " + response)
+            try:
+                response = self.client.recv(4096)
+                print("Received : " + response)
+            except ValueError:
+                print("Oops!  : " + ValueError)
+                response = ""
+
             if response != "!" and response != "STOP":
                 response = response.replace("!","")
                 if response != "":

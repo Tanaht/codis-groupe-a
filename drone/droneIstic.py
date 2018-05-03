@@ -12,12 +12,10 @@ class NotreDrone():
     droneStopped = False;
 
     # Construtor with specific IP, targeted altitude
-    def __init__(self, sIP, simulation, altitude, interventionId):
+    def __init__(self, sIP, simulation):
         # START du drone
         self.connection_string = sIP
-        self.interventionId = interventionId
         self.sitl = None
-        self.takeoffAltitude = altitude
         # Start SITL if no connection string specified
         if simulation:
             import dronekit_sitl
@@ -29,6 +27,11 @@ class NotreDrone():
         self.vehicle = connect(self.connection_string, wait_ready=True)
         self.patrol = 0
 
+    def setIntervention(self,interventionId):
+        self.interventionId = interventionId
+
+    def setAltitude(self, altitude):
+        self.takeoffAltitude = altitude
 
     def turnoff(self, value):
         self.stopRequested = value
@@ -125,12 +128,14 @@ class NotreDrone():
     def start(self):
         # This method take-off the drone, reach each point of the mission, Return To Launch and take-On
 
+        SocketIstic.get_socket().send_position(self.vehicle.location.global_frame, self.vehicle.battery.level, self.interventionId)
         # Take-off
         self.arm_and_takeoff(self.takeoffAltitude)
 
         # Asked Altitude is reached
         while not self.is_takeoff(self.takeoffAltitude):
-            update_kml_file(self.vehicle.location.global_relative_frame)
+            update_kml_file(self.vehicle.location.global_frame)
+
             time.sleep(1)
 
     # the drone will reach the launch position and land
@@ -138,12 +143,11 @@ class NotreDrone():
         print('Return to launch')
         self.vehicle.mode = VehicleMode("RTL")
 
-        location = self.vehicle.location.global_relative_frame
-        SocketIstic.get_socket().send_position(location, self.vehicle.battery.level, self.interventionId)
-
         # Floor is reached
         while self.is_takeoff(1):
-            update_kml_file(self.vehicle.location.global_relative_frame)
+            update_kml_file(self.vehicle.location.global_frame)
+            location = self.vehicle.location.global_relative_frame
+            SocketIstic.get_socket().send_position(location, self.vehicle.battery.level, self.interventionId)
             time.sleep(1)
 
         # Close vehicle object before exiting script
@@ -218,7 +222,7 @@ class NotreDrone():
         while (self.vehicle.battery.level > Patrol.BATTERY_LOW) and not self.stopRequested:
             nextwaypoint = self.vehicle.commands.next
 
-            location = self.vehicle.location.global_relative_frame
+            location = self.vehicle.location.global_frame
 
             # live update for Google Earth view
             update_kml_file(location)

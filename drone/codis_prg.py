@@ -17,20 +17,22 @@ class Drone(threading.Thread):
     def __init__(self, mission):
         super(Drone, self).__init__()
         self.mission = mission
-        self._stop_event = threading.Event()
+        # self._stop_event = threading.Event()
 
     def stopped(self):
         return self._stop_event.is_set()
 
     def run(self):
+
+        self.codisDrone = droneIstic.NotreDrone("udpin:{}:{}".format(config.drone_host, config.drone_port), False)
+
         while True:
             if not self.turnOff:
+                if self.mission.patrol_liste > 0:
+                    self.codisDrone.droneStopped = False
 
-                self.codisDrone = droneIstic.NotreDrone("udpin:{}:{}".format(config.drone_host, config.drone_port), False,
-                                                   self.mission.altitude, self.mission.interventionId)
-
-                if (self.mission.patrol_liste > 0):
-                    self.codisDrone.droneStopped = False;
+                    self.codisDrone.setAltitude(self.mission.altitude)
+                    self.codisDrone.setIntervention(self.mission.interventionId)
 
                     self.codisDrone.change_patrol_mission(self.mission.patrol_liste, self.mission.patrol)
                     self.codisDrone.change_mission(self.mission.liste)
@@ -53,7 +55,7 @@ class Drone(threading.Thread):
 
                 self.codisDrone.droneStopped = True;
 
-        self._stop_event.set()
+        # self._stop_event.set()
 
     def stop(self):
         # the drone goes back to the launch position and take on
@@ -71,7 +73,6 @@ class Drone(threading.Thread):
         return self.codisDrone.droneStopped
 
 
-
 config = Config()
 client = SocketIstic.get_socket()
 drone_1 = None
@@ -84,20 +85,20 @@ while True:
     # wait something from the server socket
     ma_mission = client.wait_a_mission()
 
-    if (ma_mission == "STOP") :
+    if ma_mission == "STOP":
         print("STOP !!")
-        if (drone_1 != None and drone_1.isAlive()):
-            drone_1.setTurnOff();
-    elif (ma_mission != "!" and ma_mission != ""):
+        if drone_1 is not None and drone_1.isAlive():
+            drone_1.setTurnOff()
+    elif ma_mission != "!" and ma_mission != "":
         print("New Mission !!")
-        if (drone_1 == None):
+        if drone_1 is None:
             drone_1 = Drone(ma_mission)
             drone_1.start()
-        elif (drone_1.isAlive()):
-            drone_1.setTurnOff(True);
+        elif drone_1.isAlive():
+            drone_1.setTurnOff(True)
             while not drone_1.getDroneStopped():
                 time.sleep(1)
-            drone_1.setMissionAndTurnOn(ma_mission);
+            drone_1.setMissionAndTurnOn(ma_mission)
 
     time.sleep(0.2)
 
