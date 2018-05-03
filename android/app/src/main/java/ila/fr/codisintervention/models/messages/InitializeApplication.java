@@ -39,7 +39,7 @@ public class InitializeApplication implements Parcelable{
     private List<Vehicle> vehicles;
 
     @Expose
-    private List<Photo> photos;
+    private List<Photo> photos = new ArrayList<>();
 
     /**
      * The list of All demande

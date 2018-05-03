@@ -5,26 +5,27 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.models.model.Photo;
 import ila.fr.codisintervention.services.ModelServiceAware;
-
+import ila.fr.codisintervention.utils.Config;
 
 /**
  * The type Photos display activity.
@@ -63,9 +64,10 @@ public class PhotosDisplayActivity extends AppCompatActivity implements ModelSer
     private void loadList() {
         Integer currentIntervention = modelService.getCurrentIntervention().getId();
         List<Photo> photos = modelService.getPhotos();
-        for(Photo photo : photos){
-            if(photo.getInterventionId() == currentIntervention){
-                urlList.add(photo.getUri());
+        for (Photo photo : photos) {
+            if (photo.getInterventionId() == currentIntervention) {
+                String uri = "http://" + Config.get().getHost() + ":" + Config.get().getPort() + photo.getUri();
+                urlList.add(uri);
             }
         }
         Collections.sort(urlList);
@@ -107,14 +109,16 @@ public class PhotosDisplayActivity extends AppCompatActivity implements ModelSer
      *
      */
     private void imageDrone() {
-
-        //Toast.makeText(this, "pouet", Toast.LENGTH_SHORT).show();
-        if(!urlList.isEmpty()) {
+        if (!urlList.isEmpty()) {
             url = urlList.get(indexImage);
-            TextView azerty = (TextView) findViewById(R.id.text);
-            azerty.setEnabled(false);
-            azerty.setFocusable(false);
-            azerty.setText(url);
+            String imageUrl = new String(urlList.get(indexImage)).replace(".png","");
+            String[] urlPart = imageUrl.split("/");
+            String[] imageNamePart = urlPart[urlPart.length-1].split("_");
+            String point = imageNamePart[1];
+            Date date = new Date(Long.parseLong(imageNamePart[2])*1000);
+            SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
+            TextView imageInfo = (TextView) findViewById(R.id.text);
+            imageInfo.setText("Point " + point + " at " + ft.format(date));
             new LoadImage().execute();
         }
     }

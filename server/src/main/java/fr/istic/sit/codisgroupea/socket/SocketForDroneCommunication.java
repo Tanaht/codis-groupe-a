@@ -37,9 +37,6 @@ public class SocketForDroneCommunication {
 	private PhotoRepository photoRepository;
 	private PositionRepository positionRepository;
 
-	@Autowired
-	private ApplicationContext appContext;
-
 	private Socket socket;
 	private ServerSocket serverSocket;
 
@@ -198,7 +195,6 @@ public class SocketForDroneCommunication {
 	 */
 	public void sendDronePhoto(Photo photo) {
 		Gson gson = new Gson();
-		photo.setPhoto("http://192.168.43.107:8080/" + photo.getPhoto());
 		String toJson = gson.toJson(photo, Photo.class);
 		simpMessagingTemplate.convertAndSend(RoutesConfig.SEND_DRONE_PHOTO_PART1 + photo.getInterventionId() + RoutesConfig.SEND_DRONE_PHOTO_PART2, toJson);
 	}
