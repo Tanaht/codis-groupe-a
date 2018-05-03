@@ -1,7 +1,5 @@
 package fr.istic.sit.codisgroupea;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.boot.SpringApplication;
@@ -13,13 +11,7 @@ public class CodisGroupeAApplication {
 
 	private static final Logger logger = LogManager.getLogger();
 
-	public static void main(String[] args) throws IOException {
-		logger.trace("grosse trace comme ta mère");
-		logger.info("grosse info comme ta mère");
-		logger.debug("gros debug comme ton père");
-		logger.warn("gros warning comme ton boule");
-		logger.error("grosse error comme ta naissance");
-		logger.error("by Beaulieu ;)");
+	public static void main(String[] args) {
 
 		ConfigurableApplicationContext context = SpringApplication.run(CodisGroupeAApplication.class, args);
 

@@ -1,12 +1,7 @@
 package ila.fr.codisintervention.fragments;
 
-import android.content.ComponentName;
-import android.content.ServiceConnection;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,40 +13,30 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
-import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.entities.SymbolKind;
+import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.Unit;
-import ila.fr.codisintervention.models.model.map_icon.Color;
 import ila.fr.codisintervention.models.model.map_icon.I_MarkerElement;
 import ila.fr.codisintervention.models.model.map_icon.MarkerDrone;
 import ila.fr.codisintervention.models.model.map_icon.MarkerSymbol;
 import ila.fr.codisintervention.models.model.map_icon.MarkerUnit;
-import ila.fr.codisintervention.models.model.map_icon.Shape;
-import ila.fr.codisintervention.models.model.map_icon.drone.PathDroneType;
-import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
-import ila.fr.codisintervention.models.model.map_icon.symbol.SymbolUnit;
-import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.model.map_icon.drone.PathDrone;
+import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.utils.MarkerUtility;
 
 /**

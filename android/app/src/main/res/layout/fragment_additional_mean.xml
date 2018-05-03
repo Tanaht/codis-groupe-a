@@ -13,41 +13,14 @@
         android:orientation="horizontal"
         android:gravity="center_horizontal">
 
-    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/redradioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="@string/mean_1" />
-
-        <RadioButton
-            android:id="@+id/greenradioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="@string/mean_2" />
-
-        <RadioButton
-            android:id="@+id/blueradioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="@string/mean_3" />
-
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/add_new_mean"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_weight="1"
             android:text="@string/label_additional_mean" />
 
-    </RadioGroup>
     </LinearLayout>
 
 </FrameLayout>

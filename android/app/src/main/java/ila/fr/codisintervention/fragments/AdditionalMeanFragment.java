@@ -1,78 +1,88 @@
 package ila.fr.codisintervention.fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import ila.fr.codisintervention.R;
+import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.models.model.Request;
+import ila.fr.codisintervention.models.model.map_icon.vehicle.VehicleStatus;
+import lombok.NoArgsConstructor;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link AdditionalMeanFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link AdditionalMeanFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Fragment use to show an Alert Dialog to perform a VehicleRequest
  */
+@NoArgsConstructor
 public class AdditionalMeanFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "AdditionalMeanFragment";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private ModelServiceBinder.IMyServiceMethod modelService;
+    private String chosenVehicleType;
 
     private OnFragmentInteractionListener mListener;
 
-    public AdditionalMeanFragment() {
-        // Required empty public constructor
-    }
+
+
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment AdditionalMeanFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static AdditionalMeanFragment newInstance(String param1, String param2) {
-        AdditionalMeanFragment fragment = new AdditionalMeanFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static AdditionalMeanFragment newInstance() {
+        return new AdditionalMeanFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+        this.modelService = modelService;
+    }
+
+    /**
+     * Show the alert dialog to choose a Vehicle type and request it to remote server
+     */
+    private void showPopup() {
+        String[] vehicleTypes = new String[modelService.getVehicleTypes().size()];
+        modelService.getVehicleTypes().toArray(vehicleTypes);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.label_choose_vehicle);
+
+        builder.setSingleChoiceItems(vehicleTypes, -1, (dialog, item) -> {
+            this.chosenVehicleType = vehicleTypes[item];
+        });
+
+        builder.setPositiveButton(R.string.label_validate, (dialog, id) -> {
+            Log.d(TAG, "Create a Request for a vehicle with the given type: " + chosenVehicleType);
+            Request request = new Request(chosenVehicleType);
+            request.getVehicle().setStatus(VehicleStatus.CRM);
+            mListener.onNewVehicleRequest(request);
+        });
+
+
+        builder.setNegativeButton(R.string.label_deny, (dialog, id) -> {
+            Log.d(TAG, "Do not c a Request for a vehicle with the given type: " + chosenVehicleType);
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_additional_mean, container, false);
-    }
+        View rootView = inflater.inflate(R.layout.fragment_additional_mean, container, false);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        rootView.findViewById(R.id.add_new_mean).setOnClickListener(v -> {
+            showPopup();
+        });
+
+        return rootView;
     }
 
     @Override
@@ -104,6 +114,6 @@ public class AdditionalMeanFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onNewVehicleRequest(Request request);
     }
 }

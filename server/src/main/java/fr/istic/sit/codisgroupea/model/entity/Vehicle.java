@@ -33,7 +33,7 @@ public class Vehicle {
 
     /** Instance of the {@link VehicleType} for the type of the vehicle */
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private VehicleType type;
 
     /**

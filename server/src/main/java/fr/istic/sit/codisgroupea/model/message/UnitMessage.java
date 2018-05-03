@@ -49,9 +49,12 @@ public class UnitMessage {
     public UnitMessage(Unit unit){
         id = unit.getId();
         moving = unit.isMoving();
-        vehicle = new VehicleMessage(unit.getUnitVehicle());
 
-        symbol = new Symbol(unit.getSymbolSitac());
+        if(unit.getUnitVehicle() != null)
+            vehicle = new VehicleMessage(unit.getUnitVehicle());
+
+        if(unit.getSymbolSitac() != null)
+            symbol = new Symbol(unit.getSymbolSitac());
 
     }
 }

@@ -81,8 +81,10 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "START COMMAND by " + intent);
 
+
         try {
-            updateTheModel(intent);
+            if(intent != null)
+                updateTheModel(intent);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
         }
@@ -174,10 +176,19 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(symbolsListDelete.get(0).getId(), ModelConstants.UPDATE_INTERVENTION_DELETE_SYMBOL);
                 break;
             case WebsocketService.INTERVENTION_UNIT_CREATED:
-                Unit unitCreated = intent.getParcelableExtra
-                        (WebsocketService.INTERVENTION_UNIT_CREATED);
-                model.getCurrentIntervention().createUnit(unitCreated);
-                sendToEveryone(unitCreated.getId(), ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT);
+                List<ila.fr.codisintervention.models.messages.Unit> units = intent.getParcelableArrayListExtra(WebsocketService.INTERVENTION_UNIT_CREATED);
+
+                Intent unitCreatedIntent = new Intent(ModelConstants.UPDATE_INTERVENTION_CREATE_UNIT);
+
+                ArrayList<Integer> ids = new ArrayList<>();
+                for(ila.fr.codisintervention.models.messages.Unit unit : units) {
+                    Unit unitCreated = new Unit(unit);
+                    model.getCurrentIntervention().createUnit(unitCreated);
+                    ids.add(unitCreated.getId());
+                }
+
+                unitCreatedIntent.putExtra("ids", ids);
+                deliverIntent(unitCreatedIntent);
                 break;
             case WebsocketService.INTERVENTION_UNIT_UPDATED:
                 Unit unitUpdated = intent.getParcelableExtra
@@ -191,12 +202,12 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
                 sendToEveryone(unitUpdated.getId(), ModelConstants.UPDATE_INTERVENTION_UPDATE_UNIT);
                 break;
             case WebsocketService.DEMANDE_ACCEPTED:
-                Request request = new Request(intent.getParcelableExtra(WebsocketService.DEMANDE_ACCEPTED));
+                Request request = new Request((ila.fr.codisintervention.models.messages.Request) intent.getParcelableExtra(WebsocketService.DEMANDE_ACCEPTED));
                 model.getRequests().remove(request);
                 sendToEveryone(request.getId(), ModelConstants.VALIDATE_VEHICLE_REQUEST);
                 break;
             case WebsocketService.DEMANDE_DENIED:
-                Request req = new Request(intent.getParcelableExtra(WebsocketService.DEMANDE_DENIED));
+                Request req = new Request((ila.fr.codisintervention.models.messages.Request) intent.getParcelableExtra(WebsocketService.DEMANDE_DENIED));
                 model.getRequests().remove(req);
                 sendToEveryone(req.getId(), ModelConstants.REJECT_VEHICLE_REQUEST);
                 break;
@@ -223,7 +234,8 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
 
     private void updateDronePathFromMessage(PathDrone pathDrone) {
         if(this.model.getCurrentIntervention() != null) {
-            this.model.getCurrentIntervention().setPathDrone(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
+            if(pathDrone != null)
+                this.model.getCurrentIntervention().setPathDrone(new ila.fr.codisintervention.models.model.map_icon.drone.PathDrone(pathDrone));
             Intent intent = new Intent(ModelConstants.DRONE_PATH_ASSIGNED);
             intent.putExtra("pathDrone",pathDrone);
             deliverIntent(intent);

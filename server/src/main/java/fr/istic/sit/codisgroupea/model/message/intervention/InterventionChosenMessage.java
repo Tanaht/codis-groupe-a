@@ -433,15 +433,13 @@ public class InterventionChosenMessage {
          *
          * @param id            the id
          * @param date_reserved the date reserved
-         * @param date_granted  the date granted
          * @param moving        the moving
          * @param vehicle       the vehicle
          * @param symbol        the symbol
          */
-        public Unit(int id, long date_reserved, Long date_granted, boolean moving, Vehicle vehicle, Symbol symbol) {
+        public Unit(int id, long date_reserved, boolean moving, Vehicle vehicle, Symbol symbol) {
             this.id = id;
             this.date_reserved = date_reserved;
-            this.date_granted = date_granted;
             this.moving = moving;
             this.vehicle = vehicle;
             this.symbol = symbol;
@@ -680,13 +678,12 @@ public class InterventionChosenMessage {
      * @param units   the units
      * @param photos  the photos
      */
-    public InterventionChosenMessage(int id, List<Symbol> symbols, List<Unit> units, List<Photo> photos, Location location, PathDrone path) {
+    public InterventionChosenMessage(int id, List<Symbol> symbols, List<Unit> units, List<Photo> photos, Location location) {
         this.id = id;
         this.symbols = symbols;
         this.units = units;
         this.photos = photos;
         this.location = location;
-        this.pathDrone = path;
     }
 
     public PathDrone getPathDrone() {
