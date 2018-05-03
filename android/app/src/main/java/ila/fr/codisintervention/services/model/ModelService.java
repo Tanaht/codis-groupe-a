@@ -19,12 +19,14 @@ import ila.fr.codisintervention.exception.RequestNotFoundException;
 import ila.fr.codisintervention.exception.SymbolNotFoundException;
 import ila.fr.codisintervention.exception.UnitNotFoundException;
 import ila.fr.codisintervention.exception.VehicleNotFoundException;
+import ila.fr.codisintervention.models.PhotoReception;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
 import ila.fr.codisintervention.models.messages.Intervention;
 import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.ApplicationModel;
 import ila.fr.codisintervention.models.model.InterventionModel;
 import ila.fr.codisintervention.models.model.Request;
+import ila.fr.codisintervention.models.model.Photo;
 import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
@@ -220,6 +222,8 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
             case WebsocketService.DRONE_PING:
                 break;
             case WebsocketService.DRONE_PHOTO:
+                Photo photo = new Photo((PhotoReception) intent.getParcelableExtra(WebsocketService.DRONE_PHOTO));
+                model.getPhotos().add(photo);
                 break;
             case WebsocketService.DRONE_PATH_RECEIVED:
                 PathDrone pathDrone = intent.getParcelableExtra(WebsocketService.DRONE_PATH_RECEIVED);
@@ -326,5 +330,10 @@ public class ModelService extends Service implements ModelServiceBinder.IMyServi
     @Override
     public User getUser() {
         return model.getUser();
+    }
+
+    @Override
+    public List<Photo> getPhotos() {
+        return model.getPhotos();
     }
 }

@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.PhotoReception;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
@@ -144,7 +145,6 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      * Define the Intent action send in case of CLOSE Websocket
      */
     public static final String PROTOCOL_CLOSE = "PROTOCOL_CLOSE";
-
 
     /**
      * The constant DRONE_PATH_RECEIVED
@@ -372,6 +372,18 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         );
     }
 
+    public void deliverPhotoEventIntents(StompMessage message){
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        PhotoReception photo = gson.fromJson(message.getPayload(), PhotoReception.class);
+
+        Intent photoIntent  = new Intent(getApplicationContext(), ModelService.class);
+        photoIntent.setAction(DRONE_PHOTO);
+        photoIntent.putExtra(DRONE_PHOTO, photo);
+        getApplicationContext().startService(photoIntent);
+
+    }
+
     /**
     * Subscribe to this and send notification to server
     * /topic/interventions/{id}/symbols/event`
@@ -382,21 +394,20 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     * */
     @Override
     public void chooseIntervention(int id){
+        this.client.topic("/topic/interventions/" + id + "/photo").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/photo] Received message: " + message.getPayload());
+            deliverPhotoEventIntents(message);
+        });
+
         this.client.topic("/topic/interventions/" + id + "/symbols/event").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/symbols/event] Received message: " + message.getPayload());
             deliverSymbolsEventIntents(message);
         });
 
-
         this.client.topic("/topic/interventions/" + id + "/units/event").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
             deliverUnitsEventIntents(message);
         });
-
-        this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
-                () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
-                error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
-        );
 
         this.client.topic("/topic/interventions/" + id + "/drone/ping").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/drone/ping] Received message: " + message.getPayload());
@@ -408,12 +419,17 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-            
+
             Intent dronePathReceived = new Intent(getApplicationContext(), ModelService.class);
             dronePathReceived.setAction(DRONE_PATH_RECEIVED);
             dronePathReceived.putExtra(DRONE_PATH_RECEIVED, gson.fromJson(message.getPayload(), PathDrone.class));
             getApplicationContext().startService(dronePathReceived);
         });
+
+        this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
+        );
 
     }
 
