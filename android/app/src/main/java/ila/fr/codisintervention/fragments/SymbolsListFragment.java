@@ -86,7 +86,7 @@ public class SymbolsListFragment extends Fragment {
         addRadioButtonListeners(view);
 
         //get the spinner from the xml.
-        dropdown = getActivity().findViewById(R.id.typeDronePath);
+        dropdown = (Spinner)view.findViewById(R.id.typeDronePath);
         String[] items = new String[]{"CIRCLE", "SEGMENT", "GRID"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
