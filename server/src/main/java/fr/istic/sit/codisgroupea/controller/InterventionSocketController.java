@@ -93,11 +93,14 @@ public class InterventionSocketController {
         List<InterventionChosenMessage.Symbol> symbols = new ArrayList<>();
 
         val symbolList = intervention.getSymbols();
-        val stubSymbolList = listSigService.getInterventionSymbols
-                (intervention);
+        val stubSymList = listSigService.getInterventionSymbols(intervention);
+
+        stubSymList.stream()
+                .map(sym -> sym.getId().toString())
+                .forEach(logger::trace);
 
         List<SymbolSitac> union = new ArrayList<>(symbolList);
-        union.addAll(stubSymbolList);
+        union.addAll(stubSymList);
 
         for (SymbolSitac symSitac : union) {
             Symbol actualSymbol = symSitac.getSymbol();
