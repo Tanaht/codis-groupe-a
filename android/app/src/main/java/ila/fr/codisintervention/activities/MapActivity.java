@@ -325,6 +325,15 @@ public class MapActivity extends AppCompatActivity implements SymbolsListFragmen
         return this.symbolFragment.getSelectedSymbol();
     }
 
+    /**
+     * update type for the pathDrone
+     */
+    public void updateDronePathType( String type ){
+        int id = getModelService().getCurrentIntervention().getId();
+        List<Location> dronePointsList = getDronePointList();
+        getWebSocketService().createPathDrone(getModelService().getCurrentIntervention().getId(), new PathDrone(type, dronePointsList));
+    }
+
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 //        No Interaction because unnecessary

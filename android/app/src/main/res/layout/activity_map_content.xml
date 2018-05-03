@@ -11,8 +11,8 @@
     <fragment
         android:id="@+id/listSymbolFragment"
         android:name="ila.fr.codisintervention.fragments.SymbolsListFragment"
-        android:layout_width="94dp"
-        android:layout_height="669dp"
+        android:layout_width="140dp"
+        android:layout_height="674dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:layout_weight="0"
@@ -32,7 +32,7 @@
         app:layout_constraintHorizontal_bias="0.957"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_marginLeft="55dp" />
+        tools:layout_marginLeft="0dp" />
 
     <Button
         android:id="@+id/send_drone_points"

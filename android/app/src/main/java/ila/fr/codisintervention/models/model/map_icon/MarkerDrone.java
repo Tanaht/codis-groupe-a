@@ -16,6 +16,7 @@ import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.models.DronePoint;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.PathDrone;
+import ila.fr.codisintervention.models.model.map_icon.drone.PathDroneType;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Payload;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 import ila.fr.codisintervention.utils.MarkerUtility;
@@ -84,8 +85,10 @@ public class MarkerDrone implements I_MarkerElement {
 
         int id = ((MapActivity)activity).getModelService().getCurrentIntervention().getId();
         List<Location> dronePointsList = ((MapActivity) activity).getDronePointList();
-        ((MapActivity) activity).getWebSocketService().createPathDrone(((MapActivity) activity).getModelService().getCurrentIntervention().getId(), new PathDrone("SEGMENT", dronePointsList));
-        // TODO see method on server side for path update
+        String type = "SEGMENT";
+        if (((MapActivity) activity).getModelService().getCurrentIntervention().getPathDrone() != null)
+            type = ((MapActivity) activity).getModelService().getCurrentIntervention().getPathDrone().getType().name();
+        ((MapActivity) activity).getWebSocketService().createPathDrone(((MapActivity) activity).getModelService().getCurrentIntervention().getId(), new PathDrone(type, dronePointsList));
     }
 
     @Override
@@ -95,7 +98,12 @@ public class MarkerDrone implements I_MarkerElement {
 
             List<Location> dronePointsList = ((MapActivity) activity).getDronePointList();
             dronePointsList.add(getData().getLocation());
-            ((MapActivity) activity).getWebSocketService().createPathDrone(((MapActivity) activity).getModelService().getCurrentIntervention().getId(), new PathDrone("SEGMENT", dronePointsList));
+
+            String type = "SEGMENT";
+            if (((MapActivity) activity).getModelService().getCurrentIntervention().getPathDrone() != null)
+                type = ((MapActivity) activity).getModelService().getCurrentIntervention().getPathDrone().getType().name();
+
+            ((MapActivity) activity).getWebSocketService().createPathDrone(((MapActivity) activity).getModelService().getCurrentIntervention().getId(), new PathDrone(type, dronePointsList));
         }
     }
 }

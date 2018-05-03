@@ -14,35 +14,35 @@
     <RadioButton
         android:id="@+id/redradioButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text=""
         android:background="@color/red" />
 
     <RadioButton
         android:id="@+id/greenradioButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text=""
         android:background="@color/green" />
 
     <RadioButton
         android:id="@+id/blueradioButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text=""
         android:background="@color/blue" />
 
     <RadioButton
         android:id="@+id/orangeradioButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text=""
         android:background="@color/orange" />
 
         <RadioButton
             android:id="@+id/purpleradioButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text=""
             android:background="@color/purple" />
 
@@ -109,11 +109,12 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:src="@drawable/drone" />
-    <Spinner
-        android:id="@+id/typeDronePath"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:background="@android:drawable/btn_dropdown"
-        android:spinnerMode="dropdown"/>
+
+    <!--<Spinner-->
+        <!--android:id="@+id/typeDronePath"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:background="@android:drawable/btn_dropdown"-->
+        <!--android:spinnerMode="dropdown"/>-->
 
 </LinearLayout>

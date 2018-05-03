@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -15,6 +16,7 @@ import android.widget.Spinner;
 
 import java.util.List;
 
+import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.factory.SymbolKindFactory;
@@ -85,12 +87,20 @@ public class SymbolsListFragment extends Fragment {
         addImageViewListeners(list);
         addRadioButtonListeners(view);
 
-        //get the spinner from the xml.
-        dropdown = (Spinner)view.findViewById(R.id.typeDronePath);
-        String[] items = new String[]{"CIRCLE", "SEGMENT", "GRID"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
-        dropdown.setAdapter(adapter);
-
+//TODO manage the loading with data from model
+        //        //get the spinner from the xml.
+//        dropdown = (Spinner)view.findViewById(R.id.typeDronePath);
+//        String[] items = new String[]{"CIRCLE", "SEGMENT"};
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
+//        dropdown.setAdapter(adapter);
+//
+//        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+//                ((MapActivity)getActivity()).updateDronePathType((String)parent.getSelectedItem());
+//            }
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
         return view;
     }
 

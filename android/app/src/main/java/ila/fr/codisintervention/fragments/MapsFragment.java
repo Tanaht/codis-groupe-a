@@ -112,12 +112,14 @@ public class MapsFragment extends Fragment {
      */
     public List<Location> getDronePath(){
         List<Location> myPath = new ArrayList<Location>();
-        for (Map.Entry<Marker,I_MarkerElement> line: markerListDrone.entrySet()){
-            I_MarkerElement element = line.getValue();
-            if(element instanceof MarkerDrone){
-                MarkerDrone md = (MarkerDrone)element;
-                if (!md.getData().isMoving())
-                    myPath.add(md.getData().getLocation());
+        if (markerListDrone != null) {
+            for (Map.Entry<Marker, I_MarkerElement> line : markerListDrone.entrySet()) {
+                I_MarkerElement element = line.getValue();
+                if (element instanceof MarkerDrone) {
+                    MarkerDrone md = (MarkerDrone) element;
+                    if (!md.getData().isMoving())
+                        myPath.add(md.getData().getLocation());
+                }
             }
         }
         return myPath;
