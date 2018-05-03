@@ -2,6 +2,7 @@ package fr.istic.sit.codisgroupea.controller;
 
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
+import fr.istic.sit.codisgroupea.model.entity.Photo;
 import fr.istic.sit.codisgroupea.model.message.send.InitializeApplicationMessage;
 import fr.istic.sit.codisgroupea.model.message.VehicleMessage;
 import fr.istic.sit.codisgroupea.repository.*;
@@ -60,7 +61,6 @@ public class AuthenticationController {
      * @param sinisterCodeRepository {@link SinisterCodeRepository} instance
      * @param vehicleRepository {@link VehicleRepository} instance
      * @param unitRepository {@link UnitRepository} instance
-     * @param unitRepository {@link PhotoRepository} instance
      */
     public AuthenticationController(AuthenticationService authenticationService,
                                     SimpMessagingTemplate simpMessagingTemplate,
@@ -120,14 +120,15 @@ public class AuthenticationController {
                 interventionRepository.findAllByOpened(true),
                 InterventionMessage::new);
 
-        List<InitializeApplicationMessage.PhotoMessage> photoAvailable = new ArrayList<>();
-        for (Photo photo : photoRepository.findAll()){
-            photoAvailable.add(new InitializeApplicationMessage.PhotoMessage(photo));
-        }
+        val photosAvailable = populateList(
+                photoRepository.findAll(),
+                PhotoMessage::new);
+
         // The check is redundant with the one above.
         @SuppressWarnings({"unchecked", "ConstantConditions"})
         val iniAppli = new InitializeApplicationMessage(user.get(),
-                types, codes, vehicles, demands, interventionsAvailable);
+                types, codes, vehicles, demands,
+                interventionsAvailable, photosAvailable);
 
         String urlToSend = "/topic/users/" + principal.getName()
                 + "/initialize-application";

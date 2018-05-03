@@ -12,6 +12,7 @@ import fr.istic.sit.codisgroupea.model.message.utils.Location;
 import fr.istic.sit.codisgroupea.repository.*;
 import fr.istic.sit.codisgroupea.service.InterventionFactory;
 import fr.istic.sit.codisgroupea.sig.stub.ListSigService;
+import lombok.val;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -31,40 +32,53 @@ import java.util.List;
 @Transactional
 public class InterventionSocketController {
 
-    /** The logger */
+    /**
+     * The logger
+     */
     private static final Logger logger = LogManager.getLogger();
 
     private SimpMessagingTemplate simpMessagingTemplate;
 
-    /** {@link InterventionRepository} instance */
+    /**
+     * {@link InterventionRepository} instance
+     */
     private InterventionRepository interventionRepository;
 
-    /** {@link SinisterCodeRepository} instance */
+    /**
+     * {@link SinisterCodeRepository} instance
+     */
     private SinisterCodeRepository sinisterCodeRepository;
 
-    /** {@link SymbolSitacRepository} instance */
+    /**
+     * {@link SymbolSitacRepository} instance
+     */
     private SymbolSitacRepository symbolSitacRepository;
 
-    /** {@link UnitRepository} instance */
+    /**
+     * {@link UnitRepository} instance
+     */
     private UnitRepository unitRepository;
 
-    /** {@link PhotoRepository} instance */
+    /**
+     * {@link PhotoRepository} instance
+     */
     private PhotoRepository photoRepository;
 
     private ListSigService listSigService;
 
-    private VehicleRepository vehicleRepository;
     private InterventionFactory interventionFactory;
 
     /**
      * Constructor of the class {@link InterventionSocketController}.
-     * @param simpMessagingTemplate the simp messaging template
+     *
+     * @param simpMessagingTemplate  the simp messaging template
      * @param interventionRepository {@link InterventionRepository} instance
      * @param sinisterCodeRepository {@link SinisterCodeRepository} instance
-     * @param symbolSitacRepository {@link SymbolSitacRepository} instance
-     * @param unitRepository {@link UnitRepository} instance
-     * @param photoRepository {@link PhotoRepository} instance
-     * @param listSigService the SIG service
+     * @param symbolSitacRepository  {@link SymbolSitacRepository} instance
+     * @param unitRepository         {@link UnitRepository} instance
+     * @param photoRepository        {@link PhotoRepository} instance
+     * @param listSigService         the SIG service
+     * @param interventionFactory    the intervention factory
      */
     public InterventionSocketController(
             SimpMessagingTemplate simpMessagingTemplate,
@@ -73,16 +87,16 @@ public class InterventionSocketController {
             SymbolSitacRepository symbolSitacRepository,
             UnitRepository unitRepository,
             PhotoRepository photoRepository,
-            ListSigService listSigService) {
+            ListSigService listSigService,
+            InterventionFactory interventionFactory) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.interventionRepository = interventionRepository;
         this.sinisterCodeRepository = sinisterCodeRepository;
         this.symbolSitacRepository = symbolSitacRepository;
-        this.interventionFactory = interventionFactory;
         this.unitRepository = unitRepository;
         this.photoRepository = photoRepository;
         this.listSigService = listSigService;
-        this.vehicleRepository = vehicleRepository;
+        this.interventionFactory = interventionFactory;
     }
 
     /**
@@ -100,7 +114,7 @@ public class InterventionSocketController {
         List<SymbolSitac> union = new ArrayList<>(listSymbol);
         union.addAll(listSymbolBouchon);
 
-        for(SymbolSitac symSitac : union) {
+        for (SymbolSitac symSitac : union) {
             Symbol actualSymbol = symSitac.getSymbol();
             Payload payload = symSitac.getPayload();
 
@@ -127,19 +141,25 @@ public class InterventionSocketController {
     private List<InterventionChosenMessage.Unit> populateUnitList(Intervention intervention) {
         List<InterventionChosenMessage.Unit> units = new ArrayList<>();
 
-        for(Unit unit : unitRepository.findAllByIntervention(intervention)) {
+        for (Unit unit : unitRepository.findAllByIntervention(intervention)) {
             UnitVehicle unitVehicle = unit.getUnitVehicle();
             Symbol symbol = unit.getSymbolSitac().getSymbol();
 
-            InterventionChosenMessage.Unit unitObject = new InterventionChosenMessage.Unit(
+            String label = unitVehicle.getAssignedVehicle() == null ?
+                    "" :
+                    unitVehicle.getAssignedVehicle().getLabel();
+
+            val vehicle = new InterventionChosenMessage.Unit.Vehicle(
+                    label,
+                    unitVehicle.getType().getName(),
+                    unitVehicle.getStatus().toString()
+            );
+
+            val unitObject = new InterventionChosenMessage.Unit(
                     unit.getId(),
                     unit.getRequestDate().getTime(),
                     unit.isMoving(),
-                    unitVehicle == null ? null : new InterventionChosenMessage.Unit.Vehicle(
-                            unitVehicle.getAssignedVehicle() == null ? "" : unitVehicle.getAssignedVehicle().getLabel(),
-                            unitVehicle.getType().getName(),
-                            unitVehicle.getStatus().toString()
-                    ),
+                    vehicle,
                     new InterventionChosenMessage.Unit.Symbol(
                             symbol.getShape().toString(),
                             symbol.getColor().toString(),
@@ -147,7 +167,7 @@ public class InterventionSocketController {
                     )
             );
 
-            if(unit.getAcceptDate() != null) {
+            if (unit.getAcceptDate() != null) {
                 unitObject.setDate_granted(unit.getAcceptDate().getTime());
             }
 
@@ -166,8 +186,8 @@ public class InterventionSocketController {
     private List<InterventionChosenMessage.Photo> populatePhotoList(Intervention intervention) {
         List<InterventionChosenMessage.Photo> photos = new ArrayList<>();
 
-        for(Photo photo : photoRepository.findAllByIntervention(intervention)) {
-            InterventionChosenMessage.Photo photoObject = new InterventionChosenMessage.Photo(
+        for (Photo photo : photoRepository.findAllByIntervention(intervention)) {
+            val photoObject = new InterventionChosenMessage.Photo(
                     photo.getUri(),
                     photo.getDate().getTime(),
                     new Position(photo.getCoordinates())
@@ -192,8 +212,8 @@ public class InterventionSocketController {
      */
     @MessageMapping(RoutesConfig.CHOOSE_INTERVENTION_CLIENT)
     public void chooseIntervention(@DestinationVariable("id") final int id,
-                                                        Principal principal,
-                                                        String dataSentByClient) {
+                                   Principal principal,
+                                   String dataSentByClient) {
         logger.trace(RoutesConfig.CHOOSE_INTERVENTION_CLIENT
                 + DATA_RECEIVE + dataSentByClient);
 
@@ -211,12 +231,12 @@ public class InterventionSocketController {
                 new Location(intervention.getPosition())
         );
 
-        if(intervention.getPathDrone() != null)
+        if (intervention.getPathDrone() != null)
             interv.setPathDrone(new PathDrone(intervention.getPathDrone()));
 
         String toJson = gson.toJson(interv);
 
-        String urlToSend = "/topic/users/"+username+"/intervention-chosen";
+        String urlToSend = "/topic/users/" + username + "/intervention-chosen";
         logger.trace("{} --> data send {}", urlToSend, toJson);
         simpMessagingTemplate.convertAndSend(urlToSend, toJson);
     }
@@ -229,16 +249,21 @@ public class InterventionSocketController {
      */
     @MessageMapping(RoutesConfig.CREATE_INTERVENTION_CLIENT)
     public void createIntervention(Principal principal, String dataSentByClient) {
-        logger.trace("{} --> data receive {}", RoutesConfig.CREATE_INTERVENTION_CLIENT, dataSentByClient);
         Gson jason = new Gson();
+        logger.trace("{} --> data receive {}",
+                RoutesConfig.CREATE_INTERVENTION_CLIENT,
+                dataSentByClient);
 
         logger.trace(RoutesConfig.CREATE_INTERVENTION_CLIENT
                 + DATA_RECEIVE + dataSentByClient);
 
-        CreateInterventionMessage dataFromClient = jason.fromJson(dataSentByClient,CreateInterventionMessage.class);
+        val dataFromClient = jason.fromJson(dataSentByClient,
+                CreateInterventionMessage.class);
 
         try {
-            Intervention intervention = interventionFactory.createIntervention(dataFromClient);
+            val intervention = interventionFactory.createIntervention
+                    (dataFromClient);
+
             interventionRepository.save(intervention);
             logger.debug("Position: " + intervention.getPosition());
             InterventionCreatedMessage toReturn = new InterventionCreatedMessage(
@@ -251,34 +276,19 @@ public class InterventionSocketController {
 
             List<UnitMessage> unitMessages = new ArrayList<>();
 
-            for(Unit unit : intervention.getUnits()) {
+            for (Unit unit : intervention.getUnits()) {
                 unitMessages.add(new UnitMessage(unit));
             }
 
             toReturn.setUnits(unitMessages);
             String toJson = jason.toJson(toReturn);
-            logger.trace(RoutesConfig.CREATE_INTERVENTION_SERVER+" --> data send "+toJson);
-            simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_INTERVENTION_SERVER, toJson);
+            logger.trace(RoutesConfig.CREATE_INTERVENTION_SERVER
+                    + " --> data send " + toJson);
+            simpMessagingTemplate.convertAndSend(
+                    RoutesConfig.CREATE_INTERVENTION_SERVER, toJson);
         } catch (VehicleAlreadyAssignedException | VehicleNotFoundException e) {
             logger.error(e.getMessage(), e);
         }
-
-        Intervention persisted = interventionRepository.save(intervention);
-
-        logger.debug("Position: " + intervention.getPosition());
-        InterventionCreatedMessage toReturn = new InterventionCreatedMessage(
-                persisted.getId(),
-                persisted.getDate(),
-                persisted.getSinisterCode().getCode(),
-                persisted.getAddress(),
-                true,
-                new Location(persisted.getPosition()));
-
-        String toJson = jason.toJson(toReturn);
-
-        logger.trace(RoutesConfig.CREATE_INTERVENTION_SERVER
-                + DATA_SEND + toJson);
-        simpMessagingTemplate.convertAndSend(RoutesConfig.CREATE_INTERVENTION_SERVER, toJson);
     }
 
     /**
@@ -290,8 +300,8 @@ public class InterventionSocketController {
      */
     @MessageMapping(RoutesConfig.CLOSE_INTERVENTION_CLIENT)
     public void closeIntervention(@DestinationVariable("id") final int id,
-                                       Principal principal,
-                                       String dataSentByClient) {
+                                  Principal principal,
+                                  String dataSentByClient) {
         logger.trace(RoutesConfig.CLOSE_INTERVENTION_CLIENT
                 + DATA_RECEIVE + dataSentByClient);
 
@@ -307,6 +317,7 @@ public class InterventionSocketController {
         logger.trace(RoutesConfig.CLOSE_INTERVENTION_SERVER
                 + DATA_SEND + toJson);
 
-        simpMessagingTemplate.convertAndSend(RoutesConfig.CLOSE_INTERVENTION_SERVER, toJson);
+        simpMessagingTemplate.convertAndSend(
+                RoutesConfig.CLOSE_INTERVENTION_SERVER, toJson);
     }
 }
