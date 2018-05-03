@@ -105,32 +105,32 @@ public class MeansTableFragment extends Fragment {
                 text.setGravity(Gravity.END);
 
                 switch (i) {
-                    case 0:
+                    case 0://Label/Type
                         text.setText(unit.getVehicle().getLabel() == null || unit.getVehicle().getLabel().equals("") ? unit.getVehicle().getType() : unit.getVehicle().getLabel());
                         break;
-                    case 1:
+                    case 1://status
                         if(unit.getVehicle().getStatus() != null)
                             text.setText(unit.getVehicle().getStatus().getTranslation());
                         break;
-                    case 2:
+                    case 2://request date
                         if(unit.getRequestDate() != null && unit.getRequestDate().getTime() != 0) {
                             SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
                             text.setText(df.format(unit.getRequestDate()));
                         }
                         break;
-                    case 3:
+                    case 3://accept date
                         if(unit.getAcceptDate() != null && unit.getAcceptDate().getTime() != 0) {
                             SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
                             text.setText(df.format(unit.getAcceptDate()));
                         }
                         break;
-                    case 4:
+                    case 4://commited date
                         if(unit.getCommitedDate() != null && unit.getCommitedDate().getTime() != 0) {
                             SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
                             text.setText(df.format(unit.getCommitedDate()));
                         }
                         break;
-                    case 5:
+                    case 5://released date
                         if(unit.getReleasedDate() != null && unit.getReleasedDate().getTime() != 0) {
                             SimpleDateFormat df = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance();
                             text.setText(df.format(unit.getReleasedDate()));
