@@ -60,12 +60,22 @@ public class Unit implements Parcelable {
     private Symbol symbol;
 
     public Unit(ila.fr.codisintervention.models.model.Unit unit) {
-        id = unit.getId();
-        date_granted = unit.getAcceptDate().getTime();
-        date_reserved = unit.getRequestDate().getTime();
+        if(unit.getId() != null)
+            id = unit.getId();
+
+        if(unit.getAcceptDate() != null)
+            date_granted = unit.getAcceptDate().getTime();
+
+        if(unit.getRequestDate() != null)
+            date_reserved = unit.getRequestDate().getTime();
+
         moving = unit.isMoving();
-        vehicle = new Vehicle(unit.getVehicle());
-        symbol = new Symbol(unit.getSymbolUnit());
+
+        if(unit.getVehicle() != null)
+            vehicle = new Vehicle(unit.getVehicle());
+
+        if(unit.getSymbolUnit() != null)
+            symbol = new Symbol(unit.getSymbolUnit());
     }
     /**
      * Usefull to Parcelize an instance of this class  {@link Parcelable}
@@ -96,22 +106,22 @@ public class Unit implements Parcelable {
      * @param in the parcel that contain the details of this class
      */
     protected Unit(Parcel in) {
+        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+        symbol = in.readParcelable(Symbol.class.getClassLoader());
         id = in.readInt();
         date_granted = in.readLong();
         date_reserved = in.readLong();
-        moving = in.readInt() != 0;
-        vehicle = in.readParcelable(Vehicle.class.getClassLoader());
-        symbol = in.readParcelable(Symbol.class.getClassLoader());
+        moving = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(vehicle, flags);
+        dest.writeParcelable(symbol, flags);
         dest.writeInt(id);
         dest.writeLong(date_granted);
         dest.writeLong(date_reserved);
         dest.writeInt(moving ? 1 : 0);
-        dest.writeParcelable(vehicle, flags);
-        dest.writeParcelable(symbol, flags);
     }
 
 }

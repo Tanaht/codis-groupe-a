@@ -3,13 +3,11 @@ package fr.istic.sit.codisgroupea.controller;
 import com.google.gson.Gson;
 import fr.istic.sit.codisgroupea.config.RoutesConfig;
 import fr.istic.sit.codisgroupea.model.entity.Intervention;
-import fr.istic.sit.codisgroupea.model.entity.Position;
 import fr.istic.sit.codisgroupea.model.entity.Path;
 import fr.istic.sit.codisgroupea.model.entity.PathType;
 import fr.istic.sit.codisgroupea.model.entity.Position;
 import fr.istic.sit.codisgroupea.model.message.receive.MissionOrderMessage;
 import fr.istic.sit.codisgroupea.repository.InterventionRepository;
-import fr.istic.sit.codisgroupea.repository.PathRepository;
 import fr.istic.sit.codisgroupea.repository.PathRepository;
 import fr.istic.sit.codisgroupea.socket.Location;
 import fr.istic.sit.codisgroupea.socket.MissionOrder;
@@ -21,9 +19,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import javax.transaction.Transactional;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,6 +98,10 @@ public class DroneController {
                 .collect(Collectors.toList());
         Intervention interv = interventionRepository.getOneById(id);
         //TODO delete previous position in bdd
+        if(interv.getPathDrone() == null) {
+            Path newPath = new Path(missionOrder);
+            interv.setPathDrone(newPath);
+        }
         interv.getPathDrone().setPoints(lPosition);
         pathRepository.save(interv.getPathDrone());
 

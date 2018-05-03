@@ -1,5 +1,6 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
+import fr.istic.sit.codisgroupea.model.message.receive.MissionOrderMessage;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -51,4 +52,13 @@ public class Path {
         this.type = type;
     }
 
+    public Path(MissionOrderMessage missionOrder) {
+        altitude = missionOrder.getAltitude();
+
+        if (missionOrder.getType() != null){
+            type = PathType.valueOf(missionOrder.getType());
+        }else{
+            type = PathType.SEGMENT;
+        }
+    }
 }

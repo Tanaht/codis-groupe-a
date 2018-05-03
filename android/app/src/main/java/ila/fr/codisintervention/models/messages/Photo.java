@@ -31,6 +31,15 @@ public class Photo implements Parcelable {
     @Expose
     private Location location;
 
+    @Expose
+    private int interventionId;
+
+    /**
+     * Id of the point
+     */
+    @Expose
+    private int pointId;
+
     /**
      * Gets url.
      *
@@ -86,6 +95,42 @@ public class Photo implements Parcelable {
     }
 
     /**
+     * Gets interventionId.
+     *
+     * @return the interventionId
+     */
+    public int getInterventionId() {
+        return interventionId;
+    }
+
+    /**
+     * Sets interventionId.
+     *
+     * @param interventionId the interventionId
+     */
+    public void setInterventionId(int interventionId) {
+        this.interventionId = interventionId;
+    }
+
+    /**
+     * Gets pointId.
+     *
+     * @return the pointId
+     */
+    public int getPointId() {
+        return pointId;
+    }
+
+    /**
+     * Sets pointId.
+     *
+     * @param pointId the pointId
+     */
+    public void setPointId(int pointId) {
+        this.pointId = pointId;
+    }
+
+    /**
      * Instantiates a new Photo.
      *
      * @param in the parcel that contain the details of this class
@@ -94,12 +139,17 @@ public class Photo implements Parcelable {
         location = in.readParcelable(Location.class.getClassLoader());
         url = in.readString();
         date = in.readLong();
+        location = in.readParcelable(Location.class.getClassLoader());
+        interventionId = in.readInt();
+        pointId = in.readInt();
     }
 
     public Photo(ila.fr.codisintervention.models.model.Photo photo){
          url = photo.getUri();
          date = photo.getDate().getTime();
          location = photo.getLocation();
+         interventionId = photo.getInterventionId();
+         pointId = photo.getPointId();
     }
 
     /**
@@ -128,5 +178,8 @@ public class Photo implements Parcelable {
         dest.writeParcelable(location, flags);
         dest.writeString(url);
         dest.writeLong(date);
+        dest.writeParcelable(location, flags);
+        dest.writeInt(interventionId);
+        dest.writeInt(pointId);
     }
 }

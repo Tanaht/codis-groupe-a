@@ -16,6 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
@@ -24,6 +25,7 @@ import ila.fr.codisintervention.binders.ModelServiceBinder;
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.services.ModelServiceAware;
 import ila.fr.codisintervention.services.WebSocketServiceAware;
@@ -143,11 +145,11 @@ public class NewInterventionActivity extends AppCompatActivity implements ModelS
      */
     public void submitNewInterventionAction(View v) {
         List<Vehicle> vehiclesList = dataAdapter.getVehiclesList();
-
+        List<Unit> units = new ArrayList<>();
         for(int i = 0; i< vehiclesList.size(); i++){
             Vehicle vehicle = vehiclesList.get(i);
             if(vehicle.isSelected()){
-                //TODO: we donothing for now
+                units.add(new Unit(vehicle));
             }
         }
         String sinisterCode = ((Spinner)findViewById(R.id.CodeList)).getSelectedItem().toString();
@@ -159,6 +161,7 @@ public class NewInterventionActivity extends AppCompatActivity implements ModelS
             InterventionModel intervention = new InterventionModel();
             intervention.setAddress(inputAddress);
             intervention.setSinisterCode(sinisterCode);
+            intervention.setUnits(units);
             getLocationFromAddressAndCreateIntervention(intervention);
 
         }

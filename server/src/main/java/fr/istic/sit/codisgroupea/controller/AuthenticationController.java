@@ -47,6 +47,8 @@ public class AuthenticationController {
     /** {@link UnitRepository} instance */
     private UnitRepository unitRepository;
 
+    /** {@link PhotoRepository} instance */
+    private PhotoRepository photoRepository;
 
     /**
      * Constructor of the class {@link AuthenticationController}
@@ -58,6 +60,7 @@ public class AuthenticationController {
      * @param sinisterCodeRepository {@link SinisterCodeRepository} instance
      * @param vehicleRepository {@link VehicleRepository} instance
      * @param unitRepository {@link UnitRepository} instance
+     * @param unitRepository {@link PhotoRepository} instance
      */
     public AuthenticationController(AuthenticationService authenticationService,
                                     SimpMessagingTemplate simpMessagingTemplate,
@@ -65,7 +68,8 @@ public class AuthenticationController {
                                     VehicleTypeRepository vehicleTypeRepository,
                                     SinisterCodeRepository sinisterCodeRepository,
                                     VehicleRepository vehicleRepository,
-                                    UnitRepository unitRepository) {
+                                    UnitRepository unitRepository,
+                                    PhotoRepository photoRepository) {
         this.authenticationService = authenticationService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.interventionRepository = interventionRepository;
@@ -73,6 +77,7 @@ public class AuthenticationController {
         this.sinisterCodeRepository = sinisterCodeRepository;
         this.vehicleRepository = vehicleRepository;
         this.unitRepository = unitRepository;
+        this.photoRepository = photoRepository;
     }
 
 
@@ -115,6 +120,10 @@ public class AuthenticationController {
                 interventionRepository.findAllByOpened(true),
                 InterventionMessage::new);
 
+        List<InitializeApplicationMessage.PhotoMessage> photoAvailable = new ArrayList<>();
+        for (Photo photo : photoRepository.findAll()){
+            photoAvailable.add(new InitializeApplicationMessage.PhotoMessage(photo));
+        }
         // The check is redundant with the one above.
         @SuppressWarnings({"unchecked", "ConstantConditions"})
         val iniAppli = new InitializeApplicationMessage(user.get(),

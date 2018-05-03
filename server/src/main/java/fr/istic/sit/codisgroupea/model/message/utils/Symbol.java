@@ -37,7 +37,9 @@ public class Symbol {
     public Payload payload;
 
     public Symbol(SymbolSitac symbolSitac) {
-        this.location = new Location(symbolSitac.getLocation().getLatitude(), symbolSitac.getLocation().getLongitude());
+        if(symbolSitac.getLocation() != null)
+            this.location = new Location(symbolSitac.getLocation().getLatitude(), symbolSitac.getLocation().getLongitude());
+
         this.color = symbolSitac.getSymbol().getColor().name();
         this.shape = symbolSitac.getSymbol().getShape().name();
         this.payload = new Payload(symbolSitac.getPayload().getIdentifier(), symbolSitac.getPayload().getDetails());

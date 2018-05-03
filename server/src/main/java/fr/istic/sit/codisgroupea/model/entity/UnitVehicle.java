@@ -1,6 +1,7 @@
 package fr.istic.sit.codisgroupea.model.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Data
+@NoArgsConstructor
 public class UnitVehicle {
 
     /** The id of the unit */
@@ -21,14 +23,13 @@ public class UnitVehicle {
     /**
      * A unit is always associated with a UnitVehicle instance
      */
-    @NotNull
     @OneToOne
     private Unit unit;
 
     /**
      * The vehicle assigned to the unit
      */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     private Vehicle assignedVehicle;
 
     /**
@@ -53,5 +54,9 @@ public class UnitVehicle {
     public void setAssignedVehicle(Vehicle assignedVehicle) {
         this.assignedVehicle = assignedVehicle;
         this.assignedVehicle.setUnitVehicle(this);
+    }
+
+    public UnitVehicle(Unit unit) {
+        this.unit = unit;
     }
 }

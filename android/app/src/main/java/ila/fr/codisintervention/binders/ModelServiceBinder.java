@@ -8,6 +8,7 @@ import ila.fr.codisintervention.exception.InterventionNotFoundException;
 import ila.fr.codisintervention.exception.RequestNotFoundException;
 import ila.fr.codisintervention.exception.VehicleNotFoundException;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Photo;
 import ila.fr.codisintervention.models.model.Request;
 import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 import ila.fr.codisintervention.models.model.user.User;
@@ -119,5 +120,6 @@ public class ModelServiceBinder extends Binder {
          */
         User getUser();
 
+        List<Photo> getPhotos();
     }
 }

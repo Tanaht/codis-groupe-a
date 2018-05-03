@@ -5,12 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ila.fr.codisintervention.R;
 import ila.fr.codisintervention.activities.MapActivity;
 import ila.fr.codisintervention.entities.SymbolKind;
 import ila.fr.codisintervention.models.DronePoint;
@@ -29,12 +24,15 @@ import ila.fr.codisintervention.models.model.map_icon.vehicle.Vehicle;
 public class MarkerUtility {
     static public Integer getDrawablePath(I_MarkerElement ms, Activity activity){
         String str = "";
-        if (ms instanceof MarkerSymbol)
+        if (ms instanceof MarkerSymbol) {
             str = ((MarkerSymbol)ms).getData().getColor() + ((MarkerSymbol)ms).getData().getShape().name();
-        else if (ms instanceof MarkerUnit)
-            str = ((MarkerUnit)ms).getData().getSymbolUnit().getColor() + ((MarkerUnit)ms).getData().getSymbolUnit().getShape().name();
-        else if (ms instanceof MarkerDrone)
+        }
+        else if (ms instanceof MarkerUnit){
+            if(((MarkerUnit)ms).getData().getSymbolUnit() != null)
+                str = ((MarkerUnit)ms).getData().getSymbolUnit().getColor() + ((MarkerUnit)ms).getData().getSymbolUnit().getShape().name();
+        } else if (ms instanceof MarkerDrone){
             str = ((MarkerDrone)ms).getResourcePath();
+        }
         return activity.getResources().getIdentifier(str.toLowerCase(), "drawable", activity.getPackageName());
     }
 

@@ -11,15 +11,18 @@ import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import ila.fr.codisintervention.binders.WebSocketServiceBinder;
+import ila.fr.codisintervention.models.PhotoReception;
 import ila.fr.codisintervention.models.Location;
 import ila.fr.codisintervention.models.messages.DronePing;
 import ila.fr.codisintervention.models.messages.InitializeApplication;
@@ -31,7 +34,9 @@ import ila.fr.codisintervention.models.messages.Request;
 import ila.fr.codisintervention.models.messages.Symbol;
 import ila.fr.codisintervention.models.messages.SymbolsMessage;
 import ila.fr.codisintervention.models.messages.User;
+import ila.fr.codisintervention.models.messages.Vehicle;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.services.model.ModelService;
 import ila.fr.codisintervention.utils.Config;
 import rx.Subscription;
@@ -141,7 +146,6 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
      */
     public static final String PROTOCOL_CLOSE = "PROTOCOL_CLOSE";
 
-
     /**
      * The constant DRONE_PATH_RECEIVED
      */
@@ -243,6 +247,7 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
                 case ERROR:
                     Log.d(TAG, "STOMP CONNECTION ERROR");
+                    Log.d(TAG, lifecycleEvent.getMessage(), lifecycleEvent.getException());
                     Intent errorIntent = new Intent(PROTOCOL_ERROR);
                     LocalBroadcastManager.getInstance(this).sendBroadcast(errorIntent);
                     break;
@@ -324,10 +329,28 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
                 if(f.getDeclaringClass().equals(Intervention.class)) {
                     switch (f.getName()) {
                         case "drone_available":
-                            return true;
                         case "id":
-                            return true;
                         case "date":
+                            return true;
+                        default:
+                    }
+                }
+
+                if(f.getDeclaringClass().equals(ila.fr.codisintervention.models.messages.Unit.class)) {
+                    switch (f.getName()) {
+                        case "id":
+                        case "date_released":
+                        case "date_granted":
+                        case "date_commited":
+                        case "date_reserved":
+                            return true;
+                        default:
+                    }
+                }
+
+                if(f.getDeclaringClass().equals(Vehicle.class)) {
+                    switch (f.getName()) {
+                        case "status":
                             return true;
                         default:
                     }
@@ -349,6 +372,18 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         );
     }
 
+    public void deliverPhotoEventIntents(StompMessage message){
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        PhotoReception photo = gson.fromJson(message.getPayload(), PhotoReception.class);
+
+        Intent photoIntent  = new Intent(getApplicationContext(), ModelService.class);
+        photoIntent.setAction(DRONE_PHOTO);
+        photoIntent.putExtra(DRONE_PHOTO, photo);
+        getApplicationContext().startService(photoIntent);
+
+    }
+
     /**
     * Subscribe to this and send notification to server
     * /topic/interventions/{id}/symbols/event`
@@ -359,20 +394,20 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
     * */
     @Override
     public void chooseIntervention(int id){
+        this.client.topic("/topic/interventions/" + id + "/photo").subscribe(message -> {
+            Log.i(TAG, "[/topic/interventions/" + id + "/photo] Received message: " + message.getPayload());
+            deliverPhotoEventIntents(message);
+        });
+
         this.client.topic("/topic/interventions/" + id + "/symbols/event").subscribe(message -> {
-            Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
+            Log.i(TAG, "[/topic/interventions/" + id + "/symbols/event] Received message: " + message.getPayload());
             deliverSymbolsEventIntents(message);
         });
 
-
         this.client.topic("/topic/interventions/" + id + "/units/event").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/units/event] Received message: " + message.getPayload());
+            deliverUnitsEventIntents(message);
         });
-
-        this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
-                () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
-                error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
-        );
 
         this.client.topic("/topic/interventions/" + id + "/drone/ping").subscribe(message -> {
             Log.i(TAG, "[/topic/interventions/" + id + "/drone/ping] Received message: " + message.getPayload());
@@ -384,13 +419,70 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
 
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
-            
+
             Intent dronePathReceived = new Intent(getApplicationContext(), ModelService.class);
             dronePathReceived.setAction(DRONE_PATH_RECEIVED);
             dronePathReceived.putExtra(DRONE_PATH_RECEIVED, gson.fromJson(message.getPayload(), PathDrone.class));
             getApplicationContext().startService(dronePathReceived);
         });
 
+        this.client.send("/app/interventions/" + id + "/choose", "PING").subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + id + "/choose] Sent data!"),
+                error -> Log.e(TAG, "[/app/interventions/" + id + "/choose] Error Encountered", error)
+        );
+
+    }
+
+    /**
+     * Class triggered when receiving events of type "/topic/interventions/{id}/units/event"
+     * It send the correct intent.
+     * @param message
+     */
+    private void deliverUnitsEventIntents(StompMessage message) {
+        //FIXME: Refactoring this method can be done with enum (EventKind, EventType) or other class architecture
+
+        String type = "";
+
+        ArrayList<ila.fr.codisintervention.models.messages.Unit> units = new ArrayList<>();
+
+        try {
+            JSONObject object = new JSONObject(message.getPayload());
+
+            if(!object.has("type"))
+                throw new JSONException("JSON Message must have a 'type' key");
+
+            type = object.getString("type");
+
+            if(!Arrays.asList("CREATE", "UPDATE", "DELETE").contains(type)) {
+                throw new JSONException("JSON Message 'type' key must be one of the following: 'CREATE|UPDATE|DELETE'");
+            }
+
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+            Type gsonType = new TypeToken<List<ila.fr.codisintervention.models.messages.Unit>>() {}.getType();
+
+            units = gson.fromJson(object.getJSONArray("units").toString(), gsonType);
+
+//            for(ila.fr.codisintervention.models.messages.Unit unit : units)
+//                unit.setSymbol(new Symbol());
+        } catch (JSONException e) {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        Intent unitActionIntent  = new Intent(getApplicationContext(), ModelService.class);
+
+        if("CREATE".equals(type)) {
+            unitActionIntent.setAction(INTERVENTION_UNIT_CREATED);
+            unitActionIntent.putParcelableArrayListExtra(INTERVENTION_UNIT_CREATED, units);
+        }
+
+        if("UPDATE".equals(type)) {
+            unitActionIntent.setAction(INTERVENTION_UNIT_UPDATED);
+            unitActionIntent.putExtra(INTERVENTION_UNIT_UPDATED, units);
+        }
+
+        Log.d(TAG, "Send Explicit Intent");
+        getApplicationContext().startService(unitActionIntent);
     }
 
 
@@ -721,6 +813,60 @@ public class WebsocketService extends Service implements WebSocketServiceBinder.
         this.client.send("/app/demandes/" + request.getId() + "/deny", "PING").subscribe(
                 () -> Log.d(TAG, "[/app/demandes/" + request.getId() + "/deny] Sent data!"),
                 error -> Log.e(TAG, "[/app/demandes/" + request.getId() + "/deny] Error Encountered", error)
+        );
+    }
+
+    @Override
+    public void requestUnit(int interventionId, Unit unit) {
+        ila.fr.codisintervention.models.messages.Unit unitMessage = new ila.fr.codisintervention.models.messages.Unit(unit);
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        String json = gson.toJson(unitMessage, ila.fr.codisintervention.models.messages.Unit.class);
+
+        requestUnit(interventionId, json);
+    }
+
+    /**
+     * Send Request Unit message to remote server
+     * @param interventionId
+     * @param json the json to send
+     */
+    private void requestUnit(int interventionId, String json) {
+        this.client.send("/app/interventions/" + interventionId + "/units/create", json).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/units/create] Sent " + json),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/units/create] Error Encountered", error)
+        );
+    }
+
+    @Override
+    public void requestUnit(int interventionId, ila.fr.codisintervention.models.model.Request unit) {
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setExclusionStrategies(new ExclusionStrategy() {
+            @Override
+            public boolean shouldSkipField(FieldAttributes f) {
+                return Arrays.asList("id", "label").contains(f.getName());
+            }
+
+            @Override
+            public boolean shouldSkipClass(Class<?> clazz) {
+                return false;
+            }
+        }).create();
+
+        String json = gson.toJson(new Request(unit), Request.class);
+        requestUnit(interventionId, json);
+    }
+
+    @Override
+    public void updateUnit(int interventionId, Unit unit) {
+        ila.fr.codisintervention.models.messages.Unit unitMessage = new ila.fr.codisintervention.models.messages.Unit(unit);
+
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        String json = gson.toJson(unitMessage, ila.fr.codisintervention.models.messages.Unit.class);
+
+        this.client.send("/app/interventions/" + interventionId + "/units/update", json).subscribe(
+                () -> Log.d(TAG, "[/app/interventions/" + interventionId + "/units/update] Sent " + json),
+                error -> Log.e(TAG, "[/app/interventions/" + interventionId + "/units/update] Error Encountered", error)
         );
     }
 }

@@ -55,10 +55,17 @@ public class Symbol implements Parcelable {
     }
 
     public Symbol(SymbolUnit symbolUnit) {
-        shape = symbolUnit.getShape().name();
-        color = symbolUnit.getColor().name();
-        location = symbolUnit.getLocation();
-        payload = new Payload(symbolUnit.getPayload());
+        if(symbolUnit.getShape() != null)
+            shape = symbolUnit.getShape().name();
+
+        if(symbolUnit.getColor() != null)
+            color = symbolUnit.getColor().name();
+
+        if(symbolUnit.getLocation() != null)
+            location = symbolUnit.getLocation();
+
+        if(symbolUnit.getPayload() != null)
+            payload = new Payload(symbolUnit.getPayload());
     }
 
     public Symbol(ila.fr.codisintervention.models.model.map_icon.symbol.Symbol symb){

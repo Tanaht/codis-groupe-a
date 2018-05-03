@@ -45,6 +45,8 @@ public class ApplicationModel {
     private List<String> sinisterCodes;
     private List<String> vehicleTypes;
 
+    private List<Photo> photos;
+
     private List<Request> requests;
 
     /**
@@ -63,6 +65,7 @@ public class ApplicationModel {
         interventions = new ArrayList<>();
         vehicles = new ArrayList<>();
         requests = new ArrayList<>();
+        photos = new ArrayList<>();
         currentIntervention = null;
 
         for (Code code : init.getCodes()){
@@ -79,6 +82,9 @@ public class ApplicationModel {
         }
         for(ila.fr.codisintervention.models.messages.Request req: init.getDemandes()){
             requests.add(new Request(req));
+        }
+        for(ila.fr.codisintervention.models.messages.Photo photo : init.getPhotos()){
+            photos.add(new Photo((photo)));
         }
 
         user = new User(init.getUser());
@@ -150,16 +156,19 @@ public class ApplicationModel {
             List<Symbol> symbs  = new ArrayList<>();
             for (ila.fr.codisintervention.models.messages.Symbol symb : intervention.getSymbols()){
                 symbs.add(new Symbol(symb));
+                Log.d(TAG, "Add a new Symbol to intervention chosen");
             }
             currentIntervention.setSymbols(symbs);
 
             List<Unit> units = new ArrayList<>();
             for (ila.fr.codisintervention.models.messages.Unit uni : intervention.getUnits()){
+                Log.d(TAG, "Add a new Unit to intervention chosen");
                 units.add(new Unit(uni));
             }
             currentIntervention.setUnits(units);
 
-            currentIntervention.setPathDrone(new PathDrone(intervention.getPathDrone()));
+            if(intervention.getPathDrone() != null)
+                currentIntervention.setPathDrone(new PathDrone(intervention.getPathDrone()));
 
             Log.d(TAG, "Set Location on current intervention to " + intervention.getLocation());
             currentIntervention.setLocation(intervInList.getLocation());

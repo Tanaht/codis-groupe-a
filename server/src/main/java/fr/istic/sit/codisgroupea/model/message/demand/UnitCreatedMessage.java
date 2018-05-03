@@ -22,12 +22,18 @@ public class UnitCreatedMessage {
         public String type;
 
         /**
+         * The Status
+         */
+        public String status;
+
+        /**
          * Instantiates a new Vehicle.
          *
          * @param type the type
          */
-        public Vehicle(String type) {
+        public Vehicle(String type, String status) {
             this.type = type;
+            this.status = status;
         }
 
         /**
@@ -42,6 +48,11 @@ public class UnitCreatedMessage {
      * The Id.
      */
     public int id;
+
+    /**
+     * The date of reservation
+     */
+    public long date_reserved;
     /**
      * The Vehicle.
      */
@@ -53,8 +64,9 @@ public class UnitCreatedMessage {
      * @param id      the id
      * @param vehicle the vehicle
      */
-    public UnitCreatedMessage(int id, Vehicle vehicle) {
+    public UnitCreatedMessage(int id, long date_reserved, Vehicle vehicle) {
         this.id = id;
+        this.date_reserved = date_reserved;
         this.vehicle = vehicle;
     }
 

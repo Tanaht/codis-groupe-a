@@ -2,7 +2,6 @@ package fr.istic.sit.codisgroupea.socket;
 
 public class DroneServerConstants {
 
-
 	/**
 	 * Types of message exchanged between the server and the drone
 	 *
@@ -50,11 +49,12 @@ public class DroneServerConstants {
 	public static final String ALTITUDE = "altitude";
 	public static final String PHOTO = "photo";
 	public static final String DATE = "date";
+	public static final String POINT_ID = "pointId";
 	
 	/**
 	 * File informations
 	 */
-	public static final String IMAGE_LOCATION = "./src/main/resources/imagesDrone/";
+	public static final String IMAGE_LOCATION = "/images/";
 	public static final String IMAGE_NAME = "photo";
 	public static final String IMAGE_EXTENSION = "png";
 	

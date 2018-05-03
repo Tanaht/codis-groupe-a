@@ -1,32 +1,43 @@
 package ila.fr.codisintervention.activities;
 
 import android.app.ProgressDialog;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import ila.fr.codisintervention.R;
-
-import static ila.fr.codisintervention.R.drawable.area;
-
+import ila.fr.codisintervention.binders.ModelServiceBinder;
+import ila.fr.codisintervention.models.model.Photo;
+import ila.fr.codisintervention.services.ModelServiceAware;
+import ila.fr.codisintervention.utils.Config;
 
 /**
  * The type Photos display activity.
  */
-public class PhotosDisplayActivity extends AppCompatActivity {
+public class PhotosDisplayActivity extends AppCompatActivity implements ModelServiceAware {
+
     protected static final String TAG = "PhotosDisplayActivity";
+
+    private ServiceConnection modelServiceConnection;
+
+    private ModelServiceBinder.IMyServiceMethod modelService;
 
     private List<String> urlList = new ArrayList<>();
     private int indexImage = 0;
@@ -46,23 +57,22 @@ public class PhotosDisplayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        modelServiceConnection = bindModelService();
         setContentView(R.layout.activity_photos_display);
         setTitle(R.string.title_photos_display);
-
-        loadList();
-        addArrowsListeners();
-
-        imageDrone();
-        comments();
     }
 
 
     private void loadList() {
-        urlList.add("https://zonevideo.telequebec.tv/visuels_containers/1280x720/sam_le_pompier.jpg");
-        urlList.add("http://aws.vdkimg.com/tv_show/6/1/2/6/61265_backdrop_scale_1280xauto.jpg");
-        urlList.add("http://i.f1g.fr/media/ext/1900x1900/madame.lefigaro.fr/sites/default/files/img/2017/09/pourquoi-le-fantasme-du-pompier-est-aussi-intemporel-.jpg");
-        urlList.add("http://www.le-deguisement.fr/image-deguisement/2014/01/deguisement-pompier-sexy-femme.jpg");
-        urlList.add("https://www.aurorecinema.fr/evenement/03_sam-le-pompier-2018.jpg");
+        Integer currentIntervention = modelService.getCurrentIntervention().getId();
+        List<Photo> photos = modelService.getPhotos();
+        for (Photo photo : photos) {
+            if (photo.getInterventionId() == currentIntervention) {
+                String uri = "http://" + Config.get().getHost() + ":" + Config.get().getPort() + photo.getUri();
+                urlList.add(uri);
+            }
+        }
+        Collections.sort(urlList);
     }
 
     private void addArrowsListeners() {
@@ -92,7 +102,6 @@ public class PhotosDisplayActivity extends AppCompatActivity {
                     indexImage++;
                 }
                 imageDrone();
-
             }
         });
 
@@ -102,15 +111,32 @@ public class PhotosDisplayActivity extends AppCompatActivity {
      *
      */
     private void imageDrone() {
-        url = urlList.get(indexImage);
-        new LoadImage().execute();
+        if (!urlList.isEmpty()) {
+            url = urlList.get(indexImage);
+            String imageUrl = new String(urlList.get(indexImage)).replace(".png","");
+            String[] urlPart = imageUrl.split("/");
+            String[] imageNamePart = urlPart[urlPart.length-1].split("_");
+            String point = imageNamePart[1];
+            Date date = new Date(Long.parseLong(imageNamePart[2])*1000);
+            SimpleDateFormat ft = new SimpleDateFormat("HH:mm:ss");
+            TextView imageInfo = (TextView) findViewById(R.id.text);
+            imageInfo.setText("Point " + point + " at " + ft.format(date));
+            new LoadImage().execute();
+        }
     }
 
-    private void comments(){
-        EditText azerty = (EditText) findViewById(R.id.text);
-        azerty.setText(url);
+    @Override
+    public void onModelServiceConnected() {
+        loadList();
+        addArrowsListeners();
+
+        imageDrone();
     }
 
+    @Override
+    public void setModelService(ModelServiceBinder.IMyServiceMethod modelService) {
+        this.modelService = modelService;
+    }
 
 
     private class LoadImage extends AsyncTask <Void,Void,Bitmap> {
@@ -146,6 +172,13 @@ public class PhotosDisplayActivity extends AppCompatActivity {
                 Toast.makeText(PhotosDisplayActivity.this,"Some error occurred!",Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindModelService(modelServiceConnection);
+
     }
 }
 

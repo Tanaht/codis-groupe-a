@@ -6,6 +6,8 @@ import java.util.List;
 
 import ila.fr.codisintervention.models.messages.PathDrone;
 import ila.fr.codisintervention.models.model.InterventionModel;
+import ila.fr.codisintervention.models.model.Request;
+import ila.fr.codisintervention.models.model.Unit;
 import ila.fr.codisintervention.models.model.map_icon.symbol.Symbol;
 
 /**
@@ -113,6 +115,31 @@ public class WebSocketServiceBinder extends Binder {
          * @param request The request
          */
         void denyVehicleRequest(ila.fr.codisintervention.models.model.Request request);
+
+
+        /**
+         * Request a unit and send a notification to remote server
+         * this method can be used throug {@link ila.fr.codisintervention.activities.MapActivity} or {@link ila.fr.codisintervention.activities.MeansTableActivity}
+         * @param interventionId the id of the intervention
+         * @param unit the unit to request
+         */
+        void requestUnit(int interventionId, Unit unit);
+
+        /**
+         * Request a unit and send a notification to remote server
+         * this method can be used throug {@link ila.fr.codisintervention.activities.MapActivity} or {@link ila.fr.codisintervention.activities.MeansTableActivity}
+         * @param interventionId the id of the intervention
+         * @param unit the unit to request
+         */
+        void requestUnit(int interventionId, Request unit);
+
+        /**
+         * Update a unit and send a notification to remote server
+         * this method can be used throug {@link ila.fr.codisintervention.activities.MapActivity} or {@link ila.fr.codisintervention.activities.MeansTableActivity}
+         * @param interventionId the id of the intervention
+         * @param unit the unit to request
+         */
+        void updateUnit(int interventionId, Unit unit);
     }
 
 
